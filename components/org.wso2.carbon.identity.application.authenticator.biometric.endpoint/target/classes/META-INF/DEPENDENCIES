@@ -1,0 +1,27 @@
+// ------------------------------------------------------------------
+// Transitive dependencies of this project determined from the
+// maven pom organized by organization.
+// ------------------------------------------------------------------
+
+WSO2 Carbon - SAML Web Browser SSO
+
+
+From: 'an unknown organization'
+  - org.eclipse.equinox.http.helper  org.eclipse.equinox:org.eclipse.equinox.http.helper:jar:1.0.0
+
+
+From: 'Google, Inc.' (http://www.google.com)
+  - Gson (http://code.google.com/p/google-gson/) com.google.code.gson:gson:jar:2.2.4
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+From: 'OSGi Alliance' (https://www.osgi.org/)
+  - org.osgi:org.osgi.service.component (https://www.osgi.org/) org.osgi:org.osgi.service.component:jar:1.4.0
+    License: Apache-2.0  (http://www.apache.org/licenses/LICENSE-2.0)
+
+From: 'The Apache Software Foundation' (http://www.apache.org/)
+  - Commons Logging (http://commons.apache.org/logging) commons-logging:commons-logging:jar:1.1.1
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+
+
+
