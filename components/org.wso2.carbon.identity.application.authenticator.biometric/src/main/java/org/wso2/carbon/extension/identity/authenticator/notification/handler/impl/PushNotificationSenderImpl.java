@@ -1,10 +1,27 @@
+/*
+ *  Copyright (c) 2019 , WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ *  WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ *  *  You may obtain a copy of the License at
+ *  *
+ *  *  http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  *  Unless required by applicable law or agreed to in writing,
+ *  *  software distributed under the License is distributed on an
+ *  *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ *  *  KIND, either express or implied.  See the License for the
+ *  *  specific language governing permissions and limitations
+ *  *  under the License.
+ */
+
 package org.wso2.carbon.extension.identity.authenticator.notification.handler.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.simple.JSONObject;
 import org.wso2.carbon.extension.identity.authenticator.notification.handler.PushNotificationSender;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -19,108 +36,86 @@ public class PushNotificationSenderImpl implements PushNotificationSender {
 
     private static final Log log = LogFactory.getLog(PushNotificationSenderImpl.class);
     private static PushNotificationSenderImpl pushNotificationinstance = new PushNotificationSenderImpl();
+    public static PushNotificationSenderImpl getInstance() {
+        return pushNotificationinstance;
+    }
 
     /**
      * Method to send push notification to Android FireBased Cloud messaging
      * Server.
-     *  @param deviceId    Generated and provided from Android Client Developer
-     * @param serverKey Key which is Generated in FCM Server
-     * @param message    which contains actual information
-     * @param randomChallenge    which contains the random challenge
-     * @param sessionDataKey    which contains the session data key of each push notification.
+     *
+     * @param deviceId        Generated and provided from Android Client Developer
+     * @param serverKey       Key which is Generated in FCM Server
+     * @param message         which contains actual information
+     * @param randomChallenge which contains the random challenge
+     * @param sessionDataKey  which contains the session data key of each push notification.
      */
     @Override
     public void sendPushNotification(String deviceId, String serverKey,
                                      String message, String randomChallenge, String sessionDataKey) {
-
         try {
             String fcmUrl = "https://fcm.googleapis.com/fcm/send";
-// Create URL instance.
-
             URL url = new URL(fcmUrl);
-// create connection.
+
             HttpURLConnection conn;
             conn = (HttpURLConnection) url.openConnection();
             conn.setUseCaches(false);
             conn.setDoInput(true);
             conn.setDoOutput(true);
-//set method as POST or GET
-            conn.setRequestMethod("POST");
-//pass FCM server key
-            conn.setRequestProperty("Authorization", "key=" + serverKey);
-//Specify Message Format
-            conn.setRequestProperty("Content-Type", "application/json");
-//Create JSON Object & pass value
-            JSONObject infoJson = new JSONObject();
 
-            infoJson.put("title", "Welcome to WSO2 verify!!");
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Authorization", "key=" + serverKey);
+            conn.setRequestProperty("Content-Type", "application/json");
+
+            JSONObject infoJson = new JSONObject();
             infoJson.put("body", message);
-            //infoJson.put("enter your uuid", randomUUIDString);
-            infoJson.put("content_available" , true);
+            infoJson.put("content_available", true);
             infoJson.put("priority", "high");
 
             JSONObject dataJson = new JSONObject();
-
-            dataJson.put("title", "Welcome to WSO2 verify!!");
             dataJson.put("body", message);
             dataJson.put("Challenge", randomChallenge);
             dataJson.put("sessionkey", sessionDataKey);
             dataJson.put("click_action", "AuthenticateActivity");
-            dataJson.put("content_available" , true);
+            dataJson.put("content_available", true);
             dataJson.put("priority", "high");
-
 
             JSONObject json = new JSONObject();
             json.put("to", deviceId.trim());
             json.put("notification", infoJson);
             json.put("data", dataJson);
-            json.put("content_available" , true);
+            json.put("content_available", true);
             json.put("priority", "high");
 
-
-            log.info("json :" + json.toString());
-            log.info("infoJson :" + infoJson.toString());
-            log.info("dataJson :" + dataJson.toString());
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
             wr.write(json.toString());
             wr.flush();
 
             int status = 0;
-            if (null != conn) {
-                status = conn.getResponseCode();
-            }
+            status = conn.getResponseCode();
             if (status != 0) {
-
                 if (status == 200) {
-//SUCCESS message
                     BufferedReader reader = new BufferedReader(new
                             InputStreamReader(conn.getInputStream()));
-
-                    log.info("Android Notification Response : " + reader.readLine());
-                    log.info("returned UUID : " + randomChallenge);
+                    log.debug("Android Notification Response : " + reader.readLine());
+                    log.debug("returned UUID : " + randomChallenge);
                 } else if (status == 401) {
 //client side error
-                    log.info("Notification Response : TokenId : " + deviceId + " Error occurred :");
+                    log.debug("Notification Response : TokenId : " + deviceId + " Error occurred :");
                 } else if (status == 501) {
 //server side error
-                    log.info("Notification Response : [ errorCode=ServerError ] TokenId : " + deviceId);
+                    log.debug("Notification Response : [ errorCode=ServerError ] DeviceId : " + deviceId);
                 } else if (status == 503) {
 //server side error
-                    log.info("Notification Response : FCM Service is Unavailable TokenId : " + deviceId);
+                    log.debug("Notification Response : FCM Service is Unavailable DeviceId : " + deviceId);
                 }
             }
-        } catch (MalformedURLException mlfexception) {
-// Prototcal Error
-            log.info("Error occurred while sending push Notification!.." + mlfexception.getMessage());
-        } catch (Exception mlfexception) {
+        } catch (MalformedURLException malfexception) {
+// Protocol Error
+            log.debug("Error occurred while sending push Notification!.." + malfexception.getMessage());
+        } catch (Exception malfexception) {
 //URL problem
-            log.info("Reading URL, Error occurred while sending push Notification!.." + mlfexception.getMessage());
+            log.debug("Reading URL, Error occurred while sending push Notification!.." + malfexception.getMessage());
         }
-
-
-    }
-
-    public static PushNotificationSenderImpl getInstance() {
-        return pushNotificationinstance;
     }
 }

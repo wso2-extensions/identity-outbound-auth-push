@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><components xmlns:scr="http://www.osgi.org/xmlns/scr/v1.0.0">
-    <scr:component enabled="true" immediate="true" name="identity.application.authenticator.biometric.component">
-        <implementation class="org.wso2.carbon.extension.identity.authenticator.internal.BiometricAuthenticatorServiceComponent"/>
-        <property name="service.pid" value="identity.application.authenticator.biometric.component"/>
-    </scr:component>
-</components>
