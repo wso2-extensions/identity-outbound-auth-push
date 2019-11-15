@@ -17,23 +17,29 @@
  *
  */
 
+package org.wso2.carbon.identity.application.authenticator.biometric.endpoint.javascript.flow;
 
-.loader {
-    border: 16px solid #f3f3f3; /* Light grey */
-    border-top: 16px solid #3498db; /* Blue */
-    border-radius: 50%;
-    width: 120px;
-    height: 120px;
-    animation: spin 2s linear infinite;
-    margin-left: auto;
-    margin-right: auto;
-}
+/**
+ * initializes getter setter methods for status and challenge in the temporary hashmap at the biometric endpoint.
+ */
+public class WaitStatusResponse {
+    private String status;
+    private String signedChallenge;
 
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
+    public String getStatus() {
+        return status;
     }
-    100% {
-        transform: rotate(360deg);
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getChallenge() {
+        return signedChallenge;
+
+    }
+
+    public void setChallenge(String challenge) {
+        this.signedChallenge = challenge;
     }
 }
