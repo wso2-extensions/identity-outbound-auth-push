@@ -39,9 +39,9 @@ public class BiometricServlet extends HttpServlet {
     private static final String DEVICE_TYPE = "deviceType";
     private static final String MOBILE = "mobile";
     private static final String WEB = "web";
-    private static final String SDK_MOBILE = "SDKMobile";
-    private static final String SDK_WEB = "SDKWeb";
-    private static final String CHALLENGE_MOBILE = "CHALLENGEMobile";
+    private static final String SESSION_DATA_KEY_MOBILE = "sessionDataKeyMobile";
+    private static final String SESSION_DATA_KEY_WEB = "sessionDataKeyWeb";
+    private static final String CHALLENGE_MOBILE = "challengeMobile";
     private HashMap<String, String> updateStatus = new HashMap<>();
 
     @Override
@@ -56,31 +56,30 @@ public class BiometricServlet extends HttpServlet {
 
         WaitStatusResponse waitResponse = null;
         if (request.getParameterMap().containsKey(DEVICE_TYPE)) {
-            String parameterT = request.getParameter(DEVICE_TYPE);
+            String deviceType = request.getParameter(DEVICE_TYPE);
             waitResponse = new WaitStatusResponse();
-            if (parameterT.equals(MOBILE)) {
-                if ((request.getParameterMap().containsKey(SDK_MOBILE)) &&
+            if (deviceType.equals(MOBILE)) {
+                if ((request.getParameterMap().containsKey(SESSION_DATA_KEY_MOBILE)) &&
                         request.getParameterMap().containsKey(CHALLENGE_MOBILE)) {
-                    String sdkMobile = request.getParameter(SDK_MOBILE);
+                    String sessionDataKeyMobile = request.getParameter(SESSION_DATA_KEY_MOBILE);
                     String challengeMobile = request.getParameter(CHALLENGE_MOBILE);
                     log.info("challenge mobile parameter : " + challengeMobile);
-                    log.info("sdk mobile parameter : " + sdkMobile);
-
-                    updateStatus.put(sdkMobile, challengeMobile);
+                    log.info("sdk mobile parameter : " + sessionDataKeyMobile);
+                    updateStatus.put(sessionDataKeyMobile, challengeMobile);
                     log.info("table is: " + updateStatus);
                     response.setContentType("text/html");
                     response.setStatus(200);
-                    PrintWriter out = response.getWriter();
+                    //PrintWriter out = response.getWriter();
                     if (log.isDebugEnabled()) {
-                        log.debug("<h3>received the mobile SDK and challenge !</h3>");
+                        log.debug("received the mobile SDK and challenge !");
                     }
                 }
 
-            } else if (parameterT.equals(WEB)) {
-                if (request.getParameterMap().containsKey(SDK_WEB)) {
-                    String sdkweb = request.getParameter(SDK_WEB);
-                    String signedChallengeExtracted = updateStatus.get(sdkweb);
-                    if (signedChallengeExtracted != null && updateStatus.containsKey(sdkweb)) {
+            } else if (deviceType.equals(WEB)) {
+                if (request.getParameterMap().containsKey(SESSION_DATA_KEY_WEB)) {
+                    String sessionDataKeyWeb = request.getParameter(SESSION_DATA_KEY_WEB);
+                    String signedChallengeExtracted = updateStatus.get(sessionDataKeyWeb);
+                    if (signedChallengeExtracted != null && updateStatus.containsKey(sessionDataKeyWeb)) {
                         response.setContentType("text/html");
                         response.setCharacterEncoding("utf-8");
                         response.setStatus(200);
@@ -88,10 +87,8 @@ public class BiometricServlet extends HttpServlet {
 
                         waitResponse.setStatus(WaitStatus.Status.COMPLETED1.name());
                         waitResponse.setChallenge(signedChallengeExtracted);
-                        updateStatus.remove(sdkweb);
-                        if (log.isDebugEnabled()) {
-                            log.debug("a response from the mobile device!!!");
-                        }
+                        updateStatus.remove(sessionDataKeyWeb);
+                        log.info("a response from the mobile device!");
 
                     } else {
                         response.setContentType("text/html");
@@ -110,9 +107,7 @@ public class BiometricServlet extends HttpServlet {
         response.setContentType("application/json");
         String json = new Gson().toJson(waitResponse);
         try (PrintWriter out = response.getWriter()) {
-            if (log.isDebugEnabled()) {
-                log.debug("json waitResponse: " + json);
-            }
+            log.info("json waitResponse: " + json);
             out.print(json);
             out.flush();
         }

@@ -62,7 +62,7 @@
     let signedChallenge;
     const refreshInterval = '5000';
     const timeout = '10000';
-    const biometricEndpointWithQueryParams = "https://biometricauthenticator.private.wso2.com:9443/samlbiomtriccheck?deviceType=web&SDKWeb=";
+    const biometricEndpointWithQueryParams = "https://biometricauthenticator.private.wso2.com:9443/samlbiomtriccheck?deviceType=web&sessionDataKeyWeb=";
     const GET = 'GET';
 
     $(document).ready(function () {
