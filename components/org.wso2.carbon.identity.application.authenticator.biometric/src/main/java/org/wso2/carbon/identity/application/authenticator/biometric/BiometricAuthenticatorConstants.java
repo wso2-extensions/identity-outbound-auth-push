@@ -23,16 +23,10 @@ package org.wso2.carbon.identity.application.authenticator.biometric;
  * Utils class for Biometric Authenticator Constants.
  */
 public class BiometricAuthenticatorConstants {
+
     static final String AUTHENTICATOR_NAME = "biometric";
     static final String AUTHENTICATOR_FRIENDLY_NAME = "biometricAuthenticator";
     static final String SESSION_DATA_KEY = "sessionDataKey";
-    //biometric authorize endpoint URL
-    public static final String BIOMETRIC_OAUTH_ENDPOINT = "";
-    //biometric token  endpoint URL
-    public static final String BIOMETRIC_TOKEN_ENDPOINT = "";
-    //biometric user info endpoint URL
-    public static final String BIOMETRIC_USERINFO_ENDPOINT = "";
-    public static final String USERNAME = "Username";
-    public static final String SERVER_KEY = "ServerKey";
-    public static final String SIGNED_CHALLENGE = "signedChallenge";
+    static final String SERVER_KEY = "ServerKey";
+    static final String SIGNED_CHALLENGE = "signedChallenge";
 }

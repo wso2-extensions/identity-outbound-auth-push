@@ -54,6 +54,7 @@ public class PushNotificationSenderImpl implements PushNotificationSender {
     @Override
     public void sendPushNotification(String deviceId, String serverKey,
                                      String message, String randomChallenge, String sessionDataKey) {
+
         try {
             String fcmUrl = "https://fcm.googleapis.com/fcm/send";
             URL url = new URL(fcmUrl);
@@ -87,6 +88,9 @@ public class PushNotificationSenderImpl implements PushNotificationSender {
             json.put("data", dataJson);
             json.put("content_available", true);
             json.put("priority", "high");
+
+            log.info("info json is: "+ infoJson.toString());
+            log.info("data json is: "+ dataJson.toString());
 
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
             wr.write(json.toString());

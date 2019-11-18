@@ -62,7 +62,7 @@
     let signedChallenge;
     const refreshInterval = '5000';
     const timeout = '10000';
-    const biometricEndpointWithQueryParams = "https://biometricauthenticator.private.wso2.com:9443/samlbiomtriccheck?t=web&SDKWeb=";
+    const biometricEndpointWithQueryParams = "https://biometricauthenticator.private.wso2.com:9443/samlbiomtriccheck?deviceType=web&SDKWeb=";
     const GET = 'GET';
 
     $(document).ready(function () {
@@ -83,15 +83,17 @@
                 method: GET,
                 success: function (res) {
                     booleanValue = true;
-                    console.log("res  : " + res);
+                    //console.log("res  : " + res);
                     console.log("res status : " + res.status);
                     console.log("res challenge : " + res.signedChallenge);
+                    console.log( res.status!=="undefined");
                     handleStatusResponse(res);
                 },
                 error: function (res) {
+                    console.log("im here5");
                     checkWaitStatus();
                     console.log("im here6");
-                    if (booleanValue === true) {
+                    if ((res.signedChallenge) != null) {
                         console.log("res is13 : " + res);
                         console.log("res status number is: " + res.status);
                         continueAuthentication();
@@ -107,7 +109,7 @@
 
         function handleStatusResponse(res) {
             console.log("boolean Value value is: " + booleanValue);
-            if (booleanValue === true) {
+            if ((res.status) != null) {
                 signedChallenge = res.signedChallenge;
 
                 document.getElementById("sessionDataKey").value = sessionDataKey;
@@ -115,6 +117,9 @@
                 console.log("res challenge is: " + signedChallenge);
                 console.log("im here10");
                 continueAuthentication(res);
+            }
+            else {
+                checkWaitStatus();
             }
         }
 

@@ -17,14 +17,13 @@
  *
  */
 
-package org.wso2.carbon.identity.application.authenticator.biometric.endpoint.servlet;
+package org.wso2.carbon.identity.application.authenticator.biometric.servlet.servlet;
 
 import com.google.gson.Gson;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.identity.application.authenticator.biometric.endpoint.model.WaitStatus;
-import org.wso2.carbon.identity.application.authenticator.biometric.endpoint.javascript.flow.WaitStatusResponse;
-
+import org.wso2.carbon.identity.application.authenticator.biometric.servlet.javascript.flow.WaitStatusResponse;
+import org.wso2.carbon.identity.application.authenticator.biometric.servlet.model.WaitStatus;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -33,11 +32,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Component class for implementing the Biometric endpoint.
+ * Component class for implementing the Biometric servlet.
  */
 public class BiometricServlet extends HttpServlet {
     private static final Log log = LogFactory.getLog(BiometricServlet.class);
-    private static final String T = "t";
+    private static final String DEVICE_TYPE = "deviceType";
     private static final String MOBILE = "mobile";
     private static final String WEB = "web";
     private static final String SDK_MOBILE = "SDKMobile";
@@ -56,21 +55,19 @@ public class BiometricServlet extends HttpServlet {
                           HttpServletResponse response) throws IOException {
 
         WaitStatusResponse waitResponse = null;
-        if (request.getParameterMap().containsKey(T)) {
-            String parameterT = request.getParameter(T);
-
+        if (request.getParameterMap().containsKey(DEVICE_TYPE)) {
+            String parameterT = request.getParameter(DEVICE_TYPE);
             waitResponse = new WaitStatusResponse();
-
             if (parameterT.equals(MOBILE)) {
                 if ((request.getParameterMap().containsKey(SDK_MOBILE)) &&
                         request.getParameterMap().containsKey(CHALLENGE_MOBILE)) {
                     String sdkMobile = request.getParameter(SDK_MOBILE);
                     String challengeMobile = request.getParameter(CHALLENGE_MOBILE);
-//                    log.info("challenge mobile parameter : " + challengeMobile);
-//                    log.info("sdk mobile parameter : " + sdkmobile);
-//                    log.info("consent mobile  is : " + consentMobile);
+                    log.info("challenge mobile parameter : " + challengeMobile);
+                    log.info("sdk mobile parameter : " + sdkMobile);
+
                     updateStatus.put(sdkMobile, challengeMobile);
-//                    log.info("table is: " + updateStatus);
+                    log.info("table is: " + updateStatus);
                     response.setContentType("text/html");
                     response.setStatus(200);
                     PrintWriter out = response.getWriter();

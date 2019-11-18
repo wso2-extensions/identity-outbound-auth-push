@@ -22,8 +22,8 @@ package org.wso2.carbon.identity.application.authenticator.biometric.internal;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
-import org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticator;
 import org.wso2.carbon.identity.application.authentication.framework.ApplicationAuthenticator;
+import org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticator;
 
 import java.util.Hashtable;
 
@@ -35,14 +35,16 @@ public class BiometricAuthenticatorServiceComponent {
     private static Log log = LogFactory.getLog(BiometricAuthenticatorServiceComponent.class);
 
     protected void activate(ComponentContext ctxt) {
+        log.info("inside servlet internal");
+
         try {
             BiometricAuthenticator authenticator = new BiometricAuthenticator();
             Hashtable<String, String> props = new Hashtable<String, String>();
             ctxt.getBundleContext().registerService(ApplicationAuthenticator.class.getName(),
                     authenticator, props);
-            if (log.isDebugEnabled()) {
-                log.debug("biometric authenticator is activated");
-            }
+
+            log.info("biometric authenticator is activated");
+
         } catch (Throwable e) {
             log.fatal("Error while activating the biometric authenticator ", e);
         }
@@ -52,8 +54,7 @@ public class BiometricAuthenticatorServiceComponent {
      *
      */
     protected void deactivate(ComponentContext ctxt) {
-        if (log.isDebugEnabled()) {
-            log.debug("biometric authenticator is deactivated");
-        }
+        log.info("biometric authenticator is deactivated");
+
     }
 }

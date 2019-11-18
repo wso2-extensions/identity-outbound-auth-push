@@ -20,13 +20,13 @@
 package org.wso2.carbon.identity.application.authenticator.biometric.dao.impl;
 
 import org.wso2.carbon.identity.application.authenticator.biometric.dao.BiometricDAO;
-
 import java.util.HashMap;
 
 /**
  * performs DAO operations related to Biometric device store which stores the device IDs against the usernames.
  */
 public class BiometricDAOImpl implements BiometricDAO {
+
     private static BiometricDAOImpl biometricDAO = new BiometricDAOImpl();
     private HashMap<String, String> deviceIDStore = new HashMap<>();
 
@@ -41,26 +41,31 @@ public class BiometricDAOImpl implements BiometricDAO {
     }
 
     public static BiometricDAOImpl getInstance() {
+
         return biometricDAO;
     }
 
     @Override
     public void addDeviceID(String username, String deviceID) {
+
         deviceIDStore.put(username, deviceID);
     }
 
     @Override
     public void updateDeviceID(String username, String deviceID) {
+
         deviceIDStore.replace(username, deviceID);
     }
 
     @Override
     public void deleteDeviceID(String username) {
+
         deviceIDStore.remove(username);
     }
 
     @Override
     public String getDeviceID(String username) {
+
         return deviceIDStore.get(username);
     }
 }

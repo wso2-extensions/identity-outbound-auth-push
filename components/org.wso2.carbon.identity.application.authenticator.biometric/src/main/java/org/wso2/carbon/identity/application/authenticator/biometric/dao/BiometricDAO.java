@@ -24,17 +24,11 @@ package org.wso2.carbon.identity.application.authenticator.biometric.dao;
  */
 public interface BiometricDAO {
 
-
     void addDeviceID(String username, String deviceID);
-
 
     void updateDeviceID(String username, String deviceID);
 
-
     void deleteDeviceID(String username);
 
-
     String getDeviceID(String username);
-
-
 }

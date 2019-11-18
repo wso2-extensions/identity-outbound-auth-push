@@ -16,7 +16,7 @@
  * under the License.
  *
  */
-package org.wso2.carbon.identity.application.authenticator.biometric.endpoint.internal;
+package org.wso2.carbon.identity.application.authenticator.biometric.servlet.internal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,7 +29,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.http.HttpService;
-import org.wso2.carbon.identity.application.authenticator.biometric.endpoint.servlet.BiometricServlet;
+import org.wso2.carbon.identity.application.authenticator.biometric.servlet.servlet.BiometricServlet;
 import javax.servlet.Servlet;
 
 /**
@@ -45,6 +45,7 @@ public class BiometricEndpointServiceComponent {
 
     @Activate
     protected void activate(ComponentContext ctxt) {
+        log.info(" in the servlet internal");
 
         String biometricEndpoint = "/samlbiomtriccheck";
         Servlet samlBiometricServlet = new ContextPathServletAdaptor(new BiometricServlet(), biometricEndpoint);

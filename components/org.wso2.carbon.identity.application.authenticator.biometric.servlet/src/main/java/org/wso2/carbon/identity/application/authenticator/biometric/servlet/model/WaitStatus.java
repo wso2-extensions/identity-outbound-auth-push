@@ -17,12 +17,12 @@
  *
  */
 
-package org.wso2.carbon.identity.application.authenticator.biometric.endpoint.model;
+package org.wso2.carbon.identity.application.authenticator.biometric.servlet.model;
 
 import java.io.Serializable;
 
 /**
- * initializes getter setter methods for statuses in the temporary hashmap at the biometric endpoint.
+ * initializes getter setter methods for statuses in the temporary hashmap at the biometric servlet.
  */
 public class WaitStatus implements Serializable {
     private Status status;
@@ -36,7 +36,7 @@ public class WaitStatus implements Serializable {
     }
 
     /**
-     * initializes the types of statuses in the temporary hashmap at the biometric endpoint.
+     * initializes the types of statuses in the temporary hashmap at the biometric servlet.
      */
     public enum Status {
         WAITING, COMPLETED1, UNKNOWN
