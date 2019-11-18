@@ -70,7 +70,6 @@
             console.log("im here2");
             checkWaitStatus();
         }, refreshInterval);
-        let booleanValue = false;
 
         function checkWaitStatus() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -82,7 +81,6 @@
                 data: {waitingId: sessionDataKey},
                 method: GET,
                 success: function (res) {
-                    booleanValue = true;
                     //console.log("res  : " + res);
                     console.log("res status : " + res.status);
                     console.log("res challenge : " + res.signedChallenge);
@@ -108,10 +106,8 @@
         }
 
         function handleStatusResponse(res) {
-            console.log("boolean Value value is: " + booleanValue);
             if ((res.status) != null) {
                 signedChallenge = res.signedChallenge;
-
                 document.getElementById("sessionDataKey").value = sessionDataKey;
                 document.getElementById("signedChallenge").value = signedChallenge;
                 console.log("res challenge is: " + signedChallenge);
@@ -124,7 +120,7 @@
         }
 
         function continueAuthentication() {
-            console.log("aabbccdd : " + signedChallenge);
+            console.log("signed Challenge : " + signedChallenge);
             window.clearInterval(intervalListener);
             document.getElementById("toCommonAuth").submit();
         }
