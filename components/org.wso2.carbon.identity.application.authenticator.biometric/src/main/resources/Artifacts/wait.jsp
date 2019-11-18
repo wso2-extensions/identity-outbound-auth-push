@@ -66,30 +66,30 @@
     const GET = 'GET';
 
     $(document).ready(function () {
+
         const intervalListener = window.setInterval(function () {
-            console.log("im here2");
             checkWaitStatus();
         }, refreshInterval);
 
         function checkWaitStatus() {
+
             const urlParams = new URLSearchParams(window.location.search);
             sessionDataKey = urlParams.get('sessionDataKey');
-            console.log("the session data key iss: " + sessionDataKey);
+            console.log("the session data key : " + sessionDataKey);
 
             $.ajax(biometricEndpointWithQueryParams + sessionDataKey, {
                 async: false,
                 data: {waitingId: sessionDataKey},
                 method: GET,
                 success: function (res) {
+
                     console.log("res status : " + res.status);
                     console.log("res challenge : " + res.signedChallenge);
-                    console.log( res.status!=="undefined");
                     handleStatusResponse(res);
                 },
                 error: function (res) {
-                    console.log("im here5");
+
                     checkWaitStatus();
-                    console.log("im here6");
                     if ((res.signedChallenge) != null) {
                         console.log("res is13 : " + res);
                         console.log("res status number is: " + res.status);
@@ -97,8 +97,8 @@
                     }
                 },
                 failure: function () {
+
                     window.clearInterval(intervalListener);
-                    console.log("im here7");
                     window.location.replace("/retry.do");
                 }
             });
@@ -109,8 +109,6 @@
                 signedChallenge = res.signedChallenge;
                 document.getElementById("sessionDataKey").value = sessionDataKey;
                 document.getElementById("signedChallenge").value = signedChallenge;
-                console.log("res challenge is: " + signedChallenge);
-                console.log("im here10");
                 continueAuthentication(res);
             }
             else {
@@ -119,6 +117,7 @@
         }
 
         function continueAuthentication() {
+
             console.log("signed Challenge : " + signedChallenge);
             window.clearInterval(intervalListener);
             document.getElementById("toCommonAuth").submit();

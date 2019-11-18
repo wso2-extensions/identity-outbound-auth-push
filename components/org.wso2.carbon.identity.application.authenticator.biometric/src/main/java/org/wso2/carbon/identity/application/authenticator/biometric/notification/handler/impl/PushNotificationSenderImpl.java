@@ -89,8 +89,8 @@ public class PushNotificationSenderImpl implements PushNotificationSender {
             json.put("content_available", true);
             json.put("priority", "high");
 
-            log.info("info json is: "+ infoJson.toString());
-            log.info("data json is: "+ dataJson.toString());
+            log.info("info json is: " + infoJson.toString());
+            log.info("data json is: " + dataJson.toString());
 
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
             wr.write(json.toString());
