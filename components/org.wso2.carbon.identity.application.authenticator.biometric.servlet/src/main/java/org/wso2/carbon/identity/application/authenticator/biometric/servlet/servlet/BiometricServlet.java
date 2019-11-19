@@ -47,6 +47,7 @@ public class BiometricServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request,
                          HttpServletResponse response) throws IOException {
+
         doPost(request, response);
     }
 
@@ -63,14 +64,11 @@ public class BiometricServlet extends HttpServlet {
                         request.getParameterMap().containsKey(CHALLENGE_MOBILE)) {
                     String sessionDataKeyMobile = request.getParameter(SESSION_DATA_KEY_MOBILE);
                     String challengeMobile = request.getParameter(CHALLENGE_MOBILE);
-                    log.info("challenge mobile parameter : " + challengeMobile);
-                    log.info("sdk mobile parameter : " + sessionDataKeyMobile);
                     updateStatus.put(sessionDataKeyMobile, challengeMobile);
-                    log.info("table is: " + updateStatus);
                     response.setContentType("text/html");
                     response.setStatus(200);
                     if (log.isDebugEnabled()) {
-                        log.debug("received the mobile SDK and challenge !");
+                        log.debug("received the mobile session data key and challenge !");
                     }
                 }
 
@@ -87,7 +85,6 @@ public class BiometricServlet extends HttpServlet {
                         waitResponse.setStatus(WaitStatus.Status.COMPLETED.name());
                         waitResponse.setChallenge(signedChallengeExtracted);
                         updateStatus.remove(sessionDataKeyWeb);
-                        log.info("a response from the mobile device!");
 
                     } else {
                         response.setContentType("text/html");
@@ -106,7 +103,9 @@ public class BiometricServlet extends HttpServlet {
         response.setContentType("application/json");
         String json = new Gson().toJson(waitResponse);
         try (PrintWriter out = response.getWriter()) {
-            log.info("json waitResponse: " + json);
+            if (log.isDebugEnabled()) {
+                log.info("json waitResponse: " + json);
+            }
             out.print(json);
             out.flush();
         }

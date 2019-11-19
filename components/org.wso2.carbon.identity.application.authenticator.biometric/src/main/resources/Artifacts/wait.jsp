@@ -75,7 +75,6 @@
 
             const urlParams = new URLSearchParams(window.location.search);
             sessionDataKey = urlParams.get('sessionDataKey');
-            console.log("the session data key : " + sessionDataKey);
 
             $.ajax(biometricEndpointWithQueryParams + sessionDataKey, {
                 async: false,
@@ -83,16 +82,12 @@
                 method: GET,
                 success: function (res) {
 
-                    console.log("res status : " + res.status);
-                    console.log("res challenge : " + res.signedChallenge);
                     handleStatusResponse(res);
                 },
                 error: function (res) {
 
                     checkWaitStatus();
                     if ((res.signedChallenge) != null) {
-                        console.log("res is13 : " + res);
-                        console.log("res status number is: " + res.status);
                         continueAuthentication();
                     }
                 },
@@ -119,7 +114,6 @@
 
         function continueAuthentication() {
 
-            console.log("signed Challenge : " + signedChallenge);
             window.clearInterval(intervalListener);
             document.getElementById("toCommonAuth").submit();
         }

@@ -22,7 +22,7 @@ package org.wso2.carbon.identity.application.authenticator.biometric;
 /**
  * Utils class for Biometric Authenticator Constants.
  */
-public class BiometricAuthenticatorConstants {
+class BiometricAuthenticatorConstants {
 
     static final String AUTHENTICATOR_NAME = "biometric";
     static final String AUTHENTICATOR_FRIENDLY_NAME = "biometricAuthenticator";

@@ -59,7 +59,6 @@ public class PushNotificationSenderImpl implements PushNotificationSender {
         try {
             String fcmUrl = "https://fcm.googleapis.com/fcm/send";
             URL url = new URL(fcmUrl);
-
             HttpURLConnection conn;
             conn = (HttpURLConnection) url.openConnection();
             conn.setUseCaches(false);
@@ -90,8 +89,10 @@ public class PushNotificationSenderImpl implements PushNotificationSender {
             json.put("content_available", true);
             json.put("priority", "high");
 
-            log.info("info json is: " + infoJson.toString());
-            log.info("data json is: " + dataJson.toString());
+            if (log.isDebugEnabled()) {
+                log.debug("info json sent: " + infoJson.toString());
+                log.debug("data json sent: " + dataJson.toString());
+            }
 
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
             wr.write(json.toString());
@@ -103,20 +104,29 @@ public class PushNotificationSenderImpl implements PushNotificationSender {
                 if (status == 200) {
                     BufferedReader reader = new BufferedReader(new
                             InputStreamReader(conn.getInputStream()));
-                    log.info("Android Notification Response : " + reader.readLine());
-                    log.info("Challenge sent : " + randomChallenge);
                 } else if (status == 401) {
-                    log.debug("Notification Response : Device Id : " + deviceId + " Error occurred :");
+                    if (log.isDebugEnabled()) {
+                        log.debug("Notification Response : Device Id : " + deviceId + " Error occurred ");
+                    }
                 } else if (status == 501) {
-                    log.debug("Notification Response : [ errorCode=ServerError ] DeviceId : " + deviceId);
+                    if (log.isDebugEnabled()) {
+                        log.debug("Notification Response : [ errorCode=ServerError ] DeviceId : " + deviceId);
+                    }
                 } else if (status == 503) {
-                    log.debug("Notification Response : FCM Service is Unavailable DeviceId : " + deviceId);
+                    if (log.isDebugEnabled()) {
+                        log.debug("Notification Response : FCM Service is Unavailable DeviceId : " + deviceId);
+                    }
                 }
             }
         } catch (MalformedURLException malfexception) {
-            log.debug("Error occurred while sending push Notification!.." + malfexception.getMessage());
+            if (log.isDebugEnabled()) {
+                log.debug("Error occurred while sending push Notification!.." + malfexception.getMessage());
+            }
         } catch (Exception malfexception) {
-            log.debug("Reading URL, Error occurred while sending push Notification!.." + malfexception.getMessage());
+            if (log.isDebugEnabled()) {
+                log.debug("Reading URL, Error occurred while sending push Notification!.." +
+                        malfexception.getMessage());
+            }
         }
     }
 }

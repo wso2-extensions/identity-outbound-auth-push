@@ -33,16 +33,15 @@ import java.util.Hashtable;
 public class BiometricAuthenticatorServiceComponent {
 
     private static Log log = LogFactory.getLog(BiometricAuthenticatorServiceComponent.class);
-
     protected void activate(ComponentContext ctxt) {
-        log.info("Biometric Authenticator Service Component Activated.");
-
         try {
             BiometricAuthenticator authenticator = new BiometricAuthenticator();
             Hashtable<String, String> props = new Hashtable<String, String>();
             ctxt.getBundleContext().registerService(ApplicationAuthenticator.class.getName(),
                     authenticator, props);
-            log.info("Biometric Authenticator Service Component Activated.");
+            if (log.isDebugEnabled()) {
+                log.debug("biometric authenticator service component is activated");
+            }
 
         } catch (Throwable e) {
             log.fatal("Error while activating the biometric authenticator ", e);
@@ -53,7 +52,8 @@ public class BiometricAuthenticatorServiceComponent {
      *
      */
     protected void deactivate(ComponentContext ctxt) {
-        log.info("biometric authenticator is deactivated");
-
+        if (log.isDebugEnabled()) {
+            log.debug("biometric authenticator service component is deactivated");
+        }
     }
 }

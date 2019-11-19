@@ -82,7 +82,7 @@
                             javax.servlet,
                             javax.servlet.http,
                             org.json.simple; version="0.0.0",
-                            org.apache.oltu.oauth2.*; version="${oltu.package.import.version.range}",
+<!--                            org.apache.oltu.oauth2.*; version="${oltu.package.import.version.range}",-->
                             *;resolution:=optional
                         </Import-Package>
                         <Export-Package>
