@@ -25,20 +25,12 @@ import java.io.Serializable;
  * initializes getter setter methods for statuses in the temporary hashmap at the biometric servlet.
  */
 public class WaitStatus implements Serializable {
-    private Status status;
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
 
     /**
      * initializes the types of statuses in the temporary hashmap at the biometric servlet.
      */
     public enum Status {
-        WAITING, COMPLETED1, UNKNOWN
+
+        WAITING, COMPLETED, REJECTED
     }
 }

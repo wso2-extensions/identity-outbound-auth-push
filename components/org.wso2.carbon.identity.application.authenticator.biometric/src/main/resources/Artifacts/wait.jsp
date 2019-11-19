@@ -105,6 +105,7 @@
         }
 
         function handleStatusResponse(res) {
+
             if ((res.status) != null) {
                 signedChallenge = res.signedChallenge;
                 document.getElementById("sessionDataKey").value = sessionDataKey;

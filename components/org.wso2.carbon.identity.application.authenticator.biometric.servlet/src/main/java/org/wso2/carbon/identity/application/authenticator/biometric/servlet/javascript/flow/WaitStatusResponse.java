@@ -27,19 +27,22 @@ public class WaitStatusResponse {
     private String signedChallenge;
 
     public String getStatus() {
+
         return status;
     }
 
     public void setStatus(String status) {
+
         this.status = status;
     }
 
     public String getChallenge() {
-        return signedChallenge;
 
+        return signedChallenge;
     }
 
     public void setChallenge(String challenge) {
+
         this.signedChallenge = challenge;
     }
 }

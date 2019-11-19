@@ -35,15 +35,14 @@ public class BiometricAuthenticatorServiceComponent {
     private static Log log = LogFactory.getLog(BiometricAuthenticatorServiceComponent.class);
 
     protected void activate(ComponentContext ctxt) {
-        log.info("inside servlet internal");
+        log.info("Biometric Authenticator Service Component Activated.");
 
         try {
             BiometricAuthenticator authenticator = new BiometricAuthenticator();
             Hashtable<String, String> props = new Hashtable<String, String>();
             ctxt.getBundleContext().registerService(ApplicationAuthenticator.class.getName(),
                     authenticator, props);
-
-            log.info("biometric authenticator is activated");
+            log.info("Biometric Authenticator Service Component Activated.");
 
         } catch (Throwable e) {
             log.fatal("Error while activating the biometric authenticator ", e);

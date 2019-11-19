@@ -69,7 +69,6 @@ public class BiometricServlet extends HttpServlet {
                     log.info("table is: " + updateStatus);
                     response.setContentType("text/html");
                     response.setStatus(200);
-                    //PrintWriter out = response.getWriter();
                     if (log.isDebugEnabled()) {
                         log.debug("received the mobile SDK and challenge !");
                     }
@@ -85,7 +84,7 @@ public class BiometricServlet extends HttpServlet {
                         response.setStatus(200);
                         request.setAttribute("signedChallenge", signedChallengeExtracted);
 
-                        waitResponse.setStatus(WaitStatus.Status.COMPLETED1.name());
+                        waitResponse.setStatus(WaitStatus.Status.COMPLETED.name());
                         waitResponse.setChallenge(signedChallengeExtracted);
                         updateStatus.remove(sessionDataKeyWeb);
                         log.info("a response from the mobile device!");

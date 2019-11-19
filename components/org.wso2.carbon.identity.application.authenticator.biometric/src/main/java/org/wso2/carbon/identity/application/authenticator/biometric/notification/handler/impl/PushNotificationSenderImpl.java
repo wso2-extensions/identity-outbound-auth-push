@@ -31,7 +31,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
- * Implements the sending of push notifications to specific device IDs.
+ * Implements the sending of push notifications to mobile device IDs.
  */
 public class PushNotificationSenderImpl implements PushNotificationSender {
 
@@ -42,15 +42,16 @@ public class PushNotificationSenderImpl implements PushNotificationSender {
     }
 
     /**
-     * Method to send push notification to Android FireBased Cloud messaging
+     * Method to send push notification to Android FireBase Cloud messaging
      * Server.
      *
      * @param deviceId        Generated and provided from Android Client Developer
      * @param serverKey       Key which is Generated in FCM Server
      * @param message         which contains actual information
-     * @param randomChallenge which contains the random challenge
-     * @param sessionDataKey  which contains the session data key of each push notification.
+     * @param randomChallenge which contains a random challenge for each push notification
+     * @param sessionDataKey  which contains the session data key for each push notification.
      */
+    @SuppressWarnings("unchecked")
     @Override
     public void sendPushNotification(String deviceId, String serverKey,
                                      String message, String randomChallenge, String sessionDataKey) {
@@ -102,24 +103,19 @@ public class PushNotificationSenderImpl implements PushNotificationSender {
                 if (status == 200) {
                     BufferedReader reader = new BufferedReader(new
                             InputStreamReader(conn.getInputStream()));
-                    log.debug("Android Notification Response : " + reader.readLine());
-                    log.debug("returned UUID : " + randomChallenge);
+                    log.info("Android Notification Response : " + reader.readLine());
+                    log.info("Challenge sent : " + randomChallenge);
                 } else if (status == 401) {
-//client side error
-                    log.debug("Notification Response : TokenId : " + deviceId + " Error occurred :");
+                    log.debug("Notification Response : Device Id : " + deviceId + " Error occurred :");
                 } else if (status == 501) {
-//server side error
                     log.debug("Notification Response : [ errorCode=ServerError ] DeviceId : " + deviceId);
                 } else if (status == 503) {
-//server side error
                     log.debug("Notification Response : FCM Service is Unavailable DeviceId : " + deviceId);
                 }
             }
         } catch (MalformedURLException malfexception) {
-// Protocol Error
             log.debug("Error occurred while sending push Notification!.." + malfexception.getMessage());
         } catch (Exception malfexception) {
-//URL problem
             log.debug("Reading URL, Error occurred while sending push Notification!.." + malfexception.getMessage());
         }
     }
