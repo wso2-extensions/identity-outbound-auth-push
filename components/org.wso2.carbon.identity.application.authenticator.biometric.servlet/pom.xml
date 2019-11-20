@@ -31,7 +31,7 @@
     <artifactId>org.wso2.carbon.identity.application.authenticator.biometric.servlet</artifactId>
     <packaging>bundle</packaging>
     <name>WSO2 Carbon - Endpoint for Biometric Authenticator</name>
-    <description>A custom wso2 products or solution</description>
+    <description>Identity Application Biometric Authentication Endpoint</description>
     <url>http://www.wso2.com</url>
 
     <dependencies>
@@ -84,9 +84,8 @@
                             org.wso2.carbon.identity.application.authenticator.biometric.servlet.*
                         </Export-Package>
                         <Import-Package>
-                            javax.servlet; version="[2.6.0,3.6.0)",
+                            javax.servlet; version="${import.package.version.javax.servlet}",
                         </Import-Package>
-                        <DynamicImport-Package>*</DynamicImport-Package>
                     </instructions>
                 </configuration>
             </plugin>

@@ -85,20 +85,20 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
                                                  AuthenticationContext context) {
 
         AuthenticatedUser user = context.getSequenceConfig().getStepMap().get(1).getAuthenticatedUser();
-        String usernameDB = user.getUserName();
+        String username = user.getUserName();
 
         Map<String, String> authenticatorProperties = context.getAuthenticatorProperties();
         String serverKey = authenticatorProperties.get(BiometricAuthenticatorConstants.SERVER_KEY);
 
         String hostname = IdentityUtil.getHostName();
         String serviceProviderName = context.getServiceProviderName();
-        String message = usernameDB + " is trying to log into " + serviceProviderName + " from " + hostname;
+        String message = username + " is trying to log into " + serviceProviderName + " from " + hostname;
 
         UUID challenge = UUID.randomUUID();
         randomChallenge = challenge.toString();
 
         BiometricDAOImpl biometricDAO = BiometricDAOImpl.getInstance();
-        String deviceID = biometricDAO.getDeviceID(usernameDB);
+        String deviceID = biometricDAO.getDeviceID(username);
 
         PushNotificationSenderImpl pushNotificationSender = PushNotificationSenderImpl.getInstance();
         pushNotificationSender.sendPushNotification(deviceID, serverKey, message, randomChallenge, sessionDataKey);

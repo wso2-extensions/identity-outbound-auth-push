@@ -40,12 +40,12 @@ import javax.servlet.Servlet;
 public class BiometricEndpointServiceComponent {
 
     private static final Log log = LogFactory.getLog(BiometricEndpointServiceComponent.class);
+    private static final String BIOMETRIC_ENDPOINT = "/samlbiomtriccheck";
     private HttpService httpService;
 
     @Activate
     protected void activate() {
-
-        String biometricEndpoint = "/samlbiomtriccheck";
+        String biometricEndpoint = BIOMETRIC_ENDPOINT;
         Servlet biometricServlet = new ContextPathServletAdaptor(new BiometricServlet(), biometricEndpoint);
         try {
             httpService.registerServlet(biometricEndpoint, biometricServlet, null, null);
@@ -53,15 +53,14 @@ public class BiometricEndpointServiceComponent {
                 log.debug("Biometric Endpoint Service Component activated");
             }
         } catch (Exception e) {
-            String errorMsg = "Error when registering the new Biometric Endpoint via the HttpService.";
-            log.error(errorMsg, e);
+            String errorMsg = "Error when registering the Biometric Endpoint via the HttpService.";
+            log.error(errorMsg);
             throw new RuntimeException(errorMsg, e);
         }
     }
 
     @Deactivate
     protected void deactivate() {
-
         if (log.isDebugEnabled()) {
             log.debug("Biometric Endpoint Service Component deactivated");
         }

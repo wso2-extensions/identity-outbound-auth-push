@@ -22,6 +22,7 @@ package org.wso2.carbon.identity.application.authenticator.biometric.internal;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Component;
 import org.wso2.carbon.identity.application.authentication.framework.ApplicationAuthenticator;
 import org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticator;
 
@@ -30,6 +31,9 @@ import java.util.Hashtable;
 /**
  * @scr.component name="identity.application.authenticator.biometric.component" immediate="true"
  */
+@Component(
+        name = "identity.application.authenticator.biometric",
+        immediate = true)
 public class BiometricAuthenticatorServiceComponent {
 
     private static Log log = LogFactory.getLog(BiometricAuthenticatorServiceComponent.class);

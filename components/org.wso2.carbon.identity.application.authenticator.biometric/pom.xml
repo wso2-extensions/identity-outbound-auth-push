@@ -51,7 +51,7 @@
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
-                    <version>2.3.5</version>
+                    <version>${org.apache.felix.maven.version}</version>
                     <extensions>true</extensions>
                 </plugin>
             </plugins>
@@ -60,7 +60,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.0</version>
+                <version>${org.apache.maven.compiler.plugin}</version>
                 <configuration>
                     <source>8</source>
                     <target>8</target>
@@ -76,13 +76,12 @@
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Private-Package>org.wso2.carbon.identity.application.authenticator.biometric.internal</Private-Package>
                         <Import-Package>
-                            org.apache.commons.logging.*; version="1.0.4",
+                            org.apache.commons.logging.*; version=${org.apache.commons.logging.version},
                             org.osgi.framework,
                             org.wso2.carbon.identity.application.authentication.framework.*,
                             javax.servlet,
                             javax.servlet.http,
-                            org.json.simple; version="0.0.0",
-<!--                            org.apache.oltu.oauth2.*; version="${oltu.package.import.version.range}",-->
+                            org.json.simple; version=${org.json.simple.version},
                             *;resolution:=optional
                         </Import-Package>
                         <Export-Package>
@@ -95,7 +94,7 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-scr-plugin</artifactId>
-                <version>1.7.2</version>
+                <version>${org.apache.felix.maven.src.plugin}</version>
                 <executions>
                     <execution>
                         <id>generate-scr-scrdescriptor</id>

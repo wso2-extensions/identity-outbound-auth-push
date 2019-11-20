@@ -42,6 +42,7 @@ public class BiometricServlet extends HttpServlet {
     private static final String SESSION_DATA_KEY_MOBILE = "sessionDataKeyMobile";
     private static final String SESSION_DATA_KEY_WEB = "sessionDataKeyWeb";
     private static final String CHALLENGE_MOBILE = "challengeMobile";
+    private static final String TEXT_HTML = "text/html";
     private HashMap<String, String> updateStatus = new HashMap<>();
 
     @Override
@@ -55,29 +56,27 @@ public class BiometricServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response) throws IOException {
 
-        WaitStatusResponse waitResponse = null;
+        WaitStatusResponse waitResponse = new WaitStatusResponse();;
         if (request.getParameterMap().containsKey(DEVICE_TYPE)) {
             String deviceType = request.getParameter(DEVICE_TYPE);
-            waitResponse = new WaitStatusResponse();
             if (deviceType.equals(MOBILE)) {
-                if ((request.getParameterMap().containsKey(SESSION_DATA_KEY_MOBILE)) &&
+                if (request.getParameterMap().containsKey(SESSION_DATA_KEY_MOBILE) &&
                         request.getParameterMap().containsKey(CHALLENGE_MOBILE)) {
                     String sessionDataKeyMobile = request.getParameter(SESSION_DATA_KEY_MOBILE);
                     String challengeMobile = request.getParameter(CHALLENGE_MOBILE);
                     updateStatus.put(sessionDataKeyMobile, challengeMobile);
-                    response.setContentType("text/html");
+                    response.setContentType(TEXT_HTML);
                     response.setStatus(200);
                     if (log.isDebugEnabled()) {
                         log.debug("received the mobile session data key and challenge !");
                     }
                 }
-
             } else if (deviceType.equals(WEB)) {
                 if (request.getParameterMap().containsKey(SESSION_DATA_KEY_WEB)) {
                     String sessionDataKeyWeb = request.getParameter(SESSION_DATA_KEY_WEB);
                     String signedChallengeExtracted = updateStatus.get(sessionDataKeyWeb);
-                    if (signedChallengeExtracted != null && updateStatus.containsKey(sessionDataKeyWeb)) {
-                        response.setContentType("text/html");
+                    if (signedChallengeExtracted != null) {
+                        response.setContentType(TEXT_HTML);
                         response.setCharacterEncoding("utf-8");
                         response.setStatus(200);
                         request.setAttribute("signedChallenge", signedChallengeExtracted);
@@ -87,14 +86,14 @@ public class BiometricServlet extends HttpServlet {
                         updateStatus.remove(sessionDataKeyWeb);
 
                     } else {
-                        response.setContentType("text/html");
+                        response.setContentType(TEXT_HTML);
                         response.setStatus(401);
                         response.sendError(401, "a 401 error occurs ");
                     }
                 }
             }
         } else {
-            response.setContentType("text/html");
+            response.setContentType(TEXT_HTML);
             response.setStatus(400);
             PrintWriter out = response.getWriter();
             out.println("<h3>Invalid request... !</h3>");
@@ -104,7 +103,7 @@ public class BiometricServlet extends HttpServlet {
         String json = new Gson().toJson(waitResponse);
         try (PrintWriter out = response.getWriter()) {
             if (log.isDebugEnabled()) {
-                log.info("json waitResponse: " + json);
+                log.debug("json waitResponse: " + json);
             }
             out.print(json);
             out.flush();

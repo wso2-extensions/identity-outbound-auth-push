@@ -20,7 +20,7 @@
 package org.wso2.carbon.identity.application.authenticator.biometric.servlet.javascript.flow;
 
 /**
- * initializes getter setter methods for status and challenge in the temporary hashmap at the biometric servlet.
+ * This class represents the status response for status and challenge returned from the android device.
  */
 public class WaitStatusResponse {
     private String status;
