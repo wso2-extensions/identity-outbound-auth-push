@@ -22,32 +22,32 @@ package org.wso2.carbon.identity.application.authenticator.biometric.internal;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.wso2.carbon.identity.application.authentication.framework.ApplicationAuthenticator;
 import org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticator;
 
 import java.util.Hashtable;
 
-/**
- * @scr.component name="identity.application.authenticator.biometric.component" immediate="true"
- */
 @Component(
-        name = "identity.application.authenticator.biometric",
+        name = "identity.application.authenticator.biometric.component",
         immediate = true)
 public class BiometricAuthenticatorServiceComponent {
 
     private static Log log = LogFactory.getLog(BiometricAuthenticatorServiceComponent.class);
+
+    @Activate
     protected void activate(ComponentContext ctxt) {
         try {
             BiometricAuthenticator authenticator = new BiometricAuthenticator();
-            Hashtable<String, String> props = new Hashtable<String, String>();
+            Hashtable<String, String> props = new Hashtable<>();
             ctxt.getBundleContext().registerService(ApplicationAuthenticator.class.getName(),
                     authenticator, props);
-            if (log.isDebugEnabled()) {
-                log.debug("biometric authenticator service component is activated");
-            }
+            log.info("biometric authenticator service component is activated");
 
-        } catch (Throwable e) {
+
+        } catch (Exception e) {
             log.fatal("Error while activating the biometric authenticator ", e);
         }
     }
@@ -55,6 +55,7 @@ public class BiometricAuthenticatorServiceComponent {
     /**
      *
      */
+    @Deactivate
     protected void deactivate(ComponentContext ctxt) {
         if (log.isDebugEnabled()) {
             log.debug("biometric authenticator service component is deactivated");

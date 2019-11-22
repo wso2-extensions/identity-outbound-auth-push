@@ -27,36 +27,37 @@ import org.wso2.carbon.identity.application.authenticator.biometric.servlet.mode
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.Map;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import static org.wso2.carbon.identity.application.authenticator.biometric.servlet.BiometricServletConstants.APPLICATION_JSON;
+import static org.wso2.carbon.identity.application.authenticator.biometric.servlet.BiometricServletConstants.CHALLENGE_MOBILE;
+import static org.wso2.carbon.identity.application.authenticator.biometric.servlet.BiometricServletConstants.DEVICE_TYPE;
+import static org.wso2.carbon.identity.application.authenticator.biometric.servlet.BiometricServletConstants.MOBILE;
+import static org.wso2.carbon.identity.application.authenticator.biometric.servlet.BiometricServletConstants.SESSION_DATA_KEY_MOBILE;
+import static org.wso2.carbon.identity.application.authenticator.biometric.servlet.BiometricServletConstants.SESSION_DATA_KEY_WEB;
+import static org.wso2.carbon.identity.application.authenticator.biometric.servlet.BiometricServletConstants.TEXT_HTML;
+import static org.wso2.carbon.identity.application.authenticator.biometric.servlet.BiometricServletConstants.UTF_8;
+import static org.wso2.carbon.identity.application.authenticator.biometric.servlet.BiometricServletConstants.WEB;
 
 /**
  * Component class for implementing the Biometric servlet.
  */
 public class BiometricServlet extends HttpServlet {
     private static final Log log = LogFactory.getLog(BiometricServlet.class);
-    private static final String DEVICE_TYPE = "deviceType";
-    private static final String MOBILE = "mobile";
-    private static final String WEB = "web";
-    private static final String SESSION_DATA_KEY_MOBILE = "sessionDataKeyMobile";
-    private static final String SESSION_DATA_KEY_WEB = "sessionDataKeyWeb";
-    private static final String CHALLENGE_MOBILE = "challengeMobile";
-    private static final String TEXT_HTML = "text/html";
-    private HashMap<String, String> updateStatus = new HashMap<>();
+    private Map<String, String> updateStatus = new HashMap<>();
 
     @Override
-    protected void doGet(HttpServletRequest request,
-                         HttpServletResponse response) throws IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         doPost(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request,
-                          HttpServletResponse response) throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        WaitStatusResponse waitResponse = new WaitStatusResponse();;
+        WaitStatusResponse waitResponse = new WaitStatusResponse();
         if (request.getParameterMap().containsKey(DEVICE_TYPE)) {
             String deviceType = request.getParameter(DEVICE_TYPE);
             if (deviceType.equals(MOBILE)) {
@@ -77,14 +78,12 @@ public class BiometricServlet extends HttpServlet {
                     String signedChallengeExtracted = updateStatus.get(sessionDataKeyWeb);
                     if (signedChallengeExtracted != null) {
                         response.setContentType(TEXT_HTML);
-                        response.setCharacterEncoding("utf-8");
+                        response.setCharacterEncoding(UTF_8);
                         response.setStatus(200);
                         request.setAttribute("signedChallenge", signedChallengeExtracted);
-
                         waitResponse.setStatus(WaitStatus.Status.COMPLETED.name());
                         waitResponse.setChallenge(signedChallengeExtracted);
                         updateStatus.remove(sessionDataKeyWeb);
-
                     } else {
                         response.setContentType(TEXT_HTML);
                         response.setStatus(401);
@@ -95,15 +94,16 @@ public class BiometricServlet extends HttpServlet {
         } else {
             response.setContentType(TEXT_HTML);
             response.setStatus(400);
+            log.error("Device Type is null in the request");
             PrintWriter out = response.getWriter();
-            out.println("<h3>Invalid request... !</h3>");
+            out.println("Invalid request!");
         }
 
-        response.setContentType("application/json");
+        response.setContentType(APPLICATION_JSON);
         String json = new Gson().toJson(waitResponse);
         try (PrintWriter out = response.getWriter()) {
             if (log.isDebugEnabled()) {
-                log.debug("json waitResponse: " + json);
+                log.debug("Json waitResponse: " + json);
             }
             out.print(json);
             out.flush();

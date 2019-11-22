@@ -19,18 +19,19 @@
 
 package org.wso2.carbon.identity.application.authenticator.biometric.dao.impl;
 
-import org.wso2.carbon.identity.application.authenticator.biometric.dao.BiometricDAO;
+import org.wso2.carbon.identity.application.authenticator.biometric.dao.DeviceDAO;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * performs DAO operations related to Biometric device store which stores the device IDs against the usernames.
  */
-public class BiometricDAOImpl implements BiometricDAO {
+public class DeviceDAOImpl implements DeviceDAO {
 
-    private static BiometricDAOImpl biometricDAO = new BiometricDAOImpl();
-    private HashMap<String, String> deviceIDStore = new HashMap<>();
+    private static DeviceDAOImpl deviceDAO = new DeviceDAOImpl();
+    private Map<String, String> deviceIDStore = new HashMap<>();
 
-    private BiometricDAOImpl() {
+    private DeviceDAOImpl() {
 
         deviceIDStore.put("dewni", "ca0OWsg-30c:APA91bHQj3LRdOt7BgQJsOGbz_uWBFe8BtBLS0WSXZFNnVj6BZkU7PM__" +
                 "bHuoZXE6z_mzsjdZaKMerHaILfsf2jalgpndp67b5Vt9xvG0lODmksCq-Nk5N8pdIv1DRHJkVZGKygFcnmw");
@@ -40,27 +41,19 @@ public class BiometricDAOImpl implements BiometricDAO {
                 "YcSXSPaazm4WBeVGYnPcwVJc6FtxzvT4QsRV83akYaUXk6fKEsh0tFs9n4ZEiy_TKFUWPoLPnKkkWj_52Z5x1X788LCn9");
     }
 
-    public static BiometricDAOImpl getInstance() {
+    public static DeviceDAOImpl getInstance() {
 
-        return biometricDAO;
+        return deviceDAO;
     }
 
     @Override
-    public void addDeviceID(String username, String deviceID) {
+    public void enrollDevice(String username, String deviceID, String deviceDescription) {
 
-        deviceIDStore.put(username, deviceID);
     }
 
     @Override
-    public void updateDeviceID(String username, String deviceID) {
+    public void unenrollDevice(String username, String deviceID) {
 
-        deviceIDStore.replace(username, deviceID);
-    }
-
-    @Override
-    public void deleteDeviceID(String username) {
-
-        deviceIDStore.remove(username);
     }
 
     @Override

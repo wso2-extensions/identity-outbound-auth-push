@@ -41,7 +41,7 @@
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-scr-plugin</artifactId>
-                    <version>1.7.2</version>
+                    <version>${maven.scr.plugin.version}</version>
                     <executions>
                         <execution>
                             <id>generate-scr-scrdescriptor</id>
@@ -101,8 +101,8 @@
                 <inherited>true</inherited>
                 <configuration>
                     <encoding>UTF-8</encoding>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -129,6 +129,11 @@
                 <artifactId>org.osgi.service.component.annotations</artifactId>
                 <version>${org.osgi.service.component.annotations.version}</version>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>org.apache.felix.scr.ds-annotations</artifactId>
+                <version>${apache.felix.scr.ds.annotations.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.osgi</groupId>
@@ -162,14 +167,70 @@
                 <artifactId>org.eclipse.equinox.http.helper</artifactId>
                 <version>${org.eclipse.equinox.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity.framework</groupId>
+                <artifactId>org.wso2.carbon.identity.application.authentication.framework</artifactId>
+                <version>${identity.framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity.framework</groupId>
+                <artifactId>org.wso2.carbon.identity.application.common</artifactId>
+                <version>${identity.framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity.framework</groupId>
+                <artifactId>org.wso2.carbon.identity.core</artifactId>
+                <version>${identity.framework.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.service.http</artifactId>
+                <version>${org.osgi.service.http.version}</version>
+                <scope>provided</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
+    <repositories>
+        <repository>
+            <id>wso2-nexus</id>
+            <name>WSO2 internal Repository</name>
+            <url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+                <checksumPolicy>ignore</checksumPolicy>
+            </releases>
+        </repository>
+        <repository>
+            <id>wso2.releases</id>
+            <name>WSO2 internal Repository</name>
+            <url>http://maven.wso2.org/nexus/content/repositories/releases/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+                <checksumPolicy>ignore</checksumPolicy>
+            </releases>
+        </repository>
+        <repository>
+            <id>wso2.snapshots</id>
+            <name>Apache Snapshot Repository</name>
+            <url>http://maven.wso2.org/nexus/content/repositories/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
     <properties>
         <maven.buildnumber.plugin.version>1.4</maven.buildnumber.plugin.version>
-        <identity.framework.version>${project.version}</identity.framework.version>
+        <identity.framework.version>5.12.387</identity.framework.version>
+        <identity.framework.imp.pkg.version.range>[5.12.387, 6.0.0)</identity.framework.imp.pkg.version.range>
         <carbon.identity.package.export.version>${project.version}</carbon.identity.package.export.version>
-        <carbon.identity.package.import.version.range>[5.14.0, 6.0.0)</carbon.identity.package.import.version.range>
         <jacoco.version>0.8.2</jacoco.version>
 
         <carbon.identity.version>5.0.7</carbon.identity.version>
@@ -193,10 +254,16 @@
         <org.apache.commons.logging.version>1.0.4</org.apache.commons.logging.version>
         <org.apache.maven.compiler.plugin>2.0</org.apache.maven.compiler.plugin>
         <org.apache.felix.maven.src.plugin>1.7.2</org.apache.felix.maven.src.plugin>
+
+        <apache.felix.scr.ds.annotations.version>1.2.8</apache.felix.scr.ds.annotations.version>
+        <osgi.service.component.imp.pkg.version.range>[1.2.0, 2.0.0)</osgi.service.component.imp.pkg.version.range>
+        <maven.scr.plugin.version>1.7.2</maven.scr.plugin.version>
+        <osgi.service.http.imp.pkg.version.range>[1.2.1, 2.0.0)</osgi.service.http.imp.pkg.version.range>
+        <osgi.framework.imp.pkg.version.range>[1.7.0, 2.0.0)</osgi.framework.imp.pkg.version.range>
+        <javax.servlet.http.version>[4.0.0,5.0.0]</javax.servlet.http.version>
     </properties>
     <modules>
         <module>components/org.wso2.carbon.identity.application.authenticator.biometric</module>
         <module>components/org.wso2.carbon.identity.application.authenticator.biometric.servlet</module>
     </modules>
-
 </project>

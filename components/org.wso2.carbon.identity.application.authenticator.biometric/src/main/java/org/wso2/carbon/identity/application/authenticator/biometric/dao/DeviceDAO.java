@@ -22,13 +22,23 @@ package org.wso2.carbon.identity.application.authenticator.biometric.dao;
 /**
  * performs DAO operations related to Biometric device store.
  */
-public interface BiometricDAO {
+public interface DeviceDAO {
 
-    void addDeviceID(String username, String deviceID);
+    /**
+     * Enrolls the device in Biometric device store when username, device ID and device description are provided by the user.
+     */
+    void enrollDevice(String username, String deviceID, String deviceDescription);
 
-    void updateDeviceID(String username, String deviceID);
+    /**
+     * Unenrolls a device that is already enrolled in Biometric device store when username and device ID are provided by the user.
+     */
+    void unenrollDevice(String username, String deviceID);
 
-    void deleteDeviceID(String username);
-
+    /**
+     * Gets the device ID from the Biometric device store when username is provided.
+     */
     String getDeviceID(String username);
+
+    // TODO: 2019-11-20  add StringList
+
 }

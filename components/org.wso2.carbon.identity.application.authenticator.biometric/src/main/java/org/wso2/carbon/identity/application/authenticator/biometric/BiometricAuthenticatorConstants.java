@@ -22,11 +22,15 @@ package org.wso2.carbon.identity.application.authenticator.biometric;
 /**
  * Utils class for Biometric Authenticator Constants.
  */
-class BiometricAuthenticatorConstants {
+public class BiometricAuthenticatorConstants {
 
-    static final String AUTHENTICATOR_NAME = "biometric";
-    static final String AUTHENTICATOR_FRIENDLY_NAME = "biometricAuthenticator";
-    static final String SESSION_DATA_KEY = "sessionDataKey";
-    static final String SERVER_KEY = "ServerKey";
-    static final String SIGNED_CHALLENGE = "signedChallenge";
+    public static final String AUTHENTICATOR_NAME = "biometric";
+    public static final String AUTHENTICATOR_FRIENDLY_NAME = "Biometric Authenticator";
+    public static final String AUTHENTICATION_STATUS = "Authentication Failed !";
+    public static final String SESSION_DATA_KEY = "sessionDataKey";
+    // TODO: 2019-11-20 use CONTEXT_KEY from auth framework
+    public static final String SERVER_KEY = "ServerKey";
+    public static final String FCM_URL = "fcmUrl";
+    public static final String SIGNED_CHALLENGE = "signedChallenge";
+    public static final String BIOMETRIC_AUTH_CHALLENGE = "biometricAuthChallenge";
 }

@@ -48,21 +48,21 @@ public class BiometricEndpointServiceComponent {
         String biometricEndpoint = BIOMETRIC_ENDPOINT;
         Servlet biometricServlet = new ContextPathServletAdaptor(new BiometricServlet(), biometricEndpoint);
         try {
-            httpService.registerServlet(biometricEndpoint, biometricServlet, null, null);
             if (log.isDebugEnabled()) {
                 log.debug("Biometric Endpoint Service Component activated");
             }
+            httpService.registerServlet(biometricEndpoint, biometricServlet, null, null);
+
         } catch (Exception e) {
             String errorMsg = "Error when registering the Biometric Endpoint via the HttpService.";
-            log.error(errorMsg);
-            throw new RuntimeException(errorMsg, e);
+            log.error(errorMsg, e);
         }
     }
 
     @Deactivate
     protected void deactivate() {
         if (log.isDebugEnabled()) {
-            log.debug("Biometric Endpoint Service Component deactivated");
+                log.debug("Biometric Endpoint Service Component de-activated");
         }
     }
 

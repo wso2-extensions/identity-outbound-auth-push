@@ -66,6 +66,10 @@
             <groupId>org.eclipse.equinox</groupId>
             <artifactId>org.eclipse.equinox.http.helper</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.scr.ds-annotations</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -84,6 +88,11 @@
                             org.wso2.carbon.identity.application.authenticator.biometric.servlet.*
                         </Export-Package>
                         <Import-Package>
+<!--                            org.osgi.service.http,-->
+                            org.osgi.framework; version="${osgi.framework.imp.pkg.version.range}",
+                            org.osgi.service.http; version="${osgi.service.component.imp.pkg.version.range}",
+                            org.osgi.service.component; version="${osgi.service.component.imp.pkg.version.range}",
+<!--                            javax.servlet.http; version="${javax.servlet.http.version}",-->
                             javax.servlet; version="${import.package.version.javax.servlet}",
                         </Import-Package>
                     </instructions>

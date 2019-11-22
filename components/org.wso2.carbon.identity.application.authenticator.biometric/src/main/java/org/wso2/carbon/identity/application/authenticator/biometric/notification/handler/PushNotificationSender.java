@@ -19,11 +19,13 @@
 
 package org.wso2.carbon.identity.application.authenticator.biometric.notification.handler;
 
+import org.wso2.carbon.identity.application.authentication.framework.exception.AuthenticationFailedException;
+
 /**
  * Handles the sending of push notifications to specific device IDs.
  */
 public interface PushNotificationSender {
 
     void sendPushNotification(String deviceId, String serverKey,
-                              String message, String randomUUIDString, String sessionDataKey);
+                              String message, String randomUUIDString, String sessionDataKey) throws AuthenticationFailedException;
 }

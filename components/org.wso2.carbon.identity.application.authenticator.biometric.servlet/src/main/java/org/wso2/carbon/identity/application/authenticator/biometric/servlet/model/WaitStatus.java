@@ -31,6 +31,6 @@ public class WaitStatus implements Serializable {
      */
     public enum Status {
 
-        WAITING, COMPLETED, REJECTED
+        COMPLETED, REJECTED
     }
 }
