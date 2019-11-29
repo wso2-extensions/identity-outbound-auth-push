@@ -16,19 +16,12 @@
  * under the License.
  *
  */
+package org.wso2.carbon.identity.application.authenticator.biometric;
 
-package org.wso2.carbon.identity.application.authenticator.biometric.dao;
-
-/**
- * performs DAO operations related to Biometric device store.
- */
-public interface BiometricDAO {
-
-    void addDeviceID(String username, String deviceID);
-
-    void updateDeviceID(String username, String deviceID);
-
-    void deleteDeviceID(String username);
-
-    String getDeviceID(String username);
+public class BiometricAuthenticatorTestConstants {
+//    public static String EMAIL_ADDRESS = "abc@gmail.com";
+//    public static String USER_NAME = "admin";
+//    public static String TENANT_DOMAIN = "wso2.org";
+//    public static int TENANT_ID = -1234;
+//    public static String IP_ADDRESS = "172.16.254.1";
 }
