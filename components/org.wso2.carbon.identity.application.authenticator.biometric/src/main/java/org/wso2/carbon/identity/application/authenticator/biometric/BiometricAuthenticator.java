@@ -52,6 +52,7 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
     private static final long serialVersionUID = 8272421416671799253L;
     private static final Log log = LogFactory.getLog(BiometricAuthenticator.class);
 
+
     @Override
     public String getFriendlyName() {
 
