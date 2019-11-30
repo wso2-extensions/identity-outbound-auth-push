@@ -75,7 +75,7 @@
 
     $(document).ready(function () {
         var startTime = new Date().getTime();
-        console.log("time now: "+ startTime);
+        console.log("Start time: "+ startTime);
 
         const intervalListener = window.setInterval(function () {
             checkWaitStatus();

@@ -89,7 +89,6 @@ public class FirebasePushNotificationSenderImpl implements PushNotificationSende
 
         try {
             URL url = new URL(fcmUrl);
-            // todo: 2019-11-20 use okhttp/apacheHTTPclient instead of httpurlconnection
             HttpURLConnection conn;
 
             conn = (HttpURLConnection) url.openConnection();

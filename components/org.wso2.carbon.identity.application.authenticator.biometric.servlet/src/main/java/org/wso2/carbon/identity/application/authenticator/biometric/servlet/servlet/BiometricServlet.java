@@ -41,8 +41,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class BiometricServlet extends HttpServlet {
 
-    private static final Log log = LogFactory.getLog(BiometricServlet.class);
     private static final long serialVersionUID = -2050679246736808648L;
+    private static final Log log = LogFactory.getLog(BiometricServlet.class);
     private BiometricDataStoreImpl biometricDataStoreInstance = BiometricDataStoreImpl.getInstance();
 
     @Override
@@ -79,16 +79,13 @@ public class BiometricServlet extends HttpServlet {
             response.getWriter().flush();
             return;
         }
-
         String initiator = request.getParameter(BiometricServletConstants.INITIATOR);
 
         if (!BiometricServletConstants.MOBILE.equals(initiator)) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unsupported HTTP request from a mobile device.");
             return;
         }
-
         handleMobileResponse(request, response);
-        log.info("update status table: " + biometricDataStoreInstance);
     }
 
     private void handleWebResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -101,16 +98,14 @@ public class BiometricServlet extends HttpServlet {
             }
 
         } else {  // If the signed challenge sent from the mobile application is not null,else block is executed..
-            log.info("signed challenge not empty.");
-            response.setStatus(200);
+            response.setStatus(HttpServletResponse.SC_OK);
             request.setAttribute(BiometricServletConstants.SIGNED_CHALLENGE, signedChallengeExtracted);
             waitResponse.setStatus(BiometricServletConstants.Status.COMPLETED.name());
             waitResponse.setChallenge(signedChallengeExtracted);
             biometricDataStoreInstance.removeBiometricData(sessionDataKeyWeb);
-            log.info("a response from the mobile device!");
             response.setContentType(BiometricServletConstants.APPLICATION_JSON);
             String json = new Gson().toJson(waitResponse);
-            if (log.isDebugEnabled()){
+            if (log.isDebugEnabled()) {
                 log.debug("Json Response to the wait page: " + json);
             }
             try (PrintWriter out = response.getWriter()) {

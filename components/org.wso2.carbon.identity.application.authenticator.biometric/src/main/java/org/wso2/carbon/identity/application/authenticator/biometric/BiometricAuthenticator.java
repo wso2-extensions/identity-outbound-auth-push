@@ -32,7 +32,6 @@ import org.wso2.carbon.identity.application.common.model.Property;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -50,8 +49,8 @@ import static org.wso2.carbon.identity.application.authenticator.biometric.Biome
 public class BiometricAuthenticator extends AbstractApplicationAuthenticator
         implements FederatedApplicationAuthenticator {
 
-    private static final Log log = LogFactory.getLog(BiometricAuthenticator.class);
     private static final long serialVersionUID = 8272421416671799253L;
+    private static final Log log = LogFactory.getLog(BiometricAuthenticator.class);
 
     @Override
     public String getFriendlyName() {
@@ -101,19 +100,13 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
 
         DeviceDAOImpl biometricDAO = DeviceDAOImpl.getInstance();
         String deviceID = biometricDAO.getDeviceID(username).get(0);
-        log.info("device ID is: " + deviceID);
-        log.info("SDK is : " + sessionDataKey);
 
         FirebasePushNotificationSenderImpl pushNotificationSender = FirebasePushNotificationSenderImpl.getInstance();
         pushNotificationSender.init(serverKey, fcmUrl);
         pushNotificationSender.sendPushNotification(deviceID, message, randomChallenge, sessionDataKey);
         try {
-            //String pollingEndpoint = DOMAIN_NAME + WAIT_PAGE + "?sessionDataKey=";
             String pollingEndpoint = DOMAIN_NAME + WAIT_PAGE + "?sessionDataKey=";
             String waitPage = pollingEndpoint + URLEncoder.encode(sessionDataKey, "UTF-8");
-            log.info("new url: " + waitPage);
-
-            response.sendRedirect(URLEncoder.encode(waitPage, StandardCharsets.UTF_8.displayName()));
             response.sendRedirect(waitPage);
         } catch (IOException e) {
             log.error("Error when trying to redirect to wait.jsp page", e);
@@ -125,7 +118,6 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
             httpServletResponse, AuthenticationContext authenticationContext) throws AuthenticationFailedException {
 
         String randomChallenge = (String) authenticationContext.getProperty(BIOMETRIC_AUTH_CHALLENGE);
-        log.info("now in process auth method.");
         if (randomChallenge.equals(httpServletRequest.getParameter(BiometricAuthenticatorConstants.SIGNED_CHALLENGE))) {
             AuthenticatedUser user = authenticationContext.getSequenceConfig().
                     getStepMap().get(authenticationContext.getCurrentStep() - 1).getAuthenticatedUser();
