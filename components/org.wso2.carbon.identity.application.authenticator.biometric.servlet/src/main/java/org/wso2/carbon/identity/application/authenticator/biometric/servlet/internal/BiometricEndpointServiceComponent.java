@@ -31,12 +31,13 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.http.HttpService;
 import org.wso2.carbon.identity.application.authenticator.biometric.servlet.servlet.BiometricServlet;
 import javax.servlet.Servlet;
+import static org.wso2.carbon.identity.application.authenticator.biometric.servlet.BiometricServletConstants.BIOMETRIC_ENDPOINT;
 
 /**
- * Service component class for the SAML SSO service.
+ * Service component class for the Biometric Servlet initialization.
  */
 @Component(
-        name = "identity.sso.saml.component",
+        name = "identity.application.authenticator.biometric.servlet",
         immediate = true)
 public class BiometricEndpointServiceComponent {
 
@@ -45,21 +46,25 @@ public class BiometricEndpointServiceComponent {
 
     @Activate
     protected void activate(ComponentContext ctxt) {
-        log.info(" in the servlet internal");
 
-        String biometricEndpoint = "/samlbiomtriccheck";
-        Servlet samlBiometricServlet = new ContextPathServletAdaptor(new BiometricServlet(), biometricEndpoint);
+        Servlet biometricServlet = new ContextPathServletAdaptor(new BiometricServlet(), BIOMETRIC_ENDPOINT);
         try {
-            httpService.registerServlet(biometricEndpoint, samlBiometricServlet, null, null);
+            httpService.registerServlet(BIOMETRIC_ENDPOINT, biometricServlet, null, null);
+            if (log.isDebugEnabled()) {
+                log.debug("Biometric endpoint service component activated.");
+            }
         } catch (Exception e) {
-            String errorMsg = "Error when registering the new Biometric Endpoint via the HttpService.";
-            log.error(errorMsg, e);
-            throw new RuntimeException(errorMsg, e);
+            log.error("Error when registering the biometric endpoint via the HTTP service.", e);
         }
     }
 
     @Deactivate
     protected void deactivate(ComponentContext ctxt) {
+
+        httpService.unregister(BIOMETRIC_ENDPOINT);
+        if (log.isDebugEnabled()) {
+            log.debug("Biometric endpoint service component de-activated.");
+        }
     }
 
     @Reference(
@@ -69,10 +74,12 @@ public class BiometricEndpointServiceComponent {
             policy = ReferencePolicy.DYNAMIC,
             unbind = "unsetHttpService")
     protected void setHttpService(HttpService httpService) {
+
         this.httpService = httpService;
     }
 
     protected void unsetHttpService(HttpService httpService) {
+
         this.httpService = null;
     }
 }

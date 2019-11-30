@@ -24,18 +24,25 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.application.authentication.framework.AbstractApplicationAuthenticator;
 import org.wso2.carbon.identity.application.authentication.framework.FederatedApplicationAuthenticator;
 import org.wso2.carbon.identity.application.authentication.framework.context.AuthenticationContext;
+import org.wso2.carbon.identity.application.authentication.framework.exception.AuthenticationFailedException;
 import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticatedUser;
-import org.wso2.carbon.identity.application.authenticator.biometric.dao.impl.BiometricDAOImpl;
-import org.wso2.carbon.identity.application.authenticator.biometric.notification.handler.impl.PushNotificationSenderImpl;
+import org.wso2.carbon.identity.application.authenticator.biometric.dao.impl.DeviceDAOImpl;
+import org.wso2.carbon.identity.application.authenticator.biometric.notification.handler.impl.FirebasePushNotificationSenderImpl;
 import org.wso2.carbon.identity.application.common.model.Property;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import static org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticatorConstants.BIOMETRIC_AUTH_CHALLENGE;
+import static org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticatorConstants.CONTEXT_KEY;
+import static org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticatorConstants.DOMAIN_NAME;
+import static org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticatorConstants.WAIT_PAGE;
 
 /**
  * Biometric Authenticator class.
@@ -44,13 +51,8 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
         implements FederatedApplicationAuthenticator {
 
     private static final Log log = LogFactory.getLog(BiometricAuthenticator.class);
-    private static String sessionDataKey;
-    private static String randomChallenge;
-    private static String signedChallenge;
+    private static final long serialVersionUID = 8272421416671799253L;
 
-    /**
-     * Get the friendly name of the Authenticator.
-     */
     @Override
     public String getFriendlyName() {
 
@@ -60,23 +62,15 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
     @Override
     public boolean canHandle(HttpServletRequest request) {
 
-        signedChallenge = request.getParameter(BiometricAuthenticatorConstants.SIGNED_CHALLENGE);
-
-        log.info("Signed challenge from the form submitted: " + signedChallenge);
-
-        return signedChallenge != null;
+        return request.getParameter(BiometricAuthenticatorConstants.SIGNED_CHALLENGE) != null;
     }
 
     @Override
     public String getContextIdentifier(javax.servlet.http.HttpServletRequest request) {
 
-        sessionDataKey = request.getParameter(BiometricAuthenticatorConstants.SESSION_DATA_KEY);
-        return sessionDataKey;
+        return request.getParameter(CONTEXT_KEY);
     }
 
-    /**
-     * Get the name of the Authenticator.
-     */
     @Override
     public String getName() {
 
@@ -85,79 +79,86 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
 
     @Override
     protected void initiateAuthenticationRequest(HttpServletRequest request, HttpServletResponse response,
-                                                 AuthenticationContext context) {
+                                                 AuthenticationContext context) throws AuthenticationFailedException {
 
-        AuthenticatedUser user = context.getSequenceConfig().getStepMap().get(1).getAuthenticatedUser();
-        String usernameDB = user.getUserName();
+        AuthenticatedUser user = context.getSequenceConfig().getStepMap().
+                get(context.getCurrentStep() - 1).getAuthenticatedUser();
+        String username = user.getUserName();
 
         Map<String, String> authenticatorProperties = context.getAuthenticatorProperties();
         String serverKey = authenticatorProperties.get(BiometricAuthenticatorConstants.SERVER_KEY);
+        String fcmUrl = authenticatorProperties.get(BiometricAuthenticatorConstants.FCM_URL);
 
         String hostname = IdentityUtil.getHostName();
         String serviceProviderName = context.getServiceProviderName();
-        String message = usernameDB + " is trying to log into " + serviceProviderName + " from " + hostname;
+        String message = username + " is trying to log into " + serviceProviderName + " from " + hostname;
+        // TODO: 2019-11-20  support localization-future improvement.Include in DOCs.
+        String sessionDataKey = request.getParameter(CONTEXT_KEY);
 
         UUID challenge = UUID.randomUUID();
-        randomChallenge = challenge.toString();
+        String randomChallenge = challenge.toString();
+        context.setProperty(BIOMETRIC_AUTH_CHALLENGE, randomChallenge);
 
-        BiometricDAOImpl biometricDAO = BiometricDAOImpl.getInstance();
-        String deviceID = biometricDAO.getDeviceID(usernameDB);
+        DeviceDAOImpl biometricDAO = DeviceDAOImpl.getInstance();
+        String deviceID = biometricDAO.getDeviceID(username).get(0);
+        log.info("device ID is: " + deviceID);
+        log.info("SDK is : " + sessionDataKey);
 
-        log.info("This is the user's stored device ID : " + deviceID);
-        log.info("The autogenerated Session data key is : " + context.getContextIdentifier());
-        log.info("Random Challenge is  = " + randomChallenge);
-
-
-        PushNotificationSenderImpl pushNotificationSender = PushNotificationSenderImpl.getInstance();
-        pushNotificationSender.sendPushNotification(deviceID, serverKey, message, randomChallenge, sessionDataKey);
-
+        FirebasePushNotificationSenderImpl pushNotificationSender = FirebasePushNotificationSenderImpl.getInstance();
+        pushNotificationSender.init(serverKey, fcmUrl);
+        pushNotificationSender.sendPushNotification(deviceID, message, randomChallenge, sessionDataKey);
         try {
-            log.info("near polling url");
-            String pollingEndpoint = "https://biometricauthenticator.private.wso2.com:9443/" +
-                    "authenticationendpoint/wait.jsp?sessionDataKey=";
-            String waitPage = pollingEndpoint + sessionDataKey;
+            //String pollingEndpoint = DOMAIN_NAME + WAIT_PAGE + "?sessionDataKey=";
+            String pollingEndpoint = DOMAIN_NAME + WAIT_PAGE + "?sessionDataKey=";
+            String waitPage = pollingEndpoint + URLEncoder.encode(sessionDataKey, "UTF-8");
+            log.info("new url: " + waitPage);
+
+            response.sendRedirect(URLEncoder.encode(waitPage, StandardCharsets.UTF_8.displayName()));
             response.sendRedirect(waitPage);
         } catch (IOException e) {
-            log.error("Error when trying to redirect to wait.jsp page");
+            log.error("Error when trying to redirect to wait.jsp page", e);
         }
     }
 
-    /**
-     * Process the response of the Biometric end-point.
-     *
-     * @param httpServletRequest    the HttpServletRequest
-     * @param httpServletResponse   the HttpServletResponse
-     * @param authenticationContext the AuthenticationContext
-     */
     @Override
     protected void processAuthenticationResponse(HttpServletRequest httpServletRequest, HttpServletResponse
-            httpServletResponse, AuthenticationContext authenticationContext) {
+            httpServletResponse, AuthenticationContext authenticationContext) throws AuthenticationFailedException {
 
-        if (randomChallenge.equals(signedChallenge)) {
-            log.info("now in process auth method");
+        String randomChallenge = (String) authenticationContext.getProperty(BIOMETRIC_AUTH_CHALLENGE);
+        log.info("now in process auth method.");
+        if (randomChallenge.equals(httpServletRequest.getParameter(BiometricAuthenticatorConstants.SIGNED_CHALLENGE))) {
             AuthenticatedUser user = authenticationContext.getSequenceConfig().
-                    getStepMap().get(1).getAuthenticatedUser();
+                    getStepMap().get(authenticationContext.getCurrentStep() - 1).getAuthenticatedUser();
             authenticationContext.setSubject(user);
         } else {
-            log.error("Sent and received challenges are not the same!");
+            authenticationContext.setProperty(BiometricAuthenticatorConstants.AUTHENTICATION_STATUS, true);
+            throw new AuthenticationFailedException("Authentication failed!Sent and received challenges are not equal");
         }
     }
 
-    /**
-     * Get Configuration Properties.
-     */
     @Override
     public List<Property> getConfigurationProperties() {
 
-        String firebaseServerKey = "Firebase Server Key";
-
         List<Property> configProperties = new ArrayList<>();
-        Property serverKey = new Property();
-        serverKey.setName(BiometricAuthenticatorConstants.SERVER_KEY);
-        serverKey.setDisplayName(firebaseServerKey);
-        serverKey.setDescription("Enter the firebase server key of the android app");
-        serverKey.setDisplayOrder(1);
-        configProperties.add(serverKey);
+
+        String firebaseServerKey = "Firebase Server Key";
+        Property serverKeyProperty = new Property();
+        serverKeyProperty.setName(BiometricAuthenticatorConstants.SERVER_KEY);
+        serverKeyProperty.setDisplayName(firebaseServerKey);
+        serverKeyProperty.setDescription("Enter the firebase server key ");
+        serverKeyProperty.setDisplayOrder(0);
+        serverKeyProperty.setRequired(false);
+        serverKeyProperty.setConfidential(true);
+        configProperties.add(serverKeyProperty);
+
+        String fcmUrl = "Firebase url";
+        Property fcmUrlProperty = new Property();
+        fcmUrlProperty.setName(BiometricAuthenticatorConstants.FCM_URL);
+        fcmUrlProperty.setDisplayName(fcmUrl);
+        fcmUrlProperty.setDescription("Enter the url of firebase endpoint ");
+        fcmUrlProperty.setDisplayOrder(1);
+        fcmUrlProperty.setConfidential(true);
+        configProperties.add(fcmUrlProperty);
         return configProperties;
     }
 }

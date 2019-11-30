@@ -19,26 +19,31 @@
 
 package org.wso2.carbon.identity.application.authenticator.biometric.servlet.model;
 
-import java.io.Serializable;
-
 /**
- * initializes getter setter methods for statuses in the temporary hashmap at the biometric servlet.
+ * This class represents the status response for status and challenge returned from the android device.
  */
-public class WaitStatus implements Serializable {
-    private Status status;
+public class WaitStatus {
 
-    public Status getStatus() {
+    private String status;
+    private String signedChallenge;
+
+    public String getStatus() {
+
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(String status) {
+
         this.status = status;
     }
 
-    /**
-     * initializes the types of statuses in the temporary hashmap at the biometric servlet.
-     */
-    public enum Status {
-        WAITING, COMPLETED1, UNKNOWN
+    public String getChallenge() {
+
+        return signedChallenge;
+    }
+
+    public void setChallenge(String challenge) {
+
+        this.signedChallenge = challenge;
     }
 }

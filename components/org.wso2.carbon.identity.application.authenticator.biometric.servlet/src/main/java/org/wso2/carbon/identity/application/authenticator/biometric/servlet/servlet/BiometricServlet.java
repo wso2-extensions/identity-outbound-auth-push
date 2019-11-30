@@ -20,96 +20,121 @@
 package org.wso2.carbon.identity.application.authenticator.biometric.servlet.servlet;
 
 import com.google.gson.Gson;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.identity.application.authenticator.biometric.servlet.javascript.flow.WaitStatusResponse;
+import org.wso2.carbon.identity.application.authenticator.biometric.servlet.BiometricServletConstants;
 import org.wso2.carbon.identity.application.authenticator.biometric.servlet.model.WaitStatus;
+import org.wso2.carbon.identity.application.authenticator.biometric.servlet.store.impl.BiometricDataStoreImpl;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
  * Component class for implementing the Biometric servlet.
+ * GET calls(with query parameter:session data key) from the client web side and POST calls(with query parameters
+ * :session data key and signed challenge) from the client android app are handled here by
+ * updating the hashmap "updateStatus".
+ *
  */
 public class BiometricServlet extends HttpServlet {
+
     private static final Log log = LogFactory.getLog(BiometricServlet.class);
-    private static final String DEVICE_TYPE = "deviceType";
-    private static final String MOBILE = "mobile";
-    private static final String WEB = "web";
-    private static final String SESSION_DATA_KEY_MOBILE = "sessionDataKeyMobile";
-    private static final String SESSION_DATA_KEY_WEB = "sessionDataKeyWeb";
-    private static final String CHALLENGE_MOBILE = "challengeMobile";
-    private HashMap<String, String> updateStatus = new HashMap<>();
+    private static final long serialVersionUID = -2050679246736808648L;
+    private BiometricDataStoreImpl biometricDataStoreInstance = BiometricDataStoreImpl.getInstance();
 
     @Override
-    protected void doGet(HttpServletRequest request,
-                         HttpServletResponse response) throws IOException {
-        doPost(request, response);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        if (!(request.getParameterMap().containsKey(BiometricServletConstants.INITIATOR))) {
+            if (log.isDebugEnabled()) {
+                log.debug("Invalid syntax as the query parameter for initiator is missing.");
+            }
+        } else { // If the initiator is not null, else block is executed.
+            String initiator = request.getParameter(BiometricServletConstants.INITIATOR);
+            if (!(BiometricServletConstants.WEB.equals(initiator) && request.getParameterMap()
+                    .containsKey(BiometricServletConstants.CONTEXT_KEY))) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Unsupported HTTP GET request or session data key is null.");
+                }
+            } else { // If the initiator is equal to WEB and if the query parameter session data
+                // key is not null, else block is executed.
+                handleWebResponse(request, response);
+            }
+        }
     }
 
     @Override
-    protected void doPost(HttpServletRequest request,
-                          HttpServletResponse response) throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        WaitStatusResponse waitResponse = null;
-        if (request.getParameterMap().containsKey(DEVICE_TYPE)) {
-            String deviceType = request.getParameter(DEVICE_TYPE);
-            waitResponse = new WaitStatusResponse();
-            if (deviceType.equals(MOBILE)) {
-                if ((request.getParameterMap().containsKey(SESSION_DATA_KEY_MOBILE)) &&
-                        request.getParameterMap().containsKey(CHALLENGE_MOBILE)) {
-                    String sessionDataKeyMobile = request.getParameter(SESSION_DATA_KEY_MOBILE);
-                    String challengeMobile = request.getParameter(CHALLENGE_MOBILE);
-                    log.info("challenge mobile parameter : " + challengeMobile);
-                    log.info("sdk mobile parameter : " + sessionDataKeyMobile);
-                    updateStatus.put(sessionDataKeyMobile, challengeMobile);
-                    log.info("table is: " + updateStatus);
-                    response.setContentType("text/html");
-                    response.setStatus(200);
-                    //PrintWriter out = response.getWriter();
-                    if (log.isDebugEnabled()) {
-                        log.debug("received the mobile SDK and challenge !");
-                    }
-                }
-
-            } else if (deviceType.equals(WEB)) {
-                if (request.getParameterMap().containsKey(SESSION_DATA_KEY_WEB)) {
-                    String sessionDataKeyWeb = request.getParameter(SESSION_DATA_KEY_WEB);
-                    String signedChallengeExtracted = updateStatus.get(sessionDataKeyWeb);
-                    if (signedChallengeExtracted != null && updateStatus.containsKey(sessionDataKeyWeb)) {
-                        response.setContentType("text/html");
-                        response.setCharacterEncoding("utf-8");
-                        response.setStatus(200);
-                        request.setAttribute("signedChallenge", signedChallengeExtracted);
-
-                        waitResponse.setStatus(WaitStatus.Status.COMPLETED1.name());
-                        waitResponse.setChallenge(signedChallengeExtracted);
-                        updateStatus.remove(sessionDataKeyWeb);
-                        log.info("a response from the mobile device!");
-
-                    } else {
-                        response.setContentType("text/html");
-                        response.setStatus(401);
-                        response.sendError(401, "a 401 error occurs ");
-                    }
-                }
-            }
-        } else {
-            response.setContentType("text/html");
-            response.setStatus(400);
+        if (!request.getParameterMap().containsKey(BiometricServletConstants.INITIATOR)) {
             PrintWriter out = response.getWriter();
-            out.println("<h3>Invalid request... !</h3>");
+            out.println("Invalid request!");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setContentType("text/html");
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Query parameter for initiator is missing.");
+            response.getWriter().write("Invalid syntax as the query parameter for initiator is missing.");
+            response.getWriter().flush();
+            return;
         }
 
-        response.setContentType("application/json");
-        String json = new Gson().toJson(waitResponse);
-        try (PrintWriter out = response.getWriter()) {
-            log.info("json waitResponse: " + json);
-            out.print(json);
-            out.flush();
+        String initiator = request.getParameter(BiometricServletConstants.INITIATOR);
+
+        if (!BiometricServletConstants.MOBILE.equals(initiator)) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unsupported HTTP request from a mobile device.");
+            return;
+        }
+
+        handleMobileResponse(request, response);
+        log.info("update status table: " + biometricDataStoreInstance);
+    }
+
+    private void handleWebResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        WaitStatus waitResponse = new WaitStatus();
+        String sessionDataKeyWeb = request.getParameter(BiometricServletConstants.CONTEXT_KEY);
+        String signedChallengeExtracted = biometricDataStoreInstance.getSignedChallenge(sessionDataKeyWeb);
+        if (StringUtils.isEmpty(signedChallengeExtracted)) {
+            if (log.isDebugEnabled()) {
+                log.debug("Signed challenge sent from the mobile application is null.");
+            }
+
+        } else {  // If the signed challenge sent from the mobile application is not null,else block is executed..
+            log.info("signed challenge not empty.");
+            response.setStatus(200);
+            request.setAttribute(BiometricServletConstants.SIGNED_CHALLENGE, signedChallengeExtracted);
+            waitResponse.setStatus(BiometricServletConstants.Status.COMPLETED.name());
+            waitResponse.setChallenge(signedChallengeExtracted);
+            biometricDataStoreInstance.removeBiometricData(sessionDataKeyWeb);
+            log.info("a response from the mobile device!");
+            response.setContentType(BiometricServletConstants.APPLICATION_JSON);
+            String json = new Gson().toJson(waitResponse);
+            if (log.isDebugEnabled()){
+                log.debug("Json Response to the wait page: " + json);
+            }
+            try (PrintWriter out = response.getWriter()) {
+                out.print(json);
+                out.flush();
+            }
+        }
+    }
+
+    private void handleMobileResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        if (!(request.getParameterMap().containsKey(BiometricServletConstants.CONTEXT_KEY) &&
+                request.getParameterMap().containsKey(BiometricServletConstants.CHALLENGE))) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST , "Received session data key and/or signed" +
+                    " challenge is null.");
+
+        } else { // If the query parameters session data key and challenge are not null, else block is executed..
+            String sessionDataKeyMobile = request.getParameter(BiometricServletConstants.CONTEXT_KEY);
+            String challengeMobile = request.getParameter(BiometricServletConstants.CHALLENGE);
+            biometricDataStoreInstance.addBiometricData(sessionDataKeyMobile, challengeMobile);
+            response.setStatus(HttpServletResponse.SC_OK);
+            if (log.isDebugEnabled()) {
+                log.debug("Session data key received from the mobile application: " + sessionDataKeyMobile);
+                log.debug("Signed challenge received from the mobile application: " + challengeMobile);
+            }
         }
     }
 }

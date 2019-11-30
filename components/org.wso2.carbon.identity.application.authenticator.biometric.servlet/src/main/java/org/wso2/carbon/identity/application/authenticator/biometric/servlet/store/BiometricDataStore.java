@@ -17,29 +17,16 @@
  *
  */
 
-package org.wso2.carbon.identity.application.authenticator.biometric.servlet.javascript.flow;
+package org.wso2.carbon.identity.application.authenticator.biometric.servlet.store;
 
 /**
- * initializes getter setter methods for status and challenge in the temporary hashmap at the biometric servlet.
+ * Updates a hash-map which stores session data key against signed challenge from the mobile application.
  */
-public class WaitStatusResponse {
-    private String status;
-    private String signedChallenge;
+public interface BiometricDataStore {
 
-    public String getStatus() {
-        return status;
-    }
+    String getSignedChallenge(String sessionDataKey);
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    void addBiometricData(String sessionDataKey, String signedChallenge);
 
-    public String getChallenge() {
-        return signedChallenge;
-
-    }
-
-    public void setChallenge(String challenge) {
-        this.signedChallenge = challenge;
-    }
+    void removeBiometricData(String sessionDataKey);
 }

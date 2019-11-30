@@ -31,7 +31,7 @@
     <artifactId>org.wso2.carbon.identity.application.authenticator.biometric.servlet</artifactId>
     <packaging>bundle</packaging>
     <name>WSO2 Carbon - Endpoint for Biometric Authenticator</name>
-    <description>A custom wso2 products or solution</description>
+    <description>Identity Application Biometric Authentication Endpoint</description>
     <url>http://www.wso2.com</url>
 
     <dependencies>
@@ -66,8 +66,17 @@
             <groupId>org.eclipse.equinox</groupId>
             <artifactId>org.eclipse.equinox.http.helper</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.scr.ds-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>20030203.000129</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
@@ -84,13 +93,18 @@
                             org.wso2.carbon.identity.application.authenticator.biometric.servlet.*
                         </Export-Package>
                         <Import-Package>
-                            javax.servlet; version="[2.6.0,3.6.0)",
+                            javax.servlet; version="${import.package.version.javax.servlet}"
+                            org.apache.commons.logging; version="${org.apache.commons.logging.version}",
+                            org.osgi.service.http; version="${org.osgi.service.http.version}",
+                            org.osgi.service.component; version="${osgi.service.component.imp.pkg.version.range}",
+                            org.eclipse.equinox.http.helper; version="${org.eclipse.equinox.http.helper.version}",
+                            org.apache.commons.logging; version="${commons.logging.version}",
+                            com.google.gson; version="${com.google.code.gson.version}",
+                            javax.servlet.http; version="${javax.servlet.http}"
                         </Import-Package>
-                        <DynamicImport-Package>*</DynamicImport-Package>
                     </instructions>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
