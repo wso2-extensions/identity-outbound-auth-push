@@ -46,6 +46,7 @@ public class DeviceDAOImpl implements DeviceDAO {
         yasaraDevices.add("cbK57eqxofQ:APA91bEJln5WTOzM3hqhDlwPVlj3FXbBaUqQRgRwNGpTSOm" +
                 "YcSXSPaazm4WBeVGYnPcwVJc6FtxzvT4QsRV83akYaUXk6fKEsh0tFs9n4ZEiy_TKFUWPoLPnKkkWj_52Z5x1X788LCn9");
 
+
         deviceIDStore.put("dewni", dewniDevices);
         deviceIDStore.put("chamodi",  chamodiDevices);
         deviceIDStore.put("yasara", yasaraDevices);

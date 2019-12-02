@@ -26,9 +26,14 @@
 *.iws
 *.ipr
 .DS_Store
+.gradle
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
 # Ignore everything in this directory
-target
+**/target
+**/build
+**/captures
+**/.externalNativeBuild
+/application/wso2verify/build/intermediates/lint-cache/

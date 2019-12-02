@@ -61,7 +61,8 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
 
     @Override
     public boolean canHandle(HttpServletRequest request) {
-
+        log.info("Signed challenge from the form submitted:" + request.getParameter(BiometricAuthenticatorConstants.
+                SIGNED_CHALLENGE));
         return request.getParameter(BiometricAuthenticatorConstants.SIGNED_CHALLENGE) != null;
     }
 
@@ -101,6 +102,8 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
 
         DeviceDAOImpl biometricDAO = DeviceDAOImpl.getInstance();
         String deviceID = biometricDAO.getDeviceID(username).get(0);
+        log.info("challenge is: " + challenge);
+        log.info("SDK is : " + sessionDataKey);
 
         FirebasePushNotificationSenderImpl pushNotificationSender = FirebasePushNotificationSenderImpl.getInstance();
         pushNotificationSender.init(serverKey, fcmUrl);
@@ -117,6 +120,7 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
     @Override
     protected void processAuthenticationResponse(HttpServletRequest httpServletRequest, HttpServletResponse
             httpServletResponse, AuthenticationContext authenticationContext) throws AuthenticationFailedException {
+        log.info("now in process aauth method");
 
         String randomChallenge = (String) authenticationContext.getProperty(BIOMETRIC_AUTH_CHALLENGE);
         if (randomChallenge.equals(httpServletRequest.getParameter(BiometricAuthenticatorConstants.SIGNED_CHALLENGE))) {

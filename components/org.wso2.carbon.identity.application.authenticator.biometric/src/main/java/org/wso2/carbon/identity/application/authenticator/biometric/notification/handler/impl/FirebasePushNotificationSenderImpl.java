@@ -23,6 +23,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.simple.JSONObject;
 import org.wso2.carbon.identity.application.authentication.framework.exception.AuthenticationFailedException;
+import org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticatorConstants;
 import org.wso2.carbon.identity.application.authenticator.biometric.notification.handler.PushNotificationSender;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -32,21 +33,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import javax.servlet.http.HttpServletResponse;
-import static org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticatorConstants.APPLICATION_JSON;
-import static org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticatorConstants.AUTHORIZATION;
-import static org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticatorConstants.BODY;
-import static org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticatorConstants.CHALLENGE;
-import static org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticatorConstants.CLICK_ACTION;
-import static org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticatorConstants.CONTENT_AVAILABLE;
-import static org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticatorConstants.CONTENT_TYPE;
-import static org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticatorConstants.DATA;
-import static org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticatorConstants.DISPLAY_ANDROID_ACTIVITY;
-import static org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticatorConstants.HIGH;
-import static org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticatorConstants.NOTIFICATION;
-import static org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticatorConstants.POST;
-import static org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticatorConstants.PRIORITY;
-import static org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticatorConstants.SESSION_KEY;
-import static org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticatorConstants.TO;
+
 
 /**
  * Implements the sending of push notifications to mobile device IDs.
@@ -96,31 +83,35 @@ public class FirebasePushNotificationSenderImpl implements PushNotificationSende
             conn.setDoInput(true);
             conn.setDoOutput(true);
 
-            conn.setRequestMethod(POST);
-            conn.setRequestProperty(AUTHORIZATION, "key=" + serverKey);
-            conn.setRequestProperty(CONTENT_TYPE, APPLICATION_JSON);
+            conn.setRequestMethod(BiometricAuthenticatorConstants.POST);
+            conn.setRequestProperty(BiometricAuthenticatorConstants.AUTHORIZATION, "key=" + serverKey);
+            conn.setRequestProperty(BiometricAuthenticatorConstants.CONTENT_TYPE,
+                    BiometricAuthenticatorConstants.APPLICATION_JSON);
 
             JSONObject biometricNotificationInfo = new JSONObject();
-            biometricNotificationInfo.put(BODY, message);
-            biometricNotificationInfo.put(CONTENT_AVAILABLE, true);
-            biometricNotificationInfo.put(PRIORITY, HIGH);
+            biometricNotificationInfo.put(BiometricAuthenticatorConstants.BODY, message);
+            biometricNotificationInfo.put(BiometricAuthenticatorConstants.CONTENT_AVAILABLE, true);
+            biometricNotificationInfo.put(BiometricAuthenticatorConstants.PRIORITY,
+                    BiometricAuthenticatorConstants.HIGH);
 
             JSONObject biometricNotificationData = new JSONObject();
-            biometricNotificationData.put(BODY, message);
-            biometricNotificationData.put(CHALLENGE, randomChallenge);
-            biometricNotificationData.put(SESSION_KEY, sessionDataKey);
+            biometricNotificationData.put(BiometricAuthenticatorConstants.BODY, message);
+            biometricNotificationData.put(BiometricAuthenticatorConstants.CHALLENGE, randomChallenge);
+            biometricNotificationData.put(BiometricAuthenticatorConstants.CONTEXT_KEY, sessionDataKey);
             //Reason for sending the click_action in the data payload is to
             // specifically open a different activity in android app except the default main activity.
-            biometricNotificationData.put(CLICK_ACTION, DISPLAY_ANDROID_ACTIVITY);
-            biometricNotificationData.put(CONTENT_AVAILABLE, true);
-            biometricNotificationData.put(PRIORITY, HIGH);
+            biometricNotificationData.put(BiometricAuthenticatorConstants.CLICK_ACTION,
+                    BiometricAuthenticatorConstants.DISPLAY_ANDROID_ACTIVITY);
+            biometricNotificationData.put(BiometricAuthenticatorConstants.CONTENT_AVAILABLE, true);
+            biometricNotificationData.put(BiometricAuthenticatorConstants.PRIORITY,
+                    BiometricAuthenticatorConstants.HIGH);
 
             JSONObject json = new JSONObject();
-            json.put(TO, deviceId.trim());
-            json.put(NOTIFICATION, biometricNotificationInfo);
-            json.put(DATA, biometricNotificationData);
-            json.put(CONTENT_AVAILABLE, true);
-            json.put(PRIORITY, HIGH);
+            json.put(BiometricAuthenticatorConstants.TO, deviceId.trim());
+            json.put(BiometricAuthenticatorConstants.NOTIFICATION, biometricNotificationInfo);
+            json.put(BiometricAuthenticatorConstants.DATA, biometricNotificationData);
+            json.put(BiometricAuthenticatorConstants.CONTENT_AVAILABLE, true);
+            json.put(BiometricAuthenticatorConstants.PRIORITY, BiometricAuthenticatorConstants.HIGH);
 
             if (log.isDebugEnabled()) {
                 log.debug("Firebase message payload: " + json.toString());

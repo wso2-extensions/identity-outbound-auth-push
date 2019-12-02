@@ -40,7 +40,7 @@ public class BiometricAuthenticatorConstants {
     public static final String CONTENT_AVAILABLE = "content_available";
     public static final String HIGH = "high";
     public static final String PRIORITY = "priority";
-    public static final String CHALLENGE = "Challenge";
+    public static final String CHALLENGE = "challenge";
     public static final String SESSION_KEY = "sessionkey";
     public static final String CLICK_ACTION = "click_action";
     public static final String DISPLAY_ANDROID_ACTIVITY = "AuthenticateActivity";
