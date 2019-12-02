@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "165843199970",
+    "firebase_url": "https://test1-77e30.firebaseio.com",
+    "project_id": "test1-77e30",
+    "storage_bucket": "test1-77e30.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:165843199970:android:03f4eb265456937c",
+        "android_client_info": {
+          "package_name": "com.wso2.test1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "165843199970-lge4ottn1krd9hl5aq3hlenajdqknl88.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.wso2.carbon.identity.mobile.application.authenticator.wso2Verify",
+            "certificate_hash": "d415607d3cad11be1bd1ed65db877c50a619da5c"
+          }
+        },
+        {
+          "client_id": "165843199970-m39sfb7pia845hdkoidrq3fi67u64gas.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJBhkzjyyjNpDybfoQ3NxQRwapc-WGT2o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "165843199970-m39sfb7pia845hdkoidrq3fi67u64gas.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
