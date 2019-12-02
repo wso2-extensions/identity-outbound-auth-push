@@ -32,8 +32,7 @@
 hs_err_pid*
 
 # Ignore everything in this directory
-**/target
-**/build
-**/captures
-**/.externalNativeBuild
-/application/wso2verify/build/intermediates/lint-cache/
+target
+build
+captures
+.externalNativeBuild
