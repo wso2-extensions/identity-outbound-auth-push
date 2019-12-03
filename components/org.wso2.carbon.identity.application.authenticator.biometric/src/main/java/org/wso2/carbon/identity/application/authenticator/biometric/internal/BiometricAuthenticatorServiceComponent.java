@@ -46,6 +46,7 @@ public class BiometricAuthenticatorServiceComponent {
             Hashtable<String, String> props = new Hashtable<>();
             ctxt.getBundleContext().registerService(ApplicationAuthenticator.class.getName(),
                     authenticator, props);
+            log.info("biometric authenticator service component is activated.");
             if (log.isDebugEnabled()) {
                 log.debug("biometric authenticator service component is activated.");
             }

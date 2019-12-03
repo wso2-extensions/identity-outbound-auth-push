@@ -105,6 +105,7 @@ public class BiometricServlet extends HttpServlet {
             biometricDataStoreInstance.removeBiometricData(sessionDataKeyWeb);
             response.setContentType(BiometricServletConstants.APPLICATION_JSON);
             String json = new Gson().toJson(waitResponse);
+            log.info("Json Response to the wait page: " + json);
             if (log.isDebugEnabled()) {
                 log.debug("Json Response to the wait page: " + json);
             }
@@ -126,6 +127,8 @@ public class BiometricServlet extends HttpServlet {
             String challengeMobile = request.getParameter(BiometricServletConstants.CHALLENGE);
             biometricDataStoreInstance.addBiometricData(sessionDataKeyMobile, challengeMobile);
             response.setStatus(HttpServletResponse.SC_OK);
+            log.info("Session data key received from the mobile application: " + sessionDataKeyMobile);
+            log.info("Signed challenge received from the mobile application: " + challengeMobile);
             if (log.isDebugEnabled()) {
                 log.debug("Session data key received from the mobile application: " + sessionDataKeyMobile);
                 log.debug("Signed challenge received from the mobile application: " + challengeMobile);

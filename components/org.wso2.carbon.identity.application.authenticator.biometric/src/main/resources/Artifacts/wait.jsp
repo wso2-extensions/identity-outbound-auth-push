@@ -69,7 +69,7 @@
     let sessionDataKey;
     let signedChallenge;
     const refreshInterval = 1000;
-    const timeout = 20000;
+    const timeout = 50000;
     let biometricEndpointWithQueryParams = "<%=BiometricAuthenticatorConstants.DOMAIN_NAME + BiometricAuthenticatorConstants.BIOMETRIC_ENDPOINT + BiometricAuthenticatorConstants.POLLING_QUERY_PARAMS%>";
     const GET = 'GET';
 
