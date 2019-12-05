@@ -22,15 +22,14 @@
 <%@ taglib prefix = "s" uri = "http://java.sun.com/jsp/jstl/core" %>
 <%@ page language = "java" contentType = "text/html; charset=UTF-8" pageEncoding = "UTF-8" %>
 <%@ page import="org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticatorConstants" %>
+<%@ page import="java.nio.charset.StandardCharsets" %>
 
 <html>
 <head>
     <meta http-equiv = "X-UA-Compatible" content = "IE=edge">
-<%--    <meta charset = "utf-8">--%>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WSO2 Identity Server</title>
-    <meta charset="UTF-8">
-    <meta charset="utf-8"/>
+    <meta charset="<%=StandardCharsets.UTF_8.name()%>">
 
     <link rel="icon" href="images/favicon.png" type="image/x-icon"/>
     <link href="libs/bootstrap_3.3.5/css/bootstrap.min.css" rel="stylesheet">
@@ -70,7 +69,8 @@
     let signedChallenge;
     const refreshInterval = 1000;
     const timeout = 50000;
-    let biometricEndpointWithQueryParams = "<%=BiometricAuthenticatorConstants.DOMAIN_NAME + BiometricAuthenticatorConstants.BIOMETRIC_ENDPOINT + BiometricAuthenticatorConstants.POLLING_QUERY_PARAMS%>";
+    let biometricEndpointWithQueryParams = "<%=BiometricAuthenticatorConstants.BIOMETRIC_ENDPOINT +
+     BiometricAuthenticatorConstants.POLLING_QUERY_PARAMS%>";
     const GET = 'GET';
 
     $(document).ready(function () {
@@ -82,7 +82,7 @@
         }, refreshInterval);
 
         function checkWaitStatus() {
-            var now = new Date().getTime();
+            const now = new Date().getTime();
             if ((startTime + timeout) < now) {
                 alert("timeout triggered");
                 window.clearInterval(intervalListener);
@@ -100,10 +100,9 @@
 
                     handleStatusResponse(res);
                 },
-                error: function (res) {
+                error: function () {
 
                     checkWaitStatus();
-
                 },
                 failure: function () {
 

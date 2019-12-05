@@ -26,6 +26,9 @@ import org.wso2.carbon.identity.application.authentication.framework.exception.A
  */
 public interface PushNotificationSender {
 
+    /**
+     * Send a push notification to a specific device ID with the session data key, randomChallenge and the message.
+     */
     void sendPushNotification(String deviceId, String message,
-                              String randomUUIDString, String sessionDataKey) throws AuthenticationFailedException;
+                              String randomChallenge, String sessionDataKey) throws AuthenticationFailedException;
 }

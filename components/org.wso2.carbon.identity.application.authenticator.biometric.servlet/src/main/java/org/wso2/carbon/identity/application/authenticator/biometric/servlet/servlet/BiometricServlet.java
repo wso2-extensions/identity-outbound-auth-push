@@ -31,13 +31,12 @@ import java.io.PrintWriter;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.MediaType;
 
 /**
- * Component class for implementing the Biometric servlet.
- * GET calls(with query parameter:session data key) from the client web side and POST calls(with query parameters
- * :session data key and signed challenge) from the client android app are handled here by
- * updating the hashmap "updateStatus".
- *
+ * The Biometric Servlet class manages the status of the biometric authentication process with the session data key,
+ * by processing the responses from the biometric authenticator devices(mobile devices) and replying to the polling
+ * requests from the web client.
  */
 public class BiometricServlet extends HttpServlet {
 
@@ -50,16 +49,18 @@ public class BiometricServlet extends HttpServlet {
 
         if (!(request.getParameterMap().containsKey(BiometricServletConstants.INITIATOR))) {
             if (log.isDebugEnabled()) {
-                log.debug("Invalid syntax as the query parameter for initiator is missing.");
+                log.debug("Invalid request as the query parameter for initiator is missing.");
             }
-        } else { // If the initiator is not null, else block is executed.
+        } else {
+            // If the initiator is not null, else block is executed.
             String initiator = request.getParameter(BiometricServletConstants.INITIATOR);
             if (!(BiometricServletConstants.WEB.equals(initiator) && request.getParameterMap()
                     .containsKey(BiometricServletConstants.CONTEXT_KEY))) {
                 if (log.isDebugEnabled()) {
                     log.debug("Unsupported HTTP GET request or session data key is null.");
                 }
-            } else { // If the initiator is equal to WEB and if the query parameter session data
+            } else {
+                // If the initiator is equal to WEB and if the query parameter session data
                 // key is not null, else block is executed.
                 handleWebResponse(request, response);
             }
@@ -70,14 +71,8 @@ public class BiometricServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         if (!request.getParameterMap().containsKey(BiometricServletConstants.INITIATOR)) {
-            PrintWriter out = response.getWriter();
-            out.println("Invalid request!");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.setContentType("text/html");
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Query parameter for initiator is missing.");
-            response.getWriter().write("Invalid syntax as the query parameter for initiator is missing.");
-            response.getWriter().flush();
-            return;
         }
         String initiator = request.getParameter(BiometricServletConstants.INITIATOR);
 
@@ -89,6 +84,7 @@ public class BiometricServlet extends HttpServlet {
     }
 
     private void handleWebResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
         WaitStatus waitResponse = new WaitStatus();
         String sessionDataKeyWeb = request.getParameter(BiometricServletConstants.CONTEXT_KEY);
         String signedChallengeExtracted = biometricDataStoreInstance.getSignedChallenge(sessionDataKeyWeb);
@@ -97,15 +93,15 @@ public class BiometricServlet extends HttpServlet {
                 log.debug("Signed challenge sent from the mobile application is null.");
             }
 
-        } else {  // If the signed challenge sent from the mobile application is not null,else block is executed..
+        } else {
+            // If the signed challenge sent from the mobile application is not null,else block is executed..
             response.setStatus(HttpServletResponse.SC_OK);
             request.setAttribute(BiometricServletConstants.SIGNED_CHALLENGE, signedChallengeExtracted);
             waitResponse.setStatus(BiometricServletConstants.Status.COMPLETED.name());
             waitResponse.setChallenge(signedChallengeExtracted);
             biometricDataStoreInstance.removeBiometricData(sessionDataKeyWeb);
-            response.setContentType(BiometricServletConstants.APPLICATION_JSON);
+            response.setContentType(MediaType.APPLICATION_JSON);
             String json = new Gson().toJson(waitResponse);
-            log.info("Json Response to the wait page: " + json);
             if (log.isDebugEnabled()) {
                 log.debug("Json Response to the wait page: " + json);
             }
@@ -117,21 +113,21 @@ public class BiometricServlet extends HttpServlet {
     }
 
     private void handleMobileResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
         if (!(request.getParameterMap().containsKey(BiometricServletConstants.CONTEXT_KEY) &&
                 request.getParameterMap().containsKey(BiometricServletConstants.CHALLENGE))) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST , "Received session data key and/or signed" +
                     " challenge is null.");
 
-        } else { // If the query parameters session data key and challenge are not null, else block is executed..
+        } else {
+            // If the query parameters session data key and challenge are not null, else block is executed..
             String sessionDataKeyMobile = request.getParameter(BiometricServletConstants.CONTEXT_KEY);
             String challengeMobile = request.getParameter(BiometricServletConstants.CHALLENGE);
             biometricDataStoreInstance.addBiometricData(sessionDataKeyMobile, challengeMobile);
             response.setStatus(HttpServletResponse.SC_OK);
-            log.info("Session data key received from the mobile application: " + sessionDataKeyMobile);
-            log.info("Signed challenge received from the mobile application: " + challengeMobile);
             if (log.isDebugEnabled()) {
-                log.debug("Session data key received from the mobile application: " + sessionDataKeyMobile);
-                log.debug("Signed challenge received from the mobile application: " + challengeMobile);
+                log.debug("Session data key received from the mobile application: " + sessionDataKeyMobile +
+                        "\n Signed challenge received from the mobile application: " + challengeMobile);
             }
         }
     }

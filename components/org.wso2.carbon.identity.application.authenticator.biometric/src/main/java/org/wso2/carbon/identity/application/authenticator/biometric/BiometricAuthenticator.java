@@ -19,6 +19,7 @@
 
 package org.wso2.carbon.identity.application.authenticator.biometric;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.application.authentication.framework.AbstractApplicationAuthenticator;
@@ -32,16 +33,13 @@ import org.wso2.carbon.identity.application.common.model.Property;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import static org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticatorConstants.BIOMETRIC_AUTH_CHALLENGE;
-import static org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticatorConstants.CONTEXT_KEY;
-import static org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticatorConstants.DOMAIN_NAME;
-import static org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticatorConstants.WAIT_PAGE;
 
 /**
  * Biometric Authenticator class.
@@ -52,7 +50,6 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
     private static final long serialVersionUID = 8272421416671799253L;
     private static final Log log = LogFactory.getLog(BiometricAuthenticator.class);
 
-
     @Override
     public String getFriendlyName() {
 
@@ -61,15 +58,14 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
 
     @Override
     public boolean canHandle(HttpServletRequest request) {
-        log.info("Signed challenge from the form submitted:" + request.getParameter(BiometricAuthenticatorConstants.
-                SIGNED_CHALLENGE));
+
         return request.getParameter(BiometricAuthenticatorConstants.SIGNED_CHALLENGE) != null;
     }
 
     @Override
     public String getContextIdentifier(javax.servlet.http.HttpServletRequest request) {
 
-        return request.getParameter(CONTEXT_KEY);
+        return request.getParameter(BiometricAuthenticatorConstants.CONTEXT_KEY);
     }
 
     @Override
@@ -94,42 +90,92 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
         String serviceProviderName = context.getServiceProviderName();
         String message = username + " is trying to log into " + serviceProviderName + " from " + hostname;
         // TODO: 2019-11-20  support localization-future improvement.Include in DOCs.
-        String sessionDataKey = request.getParameter(CONTEXT_KEY);
+        String sessionDataKey = request.getParameter(BiometricAuthenticatorConstants.CONTEXT_KEY);
 
         UUID challenge = UUID.randomUUID();
         String randomChallenge = challenge.toString();
-        context.setProperty(BIOMETRIC_AUTH_CHALLENGE, randomChallenge);
+        context.setProperty(BiometricAuthenticatorConstants.BIOMETRIC_AUTH_CHALLENGE, randomChallenge);
 
-        DeviceDAOImpl biometricDAO = DeviceDAOImpl.getInstance();
-        String deviceID = biometricDAO.getDeviceID(username).get(0);
-        log.info("challenge is: " + challenge);
-        log.info("SDK is : " + sessionDataKey);
-
+        String deviceID = DeviceDAOImpl.getInstance().getDeviceID(username).get(0);
+        // TODO: 2019-12-05 Without hardcoding to get 0, make it possible to to display all the registered devices of
+        //  the user and let the user to select the preferred device. Then edit the code to return the selected device
+        //  ID without the 1st device ID in the DAO list.
         FirebasePushNotificationSenderImpl pushNotificationSender = FirebasePushNotificationSenderImpl.getInstance();
         pushNotificationSender.init(serverKey, fcmUrl);
         pushNotificationSender.sendPushNotification(deviceID, message, randomChallenge, sessionDataKey);
+
         try {
-            String pollingEndpoint = DOMAIN_NAME + WAIT_PAGE + "?sessionDataKey=";
-            String waitPage = pollingEndpoint + URLEncoder.encode(sessionDataKey, "UTF-8");
+            String waitPage = getWaitPage(context) + "?sessionDataKey=" + URLEncoder.encode(sessionDataKey,
+                    StandardCharsets.UTF_8.name());
             response.sendRedirect(waitPage);
         } catch (IOException e) {
             log.error("Error when trying to redirect to wait.jsp page", e);
         }
     }
 
+    /**
+     * Get the wait.jsp page from authentication.xml file or use the wait page from constant file.
+     *
+     * @param context the AuthenticationContext
+     * @return the waitPage
+     * @throws AuthenticationFailedException
+     */
+    private String getWaitPage(AuthenticationContext context) throws AuthenticationFailedException {
+
+        String waitPage = getWaitPageFromXMLFile(context);
+        if (StringUtils.isEmpty(waitPage)) {
+            waitPage = BiometricAuthenticatorConstants.WAIT_PAGE;
+            if (log.isDebugEnabled()) {
+                log.debug("Default authentication endpoint context is used.");
+            }
+        }
+        return waitPage;
+    }
+
+    /**
+     * Get the wait.jsp page url from the application-authentication.xml file.
+     *
+     * @param context the AuthenticationContext
+     * @return waitPage
+     */
+    public static String getWaitPageFromXMLFile(AuthenticationContext context) {
+
+        return getConfiguration(context, BiometricAuthenticatorConstants.BIOMETRIC_AUTHENTICATION_ENDPOINT_WAIT_URL);
+    }
+
+    /**
+     * Read configurations from application-authentication.xml for given authenticator.
+     *
+     * @param context    Authentication Context.
+     * @param configName Name of the config.
+     * @return Config value.
+     */
+    public static String getConfiguration(AuthenticationContext context, String configName) {
+
+        String configValue = null;
+          if ((context.getProperty(configName)) != null) {
+            configValue = String.valueOf(context.getProperty(configName));
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("Config value for key " + configName + " : " +
+                    configValue);
+        }
+        return configValue;
+    }
+
     @Override
     protected void processAuthenticationResponse(HttpServletRequest httpServletRequest, HttpServletResponse
             httpServletResponse, AuthenticationContext authenticationContext) throws AuthenticationFailedException {
-        log.info("now in process aauth method");
 
-        String randomChallenge = (String) authenticationContext.getProperty(BIOMETRIC_AUTH_CHALLENGE);
+        String randomChallenge = (String) authenticationContext.getProperty
+                (BiometricAuthenticatorConstants.BIOMETRIC_AUTH_CHALLENGE);
         if (randomChallenge.equals(httpServletRequest.getParameter(BiometricAuthenticatorConstants.SIGNED_CHALLENGE))) {
             AuthenticatedUser user = authenticationContext.getSequenceConfig().
                     getStepMap().get(authenticationContext.getCurrentStep() - 1).getAuthenticatedUser();
             authenticationContext.setSubject(user);
         } else {
             authenticationContext.setProperty(BiometricAuthenticatorConstants.AUTHENTICATION_STATUS, true);
-            throw new AuthenticationFailedException("Authentication failed!Sent and received challenges are not equal");
+            throw new AuthenticationFailedException("Authentication failed!Sent & received challenges are not equal.");
         }
     }
 

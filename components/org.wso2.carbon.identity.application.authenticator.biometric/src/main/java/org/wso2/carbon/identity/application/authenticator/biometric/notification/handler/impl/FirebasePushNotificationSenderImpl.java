@@ -33,10 +33,10 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import javax.servlet.http.HttpServletResponse;
-
+import javax.ws.rs.core.MediaType;
 
 /**
- * Implements the sending of push notifications to mobile device IDs.
+ * Implements the sending of push notifications via Firebase to mobile device IDs.
  */
 public class FirebasePushNotificationSenderImpl implements PushNotificationSender {
 
@@ -68,7 +68,7 @@ public class FirebasePushNotificationSenderImpl implements PushNotificationSende
      * @param randomChallenge which contains a random challenge for each push notification
      * @param sessionDataKey  which contains the session data key for each push notification.
      */
-    @SuppressWarnings("unchecked")
+
     @Override
     public void sendPushNotification(String deviceId,
                                      String message, String randomChallenge, String sessionDataKey)
@@ -86,7 +86,7 @@ public class FirebasePushNotificationSenderImpl implements PushNotificationSende
             conn.setRequestMethod(BiometricAuthenticatorConstants.POST);
             conn.setRequestProperty(BiometricAuthenticatorConstants.AUTHORIZATION, "key=" + serverKey);
             conn.setRequestProperty(BiometricAuthenticatorConstants.CONTENT_TYPE,
-                    BiometricAuthenticatorConstants.APPLICATION_JSON);
+                    MediaType.APPLICATION_JSON);
 
             JSONObject biometricNotificationInfo = new JSONObject();
             biometricNotificationInfo.put(BiometricAuthenticatorConstants.BODY, message);
@@ -117,41 +117,30 @@ public class FirebasePushNotificationSenderImpl implements PushNotificationSende
                 log.debug("Firebase message payload: " + json.toString());
             }
 
-            OutputStreamWriter wr = null;
-            try {
-                wr = new OutputStreamWriter(conn.getOutputStream(), StandardCharsets.UTF_8);
+            try (OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream(), StandardCharsets.UTF_8)) {
                 wr.write(json.toString());
                 wr.flush();
-            } finally {
-                if (wr != null) {
-                    wr.close();
-                }
             }
 
             int status = conn.getResponseCode();
             if (status != HttpServletResponse.SC_OK) {
                 if (status == HttpServletResponse.SC_BAD_REQUEST) {
                     log.error("Request parameters were invalid.");
-
                 } else if (status == HttpServletResponse.SC_UNAUTHORIZED) {
                     log.error("Notification Response : Device Id : " + deviceId + " Error occurred.");
-
                 } else if (status == HttpServletResponse.SC_NOT_FOUND) {
-                    log.error("App instance was unregistered from FCM.Token used is no longer valid. ");
-
+                    log.error("App instance was unregistered from FCM. Token used is no longer valid.");
                 } else if (status == HttpServletResponse.SC_INTERNAL_SERVER_ERROR) {
-                    log.error(" An unknown internal error occurred.");
-
+                    log.error("An unknown internal error occurred.");
                 } else if (status == HttpServletResponse.SC_SERVICE_UNAVAILABLE) {
                     log.error("The server is overloaded. DeviceId : " + deviceId);
                 } else {
-                    log.error("Some unknown error occurred when initiating the push notification. ");
+                    log.error("Some unknown error occurred when initiating the push notification.");
                 }
             }
 
-
         } catch (MalformedURLException e) {
-            throw new AuthenticationFailedException("Invalid URL ", e);
+            throw new AuthenticationFailedException("Invalid URL. The required firebase URL is " + fcmUrl, e);
         } catch (ProtocolException e) {
             throw new AuthenticationFailedException("Error while setting the HTTP method ", e);
         } catch (IOException e) {

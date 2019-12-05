@@ -35,21 +35,19 @@ public class BiometricAuthenticatorConstants {
     public static final String AUTHORIZATION = "Authorization";
     public static final String POST = "POST";
     public static final String CONTENT_TYPE = "Content-Type";
-    public static final String APPLICATION_JSON = "application/json";
     public static final String BODY = "body";
     public static final String CONTENT_AVAILABLE = "content_available";
     public static final String HIGH = "high";
     public static final String PRIORITY = "priority";
     public static final String CHALLENGE = "challenge";
-    public static final String SESSION_KEY = "sessionkey";
     public static final String CLICK_ACTION = "click_action";
     public static final String DISPLAY_ANDROID_ACTIVITY = "AuthenticateActivity";
     public static final String TO = "to";
     public static final String NOTIFICATION = "notification";
     public static final String DATA = "data";
-    public static final String DOMAIN_NAME = "https://biometricauthenticator.private.wso2.com:9443/";
     public static final String WAIT_PAGE = "authenticationendpoint/wait.jsp";
     public static final String BIOMETRIC_ENDPOINT = "/biometric-auth";
     public static final String POLLING_QUERY_PARAMS = "?initiator=web&sessionDataKey=";
     public static final String COMPLETED = "COMPLETED";
+    public static final String BIOMETRIC_AUTHENTICATION_ENDPOINT_WAIT_URL = "biometricAuthenticationEndpointWaitURL";
 }

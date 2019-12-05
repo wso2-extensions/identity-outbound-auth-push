@@ -24,9 +24,18 @@ package org.wso2.carbon.identity.application.authenticator.biometric.servlet.sto
  */
 public interface BiometricDataStore {
 
+    /**
+     * Returns the signed challenge stored against the session data key in biometric data store.
+     */
     String getSignedChallenge(String sessionDataKey);
 
+    /**
+     * Adds a new record of session data key against signed challenge to the biometric data store.
+     */
     void addBiometricData(String sessionDataKey, String signedChallenge);
 
+    /**
+     * Removes the record with the given session data key in biometric data store.
+     */
     void removeBiometricData(String sessionDataKey);
 }

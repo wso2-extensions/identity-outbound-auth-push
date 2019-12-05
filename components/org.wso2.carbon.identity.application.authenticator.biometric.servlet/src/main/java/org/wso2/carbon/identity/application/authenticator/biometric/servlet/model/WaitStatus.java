@@ -20,7 +20,7 @@
 package org.wso2.carbon.identity.application.authenticator.biometric.servlet.model;
 
 /**
- * This class represents the status response for status and challenge returned from the android device.
+ * This class represents the status response for status and challenge returned from the mobile device.
  */
 public class WaitStatus {
 

@@ -34,10 +34,11 @@ public class BiometricDataStoreImpl implements BiometricDataStore, Serializable 
     private static BiometricDataStoreImpl biometricDataStoreInstance = new BiometricDataStoreImpl();
     private Map<String, String> biometricDataStore = new HashMap<>();
 
-
     public static BiometricDataStoreImpl getInstance() {
+
         return biometricDataStoreInstance;
     }
+
     @Override
     public String getSignedChallenge(String sessionDataKey) {
 

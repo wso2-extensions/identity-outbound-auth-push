@@ -29,9 +29,9 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.http.HttpService;
+import org.wso2.carbon.identity.application.authenticator.biometric.servlet.BiometricServletConstants;
 import org.wso2.carbon.identity.application.authenticator.biometric.servlet.servlet.BiometricServlet;
 import javax.servlet.Servlet;
-import static org.wso2.carbon.identity.application.authenticator.biometric.servlet.BiometricServletConstants.BIOMETRIC_ENDPOINT;
 
 /**
  * Service component class for the Biometric Servlet initialization.
@@ -47,9 +47,11 @@ public class BiometricEndpointServiceComponent {
     @Activate
     protected void activate(ComponentContext ctxt) {
 
-        Servlet biometricServlet = new ContextPathServletAdaptor(new BiometricServlet(), BIOMETRIC_ENDPOINT);
+        Servlet biometricServlet = new ContextPathServletAdaptor(new BiometricServlet(),
+                BiometricServletConstants.BIOMETRIC_ENDPOINT);
         try {
-            httpService.registerServlet(BIOMETRIC_ENDPOINT, biometricServlet, null, null);
+            httpService.registerServlet(BiometricServletConstants.BIOMETRIC_ENDPOINT, biometricServlet,
+                    null, null);
             if (log.isDebugEnabled()) {
                 log.debug("Biometric endpoint service component activated.");
             }
@@ -61,7 +63,7 @@ public class BiometricEndpointServiceComponent {
     @Deactivate
     protected void deactivate(ComponentContext ctxt) {
 
-        httpService.unregister(BIOMETRIC_ENDPOINT);
+        httpService.unregister(BiometricServletConstants.BIOMETRIC_ENDPOINT);
         if (log.isDebugEnabled()) {
             log.debug("Biometric endpoint service component de-activated.");
         }

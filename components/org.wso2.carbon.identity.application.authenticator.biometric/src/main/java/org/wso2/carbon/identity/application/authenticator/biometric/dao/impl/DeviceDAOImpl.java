@@ -20,7 +20,6 @@
 package org.wso2.carbon.identity.application.authenticator.biometric.dao.impl;
 
 import org.wso2.carbon.identity.application.authenticator.biometric.dao.DeviceDAO;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,18 +35,9 @@ public class DeviceDAOImpl implements DeviceDAO {
 
     private DeviceDAOImpl() {
 
-        List<String> dewniDevices = new ArrayList<>();;
-        dewniDevices.add("ca0OWsg-30c:APA91bHQj3LRdOt7BgQJsOGbz_uWBFe8BtBLS0WSXZFNnVj6BZkU7PM__" +
-                "bHuoZXE6z_mzsjdZaKMerHaILfsf2jalgpndp67b5Vt9xvG0lODmksCq-Nk5N8pdIv1DRHJkVZGKygFcnmw");
-        List<String> chamodiDevices = new ArrayList<>();
-        chamodiDevices.add("cMXgOC6PIFA:APA91bHbV-ZT6JJnqPtt_0jCtImNFtEFefhY3FAck83eZkUB" +
-                "nRmUevrgLbo3G1iC8Xf8dpH3mQ0kVhnJTHnoX_8UocAc5Y1-zbEbTUYQMdFNFruT77KX8skRRF7XY_X8C4Wlo3nZmWAu");
         List<String> yasaraDevices = new ArrayList<>();
         yasaraDevices.add("cbK57eqxofQ:APA91bEJln5WTOzM3hqhDlwPVlj3FXbBaUqQRgRwNGpTSOm" +
                 "YcSXSPaazm4WBeVGYnPcwVJc6FtxzvT4QsRV83akYaUXk6fKEsh0tFs9n4ZEiy_TKFUWPoLPnKkkWj_52Z5x1X788LCn9");
-
-        deviceIDStore.put("dewni", dewniDevices);
-        deviceIDStore.put("chamodi",  chamodiDevices);
         deviceIDStore.put("yasara", yasaraDevices);
     }
 

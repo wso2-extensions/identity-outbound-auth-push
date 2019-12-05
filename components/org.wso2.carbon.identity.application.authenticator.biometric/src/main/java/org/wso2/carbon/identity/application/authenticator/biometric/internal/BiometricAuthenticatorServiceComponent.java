@@ -41,12 +41,12 @@ public class BiometricAuthenticatorServiceComponent {
 
     @Activate
     protected void activate(ComponentContext ctxt) {
+
         try {
             BiometricAuthenticator authenticator = new BiometricAuthenticator();
             Hashtable<String, String> props = new Hashtable<>();
             ctxt.getBundleContext().registerService(ApplicationAuthenticator.class.getName(),
                     authenticator, props);
-            log.info("biometric authenticator service component is activated.");
             if (log.isDebugEnabled()) {
                 log.debug("biometric authenticator service component is activated.");
             }
@@ -58,6 +58,7 @@ public class BiometricAuthenticatorServiceComponent {
 
     @Deactivate
     protected void deactivate(ComponentContext ctxt) {
+
         if (log.isDebugEnabled()) {
             log.debug("biometric authenticator service component is deactivated.");
         }

@@ -29,7 +29,6 @@ public class BiometricServletConstants {
     public static final String WEB = "web";
     public static final String CONTEXT_KEY = "sessionDataKey";
     public static final String CHALLENGE = "challenge";
-    public static final String APPLICATION_JSON = "application/json";
     public static final String SIGNED_CHALLENGE = "signedChallenge";
     public static final String BIOMETRIC_ENDPOINT = "/biometric-auth";
 

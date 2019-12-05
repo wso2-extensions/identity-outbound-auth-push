@@ -72,12 +72,10 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.5.9</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpmime</artifactId>
-            <version>4.5.9</version>
         </dependency>
         <dependency>
             <groupId>org.powermock</groupId>
@@ -192,20 +190,27 @@
                         <Private-Package>org.wso2.carbon.identity.application.authenticator.biometric.internal
                         </Private-Package>
                         <Import-Package>
-                            org.apache.commons.logging.*; version=${org.apache.commons.logging.version},
+                            org.apache.commons.logging; version=${org.apache.commons.logging.version},
                             org.osgi.framework; version="${osgi.framework.imp.pkg.version.range}",
                             org.osgi.service.component; version="${osgi.service.component.imp.pkg.version.range}",
-                            org.wso2.carbon.identity.application.authentication.framework.*; version="${identity.framework.imp.pkg.version.range}",
-                            org.wso2.carbon.identity.application.common.*; version="${identity.framework.imp.pkg.version.range}",
-                            org.wso2.carbon.identity.core.*; version="${identity.framework.imp.pkg.version.range}",
-                            javax.servlet,
-                            javax.servlet.http,
-                            org.apache.httpcomponents.*; version="${org.apache.httpcomponents.version}",
-                            org.json.simple; version=${org.json.simple.version}
+                            org.wso2.carbon.identity.application.authentication.framework; version="${identity.framework.imp.pkg.version.range}",
+                            org.wso2.carbon.identity.application.authentication.framework.config.model; version="${identity.framework.imp.pkg.version.range}",
+                            org.wso2.carbon.identity.application.authentication.framework.context; version="${identity.framework.imp.pkg.version.range}",
+                            org.wso2.carbon.identity.application.authentication.framework.exception; version="${identity.framework.imp.pkg.version.range}",
+                            org.wso2.carbon.identity.application.authentication.framework.model; version="${identity.framework.imp.pkg.version.range}",
+                            org.wso2.carbon.identity.application.common.model; version="${identity.framework.imp.pkg.version.range}",
+                            org.wso2.carbon.identity.core.util; version="${identity.framework.imp.pkg.version.range}",
+                            javax.servlet.http; version="${javax.servlet.http}",
+                            org.json.simple; version=${org.json.simple.version},
+                            javax.servlet; version="${javax.servlet.http}"
                         </Import-Package>
                         <Export-Package>
                             !org.wso2.carbon.identity.application.authenticator.biometric.internal,
-                            org.wso2.carbon.identity.application.authenticator.biometric.*
+                            org.wso2.carbon.identity.application.authenticator.biometric,
+                            org.wso2.carbon.identity.application.authenticator.biometric.dao,
+                            org.wso2.carbon.identity.application.authenticator.biometric.dao.impl,
+                            org.wso2.carbon.identity.application.authenticator.biometric.notification.handler,
+                            org.wso2.carbon.identity.application.authenticator.biometric.notification.handler.impl
                         </Export-Package>
                     </instructions>
                 </configuration>
