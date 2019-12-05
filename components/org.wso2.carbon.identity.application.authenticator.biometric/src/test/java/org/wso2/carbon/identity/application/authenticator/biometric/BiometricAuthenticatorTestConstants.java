@@ -16,4 +16,8 @@
  * under the License.
  *
  */
+package org.wso2.carbon.identity.application.authenticator.biometric;
 
+public class BiometricAuthenticatorTestConstants {
+
+}
