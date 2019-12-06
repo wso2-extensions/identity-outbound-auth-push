@@ -53,7 +53,8 @@ public class BiometricEndpointServiceComponent {
             httpService.registerServlet(BiometricServletConstants.BIOMETRIC_ENDPOINT, biometricServlet,
                     null, null);
             if (log.isDebugEnabled()) {
-                log.debug("Biometric endpoint service component activated.");
+                log.debug("Biometric endpoint service component activated. The endpoint: " +
+                        BiometricServletConstants.BIOMETRIC_ENDPOINT);
             }
         } catch (Exception e) {
             log.error("Error when registering the biometric endpoint via the HTTP service.", e);

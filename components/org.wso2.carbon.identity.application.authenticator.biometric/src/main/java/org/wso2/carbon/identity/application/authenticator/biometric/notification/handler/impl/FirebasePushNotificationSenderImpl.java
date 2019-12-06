@@ -23,6 +23,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.simple.JSONObject;
 import org.wso2.carbon.identity.application.authentication.framework.exception.AuthenticationFailedException;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundConstants;
 import org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticatorConstants;
 import org.wso2.carbon.identity.application.authenticator.biometric.notification.handler.PushNotificationSender;
 import java.io.IOException;
@@ -36,7 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MediaType;
 
 /**
- * Implements the sending of push notifications via Firebase to mobile device IDs.
+ * This class implements the sending of push notifications via Firebase to mobile device IDs.
  */
 public class FirebasePushNotificationSenderImpl implements PushNotificationSender {
 
@@ -97,7 +98,7 @@ public class FirebasePushNotificationSenderImpl implements PushNotificationSende
             JSONObject biometricNotificationData = new JSONObject();
             biometricNotificationData.put(BiometricAuthenticatorConstants.BODY, message);
             biometricNotificationData.put(BiometricAuthenticatorConstants.CHALLENGE, randomChallenge);
-            biometricNotificationData.put(BiometricAuthenticatorConstants.CONTEXT_KEY, sessionDataKey);
+            biometricNotificationData.put(InboundConstants.RequestProcessor.CONTEXT_KEY, sessionDataKey);
             //Reason for sending the click_action in the data payload is to
             // specifically open a different activity in android app except the default main activity.
             biometricNotificationData.put(BiometricAuthenticatorConstants.CLICK_ACTION,

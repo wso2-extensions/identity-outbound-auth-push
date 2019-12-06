@@ -20,14 +20,13 @@
 package org.wso2.carbon.identity.application.authenticator.biometric;
 
 /**
- * Utils class for Biometric Authenticator Constants.
+ * This is a utils class for Biometric Authenticator Constants.
  */
 public class BiometricAuthenticatorConstants {
 
     public static final String AUTHENTICATOR_NAME = "biometric";
     public static final String AUTHENTICATOR_FRIENDLY_NAME = "Biometric Authenticator";
     public static final String AUTHENTICATION_STATUS = "Authentication Failed !";
-    public static final String CONTEXT_KEY = "sessionDataKey";
     public static final String SERVER_KEY = "ServerKey";
     public static final String FCM_URL = "fcmUrl";
     public static final String SIGNED_CHALLENGE = "signedChallenge";

@@ -26,7 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * performs DAO operations related to Biometric device store which stores the device IDs against the usernames.
+ * This class performs DAO operations related to Biometric device store which stores the device IDs
+ * against the usernames.
  */
 public class DeviceDAOImpl implements DeviceDAO {
 

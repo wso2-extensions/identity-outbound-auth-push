@@ -26,6 +26,7 @@ import org.wso2.carbon.identity.application.authentication.framework.AbstractApp
 import org.wso2.carbon.identity.application.authentication.framework.FederatedApplicationAuthenticator;
 import org.wso2.carbon.identity.application.authentication.framework.context.AuthenticationContext;
 import org.wso2.carbon.identity.application.authentication.framework.exception.AuthenticationFailedException;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundConstants;
 import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticatedUser;
 import org.wso2.carbon.identity.application.authenticator.biometric.dao.impl.DeviceDAOImpl;
 import org.wso2.carbon.identity.application.authenticator.biometric.notification.handler.impl.FirebasePushNotificationSenderImpl;
@@ -42,7 +43,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Biometric Authenticator class.
+ * This is the class that implements the biometric authenticator feature.
  */
 public class BiometricAuthenticator extends AbstractApplicationAuthenticator
         implements FederatedApplicationAuthenticator {
@@ -58,14 +59,13 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
 
     @Override
     public boolean canHandle(HttpServletRequest request) {
-
         return request.getParameter(BiometricAuthenticatorConstants.SIGNED_CHALLENGE) != null;
     }
 
     @Override
     public String getContextIdentifier(javax.servlet.http.HttpServletRequest request) {
 
-        return request.getParameter(BiometricAuthenticatorConstants.CONTEXT_KEY);
+        return request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
     }
 
     @Override
@@ -90,7 +90,8 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
         String serviceProviderName = context.getServiceProviderName();
         String message = username + " is trying to log into " + serviceProviderName + " from " + hostname;
         // TODO: 2019-11-20  support localization-future improvement.Include in DOCs.
-        String sessionDataKey = request.getParameter(BiometricAuthenticatorConstants.CONTEXT_KEY);
+        //String sessionDataKey = request.getParameter(BiometricAuthenticatorConstants.CONTEXT_KEY);
+        String sessionDataKey = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
 
         UUID challenge = UUID.randomUUID();
         String randomChallenge = challenge.toString();
@@ -100,6 +101,7 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
         // TODO: 2019-12-05 Without hardcoding to get 0, make it possible to to display all the registered devices of
         //  the user and let the user to select the preferred device. Then edit the code to return the selected device
         //  ID without the 1st device ID in the DAO list.
+
         FirebasePushNotificationSenderImpl pushNotificationSender = FirebasePushNotificationSenderImpl.getInstance();
         pushNotificationSender.init(serverKey, fcmUrl);
         pushNotificationSender.sendPushNotification(deviceID, message, randomChallenge, sessionDataKey);
@@ -166,7 +168,6 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
     @Override
     protected void processAuthenticationResponse(HttpServletRequest httpServletRequest, HttpServletResponse
             httpServletResponse, AuthenticationContext authenticationContext) throws AuthenticationFailedException {
-
         String randomChallenge = (String) authenticationContext.getProperty
                 (BiometricAuthenticatorConstants.BIOMETRIC_AUTH_CHALLENGE);
         if (randomChallenge.equals(httpServletRequest.getParameter(BiometricAuthenticatorConstants.SIGNED_CHALLENGE))) {

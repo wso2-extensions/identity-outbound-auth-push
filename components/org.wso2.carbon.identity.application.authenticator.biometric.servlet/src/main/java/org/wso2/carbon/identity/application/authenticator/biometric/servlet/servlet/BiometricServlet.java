@@ -23,6 +23,7 @@ import com.google.gson.Gson;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundConstants;
 import org.wso2.carbon.identity.application.authenticator.biometric.servlet.BiometricServletConstants;
 import org.wso2.carbon.identity.application.authenticator.biometric.servlet.model.WaitStatus;
 import org.wso2.carbon.identity.application.authenticator.biometric.servlet.store.impl.BiometricDataStoreImpl;
@@ -55,7 +56,7 @@ public class BiometricServlet extends HttpServlet {
             // If the initiator is not null, else block is executed.
             String initiator = request.getParameter(BiometricServletConstants.INITIATOR);
             if (!(BiometricServletConstants.WEB.equals(initiator) && request.getParameterMap()
-                    .containsKey(BiometricServletConstants.CONTEXT_KEY))) {
+                    .containsKey(InboundConstants.RequestProcessor.CONTEXT_KEY))) {
                 if (log.isDebugEnabled()) {
                     log.debug("Unsupported HTTP GET request or session data key is null.");
                 }
@@ -86,7 +87,7 @@ public class BiometricServlet extends HttpServlet {
     private void handleWebResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         WaitStatus waitResponse = new WaitStatus();
-        String sessionDataKeyWeb = request.getParameter(BiometricServletConstants.CONTEXT_KEY);
+        String sessionDataKeyWeb = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
         String signedChallengeExtracted = biometricDataStoreInstance.getSignedChallenge(sessionDataKeyWeb);
         if (StringUtils.isEmpty(signedChallengeExtracted)) {
             if (log.isDebugEnabled()) {
@@ -114,14 +115,14 @@ public class BiometricServlet extends HttpServlet {
 
     private void handleMobileResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        if (!(request.getParameterMap().containsKey(BiometricServletConstants.CONTEXT_KEY) &&
+        if (!(request.getParameterMap().containsKey(InboundConstants.RequestProcessor.CONTEXT_KEY) &&
                 request.getParameterMap().containsKey(BiometricServletConstants.CHALLENGE))) {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST , "Received session data key and/or signed" +
                     " challenge is null.");
 
         } else {
             // If the query parameters session data key and challenge are not null, else block is executed..
-            String sessionDataKeyMobile = request.getParameter(BiometricServletConstants.CONTEXT_KEY);
+            String sessionDataKeyMobile = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
             String challengeMobile = request.getParameter(BiometricServletConstants.CHALLENGE);
             biometricDataStoreInstance.addBiometricData(sessionDataKeyMobile, challengeMobile);
             response.setStatus(HttpServletResponse.SC_OK);

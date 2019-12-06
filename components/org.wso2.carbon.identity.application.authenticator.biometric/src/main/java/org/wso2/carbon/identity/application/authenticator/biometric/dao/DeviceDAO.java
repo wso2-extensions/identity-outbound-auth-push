@@ -22,7 +22,7 @@ package org.wso2.carbon.identity.application.authenticator.biometric.dao;
 import java.util.List;
 
 /**
- * performs DAO operations related to Biometric device store.
+ * This interface performs DAO operations related to Biometric device store.
  */
 public interface DeviceDAO {
 

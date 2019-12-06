@@ -20,14 +20,13 @@
 package org.wso2.carbon.identity.application.authenticator.biometric.servlet;
 
 /**
- * class for Biometric Endpoint Constants.
+ * This class contains constants used for biometric endpoint component.
  */
 public class BiometricServletConstants {
 
     public static final String INITIATOR = "initiator";
     public static final String MOBILE = "mobile";
     public static final String WEB = "web";
-    public static final String CONTEXT_KEY = "sessionDataKey";
     public static final String CHALLENGE = "challenge";
     public static final String SIGNED_CHALLENGE = "signedChallenge";
     public static final String BIOMETRIC_ENDPOINT = "/biometric-auth";
