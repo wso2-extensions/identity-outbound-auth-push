@@ -33,11 +33,14 @@ import org.testng.annotations.Test;
 import org.wso2.carbon.extension.identity.helper.FederatedAuthenticatorUtil;
 import org.wso2.carbon.identity.application.authentication.framework.config.builder.FileBasedConfigurationBuilder;
 import org.wso2.carbon.identity.application.authentication.framework.util.FrameworkUtils;
+import org.wso2.carbon.identity.application.common.model.Property;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.mgt.config.ConfigBuilder;
 import org.wso2.carbon.identity.mgt.mail.NotificationBuilder;
 import org.wso2.carbon.identity.testutil.powermock.PowerMockIdentityBaseTest;
 import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -101,6 +104,16 @@ public class BiometricAuthenticatorTest extends PowerMockIdentityBaseTest {
     public void testGetName() {
 
         Assert.assertEquals(biometricAuthenticator.getName(), BiometricAuthenticatorConstants.AUTHENTICATOR_NAME);
+    }
+
+    @Test
+    public void testGetConfigurationProperties() {
+        List<Property> configProperties = new ArrayList<Property>();
+        Property firebaseServerKey = new Property();
+        configProperties.add(firebaseServerKey);
+        Property fcmUrl = new Property();
+        configProperties.add(fcmUrl);
+        Assert.assertEquals(configProperties.size(), biometricAuthenticator.getConfigurationProperties().size());
     }
 
     @ObjectFactory
