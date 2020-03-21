@@ -19,7 +19,6 @@
 package org.wso2.carbon.identity.application.authenticator.biometric.device.handler.model;
 
 import java.io.Serializable;
-import java.security.PublicKey;
 
 /**
  * This class contains the attributes and operations of the request received from the device .
@@ -28,11 +27,11 @@ public class RegistrationRequest implements Serializable {
     private String deviceName;
     private String deviceModel;
     private String pushId;
-    private PublicKey publicKey;
+    private String publicKey;
     private String signature;
 
     public RegistrationRequest(String deviceName, String deviceModel, String pushId
-            , PublicKey publicKey, String signature) {
+            , String publicKey, String signature) {
         this.deviceName = deviceName;
         this.deviceModel = deviceModel;
         this.pushId = pushId;
@@ -67,11 +66,11 @@ public class RegistrationRequest implements Serializable {
         this.pushId = pushId;
     }
 
-    public PublicKey getPublicKey() {
+    public String getPublicKey() {
         return publicKey;
     }
 
-    public void setPublicKey(PublicKey publicKey) {
+    public void setPublicKey(String publicKey) {
         this.publicKey = publicKey;
     }
 

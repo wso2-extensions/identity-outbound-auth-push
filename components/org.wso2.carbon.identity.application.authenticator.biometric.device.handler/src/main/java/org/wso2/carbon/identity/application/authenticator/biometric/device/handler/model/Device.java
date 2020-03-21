@@ -32,7 +32,7 @@ public class Device implements Serializable {
     private String deviceName;
     private String deviceModel;
     private String pushId;
-    private PublicKey publicKey;
+    private String publicKey;
     private Date registrationTime;
     private Date lastUsedTime;
 
@@ -41,7 +41,7 @@ public class Device implements Serializable {
 
 
     public Device(String deviceId, String userId, String deviceName, String deviceModel,
-                  String pushId, PublicKey publicKey, Date registrationTime, Date lastUsedTime) {
+                  String pushId, String publicKey, Date registrationTime, Date lastUsedTime) {
         this.deviceId = deviceId;
         this.userId = userId;
         this.deviceName = deviceName;
@@ -53,7 +53,7 @@ public class Device implements Serializable {
     }
 
     public Device(String deviceId, String deviceName, String deviceModel,
-                  String pushId, PublicKey publicKey, Date registrationTime, Date lastUsedTime) {
+                  String pushId, String publicKey, Date registrationTime, Date lastUsedTime) {
         this.deviceId = deviceId;
         this.deviceName = deviceName;
         this.deviceModel = deviceModel;
@@ -63,7 +63,7 @@ public class Device implements Serializable {
         this.lastUsedTime = lastUsedTime;
     }
 
-    public Device(String deviceName, String deviceModel, String pushId, PublicKey publicKey) {
+    public Device(String deviceName, String deviceModel, String pushId, String publicKey) {
         this.deviceName = deviceName;
         this.deviceModel = deviceModel;
         this.pushId = pushId;
@@ -111,11 +111,11 @@ public class Device implements Serializable {
         this.pushId = pushId;
     }
 
-    public PublicKey getPublicKey() {
+    public String getPublicKey() {
         return publicKey;
     }
 
-    public void setPublicKey(PublicKey publicKey) {
+    public void setPublicKey(String publicKey) {
         this.publicKey = publicKey;
     }
 
