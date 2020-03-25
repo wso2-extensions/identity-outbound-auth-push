@@ -31,6 +31,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -40,7 +41,7 @@ import java.util.ArrayList;
 public interface DeviceHandler {
 
     Device registerDevice(RegistrationRequest registrationRequest) throws
-            BiometricDeviceHandlerClientException, BiometricdeviceHandlerServerException, SQLException, UserStoreException, JsonProcessingException, InvalidKeyException, NoSuchAlgorithmException, SignatureException, UnsupportedEncodingException;
+            BiometricDeviceHandlerClientException, BiometricdeviceHandlerServerException, SQLException, UserStoreException, JsonProcessingException, InvalidKeyException, NoSuchAlgorithmException, SignatureException, UnsupportedEncodingException, InvalidKeySpecException;
 
     void unregisterDevice(String deviceId) throws BiometricDeviceHandlerClientException,
             BiometricdeviceHandlerServerException, SQLException;

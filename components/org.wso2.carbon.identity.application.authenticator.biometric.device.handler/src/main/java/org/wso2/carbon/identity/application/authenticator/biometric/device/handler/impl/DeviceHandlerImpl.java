@@ -23,7 +23,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.DeviceHandler;
-import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.cache.*;
+import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.cache.BiometricDeviceHandlerCacheKey;
+import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.cache.DeviceCache;
+import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.cache.DeviceCacheEntry;
+import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.cache.RegistrationRequestChallengeCache;
+import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.cache.RegistrationRequestChallengeCacheEntry;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.dao.DeviceDAOMockImpl;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.exception.BiometricDeviceHandlerClientException;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.exception.BiometricdeviceHandlerServerException;
@@ -34,13 +38,18 @@ import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.user.api.UserStoreException;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+
 import java.security.InvalidKeyException;
+import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
 import java.security.Signature;
 import java.security.SignatureException;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.UUID;
 
 /**
@@ -52,8 +61,8 @@ public class DeviceHandlerImpl implements DeviceHandler {
     @Override
     public Device registerDevice(RegistrationRequest registrationRequest)
             throws BiometricDeviceHandlerClientException, BiometricdeviceHandlerServerException, SQLException,
-            UserStoreException, JsonProcessingException, InvalidKeyException, NoSuchAlgorithmException,
-            SignatureException {
+            UserStoreException, JsonProcessingException, NoSuchAlgorithmException,
+            SignatureException, InvalidKeySpecException, InvalidKeyException {
         Device device = null;
         User user = getAuthenticatedUser();
         String cacheId = user.getUserName() + user.getUserStoreDomain() + user.getTenantDomain();
@@ -62,11 +71,7 @@ public class DeviceHandlerImpl implements DeviceHandler {
         if (log.isDebugEnabled()) {
             log.debug("Verifying digital signature");
         }
-        byte[] signatureBytes = registrationRequest.getSignature().getBytes(StandardCharsets.UTF_8);
-        Signature sign = Signature.getInstance("SHA256withDSA");
-        sign.initVerify(registrationRequest.getPublicKey());
-        sign.update(cacheEntry.getChallenge().toString().getBytes());
-        if (!sign.verify(signatureBytes)) {
+        if (!verifySignature(registrationRequest.getSignature(), registrationRequest.getPublicKey(), cacheEntry)) {
             throw new BiometricdeviceHandlerServerException("Could not verify source");
         }
         device = new Device(registrationRequest.getDeviceName(), registrationRequest.getDeviceModel(),
@@ -120,7 +125,7 @@ public class DeviceHandlerImpl implements DeviceHandler {
         User user = getAuthenticatedUser();
         String tenantDomain = user.getTenantDomain();
         UUID challenge = UUID.randomUUID();
-        String registrationUrl = "https://192.168.1.10 172.17.0.1:9443/t/" +
+        String registrationUrl = "https://localhost:9443/t/" +
                 user.getTenantDomain() + "/me/biometricdevice/";
         String authUrl = "https://localhost:9443/t/" + user.getTenantDomain() + "/me/biometric-auth";
         String cacheId = user.getUserName() + user.getUserStoreDomain() + tenantDomain;
@@ -136,5 +141,19 @@ public class DeviceHandlerImpl implements DeviceHandler {
         return user;
     }
 
+    private boolean verifySignature(String signature, String publicKeyStr,
+                                    RegistrationRequestChallengeCacheEntry cacheEntry)
+            throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException {
+
+        byte[] signatureBytes = Base64.getDecoder().decode(signature);
+        Signature sign = Signature.getInstance("SHA256withDSA");
+        byte[] publicKeyData = Base64.getDecoder().decode(publicKeyStr);
+        X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKeyData);
+        KeyFactory kf = KeyFactory.getInstance("DSA");
+        PublicKey publicKey = kf.generatePublic(spec);
+        sign.initVerify(publicKey);
+        sign.update(cacheEntry.getChallenge().toString().getBytes());
+        return sign.verify(signatureBytes);
+    }
 
 }
