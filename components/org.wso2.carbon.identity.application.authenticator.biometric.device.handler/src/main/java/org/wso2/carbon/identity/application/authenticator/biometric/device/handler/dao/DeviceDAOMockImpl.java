@@ -35,6 +35,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -67,13 +68,13 @@ public class DeviceDAOMockImpl implements DeviceDAO {
 
         privateKeys[0] = keyPair.getPrivate();
         Device device1 = new Device("000AA11", "123", "My Iphone", "Iphone 8",
-                "dsfsdf3dwawaddwa", keyPair.getPublic(), new Date(),
+                "dsfsdf3dwawaddwa", Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded()), new Date(),
                  new Date());
 
         keyPair = keyPairGen.generateKeyPair();
         privateKeys[1] = keyPair.getPrivate();
         Device device2 = new Device("000AA22", "124", "My Android", "Galaxy s10",
-                "dsfsdf3dwawaddsa3dwa", keyPair.getPublic(), new Date(),
+                "dsfsdf3dwasa3dwa", Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded()), new Date(),
                 new Date());
         deviceStore.put(device1.getDeviceId(), device1);
         deviceStore.put(device2.getDeviceId(), device2);

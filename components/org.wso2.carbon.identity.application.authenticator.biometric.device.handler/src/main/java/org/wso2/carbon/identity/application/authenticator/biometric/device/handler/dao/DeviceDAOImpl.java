@@ -33,50 +33,22 @@ import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
 
 import java.io.IOException;
-import java.security.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 
 /**
  * This class implements DeviecDAO interface .
  */
 public class DeviceDAOImpl implements DeviceDAO {
     private static final Log log = LogFactory.getLog(DeviceDAOImpl.class);
-    private static DeviceDAO dao;
+    private static DeviceDAO dao = new DeviceDAOImpl();
 
-    static {
-        try {
-            dao = new DeviceDAOImpl();
-        } catch (NoSuchAlgorithmException e) {
-            log.error("Failed to instantiate the DAO class");
-        }
-    }
-
-
-    private HashMap<String, Device> deviceStore = new HashMap<>();
-    private PrivateKey[] privateKeys = new PrivateKey[2];
-
-    private DeviceDAOImpl() throws NoSuchAlgorithmException {
-        KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("DSA");
-        keyPairGen.initialize(2048);
-        KeyPair keyPair = keyPairGen.generateKeyPair();
-
-        privateKeys[0] = keyPair.getPrivate();
-        Device device1 = new Device("000AA11", "123", "My Iphone", "Iphone 8",
-                "dsfsdf3dwawaddwa", keyPair.getPublic(), new Timestamp(System.currentTimeMillis()),
-                new Timestamp(System.currentTimeMillis()));
-
-        keyPair = keyPairGen.generateKeyPair();
-        privateKeys[1] = keyPair.getPrivate();
-        Device device2 = new Device("000AA22", "124", "My Android", "Galaxy s10",
-                "dsfsdf3dwawaddsa3dwa", keyPair.getPublic(), new Timestamp(System.currentTimeMillis()),
-                new Timestamp(System.currentTimeMillis()));
-        deviceStore.put(device1.getDeviceId(), device1);
-        deviceStore.put(device2.getDeviceId(), device2);
-
+    private DeviceDAOImpl()  {
 
     }
 
@@ -152,7 +124,7 @@ public class DeviceDAOImpl implements DeviceDAO {
                 device.setDeviceName(resultSet.getString(3));
                 device.setDeviceModel(resultSet.getString(4));
                 device.setPushId(resultSet.getString(5));
-                device.setPublicKey((PublicKey) BiometricdeviceHandlerUtil.jsonToObject(resultSet.getString(6)));
+                device.setPublicKey(resultSet.getString(6));
                 device.setRegistrationTime(resultSet.getTimestamp(7));
                 device.setLastUsedTime(resultSet.getTimestamp(8));
             }
@@ -180,7 +152,7 @@ public class DeviceDAOImpl implements DeviceDAO {
                 device.setDeviceName(resultSet.getString(3));
                 device.setDeviceModel(resultSet.getString(4));
                 device.setPushId(resultSet.getString(5));
-                device.setPublicKey((PublicKey) BiometricdeviceHandlerUtil.jsonToObject(resultSet.getString(6)));
+                device.setPublicKey(resultSet.getString(6));
                 device.setRegistrationTime(resultSet.getTimestamp(7));
                 device.setLastUsedTime(resultSet.getTimestamp(8));
             }
