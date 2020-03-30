@@ -26,6 +26,6 @@
             android:layout_height="87dp"
             android:layout_centerInParent="true"
             app:srcCompat="@drawable/baseline_check_black_18dp"
-            android:contentDescription="@string/image_of_a_check_mark_in_success_activity" />
+            android:contentDescription="@string/success_img" />
 
 </RelativeLayout>

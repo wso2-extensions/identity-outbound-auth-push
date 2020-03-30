@@ -18,7 +18,7 @@
     <string name="biometric_prompt_message">Unlock with your fingerprint.</string>
     <string name="close">Close</string>
     <string name="textview">TextView</string>
-    <string name="image_of_a_check_mark_in_success_activity">Image of a tick mark in success activity.</string>
-    <string name="image_of_a_fingerprint_in_main_activity">Image of a fingerprint in main activity.</string>
-    <string name="image_of_a_fingerprint_in_authenticate_activity">Image of a fingerprint in authenticate activity.</string>
+    <string name="success_img">Image of a tick mark in success activity.</string>
+    <string name="fingerprint_main_activity_img">Image of a fingerprint in main activity.</string>
+    <string name="fingerprint_auth_activity_img">Image of a fingerprint in authenticate activity.</string>
 </resources>

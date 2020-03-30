@@ -23,6 +23,6 @@
             android:layout_height="126dp"
             android:layout_centerInParent="true"
             app:srcCompat="@mipmap/ic_launcher_fingerprint"
-            android:contentDescription="@string/image_of_a_fingerprint_in_main_activity" />
+            android:contentDescription="@string/fingerprint_main_activity_img" />
 
 </RelativeLayout>
