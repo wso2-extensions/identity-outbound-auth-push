@@ -31,7 +31,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.wso2.carbon.identity.outbound.auth.biometric</groupId>
     <artifactId>identity-outbound-auth-biometric</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <url>http://wso2.org</url>
@@ -101,11 +101,17 @@
 
     <dependencyManagement>
         <dependencies>
+
             <dependency>
                 <groupId>org.wso2.carbon.identity</groupId>
                 <artifactId>org.wso2.carbon.identity.sso.saml</artifactId>
                 <version>${carbon.identity.version}</version>
             </dependency>
+            <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+           <version>${javax.ws.rs-api.version}</version>
+        </dependency>
             <dependency>
                 <groupId>com.googlecode.json-simple</groupId>
                 <artifactId>json-simple</artifactId>
@@ -205,6 +211,22 @@
                 <version>${org.wso2.carbon.identity.outbound.auth.oidc}</version>
                 <scope>provided</scope>
             </dependency>
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>${commons.lang.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${org.apache.httpcomponents.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpmime</artifactId>
+                <version>${org.apache.httpcomponents.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -246,16 +268,9 @@
         <maven.buildnumber.plugin.version>1.4</maven.buildnumber.plugin.version>
         <identity.framework.version>5.12.387</identity.framework.version>
         <identity.framework.imp.pkg.version.range>[5.12.387, 6.0.0)</identity.framework.imp.pkg.version.range>
-        <carbon.identity.package.export.version>${project.version}</carbon.identity.package.export.version>
         <jacoco.version>0.8.2</jacoco.version>
-
         <carbon.identity.version>[5.14.0, 6.0.0]</carbon.identity.version>
         <commons.logging.version>1.1.1</commons.logging.version>
-        <carbon.kernel.version>4.4.3</carbon.kernel.version>
-        <oltu.version>1.0.0.wso2v2</oltu.version>
-        <org.apache.oltu.oauth2.client.version>1.0.0</org.apache.oltu.oauth2.client.version>
-        <oltu.package.import.version.range>[1.0.0, 2.0.0)</oltu.package.import.version.range>
-        <wso2.json>3.0.0.wso2v1</wso2.json>
         <javax.servlet.http>[2.6.0,3.6.0)</javax.servlet.http>
         <org.eclipse.equinox.version>1.0.0</org.eclipse.equinox.version>
         <com.google.code.gson.version>2.2.4</com.google.code.gson.version>
@@ -265,24 +280,20 @@
         <org.osgi.service.component.annotations.version>1.3.0</org.osgi.service.component.annotations.version>
         <com.googlecode.json-simple.version>1.1.1</com.googlecode.json-simple.version>
         <import.package.version.javax.servlet>[2.6.0,3.6.0]</import.package.version.javax.servlet>
-        <org.apache.felix.maven.version>2.3.5</org.apache.felix.maven.version>
         <org.json.simple.version>0.0.0</org.json.simple.version>
         <org.apache.commons.logging.version>1.0.4</org.apache.commons.logging.version>
         <org.apache.maven.compiler.plugin>2.0</org.apache.maven.compiler.plugin>
-        <org.apache.felix.maven.src.plugin>1.7.2</org.apache.felix.maven.src.plugin>
         <org.apache.httpcomponents.version>[4.5.0,5.5.0)</org.apache.httpcomponents.version>
         <org.eclipse.equinox.http.helper.version>0.0.0</org.eclipse.equinox.http.helper.version>
-
         <apache.felix.scr.ds.annotations.version>1.2.8</apache.felix.scr.ds.annotations.version>
         <osgi.service.component.imp.pkg.version.range>[1.2.0, 2.0.0)</osgi.service.component.imp.pkg.version.range>
-        <maven.scr.plugin.version>1.7.2</maven.scr.plugin.version>
-        <osgi.service.http.imp.pkg.version.range>[1.2.1, 2.0.0)</osgi.service.http.imp.pkg.version.range>
         <osgi.framework.imp.pkg.version.range>[1.7.0, 2.0.0)</osgi.framework.imp.pkg.version.range>
-        <javax.servlet.http.version>[4.0.0,5.0.0]</javax.servlet.http.version>
         <powermock.version>1.6.5</powermock.version>
         <identity.extension.utils>1.0.8</identity.extension.utils>
         <org.wso2.carbon.identity.outbound.auth.oidc>5.1.20</org.wso2.carbon.identity.outbound.auth.oidc>
         <maven.findbugsplugin.version>3.0.5</maven.findbugsplugin.version>
+        <commons.lang.version>20030203.000129</commons.lang.version>
+        <javax.ws.rs-api.version>2.1.1</javax.ws.rs-api.version>
     </properties>
     <modules>
         <module>components/org.wso2.carbon.identity.application.authenticator.biometric</module>
