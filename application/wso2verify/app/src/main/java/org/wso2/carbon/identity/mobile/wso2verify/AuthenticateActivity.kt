@@ -43,55 +43,54 @@ class AuthenticateActivity : AppCompatActivity() {
         setContentView(R.layout.activity_authenticate)
 
         val actionbar = supportActionBar
-        actionbar?.title=getString(R.string.app_name)
+        actionbar?.title = getString(R.string.app_name)
         actionbar?.setDisplayHomeAsUpEnabled(true)
 
         val intentAuthenticate = intent
         val token = FirebaseInstanceId.getInstance().token
         Log.d("TAG", "Device ID of the android device: $token")
 
-            val messageSessionDataKey = intentAuthenticate.getStringExtra(BiometricAppConstants.CONTEXT_KEY)
-            val messageChallenge = intentAuthenticate.getStringExtra(BiometricAppConstants.CHALLENGE)
-            val notificationBody=intentAuthenticate.getStringExtra(BiometricAppConstants.BODY)
-            Log.d("TAG","session data key at authenticate activity: $messageSessionDataKey")
-            Log.d("TAG","challenge at auth activity: $messageChallenge")
+        val messageSessionDataKey = intentAuthenticate.getStringExtra(BiometricAppConstants.CONTEXT_KEY)
+        val messageChallenge = intentAuthenticate.getStringExtra(BiometricAppConstants.CHALLENGE)
+        val notificationBody = intentAuthenticate.getStringExtra(BiometricAppConstants.BODY)
+        Log.d("TAG", "session data key at authenticate activity: $messageSessionDataKey")
+        Log.d("TAG", "challenge at auth activity: $messageChallenge")
 
-            fun text():String{
-                val textViewDynamic = TextView(this)
-                textViewDynamic.text = notificationBody
-                Log.d("New text: ", textViewDynamic.text.toString())
-                return textViewDynamic.text.toString()
+        fun text(): String {
+            val textViewDynamic = TextView(this)
+            textViewDynamic.text = notificationBody
+            Log.d("New text: ", textViewDynamic.text.toString())
+            return textViewDynamic.text.toString()
 
-            }
+        }
 
         notification_display.movementMethod = ScrollingMovementMethod()
         notification_display.text = text()
 
-            val executor = Executors.newSingleThreadExecutor()
-            val activity: FragmentActivity = this // reference to activity
+        val executor = Executors.newSingleThreadExecutor()
+        val activity: FragmentActivity = this // reference to activity
 
-            val biometricPrompt = BiometricPrompt(activity, executor,
+        val biometricPrompt = BiometricPrompt(activity, executor,
                 object : BiometricPrompt.AuthenticationCallback() {
 
-                    override fun onAuthenticationSucceeded( result:
-                    BiometricPrompt.AuthenticationResult) {
+                    override fun onAuthenticationSucceeded(result:
+                                                           BiometricPrompt.AuthenticationResult) {
                         super.onAuthenticationSucceeded(result)
                         if (messageSessionDataKey != null && messageChallenge != null) {
                             success(messageSessionDataKey, messageChallenge)
                         }
                     }
                 })
-            val promptInfo = BiometricPrompt.
-                PromptInfo.Builder()
+        val promptInfo = BiometricPrompt.PromptInfo.Builder()
                 .setTitle(getString(R.string.biometric_prompt_message))
                 .setNegativeButtonText(getString(R.string.close))
                 .build()
-            findViewById<Button>(R.id.allow_button).setOnClickListener {
-                biometricPrompt.authenticate(promptInfo)
-            }
-            findViewById<Button>(R.id.deny_button).setOnClickListener {
-                //todo Handle Deny Button-DOCS
-            }
+        findViewById<Button>(R.id.allow_button).setOnClickListener {
+            biometricPrompt.authenticate(promptInfo)
+        }
+        findViewById<Button>(R.id.deny_button).setOnClickListener {
+            //todo Handle Deny Button-DOCS
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

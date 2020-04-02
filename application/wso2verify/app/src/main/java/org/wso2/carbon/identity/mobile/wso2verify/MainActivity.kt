@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val actionbar = supportActionBar
-        actionbar?.title= getString(R.string.app_name)
+        actionbar?.title = getString(R.string.app_name)
 
         val intentMain = intent
 
@@ -40,21 +40,22 @@ class MainActivity : AppCompatActivity() {
 
             authenticateIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             authenticateIntent.putExtra(
-                BiometricAppConstants.CONTEXT_KEY,intentMain.getStringExtra(
+                    BiometricAppConstants.CONTEXT_KEY, intentMain.getStringExtra(
                     BiometricAppConstants.CONTEXT_KEY
-                ))
+            ))
             authenticateIntent.putExtra(
-                BiometricAppConstants.CHALLENGE,intentMain.getStringExtra(
+                    BiometricAppConstants.CHALLENGE, intentMain.getStringExtra(
                     BiometricAppConstants.CHALLENGE
-                ))
+            ))
             authenticateIntent.putExtra(
-                BiometricAppConstants.BODY,intentMain.getStringExtra(
+                    BiometricAppConstants.BODY, intentMain.getStringExtra(
                     BiometricAppConstants.BODY
-                ))
+            ))
             startActivity(authenticateIntent)
             finish()
         }
     }
+
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return true

@@ -43,7 +43,7 @@ class SuccessActivity : AppCompatActivity() {
         setContentView(R.layout.activity_success)
 
         val actionbar = supportActionBar
-        actionbar?.title=getString(R.string.app_name)
+        actionbar?.title = getString(R.string.app_name)
         actionbar?.setDisplayHomeAsUpEnabled(true)
 
         val intent = intent
@@ -53,10 +53,10 @@ class SuccessActivity : AppCompatActivity() {
             val challenge = intent.getStringExtra(BiometricAppConstants.CHALLENGE)
 
             val requestUrlBuilderImpl = RequestUrlBuilderImpl()
-            requestUrlBuilderImpl.requestUrlBuilder(sessionDataKey,challenge)
+            requestUrlBuilderImpl.requestUrlBuilder(sessionDataKey, challenge)
 
         } catch (e: Exception) {
-            Log.e("Error ", "Error when trying to initiate the network call.",e)
+            Log.e("Error ", "Error when trying to initiate the network call.", e)
         }
     }
 
@@ -89,12 +89,12 @@ public class NetworkTask : AsyncTask<String, Int, Long>() {
             val outputWriter = OutputStreamWriter(outputStream)
             outputWriter.write(queryString)
             outputWriter.flush()
-            } catch (e: SSLHandshakeException){
-                Log.e("Error","SSL handshake error occurred", e)
-            }
+        } catch (e: SSLHandshakeException) {
+            Log.e("Error", "SSL handshake error occurred", e)
+        }
 
         val inputStream = BufferedReader(InputStreamReader
-            (connection.inputStream)).use {
+        (connection.inputStream)).use {
             val response = StringBuffer()
             var inputLine = it.readLine()
             while (inputLine != null) {
