@@ -19,12 +19,12 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorPrimary"
-        tools:context="org.wso2.carbon.identity.mobile.application.authenticator.wso2Verify.org.wso2.carbon.identity.mobile.wso2verify.SuccessActivity">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorPrimary"
+                tools:context="org.wso2.carbon.identity.mobile.application.authenticator.wso2Verify.org.wso2.carbon.identity.mobile.wso2verify.SuccessActivity">
 
     <TextView
             android:id="@+id/text_view_success"
@@ -35,7 +35,7 @@
             android:text="@string/textSuccess"
             android:textAlignment="center"
             android:textColor="@android:color/background_light"
-            android:textSize="36sp" />
+            android:textSize="36sp"/>
 
     <ImageView
             android:id="@+id/image_view_success"
@@ -43,6 +43,6 @@
             android:layout_height="87dp"
             android:layout_centerInParent="true"
             app:srcCompat="@drawable/baseline_check_black_18dp"
-            android:contentDescription="@string/success_img" />
+            android:contentDescription="@string/success_img"/>
 
 </RelativeLayout>
