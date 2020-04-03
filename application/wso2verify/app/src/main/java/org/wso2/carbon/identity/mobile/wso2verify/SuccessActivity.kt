@@ -15,6 +15,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.wso2.carbon.identity.mobile.wso2verify
 
 import androidx.appcompat.app.AppCompatActivity
@@ -93,8 +94,10 @@ public class NetworkTask : AsyncTask<String, Int, Long>() {
             Log.e("Error", "SSL handshake error occurred", e)
         }
 
-        val inputStream = BufferedReader(InputStreamReader
-        (connection.inputStream)).use {
+        val inputStream = BufferedReader(
+            InputStreamReader
+                (connection.inputStream)
+        ).use {
             val response = StringBuffer()
             var inputLine = it.readLine()
             while (inputLine != null) {

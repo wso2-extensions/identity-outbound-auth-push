@@ -28,7 +28,7 @@ import java.util.concurrent.Executors
 import android.widget.TextView
 import androidx.biometric.BiometricPrompt
 import com.google.firebase.iid.FirebaseInstanceId
-import kotlinx.android.synthetic.main.activity_authenticate.*
+import kotlinx.android.synthetic.main.activity_authenticate.notification_display
 import android.text.method.ScrollingMovementMethod
 
 
