@@ -61,9 +61,3 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 }
-
-// handle enabling push notifs in IOS.
-//force stop app-how notifications are handled?
-//try pull option if push notification delivery fails.
-//how to handle if push notifs are disabled in android.
-
