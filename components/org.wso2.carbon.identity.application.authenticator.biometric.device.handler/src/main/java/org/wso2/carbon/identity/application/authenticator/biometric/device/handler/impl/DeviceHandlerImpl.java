@@ -28,7 +28,7 @@ import org.wso2.carbon.identity.application.authenticator.biometric.device.handl
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.cache.DeviceCacheEntry;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.cache.RegistrationRequestChallengeCache;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.cache.RegistrationRequestChallengeCacheEntry;
-import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.dao.DeviceDAOMockImpl;
+import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.dao.DeviceDAOImpl;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.exception.BiometricDeviceHandlerClientException;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.exception.BiometricdeviceHandlerServerException;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.model.Device;
@@ -79,14 +79,14 @@ public class DeviceHandlerImpl implements DeviceHandler {
         device.setDeviceId(UUID.randomUUID().toString());
         DeviceCache.getInstance().addToCacheByRequestId(new BiometricDeviceHandlerCacheKey(device.getDeviceId()),
                 new DeviceCacheEntry(device));
-        DeviceDAOMockImpl.getInstance().registerDevice(device);
+        DeviceDAOImpl.getInstance().registerDevice(device);
         return device;
     }
 
     @Override
     public void unregisterDevice(String deviceId) throws BiometricdeviceHandlerServerException,
             BiometricDeviceHandlerClientException, SQLException {
-        DeviceDAOMockImpl.getInstance().unregisterDevice(deviceId);
+        DeviceDAOImpl.getInstance().unregisterDevice(deviceId);
 
     }
 
@@ -97,24 +97,24 @@ public class DeviceHandlerImpl implements DeviceHandler {
                 .getValueFromCacheByRequestId(new BiometricDeviceHandlerCacheKey(deviceId));
         if (cacheEntry != null) {
             if (cacheEntry.getDevice().getDeviceName().equals(newDeviceName)) {
-                DeviceDAOMockImpl.getInstance().editDeviceName(deviceId, newDeviceName);
+                DeviceDAOImpl.getInstance().editDeviceName(deviceId, newDeviceName);
             }
             DeviceCache.getInstance().clearCacheEntryByRequestId(new BiometricDeviceHandlerCacheKey(deviceId));
         } else {
-            DeviceDAOMockImpl.getInstance().editDeviceName(deviceId, newDeviceName);
+            DeviceDAOImpl.getInstance().editDeviceName(deviceId, newDeviceName);
         }
     }
 
     @Override
     public Device getDevice(String deviceId) throws BiometricDeviceHandlerClientException, SQLException,
             BiometricdeviceHandlerServerException, IOException {
-        return DeviceDAOMockImpl.getInstance().getDevice(deviceId);
+        return DeviceDAOImpl.getInstance().getDevice(deviceId);
     }
 
     @Override
     public ArrayList<Device> lisDevices() throws BiometricdeviceHandlerServerException,
             BiometricDeviceHandlerClientException, SQLException, UserStoreException, IOException {
-        return DeviceDAOMockImpl.getInstance().listDevices();
+        return DeviceDAOImpl.getInstance().listDevices();
     }
 
     @Override
@@ -125,9 +125,9 @@ public class DeviceHandlerImpl implements DeviceHandler {
         User user = getAuthenticatedUser();
         String tenantDomain = user.getTenantDomain();
         UUID challenge = UUID.randomUUID();
-        String registrationUrl = "https://localhost:9443/t/" +
+        String registrationUrl = "https://192.168.1.6:9443/t/" +
                 user.getTenantDomain() + "/me/biometricdevice/";
-        String authUrl = "https://localhost:9443/t/" + user.getTenantDomain() + "/me/biometric-auth";
+        String authUrl = "https://192.168.1.6:9443/t/" + user.getTenantDomain() + "/me/biometric-auth";
         String cacheId = user.getUserName() + user.getUserStoreDomain() + tenantDomain;
         RegistrationRequestChallengeCache.getInstance().addToCacheByRequestId
                 (new BiometricDeviceHandlerCacheKey(cacheId), new RegistrationRequestChallengeCacheEntry(challenge));
