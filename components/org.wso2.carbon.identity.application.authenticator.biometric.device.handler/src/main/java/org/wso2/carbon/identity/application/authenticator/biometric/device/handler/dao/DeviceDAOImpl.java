@@ -26,7 +26,6 @@ import org.wso2.carbon.identity.application.authenticator.biometric.device.handl
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.exception.BiometricDeviceHandlerClientException;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.exception.BiometricdeviceHandlerServerException;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.model.Device;
-import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.util.BiometricdeviceHandlerUtil;
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.core.util.IdentityDatabaseUtil;
 import org.wso2.carbon.user.api.UserStoreException;
@@ -70,9 +69,9 @@ public class DeviceDAOImpl implements DeviceDAO {
         preparedStatement.setString(3, device.getDeviceName());
         preparedStatement.setString(4, device.getDeviceModel());
         preparedStatement.setString(5, device.getPushId());
-        preparedStatement.setString(6, BiometricdeviceHandlerUtil.objectToJson(device.getPublicKey()));
-        preparedStatement.setTimestamp(7, new Timestamp(System.currentTimeMillis()));
-        preparedStatement.setTimestamp(8, new Timestamp(System.currentTimeMillis()));
+        preparedStatement.setString(6, device.getPublicKey());
+        preparedStatement.setTimestamp(7, new Timestamp(new Date().getTime()));
+        preparedStatement.setTimestamp(8, new Timestamp(new Date().getTime()));
         preparedStatement.execute();
         if (!connection.getAutoCommit()) {
             connection.commit();
@@ -114,21 +113,23 @@ public class DeviceDAOImpl implements DeviceDAO {
         preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQUERIES.GET_DEVICE);
         preparedStatement.setString(1, deviceId);
         ResultSet resultSet = preparedStatement.executeQuery();
-        if (resultSet == null) {
+        if (resultSet != null) {
+            if (resultSet.next()) {
+                device.setDeviceId(resultSet.getString(1));
+                device.setDeviceName(resultSet.getString(2));
+                device.setDeviceModel(resultSet.getString(3));
+                device.setPushId(resultSet.getString(4));
+                device.setPublicKey(resultSet.getString(5));
+                device.setRegistrationTime(timestampToDate(resultSet.getTimestamp(6)));
+                device.setLastUsedTime(timestampToDate(resultSet.getTimestamp(7)));
+            }
+
+
+        } else {
             log.error("The requested device is not registered in the system");
             throw new BiometricdeviceHandlerServerException("Device Not found.");
-        } else {
-            while (resultSet.next()) {
-                device.setDeviceId(resultSet.getString(1));
-                device.setUserId(resultSet.getString(2));
-                device.setDeviceName(resultSet.getString(3));
-                device.setDeviceModel(resultSet.getString(4));
-                device.setPushId(resultSet.getString(5));
-                device.setPublicKey(resultSet.getString(6));
-                device.setRegistrationTime(resultSet.getTimestamp(7));
-                device.setLastUsedTime(resultSet.getTimestamp(8));
-            }
         }
+
 
         IdentityDatabaseUtil.closeAllConnections(connection, null, preparedStatement);
 
@@ -141,20 +142,19 @@ public class DeviceDAOImpl implements DeviceDAO {
         ArrayList<Device> devices = new ArrayList<>();
         Connection connection = IdentityDatabaseUtil.getDBConnection();
         PreparedStatement preparedStatement = null;
-        Device device = new Device();
+        Device device = null;
         preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQUERIES.LIST_DEVICES);
         preparedStatement.setString(1, userId);
         ResultSet resultSet = preparedStatement.executeQuery();
         if (resultSet != null) {
             while (resultSet.next()) {
+                device = new Device();
                 device.setDeviceId(resultSet.getString(1));
-                device.setUserId(resultSet.getString(2));
-                device.setDeviceName(resultSet.getString(3));
-                device.setDeviceModel(resultSet.getString(4));
-                device.setPushId(resultSet.getString(5));
-                device.setPublicKey(resultSet.getString(6));
-                device.setRegistrationTime(resultSet.getTimestamp(7));
-                device.setLastUsedTime(resultSet.getTimestamp(8));
+                device.setDeviceName(resultSet.getString(2));
+                device.setDeviceModel(resultSet.getString(3));
+                device.setRegistrationTime(timestampToDate(resultSet.getTimestamp(4)));
+                device.setLastUsedTime(timestampToDate(resultSet.getTimestamp(5)));
+                devices.add(device);
             }
         }
         IdentityDatabaseUtil.closeAllConnections(connection, null, preparedStatement);
@@ -184,14 +184,13 @@ public class DeviceDAOImpl implements DeviceDAO {
         return user;
     }
 
-    private Timestamp getDate() {
-        Date date = new Date();
-        return new Timestamp(date.getTime());
+    private Date timestampToDate(Timestamp timestamp) {
+        Date date = new Date(timestamp.getTime());
+        return date;
     }
 
-    private Date timeStampToDate(Timestamp timeStamp) {
-        return new Date(timeStamp.getTime());
+    private Timestamp tateToTimestamp(Date date) {
+        Timestamp ts = new Timestamp(date.getTime());
+        return ts;
     }
-
-
 }
