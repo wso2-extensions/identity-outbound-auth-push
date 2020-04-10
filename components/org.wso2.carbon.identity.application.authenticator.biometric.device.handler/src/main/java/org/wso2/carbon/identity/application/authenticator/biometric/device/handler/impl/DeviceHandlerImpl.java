@@ -64,19 +64,16 @@ public class DeviceHandlerImpl implements DeviceHandler {
             UserStoreException, JsonProcessingException, NoSuchAlgorithmException,
             SignatureException, InvalidKeySpecException, InvalidKeyException {
         Device device = null;
-        User user = getAuthenticatedUser();
-        String cacheId = user.getUserName() + user.getUserStoreDomain() + user.getTenantDomain();
         RegistrationRequestChallengeCacheEntry cacheEntry = RegistrationRequestChallengeCache.getInstance()
-                .getValueFromCacheByRequestId(new BiometricDeviceHandlerCacheKey(cacheId));
+                .getValueFromCacheByRequestId(new BiometricDeviceHandlerCacheKey(registrationRequest.getDeviceId()));
         if (log.isDebugEnabled()) {
             log.debug("Verifying digital signature");
         }
         if (!verifySignature(registrationRequest.getSignature(), registrationRequest.getPublicKey(), cacheEntry)) {
             throw new BiometricdeviceHandlerServerException("Could not verify source");
         }
-        device = new Device(registrationRequest.getDeviceName(), registrationRequest.getDeviceModel(),
-                registrationRequest.getPushId(), registrationRequest.getPublicKey());
-        device.setDeviceId(UUID.randomUUID().toString());
+        device = new Device(registrationRequest.getDeviceId(), registrationRequest.getDeviceName(),
+                registrationRequest.getDeviceModel(), registrationRequest.getPushId(), registrationRequest.getPublicKey());
         DeviceCache.getInstance().addToCacheByRequestId(new BiometricDeviceHandlerCacheKey(device.getDeviceId()),
                 new DeviceCacheEntry(device));
         DeviceDAOImpl.getInstance().registerDevice(device);
@@ -122,16 +119,16 @@ public class DeviceHandlerImpl implements DeviceHandler {
         if (log.isDebugEnabled()) {
             log.debug("Retrieving data to generate QR code");
         }
+        String deviceId = UUID.randomUUID().toString();
         User user = getAuthenticatedUser();
         String tenantDomain = user.getTenantDomain();
         UUID challenge = UUID.randomUUID();
         String registrationUrl = "https://192.168.1.6:9443/t/" +
-                user.getTenantDomain() + "/me/biometricdevice/";
+                user.getTenantDomain() + "/me/biometricdevice";
         String authUrl = "https://192.168.1.6:9443/t/" + user.getTenantDomain() + "/me/biometric-auth";
-        String cacheId = user.getUserName() + user.getUserStoreDomain() + tenantDomain;
         RegistrationRequestChallengeCache.getInstance().addToCacheByRequestId
-                (new BiometricDeviceHandlerCacheKey(cacheId), new RegistrationRequestChallengeCacheEntry(challenge));
-        return new DiscoveryData(user.getUserName(), tenantDomain,
+                (new BiometricDeviceHandlerCacheKey(deviceId), new RegistrationRequestChallengeCacheEntry(challenge));
+        return new DiscoveryData(deviceId, user.getUserName(), tenantDomain,
                 user.getUserStoreDomain(), challenge, registrationUrl, authUrl);
     }
 
@@ -155,5 +152,4 @@ public class DeviceHandlerImpl implements DeviceHandler {
         sign.update(cacheEntry.getChallenge().toString().getBytes());
         return sign.verify(signatureBytes);
     }
-
 }
