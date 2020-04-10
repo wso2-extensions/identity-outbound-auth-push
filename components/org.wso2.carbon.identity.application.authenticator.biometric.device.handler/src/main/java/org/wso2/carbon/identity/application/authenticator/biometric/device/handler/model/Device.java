@@ -20,7 +20,6 @@ package org.wso2.carbon.identity.application.authenticator.biometric.device.hand
 
 
 import java.io.Serializable;
-import java.security.PublicKey;
 import java.util.Date;
 
 /**
@@ -70,6 +69,13 @@ public class Device implements Serializable {
         this.publicKey = publicKey;
     }
 
+    public Device(String deviceId, String deviceName, String deviceModel, String pushId, String publicKey) {
+        this.deviceId = deviceId;
+        this.deviceName = deviceName;
+        this.deviceModel = deviceModel;
+        this.pushId = pushId;
+        this.publicKey = publicKey;
+    }
 
     public String getDeviceId() {
         return deviceId;

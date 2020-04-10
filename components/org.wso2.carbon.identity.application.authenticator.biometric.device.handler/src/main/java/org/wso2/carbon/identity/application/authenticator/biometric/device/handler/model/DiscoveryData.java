@@ -25,6 +25,7 @@ import java.util.UUID;
  * This class contains the attributes sent to generate the qr code .
  */
 public class DiscoveryData implements Serializable {
+    String deviceId;
     String username;
     String tenantDomain;
     String userStore;
@@ -32,8 +33,10 @@ public class DiscoveryData implements Serializable {
     String registrationUrl;
     String authenticationUrl;
 
-    public DiscoveryData(String username, String tenantDomain, String userStore, UUID challenge,
+
+    public DiscoveryData(String deviceId, String username, String tenantDomain, String userStore, UUID challenge,
                          String registrationUrl, String authenticationUrl) {
+        this.deviceId = deviceId;
         this.username = username;
         this.tenantDomain = tenantDomain;
         this.userStore = userStore;
@@ -43,6 +46,14 @@ public class DiscoveryData implements Serializable {
     }
 
     public DiscoveryData() {
+    }
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 
     public String getUsername() {
