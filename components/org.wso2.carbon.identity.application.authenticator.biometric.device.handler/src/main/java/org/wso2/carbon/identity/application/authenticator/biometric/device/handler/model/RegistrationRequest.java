@@ -24,14 +24,16 @@ import java.io.Serializable;
  * This class contains the attributes and operations of the request received from the device .
  */
 public class RegistrationRequest implements Serializable {
+    private String deviceId;
     private String deviceName;
     private String deviceModel;
     private String pushId;
     private String publicKey;
     private String signature;
 
-    public RegistrationRequest(String deviceName, String deviceModel, String pushId
-            , String publicKey, String signature) {
+    public RegistrationRequest(String deviceId, String deviceName, String deviceModel, String pushId,
+                               String publicKey, String signature) {
+        this.deviceId = deviceId;
         this.deviceName = deviceName;
         this.deviceModel = deviceModel;
         this.pushId = pushId;
@@ -40,6 +42,14 @@ public class RegistrationRequest implements Serializable {
     }
 
     public RegistrationRequest() {
+    }
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 
     public String getDeviceName() {
