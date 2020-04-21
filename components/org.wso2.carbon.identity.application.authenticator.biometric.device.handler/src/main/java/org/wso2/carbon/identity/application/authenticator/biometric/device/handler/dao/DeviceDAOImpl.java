@@ -122,12 +122,10 @@ public class DeviceDAOImpl implements DeviceDAO {
                 device.setPublicKey(resultSet.getString(5));
                 device.setRegistrationTime(timestampToDate(resultSet.getTimestamp(6)));
                 device.setLastUsedTime(timestampToDate(resultSet.getTimestamp(7)));
+            } else {
+                log.error("The requested device is not registered in the system");
+                throw new BiometricdeviceHandlerServerException("Device Not found.");
             }
-
-
-        } else {
-            log.error("The requested device is not registered in the system");
-            throw new BiometricdeviceHandlerServerException("Device Not found.");
         }
 
 
