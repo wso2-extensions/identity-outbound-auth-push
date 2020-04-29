@@ -45,7 +45,7 @@ public interface DeviceDAO {
     Device getDevice(String deviceId) throws BiometricDeviceHandlerClientException,
             BiometricdeviceHandlerServerException, SQLException, IOException;
 
-    ArrayList<Device> listDevices() throws BiometricdeviceHandlerServerException,
+    ArrayList<Device> listDevices(String username, String userStore, String tenantDomain) throws BiometricdeviceHandlerServerException,
             BiometricDeviceHandlerClientException, SQLException, IOException, UserStoreException;
 
     void deleteAllDevicesOfUser(int userId, String userStore);
