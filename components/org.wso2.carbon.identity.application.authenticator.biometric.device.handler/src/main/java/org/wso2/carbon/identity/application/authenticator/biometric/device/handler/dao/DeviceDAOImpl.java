@@ -134,7 +134,7 @@ public class DeviceDAOImpl implements DeviceDAO {
         return device;
     }
 
-    public ArrayList<Device> listDevices() throws BiometricdeviceHandlerServerException,
+    public ArrayList<Device> listDevices(String username, String userStore, String tenantDomain) throws BiometricdeviceHandlerServerException,
             BiometricDeviceHandlerClientException, SQLException, IOException, UserStoreException {
         String userId = getUserIdFromUsername(getAuthenticatedUser().getUserName());
         ArrayList<Device> devices = new ArrayList<>();
