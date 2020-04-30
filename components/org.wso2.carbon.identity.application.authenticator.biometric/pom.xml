@@ -115,6 +115,10 @@
             <groupId>org.wso2.carbon.identity.outbound.auth.oidc</groupId>
             <artifactId>org.wso2.carbon.identity.application.authenticator.oidc</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.identity.outbound.auth.biometric</groupId>
+            <artifactId>org.wso2.carbon.identity.application.authenticator.biometric.device.handler</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -190,19 +194,20 @@
                         <Private-Package>org.wso2.carbon.identity.application.authenticator.biometric.internal
                         </Private-Package>
                         <Import-Package>
-                            org.apache.commons.logging; version=${org.apache.commons.logging.version},
-                            org.osgi.framework; version="${osgi.framework.imp.pkg.version.range}",
-                            org.osgi.service.component; version="${osgi.service.component.imp.pkg.version.range}",
-                            org.wso2.carbon.identity.application.authentication.framework; version="${identity.framework.imp.pkg.version.range}",
-                            org.wso2.carbon.identity.application.authentication.framework.config.model; version="${identity.framework.imp.pkg.version.range}",
-                            org.wso2.carbon.identity.application.authentication.framework.context; version="${identity.framework.imp.pkg.version.range}",
-                            org.wso2.carbon.identity.application.authentication.framework.exception; version="${identity.framework.imp.pkg.version.range}",
-                            org.wso2.carbon.identity.application.authentication.framework.model; version="${identity.framework.imp.pkg.version.range}",
-                            org.wso2.carbon.identity.application.common.model; version="${identity.framework.imp.pkg.version.range}",
-                            org.wso2.carbon.identity.core.util; version="${identity.framework.imp.pkg.version.range}",
-                            javax.servlet.http; version="${javax.servlet.http}",
-                            org.json.simple; version=${org.json.simple.version},
-                            javax.servlet; version="${javax.servlet.http}"
+                            javax.servlet.http;version="[2.6,3)",
+                            org.apache.commons.lang;version="[2.6,3)",
+                            org.apache.commons.logging;version="[1.2,2)",
+                            org.json.simple;version="${org.json.simple.version}",
+                            org.osgi.framework;version="[1.8,2)",
+                            org.osgi.service.component;version="${osgi.service.component.imp.pkg.version.range}",
+                            org.wso2.carbon.identity.application.authentication.framework;version="[5.12,6)",
+                            org.wso2.carbon.identity.application.authentication.framework.config.model;version="[5.12, 6)",
+                            org.wso2.carbon.identity.application.authentication.framework.context;version="[5.12,6)",
+                            org.wso2.carbon.identity.application.authentication.framework.exception;version="[5.12,6)",
+                            org.wso2.carbon.identity.application.authentication.framework.model;version="[5.12,6)",
+                            org.wso2.carbon.identity.application.common.model;version="[5.12,6)",
+                            org.wso2.carbon.identity.core.util;version="[5.12,6)"
+                            org.wso2.carbon.identity.application.authenticator.biometric.device.handler;version="1.0.0-SNAPSHOT"
                         </Import-Package>
                         <Export-Package>
                             !org.wso2.carbon.identity.application.authenticator.biometric.internal,

@@ -105,14 +105,13 @@
                             org.wso2.carbon.identity.application.authenticator.biometric.servlet.store.impl,
                         </Export-Package>
                         <Import-Package>
-                            javax.servlet; version="${import.package.version.javax.servlet}"
-                            org.apache.commons.logging; version="${org.apache.commons.logging.version}",
-                            org.osgi.service.http; version="${org.osgi.service.http.version}",
-                            org.osgi.service.component; version="${osgi.service.component.imp.pkg.version.range}",
-                            org.eclipse.equinox.http.helper; version="${org.eclipse.equinox.http.helper.version}",
-                            org.apache.commons.logging; version="${commons.logging.version}",
-                            com.google.gson; version="${com.google.code.gson.version}",
-                            javax.servlet.http; version="${javax.servlet.http}"
+                            com.google.gson;version="${com.googlecode.json-simple.version}",
+                            javax.servlet;version= "[2.6,3)",
+                            javax.servlet.http;version="[2.6,3)",
+                            org.apache.commons.lang;version="[2.6,3)",
+                            org.apache.commons.logging;version="[1.2,2)",org.eclipse.equinox.http.helper,
+                            org.osgi.service.component;version="[1.2.0,2.0.0)",
+                            org.osgi.service.http;version="[1.2,2)",
                         </Import-Package>
                     </instructions>
                 </configuration>
