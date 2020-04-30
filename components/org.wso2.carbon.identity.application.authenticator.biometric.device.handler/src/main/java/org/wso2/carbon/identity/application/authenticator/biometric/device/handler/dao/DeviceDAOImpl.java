@@ -22,12 +22,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.CarbonContext;
+import org.wso2.carbon.context.internal.OSGiDataHolder;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.DeviceHandlerConstants;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.exception.BiometricDeviceHandlerClientException;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.exception.BiometricdeviceHandlerServerException;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.model.Device;
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.core.util.IdentityDatabaseUtil;
+import org.wso2.carbon.user.api.UserRealm;
+import org.wso2.carbon.user.api.UserRealmService;
 import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
 
@@ -59,8 +62,6 @@ public class DeviceDAOImpl implements DeviceDAO {
             JsonProcessingException, UserStoreException {
         Connection connection = IdentityDatabaseUtil.getDBConnection();
         PreparedStatement preparedStatement = null;
-        String username = getAuthenticatedUser().getUserName();
-        device.setUserId(getUserIdFromUsername(username));
         preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQUERIES.
                 REGISTER_DEVICE
         );
@@ -136,7 +137,7 @@ public class DeviceDAOImpl implements DeviceDAO {
 
     public ArrayList<Device> listDevices(String username, String userStore, String tenantDomain) throws BiometricdeviceHandlerServerException,
             BiometricDeviceHandlerClientException, SQLException, IOException, UserStoreException {
-        String userId = getUserIdFromUsername(getAuthenticatedUser().getUserName());
+        String userId = getUserIdFromUsername(username);
         ArrayList<Device> devices = new ArrayList<>();
         Connection connection = IdentityDatabaseUtil.getDBConnection();
         PreparedStatement preparedStatement = null;
@@ -187,7 +188,7 @@ public class DeviceDAOImpl implements DeviceDAO {
         return date;
     }
 
-    private Timestamp tateToTimestamp(Date date) {
+    private Timestamp dateToTimestamp(Date date) {
         Timestamp ts = new Timestamp(date.getTime());
         return ts;
     }
