@@ -69,8 +69,9 @@ public class Device implements Serializable {
         this.publicKey = publicKey;
     }
 
-    public Device(String deviceId, String deviceName, String deviceModel, String pushId, String publicKey) {
+    public Device(String deviceId, String userId, String deviceName, String deviceModel, String pushId, String publicKey) {
         this.deviceId = deviceId;
+        this.userId = userId;
         this.deviceName = deviceName;
         this.deviceModel = deviceModel;
         this.pushId = pushId;
