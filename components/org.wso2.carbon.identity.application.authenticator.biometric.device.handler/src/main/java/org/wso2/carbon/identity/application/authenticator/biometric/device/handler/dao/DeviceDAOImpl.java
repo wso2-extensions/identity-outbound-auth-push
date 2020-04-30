@@ -188,21 +188,8 @@ public class DeviceDAOImpl implements DeviceDAO {
         return date;
     }
 
-    private Timestamp tateToTimestamp(Date date) {
+    private Timestamp dateToTimestamp(Date date) {
         Timestamp ts = new Timestamp(date.getTime());
         return ts;
-    }
-    public UserRealm getUserRealm(int tenantId) {
-        UserRealm userRealm = null;
-        UserRealmService userRealmService = OSGiDataHolder.getInstance().getUserRealmService();
-            if (userRealmService != null) {
-                try {
-                    userRealm = userRealmService.getTenantUserRealm(tenantId);
-                } catch (UserStoreException e) {
-                    log.error("Cannot retrieve UserRealm for tenant " + tenantId, e);
-                }
-            }
-
-        return userRealm;
     }
 }
