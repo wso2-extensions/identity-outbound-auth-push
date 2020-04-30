@@ -73,6 +73,7 @@ public class RegistrationRequestChallengeCache extends
 
     }
 
+
     public RegistrationRequestChallengeCacheEntry getValueFromCacheByRequestId(BiometricDeviceHandlerCacheKey key) {
 
         return getFromSessionStore(key.getRequestId());
