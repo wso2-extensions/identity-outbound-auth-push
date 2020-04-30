@@ -24,6 +24,7 @@ import org.wso2.carbon.identity.application.authenticator.biometric.device.handl
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.model.Device;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.model.DiscoveryData;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.model.RegistrationRequest;
+import org.wso2.carbon.identity.base.IdentityException;
 import org.wso2.carbon.user.api.UserStoreException;
 
 import java.io.IOException;
@@ -41,7 +42,7 @@ import java.util.ArrayList;
 public interface DeviceHandler {
 
     Device registerDevice(RegistrationRequest registrationRequest) throws
-            BiometricDeviceHandlerClientException, BiometricdeviceHandlerServerException, SQLException, UserStoreException, JsonProcessingException, InvalidKeyException, NoSuchAlgorithmException, SignatureException, UnsupportedEncodingException, InvalidKeySpecException;
+            IdentityException, SQLException, UserStoreException, JsonProcessingException, InvalidKeyException, NoSuchAlgorithmException, SignatureException, UnsupportedEncodingException, InvalidKeySpecException;
 
     void unregisterDevice(String deviceId) throws BiometricDeviceHandlerClientException,
             BiometricdeviceHandlerServerException, SQLException;
@@ -51,7 +52,7 @@ public interface DeviceHandler {
 
     Device getDevice(String deviceId) throws IOException, BiometricDeviceHandlerClientException, SQLException, BiometricdeviceHandlerServerException;
 
-    ArrayList<Device> lisDevices() throws BiometricdeviceHandlerServerException, BiometricDeviceHandlerClientException, SQLException, UserStoreException, IOException;
+    ArrayList<Device> lisDevices(String username, String userStore, String tenantDomain) throws BiometricdeviceHandlerServerException, BiometricDeviceHandlerClientException, SQLException, UserStoreException, IOException;
 
     DiscoveryData getDiscoveryData();
 
