@@ -38,4 +38,7 @@
     <string name="success_img">Image of a tick mark in success activity.</string>
     <string name="fingerprint_main_activity_img">Image of a fingerprint in main activity.</string>
     <string name="fingerprint_auth_activity_img">Image of a fingerprint in authenticate activity.</string>
+
+    <string name="title_activity_startup">WSO2 Verify</string>
+    <string name="title_activity_registration_instructions">RegistrationInstructions</string>
 </resources>
