@@ -32,5 +32,23 @@ class RegistrationRequestDTO {
             field = value
         }
 
+    constructor(
+        id: String?,
+        name: String?,
+        model: String?,
+        pushId: String?,
+        publickey: String?,
+        signature: String?
+    ) {
+        this.id = id
+        this.name = name
+        this.model = model
+        this.pushId = pushId
+        this.publickey = publickey
+        this.signature = signature
+    }
+
+    constructor()
+
 
 }

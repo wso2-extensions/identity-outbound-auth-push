@@ -2,9 +2,13 @@ package org.wso2.carbon.identity.mobile.wso2verify
 
 import android.os.Build
 import com.google.firebase.iid.FirebaseInstanceId
-import okhttp3.OkHttpClient
+import com.google.gson.Gson
+import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.wso2.carbon.identity.mobile.wso2verify.Model.DiscoveryDataDTO
 import org.wso2.carbon.identity.mobile.wso2verify.Model.RegistrationRequestDTO
+import java.io.IOException
 import java.security.*
 import java.security.cert.X509Certificate
 import java.security.spec.PKCS8EncodedKeySpec
@@ -36,7 +40,8 @@ class DeviecRegistrationService {
 
         return OkHttpClient.Builder()
             .sslSocketFactory(sslSocketFactory, trustAllCerts[0] as X509TrustManager)
-            .hostnameVerifier(HostnameVerifier { _, _ -> true }).build()
+            .hostnameVerifier(HostnameVerifier { _, _ -> true })
+            .build()
     }
 
     private fun getKeyPair(): HashMap<String, String>{
@@ -51,9 +56,8 @@ class DeviecRegistrationService {
 
     private fun getRegistrationRequest(id: String?, publicKey: String, signature: String): RegistrationRequestDTO{
         var model = Build.BRAND + " " + Build.MODEL
-        var x = FirebaseInstanceId.getInstance().token
-        var z = FirebaseInstanceId.getInstance().id
-        return RegistrationRequestDTO(id, model.toUpperCase(), model, )
+        var instanceId = FirebaseInstanceId.getInstance().id
+        return RegistrationRequestDTO(id, model.toUpperCase(), model, instanceId, publicKey, signature)
     }
     private fun signChallenge(privateKey: String, challenge: UUID?): String{
         var keyspec = PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKey))
@@ -61,17 +65,34 @@ class DeviecRegistrationService {
 
         var sign = Signature.getInstance("Sha256withDSA")
         sign.initSign(pk)
-        sign.update(challenge.toString().toByte())
+        sign.update(challenge.toString().toByteArray())
 
-        return String(Base64.getEncoder().encode(sign.sign()))
+        return Base64.getEncoder().encodeToString(sign.sign())
 
     }
 
     fun sendRegistrationRequest(discoveryData: DiscoveryDataDTO){
-        var client = getUnsafeOkHttpClient()
+        var client: OkHttpClient = getUnsafeOkHttpClient()
         var keyPair = getKeyPair()
         var registrationRequest = getRegistrationRequest(discoveryData.id, keyPair.getValue("public"),
             signChallenge(keyPair.getValue("private"), discoveryData.challenge))
+        var json = Gson().toJson(registrationRequest)
+        var requestBody: RequestBody = json.toRequestBody("application/json; charset=utf-8".toMediaType())
+        val request: Request = Request.Builder()
+            .url(discoveryData.registrationUrl)
+            .post(requestBody)
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                println("Failed")
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                println(response)
+                println("Success")
+            }
+        })
 
 
     }

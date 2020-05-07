@@ -32,6 +32,8 @@ class RegistrationInstructions : AppCompatActivity() {
         if (resultCode == Activity.RESULT_OK) {
             Toast.makeText(this, result.contents, Toast.LENGTH_LONG).show()
             var discoveryData: DiscoveryDataDTO = Gson().fromJson(result.contents, DiscoveryDataDTO::class.java)
+            var regService: DeviecRegistrationService = DeviecRegistrationService()
+            regService.sendRegistrationRequest(discoveryData)
         }
         else{
             Toast.makeText(this, "Scanning Was cancelled", Toast.LENGTH_LONG).show()
