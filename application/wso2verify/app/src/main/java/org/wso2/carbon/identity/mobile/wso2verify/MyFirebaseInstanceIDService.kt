@@ -27,8 +27,7 @@ import com.google.firebase.iid.FirebaseInstanceIdService
 class MyFirebaseInstanceIDService : FirebaseInstanceIdService() {
     val TAG = "Firebase"
     override fun onTokenRefresh() {
-
-        Log.d(TAG, "Refreshed token:  " + FirebaseInstanceId.getInstance().getToken())
+        Log.d(TAG, "Refreshed token:  " + FirebaseInstanceId.getInstance().token)
     }
     //todo register the available device IDs once the registration phase is done.-DOCS
 

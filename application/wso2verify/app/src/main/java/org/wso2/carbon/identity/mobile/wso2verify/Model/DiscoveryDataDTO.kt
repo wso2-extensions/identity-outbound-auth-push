@@ -4,8 +4,12 @@ import java.util.*
 
 class DiscoveryDataDTO{
      var id: String? = null
+         get() = field
+         set(value) {
+             field = value
+         }
 
-     var username: String? = null
+    var username: String? = null
          get() = field
          set(value) {
              field = value

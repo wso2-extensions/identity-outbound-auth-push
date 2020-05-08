@@ -41,4 +41,6 @@
 
     <string name="title_activity_startup">WSO2 Verify</string>
     <string name="title_activity_registration_instructions">RegistrationInstructions</string>
+    <string name="title_activity_registration_success">RegistrationSuccessActivity</string>
+    <string name="title_activity_registration_failed">RegistrationFailedActivity</string>
 </resources>
