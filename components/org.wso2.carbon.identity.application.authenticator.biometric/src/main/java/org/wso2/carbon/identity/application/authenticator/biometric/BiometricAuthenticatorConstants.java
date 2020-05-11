@@ -45,8 +45,10 @@ public class BiometricAuthenticatorConstants {
     public static final String NOTIFICATION = "notification";
     public static final String DATA = "data";
     public static final String WAIT_PAGE = "authenticationendpoint/wait.jsp";
+    public static final String DEVICES_PAGE = "authenticationendpoint/biometricdevices.jsp";
     public static final String BIOMETRIC_ENDPOINT = "/biometric-auth";
     public static final String POLLING_QUERY_PARAMS = "?initiator=web&sessionDataKey=";
     public static final String COMPLETED = "COMPLETED";
     public static final String BIOMETRIC_AUTHENTICATION_ENDPOINT_WAIT_URL = "biometricAuthenticationEndpointWaitURL";
+    public static final String BIOMETRIC_AUTHENTICATION_ENDPOINT_DEVICES_URL = "biometricAuthenticationEndpointDevicesURL";
 }

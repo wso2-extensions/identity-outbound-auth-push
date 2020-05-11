@@ -66,8 +66,8 @@
             <artifactId>org.wso2.carbon.identity.application.common</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon.identity.framework</groupId>
-            <artifactId>org.wso2.carbon.identity.core</artifactId>
+            <groupId>org.wso2.carbon</groupId>
+            <artifactId>org.wso2.carbon.core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -118,6 +118,10 @@
         <dependency>
             <groupId>org.wso2.carbon.identity.outbound.auth.biometric</groupId>
             <artifactId>org.wso2.carbon.identity.application.authenticator.biometric.device.handler</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.identity.framework</groupId>
+            <artifactId>org.wso2.carbon.identity.core</artifactId>
         </dependency>
     </dependencies>
     <build>
@@ -198,7 +202,14 @@
                             org.apache.commons.lang;version="[2.6,3)",
                             org.apache.commons.logging;version="[1.2,2)",
                             org.json.simple;version="${org.json.simple.version}",
+                            org.json.simple.parser;version="${org.json.simple.version}",
                             org.osgi.framework;version="[1.8,2)",
+                            org.wso2.carbon.identity.base;version="[5.12,6)",
+                            org.wso2.carbon.utils;version="[4.6,5)",
+                            org.wso2.carbon.user.core.common;version="[4.6,5)",
+                            org.wso2.carbon.identity.core.util;version="[5.12,6)",
+                            org.wso2.carbon.identity.application.authentication.framework.store;version="[5.12,6)",
+                            org.wso2.carbon.identity.application.common.cache;version="[5.12,6)",
                             org.osgi.service.component;version="${osgi.service.component.imp.pkg.version.range}",
                             org.wso2.carbon.identity.application.authentication.framework;version="[5.12,6)",
                             org.wso2.carbon.identity.application.authentication.framework.config.model;version="[5.12, 6)",
@@ -206,13 +217,22 @@
                             org.wso2.carbon.identity.application.authentication.framework.exception;version="[5.12,6)",
                             org.wso2.carbon.identity.application.authentication.framework.model;version="[5.12,6)",
                             org.wso2.carbon.identity.application.common.model;version="[5.12,6)",
-                            org.wso2.carbon.identity.core.util;version="[5.12,6)"
-                            org.wso2.carbon.identity.application.authenticator.biometric.device.handler;version="1.0.0-SNAPSHOT"
+                            org.wso2.carbon.identity.application.authenticator.biometric.device.handler;version="[1.0,2)",
+                            org.wso2.carbon.identity.application.authenticator.biometric.device.handler.model;version="[1.0,2)",
+                            org.wso2.carbon.identity.application.authenticator.biometric.device.handler.exception;version="[1.0,2)",
+                            org.wso2.carbon.identity.application.authenticator.biometric.device.handler.impl;version="[1.0,2)",
+                            org.wso2.carbon.user.api;version="[1.0,2)",
+                            org.wso2.carbon.identity.application.authenticator.biometric,org.wso2.carbon.identity.application.authenticator.biometric.dao,
+                            org.wso2.carbon.identity.application.authenticator.biometric.dao.impl,
+                            org.wso2.carbon.identity.application.authenticator.biometric.notification.handler,
+                            org.wso2.carbon.identity.application.authenticator.biometric.notification.handler.impl,
                         </Import-Package>
+<!--                        <DynamicImport-Package>*</DynamicImport-Package>-->
                         <Export-Package>
                             !org.wso2.carbon.identity.application.authenticator.biometric.internal,
                             org.wso2.carbon.identity.application.authenticator.biometric,
                             org.wso2.carbon.identity.application.authenticator.biometric.dao,
+                            org.wso2.carbon.identity.application.authenticator.biometric.cache,
                             org.wso2.carbon.identity.application.authenticator.biometric.dao.impl,
                             org.wso2.carbon.identity.application.authenticator.biometric.notification.handler,
                             org.wso2.carbon.identity.application.authenticator.biometric.notification.handler.impl

@@ -17,7 +17,7 @@
   ~
   --%>
 
-<%String commonauthURL = "https://biometricauthenticator.private.wso2.com:9443/commonauth";%>
+<%String commonauthURL = "https://192.168.1.6:9443/commonauth";%>
 
 <%@ taglib prefix = "s" uri = "http://java.sun.com/jsp/jstl/core" %>
 <%@ page language = "java" contentType = "text/html; charset=UTF-8" pageEncoding = "UTF-8" %>
@@ -37,8 +37,8 @@
     <link href="css/custom-common.css" rel="stylesheet">
     <link href="css/loading1.css" rel="stylesheet">
 
-    <script language="JavaScript" type="text/javascript" src="libs/jquery_1.11.3/jquery-1.11.3.js"></script>
-    <script language="JavaScript" type="text/javascript" src="libs/bootstrap_3.3.5/js/bootstrap.min.js"></script>
+    <script language="JavaScript" type="text/javascript" src="libs/jquery_3.4.1/jquery-3.4.1.js"></script>
+    <script language="JavaScript" type="text/javascript" src="libs/bootstrap_3.4.1/js/bootstrap.min.js"></script>
 
     <header class="header header-default">
         <div class="container-fluid"><br></div>
@@ -56,15 +56,13 @@
 <h2>Please check your mobile device and authenticate with the fingerprint</h2>
 <div class="loader"></div>
 <form id="toCommonAuth" action="<%=commonauthURL%>" method="POST" style="display:none;">
+    <input type="hidden" name="ACTION" value="WaitResponse"/>
     <label for="sessionDataKey">sessionDataKey</label><input id="sessionDataKey" name="sessionDataKey">
     <label for="signedChallenge">signedChallenge</label><input id="signedChallenge" name="signedChallenge">
 </form>
 </body>
-
-<%--// TODO: make a war file without putting to auth endpoint-Discuss with Pulasthi ayya.
- --%>
 <script type="text/javascript">
-
+    let i = 0;
     let sessionDataKey;
     let signedChallenge;
     const refreshInterval = 1000;
@@ -79,6 +77,8 @@
 
         const intervalListener = window.setInterval(function () {
             checkWaitStatus();
+            i++
+            console.log("Polled ${i} times")
         }, refreshInterval);
 
         function checkWaitStatus() {
@@ -128,6 +128,7 @@
 
             window.clearInterval(intervalListener);
             document.getElementById("toCommonAuth").submit();
+            console.log("Polling")
         }
     });
 </script>

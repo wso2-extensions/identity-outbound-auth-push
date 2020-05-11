@@ -44,6 +44,7 @@ import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
 
 import java.io.IOException;
 
+import java.io.Serializable;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -60,7 +61,7 @@ import java.util.UUID;
 /**
  * This class implements the DeviceHandler interface .
  */
-public class DeviceHandlerImpl implements DeviceHandler {
+public class DeviceHandlerImpl implements DeviceHandler, Serializable {
     private static final Log log = LogFactory.getLog(DeviceHandler.class);
 
     @Override
@@ -142,9 +143,10 @@ public class DeviceHandlerImpl implements DeviceHandler {
         User user = getAuthenticatedUser();
         String tenantDomain = user.getTenantDomain();
         UUID challenge = UUID.randomUUID();
-        String registrationUrl = IdentityUtil.getHostName() +  "/t/" +
-                user.getTenantDomain() + "/me/biometricdevice";
-        String authUrl = IdentityUtil.getHostName() +  "/t/" + user.getTenantDomain() + "/me/biometric-auth";
+        String registrationUrl = "https://192.168.1.6:9443" +  "/t/" +
+                user.getTenantDomain() + "/api/users/v1/me/biometricdevice";
+        String authUrl = "https://192.168.1.4:9443" +  "/t/" + user.getTenantDomain() + "" +
+                "/api/users/v1/me/biometric-auth";
         RegistrationRequestChallengeCache.getInstance().addToCacheByRequestId
                 (new BiometricDeviceHandlerCacheKey(deviceId), new RegistrationRequestChallengeCacheEntry(challenge,
                         user.getUserName(), user.getUserStoreDomain(), user.getTenantDomain(), false));

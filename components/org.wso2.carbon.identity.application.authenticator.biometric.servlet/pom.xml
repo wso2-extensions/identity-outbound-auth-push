@@ -84,6 +84,10 @@
             <artifactId>commons-lang</artifactId>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.identity.application.authenticator.biometric</groupId>
+            <artifactId>org.wso2.carbon.identity.application.authenticator.biometric</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -109,9 +113,11 @@
                             javax.servlet;version= "[2.6,3)",
                             javax.servlet.http;version="[2.6,3)",
                             org.apache.commons.lang;version="[2.6,3)",
-                            org.apache.commons.logging;version="[1.2,2)",org.eclipse.equinox.http.helper,
+                            org.apache.commons.logging;version="[1.2,2)",
+                            org.eclipse.equinox.http.helper,
                             org.osgi.service.component;version="[1.2.0,2.0.0)",
                             org.osgi.service.http;version="[1.2,2)",
+                            org.wso2.carbon.identity.application.authenticator.biometric;version="[1.0,2)"
                         </Import-Package>
                     </instructions>
                 </configuration>

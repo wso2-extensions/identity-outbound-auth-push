@@ -24,15 +24,17 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundConstants;
+import org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticator;
 import org.wso2.carbon.identity.application.authenticator.biometric.servlet.BiometricServletConstants;
 import org.wso2.carbon.identity.application.authenticator.biometric.servlet.model.WaitStatus;
 import org.wso2.carbon.identity.application.authenticator.biometric.servlet.store.impl.BiometricDataStoreImpl;
-import java.io.IOException;
-import java.io.PrintWriter;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MediaType;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * The Biometric Servlet class manages the status of the biometric authentication process with the session data key,
@@ -46,26 +48,44 @@ public class BiometricServlet extends HttpServlet {
     private BiometricDataStoreImpl biometricDataStoreInstance = BiometricDataStoreImpl.getInstance();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-        if (!(request.getParameterMap().containsKey(BiometricServletConstants.INITIATOR))) {
-            if (log.isDebugEnabled()) {
-                log.debug("Invalid request as the query parameter for initiator is missing.");
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        String action = null;
+        action = request.getParameter("ACTION");
+        String key = request.getParameter("sessionDataKey");
+        if (action == null) {
+            action = "WaitResponse";
+        }
+        switch (action) {
+            case "Authenticate": {
+                String deviceId = request.getParameter("deviceId");
+                BiometricAuthenticator authenticator = new BiometricAuthenticator();
+                authenticator.sendRequest(request, response, deviceId, key);
+                break;
             }
-        } else {
-            // If the initiator is not null, else block is executed.
-            String initiator = request.getParameter(BiometricServletConstants.INITIATOR);
-            if (!(BiometricServletConstants.WEB.equals(initiator) && request.getParameterMap()
-                    .containsKey(InboundConstants.RequestProcessor.CONTEXT_KEY))) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Unsupported HTTP GET request or session data key is null.");
+            case "WaitResponse": {
+                if (!(request.getParameterMap().containsKey(BiometricServletConstants.INITIATOR))) {
+                    if (log.isDebugEnabled()) {
+                        log.debug("Invalid request as the query parameter for initiator is missing.");
+                    }
+                } else {
+                    // If the initiator is not null, else block is executed.
+                    String initiator = request.getParameter(BiometricServletConstants.INITIATOR);
+                    if (!(BiometricServletConstants.WEB.equals(initiator) && request.getParameterMap()
+                            .containsKey(InboundConstants.RequestProcessor.CONTEXT_KEY))) {
+                        if (log.isDebugEnabled()) {
+                            log.debug("Unsupported HTTP GET request or session data key is null.");
+                        }
+                    } else {
+                        // If the initiator is equal to WEB and if the query parameter session data
+                        // key is not null, else block is executed.
+                        handleWebResponse(request, response);
+                    }
                 }
-            } else {
-                // If the initiator is equal to WEB and if the query parameter session data
-                // key is not null, else block is executed.
-                handleWebResponse(request, response);
+                break;
             }
         }
+
     }
 
     @Override
@@ -114,10 +134,9 @@ public class BiometricServlet extends HttpServlet {
     }
 
     private void handleMobileResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
         if (!(request.getParameterMap().containsKey(InboundConstants.RequestProcessor.CONTEXT_KEY) &&
                 request.getParameterMap().containsKey(BiometricServletConstants.CHALLENGE))) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST , "Received session data key and/or signed" +
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Received session data key and/or signed" +
                     " challenge is null.");
 
         } else {
