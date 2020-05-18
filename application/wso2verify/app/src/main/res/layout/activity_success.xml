@@ -18,31 +18,42 @@
   ~ under the License.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimary"
-                tools:context="org.wso2.carbon.identity.mobile.application.authenticator.wso2Verify.org.wso2.carbon.identity.mobile.wso2verify.SuccessActivity">
+                tools:context=".SuccessActivity">
 
     <TextView
-            android:id="@+id/text_view_success"
-            android:layout_width="354dp"
-            android:layout_height="86dp"
-            android:layout_above="@+id/image_view_success"
-            android:layout_centerHorizontal="true"
-            android:text="@string/textSuccess"
-            android:textAlignment="center"
-            android:textColor="@android:color/background_light"
-            android:textSize="36sp"/>
+        android:id="@+id/text_view_success"
+        android:layout_width="354dp"
+        android:layout_height="86dp"
+        android:layout_above="@+id/image_view_success"
+        android:layout_centerHorizontal="true"
+
+        android:text="@string/textSuccess"
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image_view_success"
+        app:layout_constraintVertical_bias="0.075" />
 
     <ImageView
-            android:id="@+id/image_view_success"
-            android:layout_width="58dp"
-            android:layout_height="87dp"
-            android:layout_centerInParent="true"
-            app:srcCompat="@drawable/baseline_check_black_18dp"
-            android:contentDescription="@string/success_img"/>
+        android:id="@+id/image_view_success"
+        android:layout_width="236dp"
+        android:layout_height="232dp"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="120dp"
+        android:contentDescription="@string/success_img"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/regsuccess" />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

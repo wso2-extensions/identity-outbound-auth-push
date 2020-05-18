@@ -3,27 +3,39 @@ package org.wso2.carbon.identity.mobile.wso2verify
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_startup.*
-import org.wso2.carbon.identity.mobile.wso2verify.Model.DiscoveryDataDTO
 
 /**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
+ * The startup screen of the application.
  */
 class StartupActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        val intentAuthenticate = intent
         setContentView(R.layout.activity_startup)
-        startup_auth.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+        if (intentAuthenticate.hasExtra(BiometricAppConstants.CHALLENGE)) {
+            val authIntent = Intent(this, AuthenticateActivity::class.java)
+            authIntent.putExtra(
+                BiometricAppConstants.CONTEXT_KEY,
+                intentAuthenticate.getStringExtra(BiometricAppConstants.CONTEXT_KEY)
+            )
+            authIntent.putExtra(
+                BiometricAppConstants.CHALLENGE,
+                intentAuthenticate.getStringExtra(BiometricAppConstants.CHALLENGE)
+            )
+            authIntent.putExtra(
+                BiometricAppConstants.BODY,
+                intentAuthenticate.getStringExtra(BiometricAppConstants.BODY)
+            )
+            startActivity(authIntent)
         }
         startup_register.setOnClickListener {
-            val intent = Intent(this, RegistrationInstructions::class.java)
+            val intent = Intent(this, QRScanActivity::class.java)
             startActivity(intent)
         }
+
 
     }
 

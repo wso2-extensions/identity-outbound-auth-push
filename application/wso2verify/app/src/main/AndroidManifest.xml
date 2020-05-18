@@ -18,7 +18,7 @@
         android:usesCleartextTraffic="true">
 
         <activity
-            android:name=".RegistrationInstructions"
+            android:name=".QRScanActivity"
             android:label="@string/title_activity_registration_instructions"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -28,31 +28,29 @@
             android:theme="@style/FullscreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AuthenticateActivity">
+        <activity
+            android:name=".AuthenticateActivity"
+            android:parentActivityName=".StartupActivity">
             <intent-filter>
                 <action android:name="AuthenticateActivity" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+
         </activity>
         <activity
             android:name=".SuccessActivity"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".StartupActivity" />
         <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="MainActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
         <activity
-            android:name=".RegistrationFailedActivity"/>
+            android:name=".RegistrationFailedActivity"
+            android:parentActivityName=".StartupActivity"/>
         <activity
-            android:name=".RegistrationSuccessActivity"/>
+            android:name=".RegistrationSuccessActivity"
+            android:parentActivityName=".StartupActivity"/>
 
         <service android:name=".MyFirebaseMessagingService">
             <intent-filter>

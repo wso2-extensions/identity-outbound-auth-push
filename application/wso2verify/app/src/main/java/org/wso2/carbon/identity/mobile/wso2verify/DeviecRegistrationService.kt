@@ -3,12 +3,12 @@ package org.wso2.carbon.identity.mobile.wso2verify
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import androidx.core.content.ContextCompat.startActivity
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.gson.Gson
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.internal.wait
 import org.wso2.carbon.identity.mobile.wso2verify.Model.BiometricAuthProfile
 import org.wso2.carbon.identity.mobile.wso2verify.Model.DiscoveryDataDTO
 import org.wso2.carbon.identity.mobile.wso2verify.Model.RegistrationRequestDTO
@@ -17,6 +17,7 @@ import java.security.*
 import java.security.cert.X509Certificate
 import java.security.spec.PKCS8EncodedKeySpec
 import java.util.*
+import java.util.concurrent.CountDownLatch
 import javax.net.ssl.HostnameVerifier
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
@@ -24,7 +25,7 @@ import javax.net.ssl.X509TrustManager
 import kotlin.collections.HashMap
 
 class DeviecRegistrationService {
-    private fun getUnsafeOkHttpClient(): OkHttpClient {
+     fun getUnsafeOkHttpClient(): OkHttpClient {
         // Create a trust manager that does not validate certificate chains
         val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
             override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {
@@ -90,10 +91,12 @@ class DeviecRegistrationService {
             .post(requestBody)
             .build()
 
+        val countDownLatch = CountDownLatch(1)
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 val intent = Intent(context, RegistrationFailedActivity::class.java)
                 context.startActivity(intent)
+                countDownLatch.countDown()
             }
 
             override fun onResponse(call: Call, response: Response) {
@@ -106,14 +109,18 @@ class DeviecRegistrationService {
                        discoveryData.authenticationUrl,
                        keyPair.getValue("private")
                    )
+//                   DatabaseHelper(context).addBiometricProfile(profile)
                    val intent = Intent(context, RegistrationSuccessActivity::class.java)
                    context.startActivity(intent)
+                   countDownLatch.countDown()
                } else {
                    val intent = Intent(context, RegistrationFailedActivity::class.java)
                    context.startActivity(intent)
+                   countDownLatch.countDown()
                }
             }
         })
+        countDownLatch.countDown()
 
     }
 }

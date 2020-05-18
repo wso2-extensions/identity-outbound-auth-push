@@ -28,7 +28,7 @@
         android:layout_marginTop="20dp"
         android:text="Something Went Wrong!"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="30dp"
+        android:textSize="26dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
@@ -42,7 +42,7 @@
         android:layout_marginHorizontal="10dp"
         android:text="Your Device Was Not Registered"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="24dp"
+        android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
@@ -59,6 +59,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3"
-        app:layout_constraintVertical_bias="0.0"></Button>
+        app:layout_constraintVertical_bias="0.0">
+    </Button>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

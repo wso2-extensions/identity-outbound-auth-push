@@ -39,7 +39,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
                 val sessionDataKey = remoteMessage.data[BiometricAppConstants.CONTEXT_KEY]
                 val challenge = remoteMessage.data[BiometricAppConstants.CHALLENGE]
-                val clickAction = remoteMessage.data[BiometricAppConstants.CLICK_ACTION]
+                val clickAction = "AuthenticateActivity"
 
                 Log.d("TAG", "session data key at firebase class : $sessionDataKey")
                 Log.d("TAG", "challenge at firebase class: $challenge")

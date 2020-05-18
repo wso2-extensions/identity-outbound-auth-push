@@ -12,7 +12,7 @@ class RegistrationFailedActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_registration_failed)
         try_again.setOnClickListener{
-            val intent = Intent(this, RegistrationInstructions::class.java)
+            val intent = Intent(this, QRScanActivity::class.java)
             startActivity(intent)
         }
 

@@ -24,9 +24,7 @@ import org.wso2.carbon.identity.mobile.wso2verify.NetworkTask
 import org.wso2.carbon.identity.mobile.wso2verify.util.RequestUrlBuilder
 
 class RequestUrlBuilderImpl : RequestUrlBuilder {
-    override fun requestUrlBuilder(sessionDataKey: String?, challenge: String?): String {
-
-        val consent = BiometricAppConstants.SUCCESSFUL
+    override fun requestUrlBuilder(sessionDataKey: String?, challenge: String?, consent: String?): String {
         val requestURL = BiometricAppConstants.DOMAIN_NAME +
                 BiometricAppConstants.BIOMETRIC_ENDPOINT + "?initiator=mobile&sessionDataKey=" +
                 sessionDataKey + "&challenge=" + challenge

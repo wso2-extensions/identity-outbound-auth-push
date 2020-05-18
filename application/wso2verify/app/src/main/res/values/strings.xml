@@ -17,9 +17,9 @@
   -->
 <resources>
     <string name="app_name">WSO2 Verify</string>
-    <string name="messageBox">Approve with fingerprint</string>
+    <string name="messageBox">Authenticate</string>
     <string name="textViewMain">Initiate authentication process from the browser</string>
-    <string name="textSuccess">You\'re In!</string>
+    <string name="textSuccess">You are In!</string>
     <string name="showing_code_in_fragment">Showing code in fragment</string>
     <string name="scan_qr_code">SCAN QR CODE</string>
     <string name="name">Name</string>
