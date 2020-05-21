@@ -138,8 +138,16 @@
 
         function continueAuthentication(res) {
                 console.log("Continuing Auth request");
-                window.clearInterval(intervalListener);
-                document.getElementById("toCommonAuth").submit();
+                console.log(res);
+                if((res.authStatus) === "DENIED"){
+                    window.clearInterval(intervalListener);
+                    window.location.replace("/authenticationendpoint/retry.do?status=Authentication Denied!&statusMsg=Authentication was denied from the mobile app");
+                    //authenticationendpoint
+                } else {
+                    window.clearInterval(intervalListener);
+                    document.getElementById("toCommonAuth").submit();
+                }
+
             }
 
     });

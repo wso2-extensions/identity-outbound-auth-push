@@ -72,7 +72,7 @@
     </header>
 </head>
 <body>
-<h1>Pick a Device</h1>
+<h1>Choose the Device</h1>
 <div class="container" class="grid-container">
     <c:forEach var="device" items="${pageScope.DEVICE_LIST}">
         <div class="grid-item">

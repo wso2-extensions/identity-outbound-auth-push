@@ -43,15 +43,18 @@ import org.wso2.carbon.identity.application.common.model.Property;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.user.api.UserStoreException;
 
-
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.security.KeyFactory;
+import java.security.PublicKey;
+import java.security.Signature;
+import java.security.spec.X509EncodedKeySpec;
 import java.sql.SQLException;
 import java.util.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 /**
  * This is the class that implements the biometric authenticator feature.
  */
@@ -224,26 +227,16 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
             httpServletResponse, AuthenticationContext authenticationContext) throws AuthenticationFailedException {
         String randomChallenge = httpServletRequest.getParameter("signedChallenge");
         String signature = httpServletRequest.getParameter("signature");
-        String status = httpServletRequest.getParameter("authstatus");
         String deviceId = httpServletRequest.getParameter("deviceId");
         String sessionDataKey = httpServletRequest.getParameter("sessionDataKey");
         AuthenticatedUser user = authenticationContext.getSequenceConfig().
                 getStepMap().get(authenticationContext.getCurrentStep() - 1).getAuthenticatedUser();
         try {
             if (validateSignature(deviceId, randomChallenge, signature)) {
-                if (httpServletRequest.getParameter("authstatus").equals(
-                        BiometricAuthenticatorConstants.AUTH_REQUEST_STATUS_SUCCESS)) {
-                    authenticationContext.setSubject(user);
-                } else {
-
-                    authenticationContext.setProperty(BiometricAuthenticatorConstants.AUTHENTICATION_STATUS, true);
-                    httpServletResponse.sendRedirect("authenticationendpoint/retry.jsp?sessionDataKey=" + URLEncoder.encode(sessionDataKey,
-                            StandardCharsets.UTF_8.name()));
-//                    throw new AuthenticationFailedException("Authentication was denied from the mobile app", user);
-                }
+                authenticationContext.setSubject(user);
             } else {
                 authenticationContext.setProperty(BiometricAuthenticatorConstants.AUTHENTICATION_STATUS, true);
-                throw new AuthenticationFailedException("Authentication failed! Could not verify signature.");
+                throw new AuthenticationFailedException("Authentication failed! Could not verify signature.", user);
             }
 
         } catch (IOException e) {
@@ -331,25 +324,26 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
         }
 
     }
+
     private boolean validateSignature(String deviceId, String challenge, String signature) throws IOException, SQLException {
         boolean isvalid = true;
-//        DeviceHandler handler = new DeviceHandlerImpl();
-//        String publicKeyStr = handler.getPublicKey(deviceId);
-//
-//        byte[] signatureBytes = Base64.getDecoder().decode(signature);
-//        Signature sign = null;
-//        try {
-//            sign = Signature.getInstance("SHA256withDSA");
-//            byte[] publicKeyData = Base64.getDecoder().decode(publicKeyStr);
-//            X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKeyData);
-//            KeyFactory kf = KeyFactory.getInstance("DSA");
-//            PublicKey publicKey = kf.generatePublic(spec);
-//            sign.initVerify(publicKey);
-//            sign.update(challenge.getBytes());
-//            isvalid = sign.verify(signatureBytes);
-//        } catch (Exception e) {
-//
-//        }
+        DeviceHandler handler = new DeviceHandlerImpl();
+        String publicKeyStr = handler.getPublicKey(deviceId);
+
+        byte[] signatureBytes = Base64.getDecoder().decode(signature);
+        Signature sign = null;
+        try {
+            sign = Signature.getInstance("SHA256withDSA");
+            byte[] publicKeyData = Base64.getDecoder().decode(publicKeyStr);
+            X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKeyData);
+            KeyFactory kf = KeyFactory.getInstance("DSA");
+            PublicKey publicKey = kf.generatePublic(spec);
+            sign.initVerify(publicKey);
+            sign.update(challenge.getBytes());
+            isvalid = sign.verify(signatureBytes);
+        } catch (Exception e) {
+
+        }
         return isvalid;
     }
 
