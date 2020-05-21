@@ -37,7 +37,6 @@ import org.wso2.carbon.identity.application.authenticator.biometric.device.handl
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.base.IdentityException;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
-import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.user.api.UserRealm;
 import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
@@ -143,7 +142,7 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
         User user = getAuthenticatedUser();
         String tenantDomain = user.getTenantDomain();
         UUID challenge = UUID.randomUUID();
-        String registrationUrl = "https://192.168.1.6:9443" +  "/t/" +
+        String registrationUrl = "https://192.168.1.4:9443" +  "/t/" +
                 user.getTenantDomain() + "/api/users/v1/me/biometricdevice";
         String authUrl = "https://192.168.1.4:9443" +  "/t/" + user.getTenantDomain() + "" +
                 "/api/users/v1/me/biometric-auth";
@@ -153,6 +152,12 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
         return new DiscoveryData(deviceId, user.getUserName(), tenantDomain,
                 user.getUserStoreDomain(), challenge, registrationUrl, authUrl);
     }
+
+    @Override
+    public String getPublicKey(String deviceId) throws SQLException, IOException {
+        return DeviceDAOImpl.getInstance().getPublicKey(deviceId);
+    }
+
 
     private User getAuthenticatedUser() {
         User user = User.getUserFromUserName(CarbonContext.getThreadLocalCarbonContext().getUsername());
@@ -172,8 +177,8 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
         PublicKey publicKey = kf.generatePublic(spec);
         sign.initVerify(publicKey);
         sign.update(cacheEntry.getChallenge().toString().getBytes());
-        //return sign.verify(signatureBytes);
-        return true;
+        return sign.verify(signatureBytes);
+//        return true;
     }
 
     private String getUserIdFromUsername(String username, UserRealm realm) throws UserStoreException {

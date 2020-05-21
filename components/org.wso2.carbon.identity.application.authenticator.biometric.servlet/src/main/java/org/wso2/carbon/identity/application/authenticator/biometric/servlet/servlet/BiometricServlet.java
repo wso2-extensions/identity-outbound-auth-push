@@ -29,12 +29,13 @@ import org.wso2.carbon.identity.application.authenticator.biometric.servlet.Biom
 import org.wso2.carbon.identity.application.authenticator.biometric.servlet.model.WaitStatus;
 import org.wso2.carbon.identity.application.authenticator.biometric.servlet.store.impl.BiometricDataStoreImpl;
 
+
+import java.io.IOException;
+import java.io.PrintWriter;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MediaType;
-import java.io.IOException;
-import java.io.PrintWriter;
 
 /**
  * The Biometric Servlet class manages the status of the biometric authentication process with the session data key,
@@ -109,6 +110,9 @@ public class BiometricServlet extends HttpServlet {
         WaitStatus waitResponse = new WaitStatus();
         String sessionDataKeyWeb = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
         String signedChallengeExtracted = biometricDataStoreInstance.getSignedChallenge(sessionDataKeyWeb);
+        String authStatus = biometricDataStoreInstance.getAuthStatus(sessionDataKeyWeb);
+        String signature = biometricDataStoreInstance.getSignature(sessionDataKeyWeb);
+        String deviceId = biometricDataStoreInstance.getDeviceId(sessionDataKeyWeb);
         if (StringUtils.isEmpty(signedChallengeExtracted)) {
             if (log.isDebugEnabled()) {
                 log.debug("Signed challenge sent from the mobile application is null.");
@@ -120,6 +124,9 @@ public class BiometricServlet extends HttpServlet {
             request.setAttribute(BiometricServletConstants.SIGNED_CHALLENGE, signedChallengeExtracted);
             waitResponse.setStatus(BiometricServletConstants.Status.COMPLETED.name());
             waitResponse.setChallenge(signedChallengeExtracted);
+            waitResponse.setAuthStatus(authStatus);
+            waitResponse.setSignature(signature);
+            waitResponse.setDeviceId(deviceId);
             biometricDataStoreInstance.removeBiometricData(sessionDataKeyWeb);
             response.setContentType(MediaType.APPLICATION_JSON);
             String json = new Gson().toJson(waitResponse);
@@ -143,7 +150,11 @@ public class BiometricServlet extends HttpServlet {
             // If the query parameters session data key and challenge are not null, else block is executed..
             String sessionDataKeyMobile = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
             String challengeMobile = request.getParameter(BiometricServletConstants.CHALLENGE);
-            biometricDataStoreInstance.addBiometricData(sessionDataKeyMobile, challengeMobile);
+            String status = request.getParameter("auth_status");
+            String signature = request.getParameter("signature");
+            String deviceId = request.getParameter("deviceId");
+            biometricDataStoreInstance.addBiometricData(sessionDataKeyMobile, challengeMobile, status,
+                    signature, deviceId);
             response.setStatus(HttpServletResponse.SC_OK);
             if (log.isDebugEnabled()) {
                 log.debug("Session data key received from the mobile application: " + sessionDataKeyMobile +

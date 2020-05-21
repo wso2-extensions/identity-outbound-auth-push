@@ -43,17 +43,15 @@ import org.wso2.carbon.identity.application.common.model.Property;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.user.api.UserStoreException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 /**
  * This is the class that implements the biometric authenticator feature.
  */
@@ -62,6 +60,7 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
 
     private static final long serialVersionUID = 8272421416671799253L;
     private static final Log log = LogFactory.getLog(BiometricAuthenticator.class);
+
     @Override
     public String getFriendlyName() {
 
@@ -93,8 +92,6 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
                 get(context.getCurrentStep() - 1).getAuthenticatedUser();
         String sessionDataKey = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
 
-
-
         try {
             ArrayList<Device> deviceList = deviceHandler.lisDevices(user.getUserName(), user.getUserStoreDomain(),
                     user.getTenantDomain());
@@ -112,15 +109,19 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
                 array.add(object);
             }
 
+            if (deviceList.size() == 1) {
+                sendRequest(request, response, deviceList.get(0).getDeviceId(), sessionDataKey);
+            } else {
+                AuthContextCache.getInstance().addToCacheByRequestId(new AuthContextcacheKey(sessionDataKey),
+                        new AuthContextCacheEntry(context));
 
-            AuthContextCache.getInstance().addToCacheByRequestId(new AuthContextcacheKey(sessionDataKey),
-                    new AuthContextCacheEntry(context));
+                String string = JSONArray.toJSONString(array);
+                String devicesPage = getDevicesPage(context) + "?sessionDataKey=" + URLEncoder.encode(sessionDataKey,
+                        StandardCharsets.UTF_8.name()) + "&devices=" + URLEncoder.encode(string,
+                        StandardCharsets.UTF_8.name());
+                response.sendRedirect(devicesPage);
+            }
 
-            String string = JSONArray.toJSONString(array);
-            String devicesPage = getDevicesPage(context) + "?sessionDataKey=" + URLEncoder.encode(sessionDataKey,
-                    StandardCharsets.UTF_8.name()) + "&devices=" + URLEncoder.encode(string,
-                    StandardCharsets.UTF_8.name());
-            response.sendRedirect(devicesPage);
 
         } catch (IOException e) {
             log.error("Error when trying to redirect to biometricdevices.jsp page", e);
@@ -217,18 +218,38 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
         return configValue;
     }
 
+    @SuppressWarnings("checkstyle:LineLength")
     @Override
     protected void processAuthenticationResponse(HttpServletRequest httpServletRequest, HttpServletResponse
             httpServletResponse, AuthenticationContext authenticationContext) throws AuthenticationFailedException {
-        String randomChallenge = (String) authenticationContext.getProperty
-                (BiometricAuthenticatorConstants.BIOMETRIC_AUTH_CHALLENGE);
-        if (randomChallenge.equals(httpServletRequest.getParameter(BiometricAuthenticatorConstants.SIGNED_CHALLENGE))) {
-            AuthenticatedUser user = authenticationContext.getSequenceConfig().
-                    getStepMap().get(authenticationContext.getCurrentStep() - 1).getAuthenticatedUser();
-            authenticationContext.setSubject(user);
-        } else {
-            authenticationContext.setProperty(BiometricAuthenticatorConstants.AUTHENTICATION_STATUS, true);
-            throw new AuthenticationFailedException("Authentication failed!Sent & received challenges are not equal.");
+        String randomChallenge = httpServletRequest.getParameter("signedChallenge");
+        String signature = httpServletRequest.getParameter("signature");
+        String status = httpServletRequest.getParameter("authstatus");
+        String deviceId = httpServletRequest.getParameter("deviceId");
+        String sessionDataKey = httpServletRequest.getParameter("sessionDataKey");
+        AuthenticatedUser user = authenticationContext.getSequenceConfig().
+                getStepMap().get(authenticationContext.getCurrentStep() - 1).getAuthenticatedUser();
+        try {
+            if (validateSignature(deviceId, randomChallenge, signature)) {
+                if (httpServletRequest.getParameter("authstatus").equals(
+                        BiometricAuthenticatorConstants.AUTH_REQUEST_STATUS_SUCCESS)) {
+                    authenticationContext.setSubject(user);
+                } else {
+
+                    authenticationContext.setProperty(BiometricAuthenticatorConstants.AUTHENTICATION_STATUS, true);
+                    httpServletResponse.sendRedirect("authenticationendpoint/retry.jsp?sessionDataKey=" + URLEncoder.encode(sessionDataKey,
+                            StandardCharsets.UTF_8.name()));
+//                    throw new AuthenticationFailedException("Authentication was denied from the mobile app", user);
+                }
+            } else {
+                authenticationContext.setProperty(BiometricAuthenticatorConstants.AUTHENTICATION_STATUS, true);
+                throw new AuthenticationFailedException("Authentication failed! Could not verify signature.");
+            }
+
+        } catch (IOException e) {
+            log.error("IO exception while trying to validate signature ", e);
+        } catch (SQLException e) {
+            log.error("SQL Exception while trying to validate signature", e);
         }
     }
 
@@ -263,7 +284,7 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
         DeviceHandler deviceHandler = new DeviceHandlerImpl();
         Device device = null;
         try {
-             device = deviceHandler.getDevice(deviceid);
+            device = deviceHandler.getDevice(deviceid);
         } catch (BiometricDeviceHandlerClientException e) {
             log.error("Error when trying to get device information", e);
         } catch (SQLException e) {
@@ -282,6 +303,7 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
         String fcmUrl = authenticatorProperties.get(BiometricAuthenticatorConstants.FCM_URL);
         String hostname = IdentityUtil.getHostName();
         String serviceProviderName = context.getServiceProviderName();
+
         String message = username + " is trying to log into " + serviceProviderName + " from " + hostname;
         // TODO: 2019-11-20  support localization-future improvement.Include in DOCs.
         //String sessionDataKey = request.getParameter(BiometricAuthenticatorConstants.CONTEXT_KEY);
@@ -291,25 +313,44 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
         context.setProperty(BiometricAuthenticatorConstants.BIOMETRIC_AUTH_CHALLENGE, randomChallenge);
 
         String pushId = device.getPushId();
-        // TODO: 2019-12-05 Without hardcoding to get 0, make it possible to to display all the registered devices of
-        //  the user and let the user to select the preferred device. Then edit the code to return the selected device
-        //  ID without the 1st device ID in the DAO list.
 
         FirebasePushNotificationSenderImpl pushNotificationSender = FirebasePushNotificationSenderImpl.getInstance();
         pushNotificationSender.init(serverKey, fcmUrl);
         try {
-            pushNotificationSender.sendPushNotification(pushId, message, randomChallenge, sessionDataKey);
+            pushNotificationSender.sendPushNotification(deviceid, pushId, message, randomChallenge, sessionDataKey);
         } catch (AuthenticationFailedException e) {
             log.error("Authentication Error", e);
         }
 
         try {
-            String waitPage = BiometricAuthenticatorConstants.WAIT_PAGE + "?sessionDataKey=" + URLEncoder.encode(sessionDataKey,
-                    StandardCharsets.UTF_8.name());
+            String waitPage = BiometricAuthenticatorConstants.WAIT_PAGE + "?sessionDataKey=" + URLEncoder.encode(
+                    sessionDataKey, StandardCharsets.UTF_8.name());
             response.sendRedirect(waitPage);
         } catch (IOException e) {
             log.error("Error when trying to redirect to wait.jsp page", e);
         }
 
     }
+    private boolean validateSignature(String deviceId, String challenge, String signature) throws IOException, SQLException {
+        boolean isvalid = true;
+//        DeviceHandler handler = new DeviceHandlerImpl();
+//        String publicKeyStr = handler.getPublicKey(deviceId);
+//
+//        byte[] signatureBytes = Base64.getDecoder().decode(signature);
+//        Signature sign = null;
+//        try {
+//            sign = Signature.getInstance("SHA256withDSA");
+//            byte[] publicKeyData = Base64.getDecoder().decode(publicKeyStr);
+//            X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKeyData);
+//            KeyFactory kf = KeyFactory.getInstance("DSA");
+//            PublicKey publicKey = kf.generatePublic(spec);
+//            sign.initVerify(publicKey);
+//            sign.update(challenge.getBytes());
+//            isvalid = sign.verify(signatureBytes);
+//        } catch (Exception e) {
+//
+//        }
+        return isvalid;
+    }
+
 }

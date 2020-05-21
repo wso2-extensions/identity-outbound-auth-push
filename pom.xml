@@ -380,7 +380,7 @@
     </repositories>
     <properties>
         <maven.buildnumber.plugin.version>1.4</maven.buildnumber.plugin.version>
-        <identity.framework.version>5.17.68</identity.framework.version>
+        <identity.framework.version>5.17.5</identity.framework.version>
         <identity.framework.imp.pkg.version.range>[5.14.67, 6.0.0)</identity.framework.imp.pkg.version.range>
         <carbon.identity.package.export.version>${project.version}</carbon.identity.package.export.version>
         <jacoco.version>0.8.2</jacoco.version>

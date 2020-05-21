@@ -22,15 +22,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.CarbonContext;
-import org.wso2.carbon.context.internal.OSGiDataHolder;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.DeviceHandlerConstants;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.exception.BiometricDeviceHandlerClientException;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.exception.BiometricdeviceHandlerServerException;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.model.Device;
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.core.util.IdentityDatabaseUtil;
-import org.wso2.carbon.user.api.UserRealm;
-import org.wso2.carbon.user.api.UserRealmService;
 import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
 
@@ -164,6 +161,27 @@ public class DeviceDAOImpl implements DeviceDAO {
     @Override
     public void deleteAllDevicesOfUser(int tenant, String userStore) {
 
+    }
+
+    @Override
+    public String getPublicKey(String deviceId) throws SQLException, IOException {
+        Connection connection = IdentityDatabaseUtil.getDBConnection();
+        PreparedStatement preparedStatement = null;
+        String publicKey = null;
+
+        preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQUERIES.GET_PUBLIC_KEY);
+        preparedStatement.setString(1, deviceId);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        if (resultSet != null) {
+            if (resultSet.next()) {
+                publicKey = (resultSet.getString(1));
+            }
+
+        }
+
+
+        IdentityDatabaseUtil.closeAllConnections(connection, null, preparedStatement);
+        return publicKey;
     }
 
     private String getUserIdFromUsername(String username) throws UserStoreException {
