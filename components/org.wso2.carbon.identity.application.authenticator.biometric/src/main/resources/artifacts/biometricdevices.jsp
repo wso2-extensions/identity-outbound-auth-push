@@ -73,25 +73,22 @@
 </head>
 <body>
 <h1>Choose the Device</h1>
-<div class="container" class="grid-container">
+<div class="device-list">
     <c:forEach var="device" items="${pageScope.DEVICE_LIST}">
-        <div class="grid-item">
-            <div class="card" style="width: 60rem;">
-                <div class="card-body">
-                    <h3 class="card-title">${device.getDeviceName()}</h3>
-                    <p class="card-text"><strong>Model :  </strong>${device.getDeviceModel()}</p>
-                    <p class="card-text"><strong>Last used on : </strong>${device.getPushId()}</p>
-                    <form style="align-items: center" action="/biometric-auth" method="GET">
-                        <input type="hidden" name="ACTION" value="Authenticate"/>
-                        <input type="hidden" name="sessionDataKey" value=<%=request.getParameter("sessionDataKey")%>>
-                        <button type="submit" name="deviceId" value="${device.getDeviceId()}" class="btn btn-primary">Proceed</button>
-                    </form>
-                </div>
+        <div class="card" style="width: 60rem;">
+            <div class="card-body">
+                <h3 class="card-title">${device.getDeviceName()}</h3>
+                <p class="card-text"><strong>Model :  </strong>${device.getDeviceModel()}</p>
+                <p class="card-text"><strong>Last used on : </strong>${device.getPushId()}</p>
+                <form style="align-items: center" action="/biometric-auth" method="GET">
+                    <input type="hidden" name="ACTION" value="Authenticate"/>
+                    <input type="hidden" name="sessionDataKey" value=<%=request.getParameter("sessionDataKey")%>>
+                    <button type="submit" name="deviceId" value="${device.getDeviceId()}" class="btn btn-primary">Proceed</button>
+                </form>
             </div>
         </div>
     </c:forEach>
 </div>
-
 </body>
 </html>
 
