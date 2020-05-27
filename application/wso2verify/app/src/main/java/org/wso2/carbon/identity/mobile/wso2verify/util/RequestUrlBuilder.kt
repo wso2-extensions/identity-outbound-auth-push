@@ -17,7 +17,9 @@
  */
 package org.wso2.carbon.identity.mobile.wso2verify.util
 
+import android.content.Context
+
 interface RequestUrlBuilder {
 
-    fun requestUrlBuilder(sessionDataKey: String?, challenge: String?, consent: String?): String
+    fun requestUrlBuilder(sessionDataKey: String?, challenge: String, consent: String?, deviceId: String, context: Context): String
 }

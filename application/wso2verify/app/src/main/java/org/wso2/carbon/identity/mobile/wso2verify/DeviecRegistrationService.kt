@@ -12,6 +12,7 @@ import okhttp3.internal.wait
 import org.wso2.carbon.identity.mobile.wso2verify.Model.BiometricAuthProfile
 import org.wso2.carbon.identity.mobile.wso2verify.Model.DiscoveryDataDTO
 import org.wso2.carbon.identity.mobile.wso2verify.Model.RegistrationRequestDTO
+import org.wso2.carbon.identity.mobile.wso2verify.util.impl.BiometricAuthUtil
 import java.io.IOException
 import java.security.*
 import java.security.cert.X509Certificate
@@ -64,6 +65,7 @@ class DeviecRegistrationService {
         var instanceId = FirebaseInstanceId.getInstance().token
         return RegistrationRequestDTO(id, model.toUpperCase(), model, instanceId, publicKey, signature)
     }
+
     private fun signChallenge(privateKey: String, challenge: UUID?): String{
         var keyspec = PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKey))
         var pk: PrivateKey = KeyFactory.getInstance("DSA").generatePrivate(keyspec)
@@ -81,7 +83,7 @@ class DeviecRegistrationService {
         var keyPair = getKeyPair()
         var registrationRequest = getRegistrationRequest(
             discoveryData.id, keyPair.getValue("public"),
-            signChallenge(keyPair.getValue("private"), discoveryData.challenge)
+            BiometricAuthUtil.signChallenge(keyPair.getValue("private"), discoveryData.challenge.toString())
         )
         var json = Gson().toJson(registrationRequest)
         var requestBody: RequestBody =
@@ -109,7 +111,7 @@ class DeviecRegistrationService {
                        discoveryData.authenticationUrl,
                        keyPair.getValue("private")
                    )
-//                   DatabaseHelper(context).addBiometricProfile(profile)
+                   DatabaseHelper(context).addBiometricProfile(profile)
                    val intent = Intent(context, RegistrationSuccessActivity::class.java)
                    context.startActivity(intent)
                    countDownLatch.countDown()

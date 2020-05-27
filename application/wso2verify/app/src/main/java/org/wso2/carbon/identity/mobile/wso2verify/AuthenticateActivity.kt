@@ -30,7 +30,6 @@ import androidx.biometric.BiometricPrompt
 import com.google.firebase.iid.FirebaseInstanceId
 import android.text.method.ScrollingMovementMethod
 import kotlinx.android.synthetic.main.activity_authenticate.*
-import okhttp3.OkHttpClient
 import org.wso2.carbon.identity.mobile.wso2verify.util.impl.RequestUrlBuilderImpl
 
 
@@ -38,7 +37,6 @@ import org.wso2.carbon.identity.mobile.wso2verify.util.impl.RequestUrlBuilderImp
  * Activity which authenticates the user with fingerprint.
  */
 class AuthenticateActivity : AppCompatActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -56,6 +54,7 @@ class AuthenticateActivity : AppCompatActivity() {
             intentAuthenticate.getStringExtra(BiometricAppConstants.CONTEXT_KEY)
         val messageChallenge = intentAuthenticate.getStringExtra(BiometricAppConstants.CHALLENGE)
         val notificationBody = intentAuthenticate.getStringExtra(BiometricAppConstants.BODY)
+        val deviceId = intentAuthenticate.getStringExtra(BiometricAppConstants.DEVIECID)
         Log.d("TAG", "session data key at authenticate activity: $messageSessionDataKey")
         Log.d("TAG", "challenge at auth activity: $messageChallenge")
 
@@ -82,7 +81,7 @@ class AuthenticateActivity : AppCompatActivity() {
                 ) {
                     super.onAuthenticationSucceeded(result)
                     if (messageSessionDataKey != null && messageChallenge != null) {
-                        success(messageSessionDataKey, messageChallenge)
+                        success(deviceId, messageSessionDataKey, messageChallenge)
                     }
                 }
             })
@@ -111,12 +110,13 @@ class AuthenticateActivity : AppCompatActivity() {
         return true
     }
 
-    private fun success(sessionDataKey: String?, challenge: String) {
+    private fun success(deviceId: String, sessionDataKey: String?, challenge: String) {
 
         val intentSuccess = Intent(this, SuccessActivity::class.java)
         intentSuccess.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intentSuccess.putExtra(BiometricAppConstants.CONTEXT_KEY, sessionDataKey)
         intentSuccess.putExtra(BiometricAppConstants.CHALLENGE, challenge)
+        intentSuccess.putExtra(BiometricAppConstants.DEVIECID, deviceId)
         startActivity(intentSuccess)
     }
 
@@ -125,8 +125,9 @@ class AuthenticateActivity : AppCompatActivity() {
             RequestUrlBuilderImpl().requestUrlBuilder(
                 intent.getStringExtra(BiometricAppConstants.CONTEXT_KEY),
                 intent.getStringExtra(BiometricAppConstants.CHALLENGE),
-                BiometricAppConstants.DENIED
-
+                BiometricAppConstants.DENIED,
+                intent.getStringExtra(BiometricAppConstants.DEVIECID),
+                this
             )
 
         } catch (e: Exception) {

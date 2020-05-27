@@ -39,24 +39,26 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
                 val sessionDataKey = remoteMessage.data[BiometricAppConstants.CONTEXT_KEY]
                 val challenge = remoteMessage.data[BiometricAppConstants.CHALLENGE]
+                val deviceId = remoteMessage.data[BiometricAppConstants.DEVIECID]
                 val clickAction = "AuthenticateActivity"
 
                 Log.d("TAG", "session data key at firebase class : $sessionDataKey")
                 Log.d("TAG", "challenge at firebase class: $challenge")
                 showNotification(
-                        remoteMessage.notification?.body, sessionDataKey, challenge, clickAction)
+                        remoteMessage.notification?.body, sessionDataKey, challenge, clickAction, deviceId)
             }
         }
     }
 
     private fun showNotification(body: String?, sessionDataKey:
-    String?, challenge: String?, click_action: String?) {
+    String?, challenge: String?, click_action: String?, deviceId: String?) {
 
         val intent = Intent(click_action)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.putExtra(BiometricAppConstants.CONTEXT_KEY, sessionDataKey)
         intent.putExtra(BiometricAppConstants.CHALLENGE, challenge)
         intent.putExtra(BiometricAppConstants.BODY, body)
+        intent.putExtra(BiometricAppConstants.DEVIECID, deviceId)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
     }

@@ -43,7 +43,6 @@ class QRScanActivity : AppCompatActivity() {
         var profiles: ArrayList<BiometricAuthProfile>
         val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
-            Toast.makeText(this, result.contents, Toast.LENGTH_LONG).show()
             var discoveryData: DiscoveryDataDTO =
                 Gson().fromJson(result.contents, DiscoveryDataDTO::class.java)
             db = DatabaseHelper(this)

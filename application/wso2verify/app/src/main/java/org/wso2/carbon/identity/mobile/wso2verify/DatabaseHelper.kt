@@ -67,4 +67,25 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DatabaseConsta
         database.close()
 
     }
+
+    fun getPrivateKey(deviceId: String): String{
+        var privateKey: String = ""
+        val GET_PRIVSTE_KEY_QUERY = "SELECT PRIVATE_KEY FROM BIOMETRIC_AUTH_PROFILE WHERE " +
+                "${DatabaseConstants.DEVICE_ID} = '${deviceId}' "
+        var database: SQLiteDatabase = this.readableDatabase
+        var cursor: Cursor = database.rawQuery(GET_PRIVSTE_KEY_QUERY,null)
+        try {
+            if (cursor.moveToFirst()) {
+                    privateKey = cursor.getString(cursor.getColumnIndex(DatabaseConstants.PRIVATE_KEY))
+            }
+        } catch (e: Exception) {
+            Log.d(TAG, "Error while trying to get posts from database")
+        } finally {
+            if (cursor != null && !cursor.isClosed) {
+                cursor.close()
+            }
+        }
+
+        return privateKey;
+    }
 }

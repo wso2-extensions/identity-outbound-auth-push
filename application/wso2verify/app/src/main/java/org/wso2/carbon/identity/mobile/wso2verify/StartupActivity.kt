@@ -29,6 +29,10 @@ class StartupActivity : AppCompatActivity() {
                 BiometricAppConstants.BODY,
                 intentAuthenticate.getStringExtra(BiometricAppConstants.BODY)
             )
+            authIntent.putExtra(
+                BiometricAppConstants.DEVIECID,
+                intentAuthenticate.getStringExtra(BiometricAppConstants.DEVIECID)
+            )
             startActivity(authIntent)
         }
         startup_register.setOnClickListener {

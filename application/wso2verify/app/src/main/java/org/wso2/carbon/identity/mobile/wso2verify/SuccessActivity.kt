@@ -27,9 +27,6 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.toRequestBody
-import org.json.JSONObject
 import org.wso2.carbon.identity.mobile.wso2verify.util.impl.RequestUrlBuilderImpl
 import java.io.IOException
 import java.util.concurrent.CountDownLatch
@@ -55,7 +52,7 @@ class SuccessActivity : AppCompatActivity() {
             val challenge = intent.getStringExtra(BiometricAppConstants.CHALLENGE)
 
             val requestUrlBuilderImpl = RequestUrlBuilderImpl()
-            requestUrlBuilderImpl.requestUrlBuilder(sessionDataKey, challenge, BiometricAppConstants.SUCCESSFUL)
+            requestUrlBuilderImpl.requestUrlBuilder(sessionDataKey, challenge, BiometricAppConstants.SUCCESSFUL,intent.getStringExtra(BiometricAppConstants.DEVIECID), this )
 
         } catch (e: Exception) {
             Log.e("Error ", "Error when trying to initiate the network call.", e)
@@ -78,11 +75,12 @@ class SuccessActivity : AppCompatActivity() {
  class NetworkTask : AsyncTask<String, Int, Long>() {
     override fun doInBackground(vararg parts: String): Long? {
 
-        //val reqBody =JSONObject().put("Status", parts.last()).toString().toRequestBody("application/x-www-form-urlencoded".toMediaTypeOrNull())
-
-        val CONTENT_TYPE = ("application/x-www-form-urlencoded").toMediaTypeOrNull()
+        val signature = parts.get(1)
+        val deviceId = parts.get(2)
         val requestBody: RequestBody = FormBody.Builder()
             .addEncoded("auth_status", parts.last())
+            .addEncoded("signature", signature)
+            .addEncoded("deviceId", deviceId)
             .build()
 
 
