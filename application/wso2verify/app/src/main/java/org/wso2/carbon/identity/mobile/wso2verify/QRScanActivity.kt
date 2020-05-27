@@ -1,18 +1,13 @@
 package org.wso2.carbon.identity.mobile.wso2verify
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
 import android.os.SystemClock
 import android.view.View
 import android.widget.Toast
-import androidx.annotation.IntegerRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isGone
-import androidx.core.view.isVisible
 import com.google.gson.Gson
 import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.content_registration_instructions.*
@@ -46,7 +41,7 @@ class QRScanActivity : AppCompatActivity() {
             var discoveryData: DiscoveryDataDTO =
                 Gson().fromJson(result.contents, DiscoveryDataDTO::class.java)
             db = DatabaseHelper(this)
-            profiles = db.getProfile(discoveryData)
+            profiles = db.getProfilesFromQrData(discoveryData)
 
 //            if (profiles.isEmpty()) {
                 Thread(Runnable {

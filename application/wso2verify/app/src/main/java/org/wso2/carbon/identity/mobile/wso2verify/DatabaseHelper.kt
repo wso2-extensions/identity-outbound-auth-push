@@ -20,7 +20,7 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DatabaseConsta
         database!!.execSQL(DatabaseConstants.AUTH_PROFILE_DROP_TABLE_QUERY)
     }
 
-    fun getProfile(discoveryData: DiscoveryDataDTO): ArrayList<BiometricAuthProfile>{
+    fun getProfilesFromQrData(discoveryData: DiscoveryDataDTO): ArrayList<BiometricAuthProfile>{
 
         val profiles: ArrayList<BiometricAuthProfile> = ArrayList()
         val AUTH_PROFILE_SELECT_QUERY = "SELECT * FROM BIOMETRIC_AUTH_PROFILE WHERE " +
@@ -87,5 +87,33 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DatabaseConsta
         }
 
         return privateKey;
+    }
+
+    fun listAllProfiles(): ArrayList<BiometricAuthProfile>{
+
+        val profiles: ArrayList<BiometricAuthProfile> = ArrayList()
+        var database: SQLiteDatabase = this.readableDatabase
+        var cursor: Cursor = database.rawQuery(DatabaseConstants.LIST_ALL_PROFILES_QUERY,null)
+        var profile:BiometricAuthProfile
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+                    profile = BiometricAuthProfile()
+                    profile.deviceId = cursor.getString(cursor.getColumnIndex(DatabaseConstants.DEVICE_ID))
+                    profile.username = cursor.getString(cursor.getColumnIndex(DatabaseConstants.USERNAME))
+                    profile.tenantDomain = cursor.getString(cursor.getColumnIndex(DatabaseConstants.TENANT_DOMAIN))
+                    profile.userStore = cursor.getString(cursor.getColumnIndex(DatabaseConstants.USER_STORE))
+                    profiles.add(profile)
+                } while (cursor.moveToNext())
+            }
+        } catch (e: Exception) {
+            Log.d(TAG, "Error while trying to get posts from database")
+        } finally {
+            if (cursor != null && !cursor.isClosed) {
+                cursor.close()
+            }
+        }
+
+        return profiles
     }
 }
