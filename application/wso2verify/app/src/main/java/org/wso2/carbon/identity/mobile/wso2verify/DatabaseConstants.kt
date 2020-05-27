@@ -21,8 +21,5 @@ class DatabaseConstants {
                 "PRIVATE_KEY TEXT NOT NULL" +
                 ")"
         val AUTH_PROFILE_DROP_TABLE_QUERY = "DROP TABLE IF EXISTS BIOMETRIC_AUTH_PROFILE"
-
-
-
     }
 }
