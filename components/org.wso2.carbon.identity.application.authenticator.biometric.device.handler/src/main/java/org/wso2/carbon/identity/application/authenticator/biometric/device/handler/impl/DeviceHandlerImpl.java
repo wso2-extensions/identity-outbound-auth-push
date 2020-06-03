@@ -142,10 +142,9 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
         User user = getAuthenticatedUser();
         String tenantDomain = user.getTenantDomain();
         UUID challenge = UUID.randomUUID();
-        String registrationUrl = "https://192.168.1.4:9443" +  "/t/" +
+        String registrationUrl = "https://192.168.8.153:9443" +  "/t/" +
                 user.getTenantDomain() + "/api/users/v1/me/biometricdevice";
-        String authUrl = "https://192.168.1.4:9443" +  "/t/" + user.getTenantDomain() + "" +
-                "/api/users/v1/me/biometric-auth";
+        String authUrl = "https://192.168.8.153:9443/biometric-auth";
         RegistrationRequestChallengeCache.getInstance().addToCacheByRequestId
                 (new BiometricDeviceHandlerCacheKey(deviceId), new RegistrationRequestChallengeCacheEntry(challenge,
                         user.getUserName(), user.getUserStoreDomain(), user.getTenantDomain(), false));
@@ -178,7 +177,6 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
         sign.initVerify(publicKey);
         sign.update(cacheEntry.getChallenge().toString().getBytes());
         return sign.verify(signatureBytes);
-//        return true;
     }
 
     private String getUserIdFromUsername(String username, UserRealm realm) throws UserStoreException {

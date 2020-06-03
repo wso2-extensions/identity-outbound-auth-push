@@ -25,6 +25,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundConstants;
 import org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticator;
+import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.DeviceHandler;
+import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.exception.BiometricDeviceHandlerClientException;
+import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.exception.BiometricdeviceHandlerServerException;
+import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.impl.DeviceHandlerImpl;
 import org.wso2.carbon.identity.application.authenticator.biometric.servlet.BiometricServletConstants;
 import org.wso2.carbon.identity.application.authenticator.biometric.servlet.model.WaitStatus;
 import org.wso2.carbon.identity.application.authenticator.biometric.servlet.store.impl.BiometricDataStoreImpl;
@@ -32,6 +36,7 @@ import org.wso2.carbon.identity.application.authenticator.biometric.servlet.stor
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -91,18 +96,34 @@ public class BiometricServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-        if (!request.getParameterMap().containsKey(BiometricServletConstants.INITIATOR)) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Query parameter for initiator is missing.");
+        String action = request.getParameter("ACTION");
+        if (action == null) {
+            action = "AUTH_REQUEST";
         }
-        String initiator = request.getParameter(BiometricServletConstants.INITIATOR);
+        if (action.equals("DELETE")) {
+            try {
+                deleteDevice(request, response);
+            } catch (BiometricDeviceHandlerClientException e) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Device not found");
+            } catch (BiometricdeviceHandlerServerException e) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Server Error");
+            } catch (SQLException e) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "SQL Exception");
+            }
+        } else {
+            if (!request.getParameterMap().containsKey(BiometricServletConstants.INITIATOR)) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Query parameter for initiator is missing.");
+            }
+            String initiator = request.getParameter(BiometricServletConstants.INITIATOR);
 
-        if (!BiometricServletConstants.MOBILE.equals(initiator)) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unsupported HTTP request from a mobile device.");
-            return;
+            if (!BiometricServletConstants.MOBILE.equals(initiator)) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unsupported HTTP request from a mobile device.");
+                return;
+            }
+            handleMobileResponse(request, response);
         }
-        handleMobileResponse(request, response);
+
     }
 
     private void handleWebResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -161,5 +182,12 @@ public class BiometricServlet extends HttpServlet {
                         "\n Signed challenge received from the mobile application: " + challengeMobile);
             }
         }
+    }
+
+    private void deleteDevice(HttpServletRequest request, HttpServletResponse response)
+            throws BiometricDeviceHandlerClientException, BiometricdeviceHandlerServerException, SQLException {
+        DeviceHandler deviceHandler = new DeviceHandlerImpl();
+        deviceHandler.unregisterDevice(request.getParameter("deviceId"));
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 }

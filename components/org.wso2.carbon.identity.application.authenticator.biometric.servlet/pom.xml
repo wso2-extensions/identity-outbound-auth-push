@@ -117,7 +117,11 @@
                             org.eclipse.equinox.http.helper,
                             org.osgi.service.component;version="[1.2.0,2.0.0)",
                             org.osgi.service.http;version="[1.2,2)",
-                            org.wso2.carbon.identity.application.authenticator.biometric;version="[1.0,2)"
+                            org.wso2.carbon.identity.application.authenticator.biometric;version="[1.0,2)",
+                            org.wso2.carbon.identity.application.authenticator.biometric.device.handler;version="[1.0,2)",
+                            org.wso2.carbon.identity.application.authenticator.biometric.device.handler.model;version="[1.0,2)",
+                            org.wso2.carbon.identity.application.authenticator.biometric.device.handler.exception;version="[1.0,2)",
+                            org.wso2.carbon.identity.application.authenticator.biometric.device.handler.impl;version="[1.0,2)"
                         </Import-Package>
                     </instructions>
                 </configuration>

@@ -48,6 +48,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+//import java.security.KeyFactory;
+//import java.security.PublicKey;
+//import java.security.Signature;
+//import java.security.spec.X509EncodedKeySpec;
 import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.Signature;
@@ -112,11 +116,12 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
                 array.add(object);
             }
 
+            AuthContextCache.getInstance().addToCacheByRequestId(new AuthContextcacheKey(sessionDataKey),
+                    new AuthContextCacheEntry(context));
+
             if (deviceList.size() == 1) {
                 sendRequest(request, response, deviceList.get(0).getDeviceId(), sessionDataKey);
             } else {
-                AuthContextCache.getInstance().addToCacheByRequestId(new AuthContextcacheKey(sessionDataKey),
-                        new AuthContextCacheEntry(context));
 
                 String string = JSONArray.toJSONString(array);
                 String devicesPage = getDevicesPage(context) + "?sessionDataKey=" + URLEncoder.encode(sessionDataKey,
@@ -225,14 +230,13 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
     @Override
     protected void processAuthenticationResponse(HttpServletRequest httpServletRequest, HttpServletResponse
             httpServletResponse, AuthenticationContext authenticationContext) throws AuthenticationFailedException {
-        String randomChallenge = httpServletRequest.getParameter("signedChallenge");
-        String signature = httpServletRequest.getParameter("signature");
-        String deviceId = httpServletRequest.getParameter("deviceId");
-        String sessionDataKey = httpServletRequest.getParameter("sessionDataKey");
+
         AuthenticatedUser user = authenticationContext.getSequenceConfig().
                 getStepMap().get(authenticationContext.getCurrentStep() - 1).getAuthenticatedUser();
+
         try {
-            if (validateSignature(deviceId, randomChallenge, signature)) {
+            if (validateSignature(httpServletRequest.getParameter("deviceId"),
+                    httpServletRequest.getParameter("signedChallenge"), httpServletRequest.getParameter("signature"))) {
                 authenticationContext.setSubject(user);
             } else {
                 authenticationContext.setProperty(BiometricAuthenticatorConstants.AUTHENTICATION_STATUS, true);
@@ -242,7 +246,7 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
         } catch (IOException e) {
             log.error("IO exception while trying to validate signature ", e);
         } catch (SQLException e) {
-            log.error("SQL Exception while trying to validate signature", e);
+            log.error("SQL Exception while trying to get public key", e);
         }
     }
 
@@ -295,11 +299,11 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
         String serverKey = authenticatorProperties.get(BiometricAuthenticatorConstants.SERVER_KEY);
         String fcmUrl = authenticatorProperties.get(BiometricAuthenticatorConstants.FCM_URL);
         String hostname = IdentityUtil.getHostName();
+
         String serviceProviderName = context.getServiceProviderName();
 
-        String message = username + " is trying to log into " + serviceProviderName + " from " + hostname;
-        // TODO: 2019-11-20  support localization-future improvement.Include in DOCs.
-        //String sessionDataKey = request.getParameter(BiometricAuthenticatorConstants.CONTEXT_KEY);
+        String message = username + " is trying to log into " + serviceProviderName + " at " + hostname;
+
         String sessionDataKey = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
         UUID challenge = UUID.randomUUID();
         String randomChallenge = challenge.toString();
@@ -325,11 +329,12 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
 
     }
 
-    private boolean validateSignature(String deviceId, String challenge, String signature) throws IOException, SQLException {
+    private boolean validateSignature(String deviceId, String challenge, String signature)
+            throws IOException, SQLException {
         boolean isvalid = true;
         DeviceHandler handler = new DeviceHandlerImpl();
         String publicKeyStr = handler.getPublicKey(deviceId);
-
+        signature = signature.replaceAll("\\s", "+");
         byte[] signatureBytes = Base64.getDecoder().decode(signature);
         Signature sign = null;
         try {
