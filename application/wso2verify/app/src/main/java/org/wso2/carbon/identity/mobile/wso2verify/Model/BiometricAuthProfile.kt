@@ -22,12 +22,12 @@ class BiometricAuthProfile {
         set(value) {
             field = value
         }
-    var authUrl: String? = null
+    var authUrl: String = ""
         get() = field
         set(value) {
             field = value
         }
-    var privateKey: String? = null
+    var privateKey: String = ""
         get() = field
         set(value) {
             field = value
@@ -38,8 +38,8 @@ class BiometricAuthProfile {
         username: String?,
         tenantDomain: String?,
         userStore: String?,
-        authUrl: String?,
-        privateKey: String?
+        authUrl: String,
+        privateKey: String
     ) {
         this.deviceId = deviceId
         this.username = username

@@ -29,10 +29,9 @@ class RequestUrlBuilderImpl : RequestUrlBuilder {
     internal lateinit var db: DatabaseHelper
     override fun requestUrlBuilder(sessionDataKey: String?, challenge: String, consent: String?, deviceId: String , context: Context): String {
         db = DatabaseHelper(context)
-        val privateKey = db.getPrivateKey(deviceId)
-        val signature = BiometricAuthUtil.signChallenge(privateKey, challenge)
-        val requestURL = BiometricAppConstants.DOMAIN_NAME +
-                BiometricAppConstants.BIOMETRIC_ENDPOINT + "?initiator=mobile&sessionDataKey=" +
+        val data = db.getProfileData(deviceId)
+        val signature = BiometricAuthUtil.signChallenge(data.privateKey, challenge)
+        val requestURL = data.authUrl + "?initiator=mobile&sessionDataKey=" +
                 sessionDataKey + "&challenge=" + challenge
         Log.d("Request Url of the polling endpoint: ", requestURL)
         NetworkTask().execute(requestURL, signature,deviceId, consent)

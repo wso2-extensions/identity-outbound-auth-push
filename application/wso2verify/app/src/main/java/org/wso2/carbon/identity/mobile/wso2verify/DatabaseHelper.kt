@@ -116,4 +116,39 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, DatabaseConsta
 
         return profiles
     }
+
+    fun removeProfile(deviceId: String?):Int {
+        var database: SQLiteDatabase = this.writableDatabase
+        return database.delete("BIOMETRIC_AUTH_PROFILE",
+            "DEVICE_ID = ? ",
+            Array(1) { deviceId }
+            )
+
+    }
+
+    fun getProfileData(deviceId: String): BiometricAuthProfile{
+        var privateKey: String = ""
+        var authUrl: String = ""
+
+        val GET_PRIVSTE_KEY_QUERY = "SELECT * FROM BIOMETRIC_AUTH_PROFILE WHERE " +
+                "${DatabaseConstants.DEVICE_ID} = '${deviceId}' "
+        var database: SQLiteDatabase = this.readableDatabase
+        var cursor: Cursor = database.rawQuery(GET_PRIVSTE_KEY_QUERY,null)
+        try {
+            if (cursor.moveToFirst()) {
+                privateKey = cursor.getString(cursor.getColumnIndex(DatabaseConstants.PRIVATE_KEY))
+                authUrl = cursor.getString(cursor.getColumnIndex(DatabaseConstants.AUTH_URL))
+            }
+        } catch (e: Exception) {
+            Log.d(TAG, "Error while trying to get posts from database")
+        } finally {
+            if (cursor != null && !cursor.isClosed) {
+                cursor.close()
+            }
+        }
+        val profile = BiometricAuthProfile()
+        profile.privateKey = privateKey
+        profile.authUrl = authUrl
+        return profile
+    }
 }

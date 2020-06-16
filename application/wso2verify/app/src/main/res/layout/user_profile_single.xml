@@ -16,65 +16,59 @@
             android:background="@drawable/input_design"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            >
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="200dp"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="10dp"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/product_name"
+                    android:id="@+id/txt_id"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Product Name"
+                    android:text="Device ID"
                     android:textColor="@android:color/black"
                     android:textSize="12dp">
 
                 </TextView>
 
                 <TextView
-                    android:id="@+id/product_Description"
+                    android:id="@+id/txt_username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/product_name"
-                    android:text="Product Description"
+                    android:layout_below="@+id/txt_id"
+                    android:text="Username"
                     android:textColor="@android:color/black"
                     android:textSize="12dp"
 
                     />
 
                 <TextView
-                    android:id="@+id/product_Quantity"
+                    android:id="@+id/txt_tenant_domain"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/product_Description"
-                    android:text="Product Quantity"
+                    android:layout_below="@+id/txt_username"
+                    android:text="Tenant Domain"
                     android:textColor="@android:color/black"
                     android:textSize="12dp"
 
                     />
 
                 <TextView
-                    android:id="@+id/product_Price"
+                    android:id="@+id/txt_user_store"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/product_Quantity"
-                    android:text="Product Price"
+                    android:layout_below="@+id/txt_tenant_domain"
+                    android:text="User Store"
                     android:textColor="@android:color/black"
-                    android:textSize="12dp" />
-
-                <TextView
-                    android:id="@+id/product_Rating"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/product_Price"
                     android:layout_marginBottom="10dp"
-                    android:text="Rating"
-                    android:textColor="@android:color/black"
                     android:textSize="12dp" />
+
+
             </LinearLayout>
 
             <LinearLayout

@@ -3,7 +3,6 @@ package org.wso2.carbon.identity.mobile.wso2verify
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_startup.*
 
 /**
@@ -37,6 +36,10 @@ class StartupActivity : AppCompatActivity() {
         }
         startup_register.setOnClickListener {
             val intent = Intent(this, QRScanActivity::class.java)
+            startActivity(intent)
+        }
+        startup_profiles.setOnClickListener{
+            val intent = Intent(this, UserProfilesActivity::class.java)
             startActivity(intent)
         }
 
