@@ -43,22 +43,17 @@ import org.wso2.carbon.identity.application.common.model.Property;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.user.api.UserStoreException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-//import java.security.KeyFactory;
-//import java.security.PublicKey;
-//import java.security.Signature;
-//import java.security.spec.X509EncodedKeySpec;
 import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.Signature;
 import java.security.spec.X509EncodedKeySpec;
 import java.sql.SQLException;
 import java.util.*;
-
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 /**
  * This is the class that implements the biometric authenticator feature.
  */
@@ -347,6 +342,7 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
             sign.update(challenge.getBytes());
             isvalid = sign.verify(signatureBytes);
         } catch (Exception e) {
+            log.error("Error when validating signature", e);
 
         }
         return isvalid;

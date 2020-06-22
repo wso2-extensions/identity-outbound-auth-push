@@ -232,6 +232,7 @@
                             !org.wso2.carbon.identity.application.authenticator.biometric.internal,
                             org.wso2.carbon.identity.application.authenticator.biometric,
                             org.wso2.carbon.identity.application.authenticator.biometric.dao,
+                            org.wso2.carbon.identity.application.authenticator.biometric.model,
                             org.wso2.carbon.identity.application.authenticator.biometric.cache,
                             org.wso2.carbon.identity.application.authenticator.biometric.dao.impl,
                             org.wso2.carbon.identity.application.authenticator.biometric.notification.handler,
