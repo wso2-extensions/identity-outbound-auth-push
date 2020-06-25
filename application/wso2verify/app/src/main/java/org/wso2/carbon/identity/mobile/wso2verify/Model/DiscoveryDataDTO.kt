@@ -29,7 +29,7 @@ class DiscoveryDataDTO{
         set(value) {
             field = value
         }
-     var authenticationUrl: String? = null
+     var authenticationUrl: String = ""
         get() = field
         set(value) {
             field = value
