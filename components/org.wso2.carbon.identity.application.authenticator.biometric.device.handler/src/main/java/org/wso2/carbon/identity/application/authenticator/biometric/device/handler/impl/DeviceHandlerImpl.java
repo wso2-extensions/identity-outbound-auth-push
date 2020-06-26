@@ -143,8 +143,8 @@ public class DeviceHandlerImpl implements DeviceHandler {
         String tenantDomain = user.getTenantDomain();
         UUID challenge = UUID.randomUUID();
         String registrationUrl = IdentityUtil.getHostName() +  "/t/" +
-                user.getTenantDomain() + "/me/biometricdevice";
-        String authUrl = IdentityUtil.getHostName() +  "/t/" + user.getTenantDomain() + "/me/biometric-auth";
+                user.getTenantDomain() + "/api/users/v1/me/biometricdevice";
+        String authUrl = IdentityUtil.getHostName() + "/me/biometric-auth";
         RegistrationRequestChallengeCache.getInstance().addToCacheByRequestId
                 (new BiometricDeviceHandlerCacheKey(deviceId), new RegistrationRequestChallengeCacheEntry(challenge,
                         user.getUserName(), user.getUserStoreDomain(), user.getTenantDomain(), false));
@@ -170,8 +170,7 @@ public class DeviceHandlerImpl implements DeviceHandler {
         PublicKey publicKey = kf.generatePublic(spec);
         sign.initVerify(publicKey);
         sign.update(cacheEntry.getChallenge().toString().getBytes());
-        //return sign.verify(signatureBytes);
-        return true;
+        return sign.verify(signatureBytes);
     }
 
     private String getUserIdFromUsername(String username, UserRealm realm) throws UserStoreException {
