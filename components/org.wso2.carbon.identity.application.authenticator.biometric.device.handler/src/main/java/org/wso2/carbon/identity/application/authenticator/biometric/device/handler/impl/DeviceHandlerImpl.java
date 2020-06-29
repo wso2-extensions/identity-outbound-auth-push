@@ -149,7 +149,7 @@ public class DeviceHandlerImpl implements DeviceHandler {
         UUID challenge = UUID.randomUUID();
         String registrationUrl = IdentityUtil.getHostName() +  "/t/" +
                 tenantDomain + "/api/users/v1/me/biometricdevice";
-        String authUrl = IdentityUtil.getHostName() + "/me/biometric-auth";
+        String authUrl = IdentityUtil.getHostName() + "/biometric-auth";
         RegistrationRequestChallengeCache.getInstance().addToCacheByRequestId
                 (new BiometricDeviceHandlerCacheKey(deviceId), new RegistrationRequestChallengeCacheEntry(challenge,
                         username, userStore, tenantDomain, false));
