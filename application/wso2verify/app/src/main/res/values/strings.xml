@@ -17,9 +17,9 @@
   -->
 <resources>
     <string name="app_name">WSO2 Verify</string>
-    <string name="messageBox">Approve with fingerprint</string>
+    <string name="messageBox">Authenticate</string>
     <string name="textViewMain">Initiate authentication process from the browser</string>
-    <string name="textSuccess">You\'re In!</string>
+    <string name="textSuccess">You are In!</string>
     <string name="showing_code_in_fragment">Showing code in fragment</string>
     <string name="scan_qr_code">SCAN QR CODE</string>
     <string name="name">Name</string>
@@ -38,4 +38,9 @@
     <string name="success_img">Image of a tick mark in success activity.</string>
     <string name="fingerprint_main_activity_img">Image of a fingerprint in main activity.</string>
     <string name="fingerprint_auth_activity_img">Image of a fingerprint in authenticate activity.</string>
+
+    <string name="title_activity_startup">WSO2 Verify</string>
+    <string name="title_activity_registration_instructions">RegistrationInstructions</string>
+    <string name="title_activity_registration_success">RegistrationSuccessActivity</string>
+    <string name="title_activity_registration_failed">RegistrationFailedActivity</string>
 </resources>

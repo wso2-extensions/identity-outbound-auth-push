@@ -15,11 +15,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.wso2.carbon.identity.mobile.wso2verify.util
+package org.wso2.carbon.identity.mobile.wso2verify
 
-import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 
-interface RequestUrlBuilder {
+import kotlinx.android.synthetic.main.content_registration_failed.*
 
-    fun requestUrlBuilder(sessionDataKey: String?, challenge: String, consent: String?, deviceId: String, context: Context): String
+class RegistrationFailedActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_registration_failed)
+        try_again.setOnClickListener{
+            val intent = Intent(this, QRScanActivity::class.java)
+            startActivity(intent)
+        }
+
+    }
+
 }

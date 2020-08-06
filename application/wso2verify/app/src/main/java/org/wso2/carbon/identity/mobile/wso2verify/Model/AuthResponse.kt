@@ -15,11 +15,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.wso2.carbon.identity.mobile.wso2verify.util
+package org.wso2.carbon.identity.mobile.wso2verify.Model
 
-import android.content.Context
+class AuthResponse {
+    var status: String? = null
+        get() = field
+        set(value) {
+            field = value
+        }
 
-interface RequestUrlBuilder {
+    constructor(status: String?) {
+        this.status = status
+    }
 
-    fun requestUrlBuilder(sessionDataKey: String?, challenge: String, consent: String?, deviceId: String, context: Context): String
+    constructor()
+
 }
