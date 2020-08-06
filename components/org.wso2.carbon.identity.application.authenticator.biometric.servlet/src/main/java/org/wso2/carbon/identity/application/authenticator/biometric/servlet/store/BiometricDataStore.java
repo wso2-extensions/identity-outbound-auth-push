@@ -30,12 +30,22 @@ public interface BiometricDataStore {
     String getSignedChallenge(String sessionDataKey);
 
     /**
+     * Returns the authentication status stored against the session data key in biometric data store.
+     */
+    String getAuthStatus(String sessionDataKey);
+
+    /**
      * Adds a new record of session data key against signed challenge to the biometric data store.
      */
-    void addBiometricData(String sessionDataKey, String signedChallenge);
+    void addBiometricData(String sessionDataKey, String signedChallenge, String authStatus, String signature,
+                          String deviceId);
 
     /**
      * Removes the record with the given session data key in biometric data store.
      */
     void removeBiometricData(String sessionDataKey);
+
+    String getSignature(String sessionDataKey);
+
+    String getDeviceId(String sessionDataKey);
 }

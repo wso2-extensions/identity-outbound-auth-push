@@ -33,6 +33,7 @@ public class BiometricdeviceHandlerUtil {
 
     public static String objectToJson(Object object) throws JsonProcessingException {
         return jsonMapper.writeValueAsString(object);
+
     }
 
     public static Object jsonToObject(String string) throws IOException {

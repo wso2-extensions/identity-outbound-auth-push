@@ -26,6 +26,33 @@ public class WaitStatus {
 
     private String status;
     private String signedChallenge;
+    private String authStatus;
+    private String signature;
+    private String deviceId;
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
+
+    public String getSignedChallenge() {
+        return signedChallenge;
+    }
+
+    public void setSignedChallenge(String signedChallenge) {
+        this.signedChallenge = signedChallenge;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
+    }
 
     public String getStatus() {
 
@@ -45,5 +72,13 @@ public class WaitStatus {
     public void setChallenge(String challenge) {
 
         this.signedChallenge = challenge;
+    }
+
+    public String getAuthStatus() {
+        return authStatus;
+    }
+
+    public void setAuthStatus(String authStatus) {
+        this.authStatus = authStatus;
     }
 }

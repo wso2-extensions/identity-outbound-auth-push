@@ -49,4 +49,6 @@ public interface DeviceDAO {
             BiometricDeviceHandlerClientException, SQLException, IOException, UserStoreException;
 
     void deleteAllDevicesOfUser(int userId, String userStore);
+
+    String getPublicKey(String deviceId) throws SQLException, IOException;;
 }

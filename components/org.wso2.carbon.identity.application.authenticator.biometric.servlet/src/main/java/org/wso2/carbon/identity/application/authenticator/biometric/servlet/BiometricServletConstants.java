@@ -35,7 +35,6 @@ public class BiometricServletConstants {
      * Object holding wait status. The status of the response from mobile is either COMPLETED or REJECTED.
      */
     public enum Status {
-
         COMPLETED, REJECTED
     }
 }

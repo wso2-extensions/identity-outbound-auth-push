@@ -38,6 +38,7 @@ public class BiometricAuthenticatorConstants {
     public static final String CONTENT_AVAILABLE = "content_available";
     public static final String HIGH = "high";
     public static final String PRIORITY = "priority";
+    public static final String DEVICE_ID = "deviceId";
     public static final String CHALLENGE = "challenge";
     public static final String CLICK_ACTION = "click_action";
     public static final String DISPLAY_ANDROID_ACTIVITY = "AuthenticateActivity";
@@ -45,8 +46,15 @@ public class BiometricAuthenticatorConstants {
     public static final String NOTIFICATION = "notification";
     public static final String DATA = "data";
     public static final String WAIT_PAGE = "authenticationendpoint/wait.jsp";
+    public static final String DEVICES_PAGE = "authenticationendpoint/biometricdevices.jsp";
     public static final String BIOMETRIC_ENDPOINT = "/biometric-auth";
     public static final String POLLING_QUERY_PARAMS = "?initiator=web&sessionDataKey=";
     public static final String COMPLETED = "COMPLETED";
+    public static final String BIOMETRIC_AUTH_WAIT = "wait";
+    public static final String BIOMETRIC_AUTH_ACCESS_DENIED = "access-denied";
+    public static final String AUTH_REQUEST_STATUS_SUCCESS = "SUCCESSFUL";
+    public static final String AUTH_REQUEST_STATUS_DENIED = "DENIED";
+
     public static final String BIOMETRIC_AUTHENTICATION_ENDPOINT_WAIT_URL = "biometricAuthenticationEndpointWaitURL";
+    public static final String BIOMETRIC_AUTHENTICATION_ENDPOINT_DEVICES_URL = "biometricAuthenticationEndpointDevicesURL";
 }

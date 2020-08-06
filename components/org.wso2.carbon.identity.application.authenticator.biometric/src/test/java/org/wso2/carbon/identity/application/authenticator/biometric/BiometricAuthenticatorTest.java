@@ -20,11 +20,15 @@ package org.wso2.carbon.identity.application.authenticator.biometric;
 
 import org.apache.axis2.context.ConfigurationContextFactory;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Spy;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.modules.testng.PowerMockObjectFactory;
+import org.powermock.reflect.Whitebox;
 import org.testng.Assert;
 import org.testng.IObjectFactory;
 import org.testng.annotations.BeforeMethod;
@@ -32,6 +36,9 @@ import org.testng.annotations.ObjectFactory;
 import org.testng.annotations.Test;
 import org.wso2.carbon.extension.identity.helper.FederatedAuthenticatorUtil;
 import org.wso2.carbon.identity.application.authentication.framework.config.builder.FileBasedConfigurationBuilder;
+import org.wso2.carbon.identity.application.authentication.framework.context.AuthenticationContext;
+import org.wso2.carbon.identity.application.authentication.framework.exception.AuthenticationFailedException;
+import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticatedUser;
 import org.wso2.carbon.identity.application.authentication.framework.util.FrameworkUtils;
 import org.wso2.carbon.identity.application.common.model.Property;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
@@ -42,6 +49,10 @@ import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -53,7 +64,19 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 @PowerMockIgnore({"javax.crypto.*" })
 public class BiometricAuthenticatorTest extends PowerMockIdentityBaseTest {
     private BiometricAuthenticator biometricAuthenticator;
-    @Mock private HttpServletRequest httpServletRequest;
+
+    @Mock
+    private HttpServletRequest httpServletRequest;
+
+    @Mock
+    private HttpServletResponse httpServletResponse;
+
+    @Spy
+    private BiometricAuthenticator spy;
+
+    @Spy
+    private AuthenticationContext context;
+
 
     @BeforeMethod
     public void setUp() {
@@ -120,4 +143,67 @@ public class BiometricAuthenticatorTest extends PowerMockIdentityBaseTest {
     public IObjectFactory getObjectFactory() {
         return new PowerMockObjectFactory();
     }
+
+    @Test
+    public void testGetDevicesPage() throws Exception {
+        BiometricAuthenticator authenticator = PowerMockito.spy(biometricAuthenticator);
+        Assert.assertEquals(Whitebox.invokeMethod(authenticator, "getDevicesPage",
+                context),
+                "authenticationendpoint/biometricdevices.jsp");
+    }
+
+    @Test
+    public void testGetWaitPage() throws Exception {
+        BiometricAuthenticator authenticator = PowerMockito.spy(biometricAuthenticator);
+        Assert.assertEquals(Whitebox.invokeMethod(authenticator, "getWaitPage",
+                context),
+                "authenticationendpoint/waitpage.jsp");
+    }
+
+    @Test(expectedExceptions = {AuthenticationFailedException.class})
+    public void testInitiateAuthenticationRequestWithoutAuthenticatedUser() throws Exception {
+        mockStatic(FederatedAuthenticatorUtil.class);
+        mockStatic(FrameworkUtils.class);
+        context.setTenantDomain("carbon.super");
+        FederatedAuthenticatorUtil.setUsernameFromFirstStep(context);
+        Whitebox.invokeMethod(biometricAuthenticator, "initiateAuthenticationRequest",
+                httpServletRequest, httpServletResponse, context);
+    }
+
+    @Test(expectedExceptions = {AuthenticationFailedException.class})
+    public void testProcessAuthenticationRequestWithInvalidSignature() throws Exception {
+        when(httpServletRequest.getParameter("deviceId")).thenReturn("636d2e52-e306-417e-bdbf-b828d635a686");
+        when(httpServletRequest.getParameter("signedChallenge")).thenReturn("eiafhiuehfiu8499234u93ddljdskhf");
+        when(httpServletRequest.getParameter("signature")).thenReturn("fewefuiehsif3249847042hkfhkshdfk3974982374983274dkjh3392");
+        PowerMockito.when(biometricAuthenticator, "verifySignature").thenReturn(true);
+        context.setTenantDomain("carbon.super");
+        Whitebox.invokeMethod(biometricAuthenticator, "processAuthenticationResponse",
+                httpServletRequest, httpServletResponse, context);
+    }
+
+    @Test
+    public void testProcessAuthenticationResponse() throws Exception {
+        when(httpServletRequest.getParameter("deviceId")).thenReturn("123456");
+        when(httpServletRequest.getParameter("signedChallenge")).thenReturn("123456");
+        when(httpServletRequest.getParameter("signature")).thenReturn("123456");
+        AuthenticatedUser authenticatedUser = new AuthenticatedUser();
+        authenticatedUser.setAuthenticatedSubjectIdentifier("admin");
+        when((AuthenticatedUser) context.getProperty("authenticatedUser")).thenReturn(authenticatedUser);
+        Whitebox.invokeMethod(biometricAuthenticator, "processAuthenticationResponse",
+                httpServletRequest, httpServletResponse, context);
+    }
+
+    @Test
+    public void testInitiateAuthenticationRequest() throws Exception {
+        mockStatic(FederatedAuthenticatorUtil.class);
+        mockStatic(FrameworkUtils.class);
+        context.setTenantDomain("carbon.super");
+        AuthenticatedUser authenticatedUser = new AuthenticatedUser();
+        authenticatedUser.setAuthenticatedSubjectIdentifier("admin");
+        when((AuthenticatedUser) context.getProperty("authenticatedUser")).thenReturn(authenticatedUser);
+        FederatedAuthenticatorUtil.setUsernameFromFirstStep(context);
+        Whitebox.invokeMethod(biometricAuthenticator, "initiateAuthenticationRequest",
+                httpServletRequest, httpServletResponse, context);
+    }
+
 }

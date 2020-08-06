@@ -64,14 +64,14 @@ public class FirebasePushNotificationSenderImpl implements PushNotificationSende
      * Method to send push notification to Android FireBase Cloud messaging
      * Server.
      *
-     * @param deviceId        Generated and provided from Android Client Developer
+     * @param pushId        Generated and provided from Android Client Developer
      * @param message         which contains actual information
      * @param randomChallenge which contains a random challenge for each push notification
      * @param sessionDataKey  which contains the session data key for each push notification.
      */
 
     @Override
-    public void sendPushNotification(String deviceId,
+    public void sendPushNotification(String deviceId, String pushId,
                                      String message, String randomChallenge, String sessionDataKey)
             throws AuthenticationFailedException {
 
@@ -96,6 +96,7 @@ public class FirebasePushNotificationSenderImpl implements PushNotificationSende
                     BiometricAuthenticatorConstants.HIGH);
 
             JSONObject biometricNotificationData = new JSONObject();
+            biometricNotificationData.put(BiometricAuthenticatorConstants.DEVICE_ID, deviceId);
             biometricNotificationData.put(BiometricAuthenticatorConstants.BODY, message);
             biometricNotificationData.put(BiometricAuthenticatorConstants.CHALLENGE, randomChallenge);
             biometricNotificationData.put(InboundConstants.RequestProcessor.CONTEXT_KEY, sessionDataKey);
@@ -108,7 +109,7 @@ public class FirebasePushNotificationSenderImpl implements PushNotificationSende
                     BiometricAuthenticatorConstants.HIGH);
 
             JSONObject json = new JSONObject();
-            json.put(BiometricAuthenticatorConstants.TO, deviceId.trim());
+            json.put(BiometricAuthenticatorConstants.TO, pushId.trim());
             json.put(BiometricAuthenticatorConstants.NOTIFICATION, biometricNotificationInfo);
             json.put(BiometricAuthenticatorConstants.DATA, biometricNotificationData);
             json.put(BiometricAuthenticatorConstants.CONTENT_AVAILABLE, true);
@@ -128,13 +129,13 @@ public class FirebasePushNotificationSenderImpl implements PushNotificationSende
                 if (status == HttpServletResponse.SC_BAD_REQUEST) {
                     log.error("Request parameters were invalid.");
                 } else if (status == HttpServletResponse.SC_UNAUTHORIZED) {
-                    log.error("Notification Response : Device Id : " + deviceId + " Error occurred.");
+                    log.error("Notification Response : Device Id : " + pushId + " Error occurred.");
                 } else if (status == HttpServletResponse.SC_NOT_FOUND) {
                     log.error("App instance was unregistered from FCM. Token used is no longer valid.");
                 } else if (status == HttpServletResponse.SC_INTERNAL_SERVER_ERROR) {
                     log.error("An unknown internal error occurred.");
                 } else if (status == HttpServletResponse.SC_SERVICE_UNAVAILABLE) {
-                    log.error("The server is overloaded. DeviceId : " + deviceId);
+                    log.error("The server is overloaded. DeviceId : " + pushId);
                 } else {
                     log.error("Some unknown error occurred when initiating the push notification.");
                 }

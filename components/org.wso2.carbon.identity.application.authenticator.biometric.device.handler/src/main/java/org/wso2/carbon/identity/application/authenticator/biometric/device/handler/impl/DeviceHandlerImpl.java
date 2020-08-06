@@ -28,7 +28,6 @@ import org.wso2.carbon.identity.application.authenticator.biometric.device.handl
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.cache.DeviceCacheEntry;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.cache.RegistrationRequestChallengeCache;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.cache.RegistrationRequestChallengeCacheEntry;
-import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.dao.DeviceDAO;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.dao.DeviceDAOImpl;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.exception.BiometricDeviceHandlerClientException;
 import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.exception.BiometricdeviceHandlerServerException;
@@ -38,13 +37,13 @@ import org.wso2.carbon.identity.application.authenticator.biometric.device.handl
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.base.IdentityException;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
-import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.user.api.UserRealm;
 import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
 
 import java.io.IOException;
 
+import java.io.Serializable;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -61,15 +60,14 @@ import java.util.UUID;
 /**
  * This class implements the DeviceHandler interface .
  */
-public class DeviceHandlerImpl implements DeviceHandler {
+public class DeviceHandlerImpl implements DeviceHandler, Serializable {
     private static final Log log = LogFactory.getLog(DeviceHandler.class);
-    private DeviceDAO deviceDAO = DeviceDAOImpl.getInstance();
+
     @Override
     public Device registerDevice(RegistrationRequest registrationRequest)
             throws IdentityException, SQLException,
             UserStoreException, JsonProcessingException, NoSuchAlgorithmException,
             SignatureException, InvalidKeySpecException, InvalidKeyException {
-
         Device device = null;
         RegistrationRequestChallengeCacheEntry cacheEntry = RegistrationRequestChallengeCache.getInstance()
                 .getValueFromCacheByRequestId(new BiometricDeviceHandlerCacheKey(registrationRequest.getDeviceId()));
@@ -90,7 +88,7 @@ public class DeviceHandlerImpl implements DeviceHandler {
                     registrationRequest.getPublicKey());
             DeviceCache.getInstance().addToCacheByRequestId(new BiometricDeviceHandlerCacheKey(device.getDeviceId()),
                     new DeviceCacheEntry(device));
-            deviceDAO.registerDevice(device);
+            DeviceDAOImpl.getInstance().registerDevice(device);
         } else {
             throw new BiometricDeviceHandlerClientException("The device is already registered");
         }
@@ -103,15 +101,13 @@ public class DeviceHandlerImpl implements DeviceHandler {
     @Override
     public void unregisterDevice(String deviceId) throws BiometricdeviceHandlerServerException,
             BiometricDeviceHandlerClientException, SQLException {
-
-        deviceDAO.unregisterDevice(deviceId);
+        DeviceDAOImpl.getInstance().unregisterDevice(deviceId);
 
     }
 
     @Override
     public void editDeviceName(String deviceId, String newDeviceName) throws BiometricdeviceHandlerServerException,
             SQLException {
-
         DeviceCacheEntry cacheEntry = DeviceCache.getInstance()
                 .getValueFromCacheByRequestId(new BiometricDeviceHandlerCacheKey(deviceId));
         if (cacheEntry != null) {
@@ -120,41 +116,52 @@ public class DeviceHandlerImpl implements DeviceHandler {
             }
             DeviceCache.getInstance().clearCacheEntryByRequestId(new BiometricDeviceHandlerCacheKey(deviceId));
         } else {
-            deviceDAO.editDeviceName(deviceId, newDeviceName);
+            DeviceDAOImpl.getInstance().editDeviceName(deviceId, newDeviceName);
         }
     }
 
     @Override
     public Device getDevice(String deviceId) throws BiometricDeviceHandlerClientException, SQLException,
             BiometricdeviceHandlerServerException, IOException {
-
-        return deviceDAO.getDevice(deviceId);
+        return DeviceDAOImpl.getInstance().getDevice(deviceId);
     }
 
     @Override
-    public ArrayList<Device> listDevices(String username, String userStore, String tenantDomain)
+    public ArrayList<Device> lisDevices(String username, String userStore, String tenantDomain)
             throws BiometricdeviceHandlerServerException,
             BiometricDeviceHandlerClientException, SQLException, UserStoreException, IOException {
-
-        return deviceDAO.listDevices(username, userStore, tenantDomain);
+        return DeviceDAOImpl.getInstance().listDevices(username, userStore, tenantDomain);
     }
 
     @Override
-    public DiscoveryData getDiscoveryData(String username, String userStore, String tenantDomain) {
-
+    public DiscoveryData getDiscoveryData() {
         if (log.isDebugEnabled()) {
             log.debug("Retrieving data to generate QR code");
         }
         String deviceId = UUID.randomUUID().toString();
+        User user = getAuthenticatedUser();
+        String tenantDomain = user.getTenantDomain();
         UUID challenge = UUID.randomUUID();
-        String registrationUrl = IdentityUtil.getHostName() +  "/t/" +
-                tenantDomain + "/api/users/v1/me/biometricdevice";
-        String authUrl = IdentityUtil.getHostName() + "/biometric-auth";
+        String registrationUrl = "https://192.168.8.153:9443" +  "/t/" +
+                user.getTenantDomain() + "/api/users/v1/me/biometricdevice";
+        String authUrl = "https://192.168.8.153:9443/biometric-auth";
         RegistrationRequestChallengeCache.getInstance().addToCacheByRequestId
                 (new BiometricDeviceHandlerCacheKey(deviceId), new RegistrationRequestChallengeCacheEntry(challenge,
-                        username, userStore, tenantDomain, false));
-        return new DiscoveryData(deviceId, username, tenantDomain,
-                userStore, challenge, registrationUrl, authUrl);
+                        user.getUserName(), user.getUserStoreDomain(), user.getTenantDomain(), false));
+        return new DiscoveryData(deviceId, user.getUserName(), tenantDomain,
+                user.getUserStoreDomain(), challenge, registrationUrl, authUrl);
+    }
+
+    @Override
+    public String getPublicKey(String deviceId) throws SQLException, IOException {
+        return DeviceDAOImpl.getInstance().getPublicKey(deviceId);
+    }
+
+
+    private User getAuthenticatedUser() {
+        User user = User.getUserFromUserName(CarbonContext.getThreadLocalCarbonContext().getUsername());
+        user.setTenantDomain(CarbonContext.getThreadLocalCarbonContext().getTenantDomain());
+        return user;
     }
 
     private boolean verifySignature(String signature, String publicKeyStr,

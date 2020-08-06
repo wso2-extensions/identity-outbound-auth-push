@@ -56,5 +56,8 @@ public interface DeviceHandler {
 
     DiscoveryData getDiscoveryData(String username, String userStore, String tenantDomain);
 
+    String getPublicKey(String deviceId) throws SQLException, IOException;;
+
+
 
 }

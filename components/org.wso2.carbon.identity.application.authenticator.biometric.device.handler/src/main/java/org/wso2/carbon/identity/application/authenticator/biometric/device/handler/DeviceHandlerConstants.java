@@ -51,5 +51,7 @@ public class DeviceHandlerConstants {
                 "REGISTRATION_TIME,LAST_USED_TIME FROM BIOMETRIC_AUTHENTICATION_DEVICE WHERE ID = ?";
         public static final String LIST_DEVICES = "SELECT ID,NAME,MODEL,REGISTRATION_TIME," +
                 "LAST_USED_TIME FROM BIOMETRIC_AUTHENTICATION_DEVICE WHERE USER_ID = ?";
+        public static final String GET_PUBLIC_KEY = "SELECT PUBLIC_KEY FROM BIOMETRIC_AUTHENTICATION_DEVICE " +
+                "WHERE ID = ?";
     }
 }
