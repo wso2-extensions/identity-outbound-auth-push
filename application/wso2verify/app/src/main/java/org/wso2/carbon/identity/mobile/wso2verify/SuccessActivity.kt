@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package org.wso2.carbon.identity.mobile.wso2verify
 
 import androidx.appcompat.app.AppCompatActivity
@@ -26,7 +44,7 @@ class SuccessActivity : AppCompatActivity() {
         setContentView(R.layout.activity_success)
 
         val actionbar = supportActionBar
-        actionbar?.title=getString(R.string.app_name)
+        actionbar?.title = getString(R.string.app_name)
         actionbar?.setDisplayHomeAsUpEnabled(true)
 
         val intent = intent
@@ -36,10 +54,10 @@ class SuccessActivity : AppCompatActivity() {
             val challenge = intent.getStringExtra(BiometricAppConstants.CHALLENGE)
 
             val requestUrlBuilderImpl = RequestUrlBuilderImpl()
-            requestUrlBuilderImpl.requestUrlBuilder(sessionDataKey,challenge)
+            requestUrlBuilderImpl.requestUrlBuilder(sessionDataKey, challenge)
 
         } catch (e: Exception) {
-            Log.e("Error ", "Error when trying to initiate the network call.",e)
+            Log.e("Error ", "Error when trying to initiate the network call.", e)
         }
     }
 
@@ -72,12 +90,14 @@ public class NetworkTask : AsyncTask<String, Int, Long>() {
             val outputWriter = OutputStreamWriter(outputStream)
             outputWriter.write(queryString)
             outputWriter.flush()
-            } catch (e: SSLHandshakeException){
-                Log.e("Error","SSL handshake error occurred", e)
-            }
+        } catch (e: SSLHandshakeException) {
+            Log.e("Error", "SSL handshake error occurred", e)
+        }
 
-        val inputStream = BufferedReader(InputStreamReader
-            (connection.inputStream)).use {
+        val inputStream = BufferedReader(
+            InputStreamReader
+                (connection.inputStream)
+        ).use {
             val response = StringBuffer()
             var inputLine = it.readLine()
             while (inputLine != null) {

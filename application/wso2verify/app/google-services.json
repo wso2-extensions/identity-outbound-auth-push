@@ -18,7 +18,7 @@
           "client_id": "165843199970-lge4ottn1krd9hl5aq3hlenajdqknl88.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "org.wso2.carbon.identity.mobile.application.authenticator.wso2Verify",
+            "package_name": "org.wso2.carbon.identity.mobile.application.authenticator.wso2verify",
             "certificate_hash": "d415607d3cad11be1bd1ed65db877c50a619da5c"
           }
         },
