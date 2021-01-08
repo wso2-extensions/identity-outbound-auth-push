@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "442076540514",
+    "firebase_url": "https://wso2-verify.firebaseio.com",
+    "project_id": "wso2-verify",
+    "storage_bucket": "wso2-verify.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:442076540514:android:0637ab81732a744b1fab3b",
+        "android_client_info": {
+          "package_name": "org.wso2.carbon.identity.mobile.wso2verify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "442076540514-boagcuuri18gk0rib1i6lcsanjkiom8s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4NM7UGzng3_JgiCoGhwtN2izx8wvMiaY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "442076540514-boagcuuri18gk0rib1i6lcsanjkiom8s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
