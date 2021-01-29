@@ -419,6 +419,6 @@
         <module>components/org.wso2.carbon.identity.application.authenticator.biometric</module>
         <module>components/org.wso2.carbon.identity.application.authenticator.biometric.servlet</module>
         <module>components/org.wso2.carbon.identity.application.authenticator.biometric.device.handler</module>
-        <module>features/org.wso2.carbon.identity.application.authenticator.biometric.device.handler.feature</module>
+        <!--<module>features/org.wso2.carbon.identity.application.authenticator.biometric.device.handler.feature</module>-->
     </modules>
 </project>

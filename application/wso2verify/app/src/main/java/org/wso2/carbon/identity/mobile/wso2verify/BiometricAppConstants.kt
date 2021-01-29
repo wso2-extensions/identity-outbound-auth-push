@@ -24,7 +24,7 @@ class BiometricAppConstants {
         const val CHALLENGE = "challenge"
         const val BODY = "body"
         const val DEVIECID = "deviceId"
-        const val DOMAIN_NAME = "https://192.168.8.153:9443"
+        const val DOMAIN_NAME = "https://192.168.1.112:9443"
         const val BIOMETRIC_ENDPOINT = "/biometric-auth"
         const val SUCCESSFUL = "SUCCESSFUL"
         const val DENIED = "DENIED"

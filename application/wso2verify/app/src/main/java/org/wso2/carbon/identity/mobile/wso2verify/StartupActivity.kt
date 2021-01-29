@@ -20,6 +20,7 @@ package org.wso2.carbon.identity.mobile.wso2verify
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import kotlinx.android.synthetic.main.activity_startup.*
 
 /**
@@ -59,7 +60,6 @@ class StartupActivity : AppCompatActivity() {
             val intent = Intent(this, UserProfilesActivity::class.java)
             startActivity(intent)
         }
-
 
     }
 

@@ -95,7 +95,7 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
         String sessionDataKey = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
 
         try {
-            ArrayList<Device> deviceList = deviceHandler.lisDevices(user.getUserName(), user.getUserStoreDomain(),
+            ArrayList<Device> deviceList = deviceHandler.listDevices(user.getUserName(), user.getUserStoreDomain(),
                     user.getTenantDomain());
             request.getSession().setAttribute("devices-list", deviceList);
             JSONObject object;
@@ -333,10 +333,10 @@ public class BiometricAuthenticator extends AbstractApplicationAuthenticator
         byte[] signatureBytes = Base64.getDecoder().decode(signature);
         Signature sign = null;
         try {
-            sign = Signature.getInstance("SHA256withDSA");
+            sign = Signature.getInstance("SHA256withRSA");
             byte[] publicKeyData = Base64.getDecoder().decode(publicKeyStr);
             X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKeyData);
-            KeyFactory kf = KeyFactory.getInstance("DSA");
+            KeyFactory kf = KeyFactory.getInstance("RSA");
             PublicKey publicKey = kf.generatePublic(spec);
             sign.initVerify(publicKey);
             sign.update(challenge.getBytes());
