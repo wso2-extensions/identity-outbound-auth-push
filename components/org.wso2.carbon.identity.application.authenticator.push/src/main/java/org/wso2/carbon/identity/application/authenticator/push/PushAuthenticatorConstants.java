@@ -17,20 +17,20 @@
  *
  */
 
-package org.wso2.carbon.identity.application.authenticator.biometric;
+package org.wso2.carbon.identity.application.authenticator.push;
 
 /**
- * This is a utils class for Biometric Authenticator Constants.
+ * This is a utils class for Push Authenticator Constants.
  */
-public class BiometricAuthenticatorConstants {
+public class PushAuthenticatorConstants {
 
-    public static final String AUTHENTICATOR_NAME = "biometric";
-    public static final String AUTHENTICATOR_FRIENDLY_NAME = "Biometric Authenticator";
+    public static final String AUTHENTICATOR_NAME = "push";
+    public static final String AUTHENTICATOR_FRIENDLY_NAME = "Push Authenticator";
     public static final String AUTHENTICATION_STATUS = "Authentication Failed !";
     public static final String SERVER_KEY = "ServerKey";
     public static final String FCM_URL = "fcmUrl";
     public static final String SIGNED_CHALLENGE = "signedChallenge";
-    public static final String BIOMETRIC_AUTH_CHALLENGE = "biometricAuthChallenge";
+    public static final String PUSH_AUTH_CHALLENGE = "pushAuthChallenge";
     public static final String AUTHORIZATION = "Authorization";
     public static final String POST = "POST";
     public static final String CONTENT_TYPE = "Content-Type";
@@ -40,21 +40,33 @@ public class BiometricAuthenticatorConstants {
     public static final String PRIORITY = "priority";
     public static final String DEVICE_ID = "deviceId";
     public static final String CHALLENGE = "challenge";
+    public static final String USERNAME = "username";
+    public static final String FULL_NAME = "displayName";
+    public static final String ORGANIZATION_NAME = "organization";
+    public static final String APPLICATION_NAME = "applicationName";
+    public static final String APPLICATION_URL = "applicationUrl";
+    public static final String IP_ADDRESS = "ipAddress";
+    public static final String REQUEST_DEVICE_OS = "deviceName";
+    public static final String REQUEST_DEVICE_BROWSER = "browserName";
     public static final String CLICK_ACTION = "click_action";
     public static final String DISPLAY_ANDROID_ACTIVITY = "AuthenticateActivity";
     public static final String TO = "to";
     public static final String NOTIFICATION = "notification";
     public static final String DATA = "data";
     public static final String WAIT_PAGE = "authenticationendpoint/wait.jsp";
-    public static final String DEVICES_PAGE = "authenticationendpoint/biometricdevices.jsp";
-    public static final String BIOMETRIC_ENDPOINT = "/biometric-auth";
-    public static final String POLLING_QUERY_PARAMS = "?initiator=web&sessionDataKey=";
+    public static final String DEVICES_PAGE = "authenticationendpoint/push-devices.jsp";
+    public static final String PUSH_ENDPOINT = "/push-auth/check-status";
+    public static final String POLLING_QUERY_PARAMS = "?sessionDataKey=";
     public static final String COMPLETED = "COMPLETED";
-    public static final String BIOMETRIC_AUTH_WAIT = "wait";
-    public static final String BIOMETRIC_AUTH_ACCESS_DENIED = "access-denied";
+    public static final String PUSH_AUTH_WAIT = "wait";
+    public static final String PUSH_AUTH_ACCESS_DENIED = "access-denied";
     public static final String AUTH_REQUEST_STATUS_SUCCESS = "SUCCESSFUL";
     public static final String AUTH_REQUEST_STATUS_DENIED = "DENIED";
 
-    public static final String BIOMETRIC_AUTHENTICATION_ENDPOINT_WAIT_URL = "biometricAuthenticationEndpointWaitURL";
-    public static final String BIOMETRIC_AUTHENTICATION_ENDPOINT_DEVICES_URL = "biometricAuthenticationEndpointDevicesURL";
+    public static final String FIRST_NAME_CLAIM = "http://wso2.org/claims/givenname";
+    public static final String LAST_NAME_CLAIM = "http://wso2.org/claims/lastname";
+
+    public static final String PUSH_AUTHENTICATION_ENDPOINT_WAIT_URL = "biometricAuthenticationEndpointWaitURL";
+    public static final String PUSH_AUTHENTICATION_ENDPOINT_DEVICES_URL = "biometricAuthenticationEndpointDevicesURL";
+    // TODO: Change the above url strings also as push once usage is checked
 }
