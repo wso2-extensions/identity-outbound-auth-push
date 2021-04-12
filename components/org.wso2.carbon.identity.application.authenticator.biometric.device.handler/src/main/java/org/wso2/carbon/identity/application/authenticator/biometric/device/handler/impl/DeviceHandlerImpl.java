@@ -139,10 +139,6 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
         return null;
     }
 
-    /*
-    *  This is the original method
-    */
-
     @Override
     public DiscoveryData getDiscoveryData(String username, String userStore, String tenantDomain) {
         if (log.isDebugEnabled()) {
@@ -161,28 +157,6 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
         return new DiscoveryData(deviceId, user.getUserName(), tenantDomain,
                 user.getUserStoreDomain(), challenge, registrationUrl, authUrl);
     }
-
-    /*
-    *  Changing assigned variables to see if it works
-    */
-//    @Override
-//    public DiscoveryData getDiscoveryData(String username, String userStore, String tenantDomain) {
-//        if (log.isDebugEnabled()) {
-//            log.debug("Retrieving data to generate QR code");
-//        }
-//        String deviceId = UUID.randomUUID().toString();
-//        User user = getAuthenticatedUser();
-////        String tenantDomain = user.getTenantDomain();
-//        UUID challenge = UUID.randomUUID();
-//        String registrationUrl = "https://192.168.1.106:9443" +  "/t/" +
-//                tenantDomain + "/api/users/v1/me/biometricdevice";
-//        String authUrl = "https://192.168.1.106:9443/biometric-auth";
-//        RegistrationRequestChallengeCache.getInstance().addToCacheByRequestId
-//                (new BiometricDeviceHandlerCacheKey(deviceId), new RegistrationRequestChallengeCacheEntry(challenge,
-//                        username, userStore, tenantDomain, false));
-//        return new DiscoveryData(deviceId, username, tenantDomain,
-//                userStore, challenge, registrationUrl, authUrl);
-//    }
 
     @Override
     public String getPublicKey(String deviceId) throws SQLException, IOException {
