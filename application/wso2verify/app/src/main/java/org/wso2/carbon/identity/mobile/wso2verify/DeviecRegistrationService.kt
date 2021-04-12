@@ -107,7 +107,6 @@ class DeviecRegistrationService {
             json.toRequestBody("application/json; charset=utf-8".toMediaType())
         val request: Request = Request.Builder()
             .url(discoveryData.registrationUrl)
-//            .url("https://e95d743014782dc16b5d2906f772e362.m.pipedream.net")
             .post(requestBody)
             .build()
 
