@@ -104,7 +104,6 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         AuthenticatedUser user = context.getSequenceConfig().getStepMap().
                 get(context.getCurrentStep() - 1).getAuthenticatedUser();
         String sessionDataKey = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
-        request.getRemoteAddr();
         try {
             ArrayList<Device> deviceList = deviceHandler.listDevices(user.getUserName(), user.getUserStoreDomain(),
                     user.getTenantDomain());
@@ -139,15 +138,15 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             }
 
         } catch (IOException e) {
-            log.error("Error when trying to redirect to push-devices.jsp page", e);
+            log.error("Error when trying to redirect to registered devices page", e);
         } catch (PushDeviceHandlerServerException e) {
-            log.error("Error when trying to redirect to push-devices.jsp page", e);
+            log.error("Error when trying to redirect to registered devices page", e);
         } catch (PushDeviceHandlerClientException e) {
-            log.error("Error when trying to redirect to push-devices.jsp page", e);
+            log.error("Error when trying to redirect to registered devices page", e);
         } catch (SQLException e) {
-            log.error("Error when trying to redirect to push-devices.jsp page", e);
+            log.error("Error when trying to redirect to registered devices page", e);
         } catch (UserStoreException e) {
-            log.error("Error when trying to redirect to push-devices.jsp page", e);
+            log.error("Error when trying to redirect to registered devices page", e);
         }
 
     }
@@ -242,9 +241,8 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
 
         AuthenticationContext sessionContext = AuthContextCache
                 .getInstance()
-                .getValueFromCacheByRequestId(new AuthContextcacheKey(
-                        httpServletRequest.getParameter("sessionDataKey"))
-                ).getAuthenticationContext();
+                .getValueFromCacheByRequestId(new AuthContextcacheKey(httpServletRequest
+                        .getParameter("sessionDataKey"))).getAuthenticationContext();
 
         AuthDataDTO authDataDTO = (AuthDataDTO) sessionContext.getProperty("authData");
 
@@ -259,12 +257,14 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                 if (authStatus.equals("SUCCESSFUL")) {
                     authenticationContext.setSubject(user);
                 } else if (authStatus.equals("DENIED")) {
-                    httpServletResponse.sendRedirect(
-                            "/authenticationendpoint/retry.do?status=Authentication Denied!"
-                                    + "&statusMsg=Authentication was denied from the mobile app"
-                    );
+                    String deniedPage = URLEncoder
+                            .encode("/authenticationendpoint/retry.do?status=Authentication Denied!",
+                                    StandardCharsets.UTF_8.name()) + URLEncoder
+                            .encode("&statusMsg=Authentication was denied from the mobile app",
+                                    StandardCharsets.UTF_8.name());
+                    httpServletResponse.sendRedirect(deniedPage);
                 } else {
-                    throw new AuthenticationFailedException("Authentication failed! Auth status unavailable", user);
+                    throw new AuthenticationFailedException("Authentication failed! Auth status unavailable.", user);
                 }
             } else {
                 authenticationContext.setProperty(PushAuthenticatorConstants.AUTHENTICATION_STATUS, true);
@@ -272,9 +272,9 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             }
 
         } catch (IOException e) {
-            log.error("IO exception while trying to validate signature ", e);
+            log.error("IO exception while trying to validate signature.", e);
         } catch (SQLException e) {
-            log.error("SQL Exception while trying to get public key", e);
+            log.error("SQL Exception while trying to get public key.", e);
         }
 
         AuthContextCache.getInstance().clearCacheEntryByRequestId(new AuthContextcacheKey(
