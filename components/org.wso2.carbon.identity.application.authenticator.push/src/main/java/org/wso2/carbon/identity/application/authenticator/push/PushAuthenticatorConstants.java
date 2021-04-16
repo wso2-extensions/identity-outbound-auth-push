@@ -66,7 +66,6 @@ public class PushAuthenticatorConstants {
     public static final String FIRST_NAME_CLAIM = "http://wso2.org/claims/givenname";
     public static final String LAST_NAME_CLAIM = "http://wso2.org/claims/lastname";
 
-    public static final String PUSH_AUTHENTICATION_ENDPOINT_WAIT_URL = "biometricAuthenticationEndpointWaitURL";
-    public static final String PUSH_AUTHENTICATION_ENDPOINT_DEVICES_URL = "biometricAuthenticationEndpointDevicesURL";
-    // TODO: Change the above url strings also as push once usage is checked
+    public static final String PUSH_AUTHENTICATION_ENDPOINT_WAIT_URL = "pushAuthenticationEndpointWaitURL";
+    public static final String PUSH_AUTHENTICATION_ENDPOINT_DEVICES_URL = "pushAuthenticationEndpointDevicesURL";
 }

@@ -111,8 +111,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             JSONObject object;
             JSONArray array = new JSONArray();
 
-            for (Device device : deviceList
-            ) {
+            for (Device device : deviceList) {
                 object = new JSONObject();
                 object.put("deviceId", device.getDeviceId());
                 object.put("deviceName", device.getDeviceName());
@@ -231,7 +230,6 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         return configValue;
     }
 
-    @SuppressWarnings("checkstyle:LineLength")
     @Override
     protected void processAuthenticationResponse(HttpServletRequest httpServletRequest, HttpServletResponse
             httpServletResponse, AuthenticationContext authenticationContext) throws AuthenticationFailedException {
