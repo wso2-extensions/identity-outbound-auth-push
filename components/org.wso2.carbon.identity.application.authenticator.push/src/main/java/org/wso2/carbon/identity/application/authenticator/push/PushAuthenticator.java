@@ -159,7 +159,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
      */
     private String getDevicesPage(AuthenticationContext context) throws AuthenticationFailedException {
 
-        String devicesPage = getDevicesPageFromXMLFile(context);
+        String devicesPage = getConfiguredDevicesPage(context);
         if (StringUtils.isEmpty(devicesPage)) {
             devicesPage = PushAuthenticatorConstants.DEVICES_PAGE;
             if (log.isDebugEnabled()) {
@@ -175,7 +175,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
      * @param context the AuthenticationContext
      * @return waitPage
      */
-    public static String getDevicesPageFromXMLFile(AuthenticationContext context) {
+    public static String getConfiguredDevicesPage(AuthenticationContext context) {
 
         return getConfiguration(context, PushAuthenticatorConstants.PUSH_AUTHENTICATION_ENDPOINT_DEVICES_URL);
     }
@@ -189,7 +189,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
      */
     private String getWaitPage(AuthenticationContext context) throws AuthenticationFailedException {
 
-        String waitPage = getWaitPageFromXMLFile(context);
+        String waitPage = getConfiguredWaitPage(context);
         if (StringUtils.isEmpty(waitPage)) {
             waitPage = PushAuthenticatorConstants.WAIT_PAGE;
             if (log.isDebugEnabled()) {
@@ -205,7 +205,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
      * @param context the AuthenticationContext
      * @return waitPage
      */
-    public static String getWaitPageFromXMLFile(AuthenticationContext context) {
+    public static String getConfiguredWaitPage(AuthenticationContext context) {
 
         return getConfiguration(context, PushAuthenticatorConstants.PUSH_AUTHENTICATION_ENDPOINT_WAIT_URL);
     }
