@@ -61,6 +61,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import javax.security.sasl.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -141,18 +142,18 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             }
 
         } catch (IOException e) {
-            log.error("Error when trying to redirect to registered devices page", e);
+            log.error("An IO Exception occurred when trying to redirect to registered devices page");
         } catch (PushDeviceHandlerServerException e) {
-            log.error("Error when trying to redirect to registered devices page", e);
+            log.error("Error when trying to redirect to registered devices page. Device was not found");
             throw new AuthenticationFailedException("Registered devices were not found.", e);
         } catch (PushDeviceHandlerClientException e) {
-            log.error("Error when trying to redirect to registered devices page", e);
+            log.error("Error when trying to redirect to registered devices page. User was not found");
             throw new AuthenticationFailedException("Authenticated user was not found.", e);
         } catch (SQLException e) {
-            log.error("Error when trying to redirect to registered devices page", e);
+            log.error("SQL exception occurred when trying to redirect to registered devices page");
             throw new AuthenticationFailedException("SQL exception.", e);
         } catch (UserStoreException e) {
-            log.error("Error when trying to redirect to registered devices page", e);
+            log.error("Redirecting to registered devices page failed. User was not found in userstore");
             throw new AuthenticationFailedException("User was not found in the userstore.", e);
         }
 
@@ -232,8 +233,8 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             configValue = String.valueOf(context.getProperty(configName));
         }
         if (log.isDebugEnabled()) {
-            log.debug("Config value for key " + configName + " : " +
-                    configValue);
+            String debugMessage = String.format("Config value for key %s: %s" + configName, configValue);
+            log.debug(debugMessage);
         }
         return configValue;
     }
@@ -278,10 +279,10 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             }
 
         } catch (IOException e) {
-            log.error("IO exception while trying to validate signature.", e);
+            log.error("IO exception while trying to validate signature.");
             throw new AuthenticationFailedException("IO exception while trying to validate the signature", e);
         } catch (SQLException e) {
-            log.error("SQL Exception while trying to get public key.", e);
+            log.error("SQL Exception while trying to get public key.");
             throw new AuthenticationFailedException("SQL exception while trying to get public key.", e);
         }
 
@@ -332,13 +333,13 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         try {
             device = deviceHandler.getDevice(deviceId);
         } catch (PushDeviceHandlerClientException e) {
-            log.error("Error when trying to get device information", e);
+            log.error("Error when trying to get device. Device was not found.");
             throw new PushAuthenticatorException("Requested device not found.", e);
         } catch (SQLException e) {
-            log.error("Error when trying to get device information", e);
+            log.error("Error when trying to get device. Device was not found in the Database.");
             throw new PushAuthenticatorException("Requested device not found.", e);
         } catch (PushDeviceHandlerServerException e) {
-            log.error("Error when trying to get device information", e);
+            log.error("Error when trying to get device. Device may not be registered.");
             throw new PushAuthenticatorException("Requested device is not registered.", e);
         }
         AuthenticationContext context = AuthContextCache.getInstance().getValueFromCacheByRequestId
@@ -370,7 +371,8 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         try {
             userClaims = getUserClaimValues(user, context);
         } catch (AuthenticationFailedException e) {
-            log.error("User Claims Error", e);
+            log.error("Error when retrieving user claims");
+            throw new PushAuthenticatorException("User claims not found", e);
         }
 
         String fullName =
@@ -391,7 +393,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             pushNotificationSender.sendPushNotification(deviceId, pushId, message, randomChallenge, sessionDataKey,
                     username, fullName, organization, serviceProviderName, hostname, userOS, userBrowser);
         } catch (AuthenticationFailedException e) {
-            log.error("Authentication Error", e);
+            log.error("Error when sending request for authentication push notification.");
             throw new PushAuthenticatorException("Failed to send push notification.", e);
         }
 
@@ -403,7 +405,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                     + URLEncoder.encode(String.valueOf(challenge), StandardCharsets.UTF_8.name());
             response.sendRedirect(waitPage);
         } catch (IOException e) {
-            log.error("Error when trying to redirect to wait.jsp page", e);
+            log.error("Error when trying to redirect to wait page.");
             throw new PushAuthenticatorException("Failed to redirect to wait page.", e);
         }
 
@@ -430,7 +432,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         try {
             isValid = validator.validate(jwt, publicKeyStr, challenge);
         } catch (Exception e) {
-            log.error("Error when validating signature", e);
+            log.error("Error when validating signature");
             throw new PushAuthenticatorException("Signature validation failed.", e);
         }
         return isValid;
@@ -458,8 +460,8 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                             PushAuthenticatorConstants.LAST_NAME_CLAIM},
                     UserCoreConstants.DEFAULT_PROFILE);
         } catch (UserStoreException e) {
-            log.error("Error while reading user claims", e);
             String errorMessage = String.format("Failed to read user claims for user : %s.", authenticatedUser);
+            log.error(errorMessage);
             throw new AuthenticationFailedException(errorMessage, e);
         }
         return claimValues;
