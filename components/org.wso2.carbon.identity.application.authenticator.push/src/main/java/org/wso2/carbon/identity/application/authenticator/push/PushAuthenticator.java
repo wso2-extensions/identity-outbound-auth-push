@@ -61,7 +61,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import javax.security.sasl.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -112,21 +111,21 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         try {
             ArrayList<Device> deviceList = deviceHandler.listDevices(user.getUserName(), user.getUserStoreDomain(),
                     user.getTenantDomain());
-            request.getSession().setAttribute("devices-list", deviceList);
+            request.getSession().setAttribute(PushAuthenticatorConstants.DEVICES_LIST, deviceList);
             JSONObject object;
             JSONArray array = new JSONArray();
 
             for (Device device : deviceList) {
                 object = new JSONObject();
-                object.put("deviceId", device.getDeviceId());
-                object.put("deviceName", device.getDeviceName());
-                object.put("deviceModel", device.getDeviceModel());
-                object.put("lastUsedTime", device.getLastUsedTime().toString());
+                object.put(PushAuthenticatorConstants.DEVICE_ID, device.getDeviceId());
+                object.put(PushAuthenticatorConstants.DEVICE_NAME, device.getDeviceName());
+                object.put(PushAuthenticatorConstants.DEVICE_MODEL, device.getDeviceModel());
+                object.put(PushAuthenticatorConstants.LAST_TIME_USED, device.getLastUsedTime().toString());
                 array.add(object);
             }
 
             AuthDataDTO authDataDTO = new AuthDataDTOImpl();
-            context.setProperty("authData", authDataDTO);
+            context.setProperty(PushAuthenticatorConstants.CONTEXT_AUTH_DATA, authDataDTO);
             AuthContextCache.getInstance().addToCacheByRequestId(new AuthContextcacheKey(sessionDataKey),
                     new AuthContextCacheEntry(context));
 
@@ -254,9 +253,10 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         AuthenticationContext sessionContext = AuthContextCache
                 .getInstance()
                 .getValueFromCacheByRequestId(new AuthContextcacheKey(httpServletRequest
-                        .getParameter("sessionDataKey"))).getAuthenticationContext();
+                        .getParameter(PushAuthenticatorConstants.SESSION_DATA_KEY))).getAuthenticationContext();
 
-        AuthDataDTO authDataDTO = (AuthDataDTO) sessionContext.getProperty("authData");
+        AuthDataDTO authDataDTO = (AuthDataDTO) sessionContext
+                .getProperty(PushAuthenticatorConstants.CONTEXT_AUTH_DATA);
 
         String jwt = authDataDTO.getAuthToken();
         String serverChallenge = authDataDTO.getChallenge();
@@ -266,9 +266,9 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             if (validateSignature(jwt, serverChallenge)) {
                 String authStatus = validator.getAuthStatus(jwt);
                 // TODO: Change Successful to Allowed
-                if (authStatus.equals("SUCCESSFUL")) {
+                if (authStatus.equals(PushAuthenticatorConstants.AUTH_REQUEST_STATUS_SUCCESS)) {
                     authenticationContext.setSubject(user);
-                } else if (authStatus.equals("DENIED")) {
+                } else if (authStatus.equals(PushAuthenticatorConstants.AUTH_REQUEST_STATUS_DENIED)) {
                     String deniedPage = URLEncoder
                             .encode("/authenticationendpoint/retry.do?status=Authentication Denied!",
                                     StandardCharsets.UTF_8.name()) + URLEncoder
@@ -365,9 +365,9 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         String sessionDataKey = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
         UUID challenge = UUID.randomUUID();
         String randomChallenge = challenge.toString();
-        AuthDataDTO authDataDTO = (AuthDataDTO) context.getProperty("authData");
+        AuthDataDTO authDataDTO = (AuthDataDTO) context.getProperty(PushAuthenticatorConstants.CONTEXT_AUTH_DATA);
         authDataDTO.setChallenge(randomChallenge);
-        context.setProperty("authData", authDataDTO);
+        context.setProperty(PushAuthenticatorConstants.CONTEXT_AUTH_DATA, authDataDTO);
         AuthContextCache.getInstance().addToCacheByRequestId(new AuthContextcacheKey(key),
                 new AuthContextCacheEntry(context));
 

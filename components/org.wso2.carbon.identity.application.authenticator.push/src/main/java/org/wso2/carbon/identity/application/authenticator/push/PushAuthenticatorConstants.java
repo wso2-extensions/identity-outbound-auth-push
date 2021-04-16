@@ -39,6 +39,9 @@ public class PushAuthenticatorConstants {
     public static final String HIGH = "high";
     public static final String PRIORITY = "priority";
     public static final String DEVICE_ID = "deviceId";
+    public static final String DEVICE_NAME = "deviceName";
+    public static final String DEVICE_MODEL = "deviceModel";
+    public static final String LAST_TIME_USED = "lastTimeUsed";
     public static final String CHALLENGE = "challenge";
     public static final String USERNAME = "username";
     public static final String FULL_NAME = "displayName";
@@ -62,6 +65,9 @@ public class PushAuthenticatorConstants {
     public static final String PUSH_AUTH_ACCESS_DENIED = "access-denied";
     public static final String AUTH_REQUEST_STATUS_SUCCESS = "SUCCESSFUL";
     public static final String AUTH_REQUEST_STATUS_DENIED = "DENIED";
+    public static final String CONTEXT_AUTH_DATA = "authData";
+    public static final String DEVICES_LIST = "devices-list";
+    public static final String SESSION_DATA_KEY = "sessionDataKey";
 
     public static final String FIRST_NAME_CLAIM = "http://wso2.org/claims/givenname";
     public static final String LAST_NAME_CLAIM = "http://wso2.org/claims/lastname";
