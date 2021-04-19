@@ -109,7 +109,8 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                 get(context.getCurrentStep() - 1).getAuthenticatedUser();
         String sessionDataKey = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
         try {
-            ArrayList<Device> deviceList = deviceHandler.listDevices(user.getUserName(), user.getUserStoreDomain(),
+            ArrayList<Device> deviceList = null;
+            deviceList = deviceHandler.listDevices(user.getUserName(), user.getUserStoreDomain(),
                     user.getTenantDomain());
             request.getSession().setAttribute(PushAuthenticatorConstants.DEVICES_LIST, deviceList);
             JSONObject object;
@@ -134,30 +135,34 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             } else {
 
                 String string = JSONArray.toJSONString(array);
-                String devicesPage = getDevicesPage(context) + "?sessionDataKey=" + URLEncoder.encode(sessionDataKey,
+                String devicesPage = null;
+                devicesPage = getDevicesPage(context) + "?sessionDataKey=" + URLEncoder.encode(sessionDataKey,
                         StandardCharsets.UTF_8.name()) + "&devices=" + URLEncoder.encode(string,
                         StandardCharsets.UTF_8.name());
                 response.sendRedirect(devicesPage);
             }
 
-        } catch (IOException e) {
-            String errorMessage = "Error occurred when trying to redirect to the registered devices page.";
-            throw new AuthenticationFailedException(errorMessage, e);
         } catch (PushDeviceHandlerServerException e) {
             String errorMessage = "Error occurred when trying to redirect to the registered devices page. "
-                    + "Devices were not found.";
+                    + String.format("Devices were not found for user: %s.", user);
             throw new AuthenticationFailedException(errorMessage, e);
         } catch (PushDeviceHandlerClientException e) {
-            String errorMessage = "Error when trying to redirect to registered devices page. "
+            String errorMessage = "Error occurred when trying to redirect to registered devices page. "
                     + "Authenticated user was not found.";
             throw new AuthenticationFailedException(errorMessage, e);
         } catch (SQLException e) {
-            String errorMessage = "SQL exception occurred when trying to get the device list.";
+            String errorMessage = String
+                    .format("Error occurred when trying to get the device list for user: %s.", user);
             throw new AuthenticationFailedException(errorMessage, e);
         } catch (UserStoreException e) {
-//            log.error("Redirecting to registered devices page failed. User was not found in userstore");
-            String errorMessage = "Error occurred when trying to get the authenticated user. "
-                + "User was not found in the userstore.";
+            throw new AuthenticationFailedException("Error occurred when trying to get the authenticated user.", e);
+        } catch (IOException e) {
+            String errorMessage = String
+                    .format("Error occurred when trying to redirect to the registered devices page for user: %s.",
+                            user);
+            throw new AuthenticationFailedException(errorMessage, e);
+        } catch (PushAuthenticatorException e) {
+            String errorMessage = String.format("Error occurred when trying to get user claims for user: %s.", user);
             throw new AuthenticationFailedException(errorMessage, e);
         }
 
@@ -237,7 +242,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             configValue = String.valueOf(context.getProperty(configName));
         }
         if (log.isDebugEnabled()) {
-            String debugMessage = String.format("Config value for key %s: %s" + configName, configValue);
+            String debugMessage = String.format("Config value for key %s: %s", configName, configValue);
             log.debug(debugMessage);
         }
         return configValue;
@@ -282,13 +287,21 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                 }
             } else {
                 authenticationContext.setProperty(PushAuthenticatorConstants.AUTHENTICATION_STATUS, true);
-                throw new AuthenticationFailedException("Authentication failed! Could not verify signature.", user);
+                String errorMessage = String
+                        .format("Authentication failed! JWT signature is not valid for device: %s of user: %s.",
+                                validator.getDeviceId(jwt), user);
+                throw new AuthenticationFailedException(errorMessage);
             }
 
         } catch (IOException e) {
-            throw new AuthenticationFailedException("Error occurred while redirecting to request denied page.", e);
-        } catch (SQLException e) {
-            String errorMessage = "Error occurred while trying to get the public key to validate the received jwt.";
+            String errorMessage = String
+                    .format("Error occurred when redirecting to the request denied page for device: %s of user: %s.",
+                            validator.getDeviceId(jwt), user);
+            throw new AuthenticationFailedException(errorMessage, e);
+        } catch (PushAuthenticatorException e) {
+            String errorMessage = String
+                    .format("Error occurred when trying to validate the JWT signature from device: %s of user: %s.",
+                            validator.getDeviceId(jwt), user);
             throw new AuthenticationFailedException(errorMessage, e);
         }
 
@@ -339,13 +352,15 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         try {
             device = deviceHandler.getDevice(deviceId);
         } catch (PushDeviceHandlerClientException e) {
-            String errorMessage = "Error occurred while trying to get the device. Device was not found.";
+            String errorMessage = String.format("Error occurred when trying to get device: %s.", deviceId);
             throw new PushAuthenticatorException(errorMessage, e);
         } catch (SQLException e) {
-            String errorMessage = "Error when trying to get device. Device was not found in the Database.";
+            String errorMessage = String
+                    .format("Error when trying to get device: %s from the database.", deviceId);
             throw new PushAuthenticatorException(errorMessage, e);
         } catch (PushDeviceHandlerServerException e) {
-            String errorMessage = "Error occurred while trying to get device. Device may not be registered.";
+            String errorMessage = String
+                    .format("Error occurred when trying to get device: %s. Device may not be registered.", deviceId);
             throw new PushAuthenticatorException(errorMessage, e);
         }
         AuthenticationContext context = AuthContextCache.getInstance().getValueFromCacheByRequestId
@@ -377,8 +392,8 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         try {
             userClaims = getUserClaimValues(user, context);
         } catch (AuthenticationFailedException e) {
-            String errorMessage = String.format("Error when retrieving user claims. Claims unavailable for user '%s'.",
-                    username);
+            String errorMessage = String
+                    .format("Error occurred when retrieving user claims for user: %s.", user);
             throw new PushAuthenticatorException(errorMessage, e);
         }
 
@@ -400,7 +415,8 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             pushNotificationSender.sendPushNotification(deviceId, pushId, message, randomChallenge, sessionDataKey,
                     username, fullName, organization, serviceProviderName, hostname, userOS, userBrowser);
         } catch (AuthenticationFailedException e) {
-            String errorMessage = "Error occurred while trying to send the push notification.";
+            String errorMessage = String
+                    .format("Error occurred when trying to send the push notification to device: %s.", deviceId);
             throw new PushAuthenticatorException(errorMessage, e);
         }
 
@@ -412,7 +428,9 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                     + URLEncoder.encode(String.valueOf(challenge), StandardCharsets.UTF_8.name());
             response.sendRedirect(waitPage);
         } catch (IOException e) {
-            throw new PushAuthenticatorException("Error occurred while trying to to redirect to the wait page.", e);
+            String errorMessage = String
+                    .format("Error occurred when trying to to redirect user: %s to the wait page.", user);
+            throw new PushAuthenticatorException(errorMessage, e);
         }
 
     }
@@ -433,12 +451,19 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
 
         PushJWTValidator validator = new PushJWTValidator();
         String deviceId = validator.getDeviceId(jwt);
-        String publicKeyStr = handler.getPublicKey(deviceId);
+        String publicKeyStr = null;
+        try {
+            publicKeyStr = handler.getPublicKey(deviceId);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         try {
             isValid = validator.validate(jwt, publicKeyStr, challenge);
         } catch (Exception e) {
-            String errorMessage = "Error occurred while validating the signature. Failed to parse string to JWT.";
+            String errorMessage = "Error occurred when validating the signature. Failed to parse string to JWT.";
             throw new PushAuthenticatorException(errorMessage, e);
         }
         return isValid;
@@ -492,7 +517,9 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                 userRealm = realmService.getTenantUserRealm(tenantId);
             }
         } catch (UserStoreException e) {
-            throw new AuthenticationFailedException("Error occurred. Cannot find the user realm.", e);
+            String errorMessage = String
+                    .format("Error occurred when trying to get the user realm for user: %s.", authenticatedUser);
+            throw new AuthenticationFailedException(errorMessage, e);
         }
         return userRealm;
     }
