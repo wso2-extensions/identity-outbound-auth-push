@@ -454,10 +454,14 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         String publicKeyStr = null;
         try {
             publicKeyStr = handler.getPublicKey(deviceId);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            String errorMessage = String
+                    .format("Error occurred when trying to get public key for device: %s from the database.", deviceId);
+            throw new PushAuthenticatorException(errorMessage, e);
         } catch (IOException e) {
-            e.printStackTrace();
+            String errorMessage = String
+                    .format("Error occurred when trying to get public key for device: %s.", deviceId);
+            throw new PushAuthenticatorException(errorMessage, e);
         }
 
         try {
