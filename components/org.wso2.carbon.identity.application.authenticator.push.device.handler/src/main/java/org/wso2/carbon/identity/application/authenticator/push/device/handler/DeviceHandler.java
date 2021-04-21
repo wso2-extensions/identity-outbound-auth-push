@@ -16,14 +16,14 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.application.authenticator.biometric.device.handler;
+package org.wso2.carbon.identity.application.authenticator.push.device.handler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.exception.BiometricDeviceHandlerClientException;
-import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.exception.BiometricdeviceHandlerServerException;
-import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.model.Device;
-import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.model.DiscoveryData;
-import org.wso2.carbon.identity.application.authenticator.biometric.device.handler.model.RegistrationRequest;
+import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerClientException;
+import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerServerException;
+import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.Device;
+import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.DiscoveryData;
+import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.RegistrationRequest;
 import org.wso2.carbon.identity.base.IdentityException;
 import org.wso2.carbon.user.api.UserStoreException;
 
@@ -44,17 +44,17 @@ public interface DeviceHandler {
     Device registerDevice(RegistrationRequest registrationRequest) throws
             IdentityException, SQLException, UserStoreException, JsonProcessingException, InvalidKeyException, NoSuchAlgorithmException, SignatureException, UnsupportedEncodingException, InvalidKeySpecException;
 
-    void unregisterDevice(String deviceId) throws BiometricDeviceHandlerClientException,
-            BiometricdeviceHandlerServerException, SQLException;
+    void unregisterDevice(String deviceId) throws PushDeviceHandlerClientException,
+            PushDeviceHandlerServerException, SQLException;
 
-    void editDeviceName(String deviceId, String newDeviceName) throws BiometricDeviceHandlerClientException,
-            BiometricdeviceHandlerServerException, SQLException;
+    void editDeviceName(String deviceId, String newDeviceName) throws PushDeviceHandlerClientException,
+            PushDeviceHandlerServerException, SQLException;
 
-    Device getDevice(String deviceId) throws IOException, BiometricDeviceHandlerClientException, SQLException, BiometricdeviceHandlerServerException;
+    Device getDevice(String deviceId) throws IOException, PushDeviceHandlerClientException, SQLException, PushDeviceHandlerServerException;
 
-    ArrayList<Device> listDevices(String username, String userStore, String tenantDomain) throws BiometricdeviceHandlerServerException, BiometricDeviceHandlerClientException, SQLException, UserStoreException, IOException;
+    ArrayList<Device> listDevices(String username, String userStore, String tenantDomain) throws PushDeviceHandlerServerException, PushDeviceHandlerClientException, SQLException, UserStoreException, IOException;
 
-    DiscoveryData getDiscoveryData(String username, String userStore, String tenantDomain);
+//    DiscoveryData getDiscoveryData(String username, String userStore, String tenantDomain);
 
     DiscoveryData getDiscoveryData();
 

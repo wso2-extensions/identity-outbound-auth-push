@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.application.authenticator.biometric.device.handler;
+package org.wso2.carbon.identity.application.authenticator.push.device.handler;
 
 /**
  * This class contains the constants used in this module.
@@ -33,6 +33,11 @@ public class DeviceHandlerConstants {
     public static final String PUBLIC_KEY = "PUBLIC_KEY";
     public static final String REGISTRATION_TIME = "REGISTRATION_TIME";
     public static final String LAST_USED_TIME = "LAST_USED_TIME";
+    public static final String REGISTRATION_ENDPOINT = "/push-auth/devices";
+    public static final String REMOVE_DEVICE_ENDPOINT = "/push-auth/devices/remove";
+    public static final String AUTHENTICATION_ENDPOINT = "/push-auth/authenticate";
+    public static final String GIVEN_NAME_USER_CLAIM = "http://wso2.org/claims/givenname";
+    public static final String LAST_NAME_USER_CLAIM = "http://wso2.org/claims/lastname";
 
     /**
      * This class contains the SQL queries used in the DAO class.
@@ -55,3 +60,5 @@ public class DeviceHandlerConstants {
                 "WHERE ID = ?";
     }
 }
+
+// TODO: Change queries as push once the DB changes have been made
