@@ -26,6 +26,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.wso2.carbon.identity.application.authentication.framework.AbstractApplicationAuthenticator;
 import org.wso2.carbon.identity.application.authentication.framework.FederatedApplicationAuthenticator;
+import org.wso2.carbon.identity.application.authentication.framework.cache.AuthenticationContextCacheKey;
 import org.wso2.carbon.identity.application.authentication.framework.context.AuthenticationContext;
 import org.wso2.carbon.identity.application.authentication.framework.exception.AuthenticationFailedException;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundConstants;
@@ -109,7 +110,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                 get(context.getCurrentStep() - 1).getAuthenticatedUser();
         String sessionDataKey = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
         try {
-            ArrayList<Device> deviceList = null;
+            ArrayList<Device> deviceList;
             deviceList = deviceHandler.listDevices(user.getUserName(), user.getUserStoreDomain(),
                     user.getTenantDomain());
             request.getSession().setAttribute(PushAuthenticatorConstants.DEVICES_LIST, deviceList);
@@ -135,35 +136,30 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             } else {
 
                 String string = JSONArray.toJSONString(array);
-                String devicesPage = null;
-                devicesPage = getDevicesPage(context) + "?sessionDataKey=" + URLEncoder.encode(sessionDataKey,
-                        StandardCharsets.UTF_8.name()) + "&devices=" + URLEncoder.encode(string,
-                        StandardCharsets.UTF_8.name());
+                String devicesPage;
+                devicesPage = getDevicesPage(context)
+                        + "?sessionDataKey=" + URLEncoder.encode(sessionDataKey, StandardCharsets.UTF_8.name())
+                        + "&devices=" + URLEncoder.encode(string, StandardCharsets.UTF_8.name());
                 response.sendRedirect(devicesPage);
             }
 
         } catch (PushDeviceHandlerServerException e) {
-            String errorMessage = "Error occurred when trying to redirect to the registered devices page. "
-                    + String.format("Devices were not found for user: %s.", user);
-            throw new AuthenticationFailedException(errorMessage, e);
+            throw new AuthenticationFailedException("Error occurred when trying to redirect to the registered devices"
+                    + " page. Devices were not found for user: " + user.toFullQualifiedUsername() + ".", e);
         } catch (PushDeviceHandlerClientException e) {
-            String errorMessage = "Error occurred when trying to redirect to registered devices page. "
-                    + "Authenticated user was not found.";
-            throw new AuthenticationFailedException(errorMessage, e);
+            throw new AuthenticationFailedException("Error occurred when trying to redirect to registered devices page."
+                    + " Authenticated user was not found.", e);
         } catch (SQLException e) {
-            String errorMessage = String
-                    .format("Error occurred when trying to get the device list for user: %s.", user);
-            throw new AuthenticationFailedException(errorMessage, e);
+            throw new AuthenticationFailedException("Error occurred when trying to get the device list for user: "
+                    + user.toFullQualifiedUsername() + ".", e);
         } catch (UserStoreException e) {
             throw new AuthenticationFailedException("Error occurred when trying to get the authenticated user.", e);
         } catch (IOException e) {
-            String errorMessage = String
-                    .format("Error occurred when trying to redirect to the registered devices page for user: %s.",
-                            user);
-            throw new AuthenticationFailedException(errorMessage, e);
+            throw new AuthenticationFailedException("Error occurred when trying to redirect to the registered devices"
+                    + " page for user: " + user.toFullQualifiedUsername() + ".", e);
         } catch (PushAuthenticatorException e) {
-            String errorMessage = String.format("Error occurred when trying to get user claims for user: %s.", user);
-            throw new AuthenticationFailedException(errorMessage, e);
+            throw new AuthenticationFailedException("Error occurred when trying to get user claims for user: "
+                    + user.toFullQualifiedUsername() + ".", e);
         }
 
     }
@@ -181,7 +177,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         if (StringUtils.isEmpty(devicesPage)) {
             devicesPage = PushAuthenticatorConstants.DEVICES_PAGE;
             if (log.isDebugEnabled()) {
-                log.debug("Default authentication endpoint context is used.");
+                log.debug("Default authentication endpoint context is used for devices page.");
             }
         }
         return devicesPage;
@@ -211,7 +207,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         if (StringUtils.isEmpty(waitPage)) {
             waitPage = PushAuthenticatorConstants.WAIT_PAGE;
             if (log.isDebugEnabled()) {
-                log.debug("Default authentication endpoint context is used.");
+                log.debug("Default authentication endpoint context is used for wait page.");
             }
         }
         return waitPage;
@@ -255,10 +251,12 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         AuthenticatedUser user = authenticationContext.getSequenceConfig().
                 getStepMap().get(authenticationContext.getCurrentStep() - 1).getAuthenticatedUser();
 
+        AuthContextcacheKey authContextCacheKey = new AuthContextcacheKey(httpServletRequest
+                .getParameter(PushAuthenticatorConstants.SESSION_DATA_KEY));
         AuthenticationContext sessionContext = AuthContextCache
                 .getInstance()
-                .getValueFromCacheByRequestId(new AuthContextcacheKey(httpServletRequest
-                        .getParameter(PushAuthenticatorConstants.SESSION_DATA_KEY))).getAuthenticationContext();
+                .getValueFromCacheByRequestId(authContextCacheKey)
+                .getAuthenticationContext();
 
         AuthDataDTO authDataDTO = (AuthDataDTO) sessionContext
                 .getProperty(PushAuthenticatorConstants.CONTEXT_AUTH_DATA);
@@ -274,11 +272,10 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                 if (authStatus.equals(PushAuthenticatorConstants.AUTH_REQUEST_STATUS_SUCCESS)) {
                     authenticationContext.setSubject(user);
                 } else if (authStatus.equals(PushAuthenticatorConstants.AUTH_REQUEST_STATUS_DENIED)) {
-                    String deniedPage = URLEncoder
-                            .encode("/authenticationendpoint/retry.do?status=Authentication Denied!",
-                                    StandardCharsets.UTF_8.name()) + URLEncoder
-                            .encode("&statusMsg=Authentication was denied from the mobile app",
-                                    StandardCharsets.UTF_8.name());
+                    String deniedPage = "/authenticationendpoint/retry.do"
+                            + "?status=" + URLEncoder.encode("Authorization Denied!", StandardCharsets.UTF_8.name())
+                            + "&statusMsg=" + URLEncoder.encode("Authorization was denied from the mobile app",
+                            StandardCharsets.UTF_8.name());
                     httpServletResponse.sendRedirect(deniedPage);
                 } else {
                     String errorMessage = String.format("Authentication failed! Auth status for user" +
@@ -348,12 +345,11 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                             String deviceId, String key) throws IOException, PushAuthenticatorException {
 
         DeviceHandler deviceHandler = new DeviceHandlerImpl();
-        Device device = null;
+        Device device;
         try {
             device = deviceHandler.getDevice(deviceId);
         } catch (PushDeviceHandlerClientException e) {
-            String errorMessage = String.format("Error occurred when trying to get device: %s.", deviceId);
-            throw new PushAuthenticatorException(errorMessage, e);
+            throw new PushAuthenticatorException("Error occurred when trying to get device: " + deviceId + ".", e);
         } catch (SQLException e) {
             String errorMessage = String
                     .format("Error when trying to get device: %s from the database.", deviceId);
@@ -388,13 +384,12 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
 
         String pushId = device.getPushId();
 
-        Map<String, String> userClaims = null;
+        Map<String, String> userClaims;
         try {
             userClaims = getUserClaimValues(user, context);
         } catch (AuthenticationFailedException e) {
-            String errorMessage = String
-                    .format("Error occurred when retrieving user claims for user: %s.", user);
-            throw new PushAuthenticatorException(errorMessage, e);
+            throw new PushAuthenticatorException("Error occurred when retrieving user claims for user: "
+                    + user.toFullQualifiedUsername() + ".", e);
         }
 
         String fullName =
@@ -415,9 +410,8 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             pushNotificationSender.sendPushNotification(deviceId, pushId, message, randomChallenge, sessionDataKey,
                     username, fullName, organization, serviceProviderName, hostname, userOS, userBrowser);
         } catch (AuthenticationFailedException e) {
-            String errorMessage = String
-                    .format("Error occurred when trying to send the push notification to device: %s.", deviceId);
-            throw new PushAuthenticatorException(errorMessage, e);
+            throw new PushAuthenticatorException("Error occurred when trying to send the push notification to device: "
+                    + deviceId + ".", e);
         }
 
         try {
@@ -428,8 +422,8 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                     + URLEncoder.encode(String.valueOf(challenge), StandardCharsets.UTF_8.name());
             response.sendRedirect(waitPage);
         } catch (IOException e) {
-            String errorMessage = String
-                    .format("Error occurred when trying to to redirect user: %s to the wait page.", user);
+            String errorMessage = String.format("Error occurred when trying to to redirect user: %s to the wait page.",
+                    user.toFullQualifiedUsername());
             throw new PushAuthenticatorException(errorMessage, e);
         }
 
@@ -446,12 +440,12 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
     private boolean validateSignature(String jwt, String challenge)
             throws PushAuthenticatorException {
 
-        boolean isValid = false;
+        boolean isValid;
         DeviceHandler handler = new DeviceHandlerImpl();
 
         PushJWTValidator validator = new PushJWTValidator();
         String deviceId = validator.getDeviceId(jwt);
-        String publicKeyStr = null;
+        String publicKeyStr;
         try {
             publicKeyStr = handler.getPublicKey(deviceId);
         } catch (SQLException e) {
@@ -459,16 +453,15 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                     .format("Error occurred when trying to get public key for device: %s from the database.", deviceId);
             throw new PushAuthenticatorException(errorMessage, e);
         } catch (IOException e) {
-            String errorMessage = String
-                    .format("Error occurred when trying to get public key for device: %s.", deviceId);
-            throw new PushAuthenticatorException(errorMessage, e);
+            throw new PushAuthenticatorException("Error occurred when trying to get public key for device: "
+                    + deviceId + ".", e);
         }
 
         try {
             isValid = validator.validate(jwt, publicKeyStr, challenge);
         } catch (Exception e) {
-            String errorMessage = "Error occurred when validating the signature. Failed to parse string to JWT.";
-            throw new PushAuthenticatorException(errorMessage, e);
+            throw new PushAuthenticatorException("Error occurred when validating the signature."
+                    + " Failed to parse string to JWT.", e);
         }
         return isValid;
     }
@@ -495,8 +488,8 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                             PushAuthenticatorConstants.LAST_NAME_CLAIM},
                     UserCoreConstants.DEFAULT_PROFILE);
         } catch (UserStoreException e) {
-            String errorMessage = String.format("Failed to read user claims for user : %s.", authenticatedUser);
-            throw new AuthenticationFailedException(errorMessage, e);
+            throw new AuthenticationFailedException("Failed to read user claims for user : "
+                    + authenticatedUser.toFullQualifiedUsername() + ".", e);
         }
         return claimValues;
     }
@@ -521,9 +514,8 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                 userRealm = realmService.getTenantUserRealm(tenantId);
             }
         } catch (UserStoreException e) {
-            String errorMessage = String
-                    .format("Error occurred when trying to get the user realm for user: %s.", authenticatedUser);
-            throw new AuthenticationFailedException(errorMessage, e);
+            throw new AuthenticationFailedException("Error occurred when trying to get the user realm for user: "
+                    + authenticatedUser.toFullQualifiedUsername() + ".", e);
         }
         return userRealm;
     }
