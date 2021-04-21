@@ -21,6 +21,9 @@ package org.wso2.carbon.identity.application.authenticator.push.exception;
 
 import org.wso2.carbon.identity.base.IdentityException;
 
+/**
+ * Push authenticator exception class
+ */
 public class PushAuthenticatorException extends IdentityException {
 
     public PushAuthenticatorException(String message) {

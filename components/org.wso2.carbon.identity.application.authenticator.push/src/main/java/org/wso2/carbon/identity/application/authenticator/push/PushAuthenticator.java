@@ -165,7 +165,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
     }
 
     /**
-     * Get the push-devices.jsp page from authentication.xml file or use the wait page from constant file.
+     * Get the registered devices page from configuration file or use the devices page from constants.
      *
      * @param context the AuthenticationContext
      * @return the waitPage
@@ -184,7 +184,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
     }
 
     /**
-     * Get the wait.jsp page url from the application-authentication.xml file.
+     * Get the devices page url from the configuration file.
      *
      * @param context the AuthenticationContext
      * @return waitPage
@@ -195,7 +195,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
     }
 
     /**
-     * Get the wait.jsp page from authentication.xml file or use the wait page from constant file.
+     * Get the wait page from the configuration file or use the wait page from constants.
      *
      * @param context the AuthenticationContext
      * @return the waitPage
@@ -214,7 +214,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
     }
 
     /**
-     * Get the wait.jsp page url from the application-authentication.xml file.
+     * Get the wait page url from the configuration file.
      *
      * @param context the AuthenticationContext
      * @return waitPage
