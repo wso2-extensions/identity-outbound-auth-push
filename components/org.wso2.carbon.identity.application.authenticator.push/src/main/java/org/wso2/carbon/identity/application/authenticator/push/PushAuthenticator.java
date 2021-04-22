@@ -238,7 +238,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         serverKeyProperty.setDisplayName(firebaseServerKey);
         serverKeyProperty.setDescription("Enter the firebase server key ");
         serverKeyProperty.setDisplayOrder(0);
-        serverKeyProperty.setRequired(false);
+        serverKeyProperty.setRequired(true);
         serverKeyProperty.setConfidential(true);
         configProperties.add(serverKeyProperty);
 
@@ -248,7 +248,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         fcmUrlProperty.setDisplayName(fcmUrl);
         fcmUrlProperty.setDescription("Enter the url of firebase endpoint ");
         fcmUrlProperty.setDisplayOrder(1);
-        fcmUrlProperty.setConfidential(true);
+        fcmUrlProperty.setConfidential(false);
         configProperties.add(fcmUrlProperty);
         return configProperties;
     }
