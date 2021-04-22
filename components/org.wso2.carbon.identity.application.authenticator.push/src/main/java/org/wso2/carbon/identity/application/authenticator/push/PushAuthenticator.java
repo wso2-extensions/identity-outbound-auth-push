@@ -195,9 +195,8 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                     authenticationContext.setSubject(user);
                 } else if (authStatus.equals(PushAuthenticatorConstants.AUTH_REQUEST_STATUS_DENIED)) {
                     String deniedPage = "/authenticationendpoint/retry.do"
-                            + "?status=" + URLEncoder.encode("Authorization Denied!", StandardCharsets.UTF_8.name())
-                            + "&statusMsg=" + URLEncoder.encode("Authorization was denied from the mobile app",
-                            StandardCharsets.UTF_8.name());
+                            + "?status=" + PushAuthenticatorConstants.AUTH_DENIED_PARAM
+                            + "&statusMsg=" + PushAuthenticatorConstants.AUTH_DENIED_MESSAGE;
                     httpServletResponse.sendRedirect(deniedPage);
                 } else {
                     String errorMessage = String.format("Authentication failed! Auth status for user" +

@@ -69,6 +69,9 @@ public class PushAuthenticatorConstants {
     public static final String DEVICES_LIST = "devices-list";
     public static final String SESSION_DATA_KEY = "sessionDataKey";
 
+    public static final String AUTH_DENIED_PARAM = "authorization.denied";
+    public static final String AUTH_DENIED_MESSAGE = "authorization.denied.message";
+
     public static final String FIRST_NAME_CLAIM = "http://wso2.org/claims/givenname";
     public static final String LAST_NAME_CLAIM = "http://wso2.org/claims/lastname";
 
