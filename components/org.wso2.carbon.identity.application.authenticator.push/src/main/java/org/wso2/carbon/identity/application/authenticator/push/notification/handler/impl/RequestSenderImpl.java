@@ -36,6 +36,9 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Implements the functionality for request sender
+ */
 public class RequestSenderImpl implements RequestSender {
 
     @Override
