@@ -31,6 +31,7 @@ public class PushAuthenticatorConstants {
     public static final String FCM_URL = "fcmUrl";
     public static final String SIGNED_CHALLENGE = "signedChallenge";
     public static final String PUSH_AUTH_CHALLENGE = "pushAuthChallenge";
+    public static final String PROCEED_AUTH = "proceedAuthorization";
     public static final String AUTHORIZATION = "Authorization";
     public static final String POST = "POST";
     public static final String CONTENT_TYPE = "Content-Type";

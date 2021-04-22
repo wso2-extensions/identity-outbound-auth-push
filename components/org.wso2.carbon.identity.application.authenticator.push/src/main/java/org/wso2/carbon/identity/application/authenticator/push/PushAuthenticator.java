@@ -87,7 +87,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
     @Override
     public boolean canHandle(HttpServletRequest request) {
 
-        return request.getParameter(PushAuthenticatorConstants.SIGNED_CHALLENGE) != null;
+        return request.getParameter(PushAuthenticatorConstants.PROCEED_AUTH) != null;
     }
 
     @Override
