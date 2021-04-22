@@ -44,6 +44,7 @@ import org.wso2.carbon.identity.application.authenticator.push.dto.impl.AuthData
 import org.wso2.carbon.identity.application.authenticator.push.exception.PushAuthenticatorException;
 import org.wso2.carbon.identity.application.authenticator.push.internal.PushAuthenticatorServiceComponent;
 import org.wso2.carbon.identity.application.authenticator.push.notification.handler.impl.FirebasePushNotificationSenderImpl;
+import org.wso2.carbon.identity.application.authenticator.push.util.Config;
 import org.wso2.carbon.identity.application.authenticator.push.validator.PushJWTValidator;
 import org.wso2.carbon.identity.application.common.model.Property;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
@@ -136,8 +137,9 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             } else {
 
                 String string = JSONArray.toJSONString(array);
+                Config config = new Config();
                 String devicesPage;
-                devicesPage = getDevicesPage(context)
+                devicesPage = config.getDevicesPage(context)
                         + "?sessionDataKey=" + URLEncoder.encode(sessionDataKey, StandardCharsets.UTF_8.name())
                         + "&devices=" + URLEncoder.encode(string, StandardCharsets.UTF_8.name());
                 response.sendRedirect(devicesPage);
@@ -162,86 +164,6 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                     + user.toFullQualifiedUsername() + ".", e);
         }
 
-    }
-
-    /**
-     * Get the registered devices page from configuration file or use the devices page from constants.
-     *
-     * @param context the AuthenticationContext
-     * @return the waitPage
-     * @throws AuthenticationFailedException
-     */
-    private String getDevicesPage(AuthenticationContext context) throws AuthenticationFailedException {
-
-        String devicesPage = getConfiguredDevicesPage(context);
-        if (StringUtils.isEmpty(devicesPage)) {
-            devicesPage = PushAuthenticatorConstants.DEVICES_PAGE;
-            if (log.isDebugEnabled()) {
-                log.debug("Default authentication endpoint context is used for devices page.");
-            }
-        }
-        return devicesPage;
-    }
-
-    /**
-     * Get the devices page url from the configuration file.
-     *
-     * @param context the AuthenticationContext
-     * @return waitPage
-     */
-    public static String getConfiguredDevicesPage(AuthenticationContext context) {
-
-        return getConfiguration(context, PushAuthenticatorConstants.PUSH_AUTHENTICATION_ENDPOINT_DEVICES_URL);
-    }
-
-    /**
-     * Get the wait page from the configuration file or use the wait page from constants.
-     *
-     * @param context the AuthenticationContext
-     * @return the waitPage
-     * @throws AuthenticationFailedException
-     */
-    private String getWaitPage(AuthenticationContext context) throws AuthenticationFailedException {
-
-        String waitPage = getConfiguredWaitPage(context);
-        if (StringUtils.isEmpty(waitPage)) {
-            waitPage = PushAuthenticatorConstants.WAIT_PAGE;
-            if (log.isDebugEnabled()) {
-                log.debug("Default authentication endpoint context is used for wait page.");
-            }
-        }
-        return waitPage;
-    }
-
-    /**
-     * Get the wait page url from the configuration file.
-     *
-     * @param context the AuthenticationContext
-     * @return waitPage
-     */
-    public static String getConfiguredWaitPage(AuthenticationContext context) {
-
-        return getConfiguration(context, PushAuthenticatorConstants.PUSH_AUTHENTICATION_ENDPOINT_WAIT_URL);
-    }
-
-    /**
-     * Read configurations from application-authentication.xml for given authenticator.
-     *
-     * @param context    Authentication Context.
-     * @param configName Name of the config.
-     * @return Config value.
-     */
-    public static String getConfiguration(AuthenticationContext context, String configName) {
-
-        String configValue = null;
-        if ((context.getProperty(configName)) != null) {
-            configValue = String.valueOf(context.getProperty(configName));
-        }
-        if (log.isDebugEnabled()) {
-            String debugMessage = String.format("Config value for key %s: %s", configName, configValue);
-            log.debug(debugMessage);
-        }
-        return configValue;
     }
 
     @Override
