@@ -1,5 +1,7 @@
 package org.wso2.carbon.identity.application.authenticator.push.notification.handler.impl;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.application.authentication.framework.context.AuthenticationContext;
 import org.wso2.carbon.identity.application.authentication.framework.exception.AuthenticationFailedException;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundConstants;
@@ -40,6 +42,8 @@ import javax.servlet.http.HttpServletResponse;
  * Implements the functionality for request sender
  */
 public class RequestSenderImpl implements RequestSender {
+
+    private static final Log log = LogFactory.getLog(RequestSenderImpl.class);
 
     @Override
     public void sendRequest(HttpServletRequest request, HttpServletResponse response, String deviceId, String key)
@@ -108,7 +112,7 @@ public class RequestSenderImpl implements RequestSender {
             userOS = uaClient.os.family;
             userBrowser = uaClient.userAgent.family;
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Error occurred while trying to get the user's OS or Web browser.", e);
         }
 
         FirebasePushNotificationSenderImpl pushNotificationSender = FirebasePushNotificationSenderImpl.getInstance();
