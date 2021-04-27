@@ -73,22 +73,24 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
 
     @Override
     public Device registerDevice(RegistrationRequest registrationRequest)
-            throws IdentityException, SQLException,
+            throws IdentityException,
             UserStoreException, JsonProcessingException, NoSuchAlgorithmException,
             SignatureException, InvalidKeySpecException, InvalidKeyException {
 
-        Device device = null;
+        Device device;
         RegistrationRequestChallengeCacheEntry cacheEntry = RegistrationRequestChallengeCache.getInstance()
                 .getValueFromCacheByRequestId(new PushDeviceHandlerCacheKey(registrationRequest.getDeviceId()));
         if (cacheEntry == null) {
-            throw new PushDeviceHandlerServerException("Unidentified request");
+            throw new PushDeviceHandlerServerException("Unidentified request for registration request challenge cache"
+                    + "when trying to register device: " + registrationRequest.getDeviceId() + ".");
         }
         if (log.isDebugEnabled()) {
-            log.debug("Verifying digital signature");
+            log.debug("Verifying digital signature for device: " + registrationRequest.getDeviceId() + ".");
         }
         if (!verifySignature(registrationRequest.getSignature(), registrationRequest.getPushId(),
                 registrationRequest.getPublicKey(), cacheEntry)) {
-            throw new PushDeviceHandlerServerException("Could not verify source");
+            throw new PushDeviceHandlerServerException("Could not verify signature to register device: "
+                    + registrationRequest.getDeviceId() + ".");
         }
         if (!cacheEntry.isRegistered()) {
             String userId = getUserIdFromUsername(cacheEntry.getUsername(),
@@ -98,9 +100,16 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
                     registrationRequest.getPublicKey());
             DeviceCache.getInstance().addToCacheByRequestId(new PushDeviceHandlerCacheKey(device.getDeviceId()),
                     new DeviceCacheEntry(device));
-            DeviceDAOImpl.getInstance().registerDevice(device);
+            try {
+                DeviceDAOImpl.getInstance().registerDevice(device);
+            } catch (SQLException e) {
+                throw new PushDeviceHandlerServerException("Error occurred when trying to register device: "
+                        + registrationRequest.getDeviceId() + ".", e);
+            }
         } else {
-            throw new PushDeviceHandlerClientException("The device is already registered");
+            String errorMessage = String.format("The device: %s is already registered.",
+                    registrationRequest.getDeviceId());
+            throw new PushDeviceHandlerClientException(errorMessage);
         }
 
         RegistrationRequestChallengeCache.getInstance().clearCacheEntryByRequestId(
@@ -110,56 +119,84 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
 
     @Override
     public void unregisterDevice(String deviceId) throws PushDeviceHandlerServerException,
-            PushDeviceHandlerClientException, SQLException {
+            PushDeviceHandlerClientException {
 
-        DeviceDAOImpl.getInstance().unregisterDevice(deviceId);
+        try {
+            DeviceDAOImpl.getInstance().unregisterDevice(deviceId);
+        } catch (SQLException e) {
+            String errorMessage = String.format("Error occurred when trying to remove device: %s from the"
+                            + " database.", deviceId);
+            throw new PushDeviceHandlerServerException(errorMessage, e);
+        }
 
     }
 
     @Override
-    public void editDeviceName(String deviceId, String newDeviceName) throws PushDeviceHandlerServerException,
-            SQLException {
+    public void editDeviceName(String deviceId, String newDeviceName) throws PushDeviceHandlerServerException {
 
-        DeviceCacheEntry cacheEntry = DeviceCache.getInstance()
-                .getValueFromCacheByRequestId(new PushDeviceHandlerCacheKey(deviceId));
-        if (cacheEntry != null) {
-            if (!cacheEntry.getDevice().getDeviceName().equals(newDeviceName)) {
+        try {
+            DeviceCacheEntry cacheEntry = DeviceCache.getInstance()
+                    .getValueFromCacheByRequestId(new PushDeviceHandlerCacheKey(deviceId));
+            if (cacheEntry != null) {
+                if (!cacheEntry.getDevice().getDeviceName().equals(newDeviceName)) {
+                    DeviceDAOImpl.getInstance().editDeviceName(deviceId, newDeviceName);
+                }
+                DeviceCache.getInstance().clearCacheEntryByRequestId(new PushDeviceHandlerCacheKey(deviceId));
+            } else {
                 DeviceDAOImpl.getInstance().editDeviceName(deviceId, newDeviceName);
             }
-            DeviceCache.getInstance().clearCacheEntryByRequestId(new PushDeviceHandlerCacheKey(deviceId));
-        } else {
-            DeviceDAOImpl.getInstance().editDeviceName(deviceId, newDeviceName);
+        } catch (SQLException e) {
+            throw new PushDeviceHandlerServerException("Error occurred when updating the name of device: "
+                    + deviceId + ".");
         }
     }
 
     @Override
-    public Device getDevice(String deviceId) throws PushDeviceHandlerClientException, SQLException,
-            PushDeviceHandlerServerException, IOException {
+    public Device getDevice(String deviceId) throws PushDeviceHandlerClientException, PushDeviceHandlerServerException {
 
-        return DeviceDAOImpl.getInstance().getDevice(deviceId);
+        try {
+            return DeviceDAOImpl.getInstance().getDevice(deviceId);
+        } catch (IOException e) {
+            throw new PushDeviceHandlerServerException("Error occurred when trying to get device: "
+                    + deviceId + ".", e);
+        } catch (SQLException e) {
+            String errorMessage = String.format("Error occurred when trying to get device: %s from the database.",
+                     deviceId);
+            throw new PushDeviceHandlerServerException(errorMessage, e);
+        }
     }
 
     @Override
     public ArrayList<Device> listDevices(String username, String userStore, String tenantDomain)
-            throws PushDeviceHandlerServerException,
-            PushDeviceHandlerClientException, SQLException, UserStoreException, IOException {
+            throws PushDeviceHandlerServerException, PushDeviceHandlerClientException, UserStoreException {
 
-        return DeviceDAOImpl.getInstance().listDevices(username, userStore, tenantDomain);
+        try {
+            return DeviceDAOImpl.getInstance().listDevices(username, userStore, tenantDomain);
+        } catch (SQLException e) {
+            String errorMessage = String.format("Error occurred when trying to get the device list for user: %s"
+                            + "from the database.", username);
+            throw new PushDeviceHandlerServerException(errorMessage, e);
+        } catch (IOException e) {
+            throw new PushDeviceHandlerServerException("Error occurred when trying to get the device list for user: "
+                    + username + ".", e);
+        }
     }
 
     @Override
     public DiscoveryData getDiscoveryData() {
 
-        if (log.isDebugEnabled()) {
-            log.debug("Retrieving data to generate QR code");
-        }
         User user = getAuthenticatedUser();
+
+        if (log.isDebugEnabled()) {
+            log.debug("Retrieving data to generate QR code for user: " + user.toFullQualifiedUsername() + ".");
+        }
 
         Map<String, String> userClaims = null;
         try {
             userClaims = getUserClaimValues(user);
         } catch (AuthenticationFailedException e) {
-            e.printStackTrace();
+            log.error("Error occurred when trying to get the user clams for user: "
+                    + user.toFullQualifiedUsername() + ".", e);
         }
 
         String deviceId = UUID.randomUUID().toString();
@@ -181,11 +218,25 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
     }
 
     @Override
-    public String getPublicKey(String deviceId) throws SQLException, IOException {
+    public String getPublicKey(String deviceId) throws PushDeviceHandlerServerException {
 
-        return DeviceDAOImpl.getInstance().getPublicKey(deviceId);
+        try {
+            return DeviceDAOImpl.getInstance().getPublicKey(deviceId);
+        } catch (SQLException e) {
+            String errorMessage = String.format("Error occurred when trying to get the pubic key for device: %s "
+                    + "from the database.", deviceId);
+            throw new PushDeviceHandlerServerException(errorMessage, e);
+        } catch (IOException e) {
+            throw new PushDeviceHandlerServerException("Error occurred when trying to get the public key for device: "
+                    + deviceId + ".", e);
+        }
     }
 
+    /**
+     * Get the authenticated user
+     *
+     * @return authenticated user
+     */
     private User getAuthenticatedUser() {
 
         User user = User.getUserFromUserName(PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername());
@@ -193,6 +244,19 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
         return user;
     }
 
+    /**
+     * Verify the signature using the public key for the registered device
+     *
+     * @param signature signature of the signed challenge
+     * @param pushId pushID of the device
+     * @param publicKeyStr public key for the registered device
+     * @param cacheEntry cached data
+     * @return boolean verification
+     * @throws NoSuchAlgorithmException Invalid algorithm
+     * @throws InvalidKeySpecException Invalid key specification
+     * @throws InvalidKeyException Invalid key
+     * @throws SignatureException Signature object is not initialised properly
+     */
     private boolean verifySignature(String signature, String pushId, String publicKeyStr,
                                     RegistrationRequestChallengeCacheEntry cacheEntry)
             throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException {
@@ -208,12 +272,27 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
         return sign.verify(signatureBytes);
     }
 
+    /**
+     * Get the user ID from the username
+     *
+     * @param username username of the user
+     * @param realm user realm for the tenant
+     * @return user ID
+     * @throws UserStoreException userstore exception
+     */
     private String getUserIdFromUsername(String username, UserRealm realm) throws UserStoreException {
 
         AbstractUserStoreManager userStoreManager = (AbstractUserStoreManager) realm.getUserStoreManager();
         return userStoreManager.getUserIDFromUserName(username);
     }
 
+    /**
+     * Get the user claim values for required fields
+     *
+     * @param authenticatedUser Authenticated user
+     * @return Retrieved user claims
+     * @throws AuthenticationFailedException if reading user claims have errors
+     */
     private Map<String, String> getUserClaimValues(User authenticatedUser)
             throws AuthenticationFailedException {
 
@@ -227,9 +306,8 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
                             DeviceHandlerConstants.LAST_NAME_USER_CLAIM},
                     UserCoreConstants.DEFAULT_PROFILE);
         } catch (UserStoreException e) {
-            log.error("Error while reading user claims", e);
-            String errorMessage = String.format("Failed to read user claims for user : %s.", authenticatedUser);
-            throw new AuthenticationFailedException(errorMessage, e);
+            throw new AuthenticationFailedException("Error while reading user claims for user: "
+                    + authenticatedUser.toFullQualifiedUsername() + ".", e);
         }
         return claimValues;
     }
