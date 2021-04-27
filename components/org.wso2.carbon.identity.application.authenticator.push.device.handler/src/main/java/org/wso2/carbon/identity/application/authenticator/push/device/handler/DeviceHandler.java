@@ -54,12 +54,8 @@ public interface DeviceHandler {
 
     ArrayList<Device> listDevices(String username, String userStore, String tenantDomain) throws PushDeviceHandlerServerException, PushDeviceHandlerClientException, SQLException, UserStoreException, IOException;
 
-//    DiscoveryData getDiscoveryData(String username, String userStore, String tenantDomain);
-
     DiscoveryData getDiscoveryData();
 
-    String getPublicKey(String deviceId) throws SQLException, IOException;;
-
-
+    String getPublicKey(String deviceId) throws SQLException, IOException;
 
 }
