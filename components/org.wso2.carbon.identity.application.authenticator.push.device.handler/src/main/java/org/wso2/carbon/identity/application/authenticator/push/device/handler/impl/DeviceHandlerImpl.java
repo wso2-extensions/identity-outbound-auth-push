@@ -47,8 +47,6 @@ import org.wso2.carbon.user.api.UserStoreManager;
 import org.wso2.carbon.user.core.UserCoreConstants;
 import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
 
-import java.io.IOException;
-
 import java.io.Serializable;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
@@ -156,9 +154,6 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
 
         try {
             return DeviceDAOImpl.getInstance().getDevice(deviceId);
-        } catch (IOException e) {
-            throw new PushDeviceHandlerServerException("Error occurred when trying to get device: "
-                    + deviceId + ".", e);
         } catch (SQLException e) {
             String errorMessage = String.format("Error occurred when trying to get device: %s from the database.",
                      deviceId);
@@ -176,9 +171,6 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
             String errorMessage = String.format("Error occurred when trying to get the device list for user: %s"
                             + "from the database.", username);
             throw new PushDeviceHandlerServerException(errorMessage, e);
-        } catch (IOException e) {
-            throw new PushDeviceHandlerServerException("Error occurred when trying to get the device list for user: "
-                    + username + ".", e);
         }
     }
 
@@ -226,9 +218,6 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
             String errorMessage = String.format("Error occurred when trying to get the pubic key for device: %s "
                     + "from the database.", deviceId);
             throw new PushDeviceHandlerServerException(errorMessage, e);
-        } catch (IOException e) {
-            throw new PushDeviceHandlerServerException("Error occurred when trying to get the public key for device: "
-                    + deviceId + ".", e);
         }
     }
 
