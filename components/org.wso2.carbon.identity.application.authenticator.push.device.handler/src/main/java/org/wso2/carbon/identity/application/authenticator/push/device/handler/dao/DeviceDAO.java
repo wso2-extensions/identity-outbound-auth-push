@@ -26,7 +26,7 @@ import org.wso2.carbon.user.api.UserStoreException;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class defines the database related operations .
@@ -45,7 +45,7 @@ public interface DeviceDAO {
     Device getDevice(String deviceId) throws PushDeviceHandlerClientException,
             PushDeviceHandlerServerException, SQLException, IOException;
 
-    ArrayList<Device> listDevices(String username, String userStore, String tenantDomain) throws PushDeviceHandlerServerException,
+    List<Device> listDevices(String username, String userStore, String tenantDomain) throws PushDeviceHandlerServerException,
             PushDeviceHandlerClientException, SQLException, IOException, UserStoreException;
 
     void deleteAllDevicesOfUser(int userId, String userStore);
