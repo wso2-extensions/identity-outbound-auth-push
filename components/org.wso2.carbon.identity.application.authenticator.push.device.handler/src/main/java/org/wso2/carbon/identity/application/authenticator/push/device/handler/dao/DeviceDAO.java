@@ -33,22 +33,18 @@ import java.util.List;
  */
 
 public interface DeviceDAO {
-    void registerDevice(Device device) throws PushDeviceHandlerServerException,
-            PushDeviceHandlerClientException, SQLException, JsonProcessingException, UserStoreException;
+    void registerDevice(Device device) throws SQLException;
 
-    void unregisterDevice(String deviceId) throws PushDeviceHandlerServerException,
-            PushDeviceHandlerClientException, SQLException;
+    void unregisterDevice(String deviceId) throws SQLException;
 
-    void editDeviceName(String deviceId, String newDevicename) throws PushDeviceHandlerServerException,
-            SQLException;
+    void editDeviceName(String deviceId, String newDeviceName) throws SQLException;
 
-    Device getDevice(String deviceId) throws PushDeviceHandlerClientException,
-            PushDeviceHandlerServerException, SQLException, IOException;
+    Device getDevice(String deviceId) throws PushDeviceHandlerServerException, SQLException;
 
-    List<Device> listDevices(String username, String userStore, String tenantDomain) throws PushDeviceHandlerServerException,
-            PushDeviceHandlerClientException, SQLException, IOException, UserStoreException;
+    List<Device> listDevices(String username, String userStore, String tenantDomain)
+            throws SQLException, UserStoreException;
 
     void deleteAllDevicesOfUser(int userId, String userStore);
 
-    String getPublicKey(String deviceId) throws SQLException, IOException;;
+    String getPublicKey(String deviceId) throws SQLException;;
 }
