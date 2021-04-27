@@ -27,13 +27,11 @@ import org.wso2.carbon.identity.application.authenticator.push.device.handler.mo
 import org.wso2.carbon.identity.base.IdentityException;
 import org.wso2.carbon.user.api.UserStoreException;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -42,20 +40,20 @@ import java.util.ArrayList;
 public interface DeviceHandler {
 
     Device registerDevice(RegistrationRequest registrationRequest) throws
-            IdentityException, SQLException, UserStoreException, JsonProcessingException, InvalidKeyException, NoSuchAlgorithmException, SignatureException, UnsupportedEncodingException, InvalidKeySpecException;
+            IdentityException, UserStoreException, JsonProcessingException, InvalidKeyException,
+            NoSuchAlgorithmException, SignatureException, UnsupportedEncodingException, InvalidKeySpecException;
 
-    void unregisterDevice(String deviceId) throws PushDeviceHandlerClientException,
-            PushDeviceHandlerServerException, SQLException;
+    void unregisterDevice(String deviceId) throws PushDeviceHandlerClientException, PushDeviceHandlerServerException;
 
-    void editDeviceName(String deviceId, String newDeviceName) throws PushDeviceHandlerClientException,
-            PushDeviceHandlerServerException, SQLException;
+    void editDeviceName(String deviceId, String newDeviceName) throws PushDeviceHandlerServerException;
 
-    Device getDevice(String deviceId) throws IOException, PushDeviceHandlerClientException, SQLException, PushDeviceHandlerServerException;
+    Device getDevice(String deviceId) throws PushDeviceHandlerClientException, PushDeviceHandlerServerException;
 
-    ArrayList<Device> listDevices(String username, String userStore, String tenantDomain) throws PushDeviceHandlerServerException, PushDeviceHandlerClientException, SQLException, UserStoreException, IOException;
+    ArrayList<Device> listDevices(String username, String userStore, String tenantDomain)
+            throws PushDeviceHandlerServerException, PushDeviceHandlerClientException, UserStoreException;
 
     DiscoveryData getDiscoveryData();
 
-    String getPublicKey(String deviceId) throws SQLException, IOException;
+    String getPublicKey(String deviceId) throws PushDeviceHandlerServerException;
 
 }
