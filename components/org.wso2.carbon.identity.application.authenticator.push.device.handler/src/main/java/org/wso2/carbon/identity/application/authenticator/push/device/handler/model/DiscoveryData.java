@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -25,6 +25,7 @@ import java.util.UUID;
  * This class contains the attributes sent to generate the qr code .
  */
 public class DiscoveryData implements Serializable {
+
     String deviceId;
     String username;
     String firstName;
@@ -40,6 +41,7 @@ public class DiscoveryData implements Serializable {
     public DiscoveryData(String deviceId, String username, String firstName, String lastName, String tenantDomain,
                          String host, String basePath, String registrationEndpoint, String removeDeviceEndpoint,
                          String authenticationEndpoint, UUID challenge) {
+
         this.deviceId = deviceId;
         this.username = username;
         this.firstName = firstName;
@@ -54,93 +56,116 @@ public class DiscoveryData implements Serializable {
     }
 
     public DiscoveryData() {
+
     }
 
     public String getDeviceId() {
+
         return deviceId;
     }
 
     public void setDeviceId(String deviceId) {
+
         this.deviceId = deviceId;
     }
 
     public String getUsername() {
+
         return username;
     }
 
     public void setUsername(String username) {
+
         this.username = username;
     }
 
     public String getTenantDomain() {
+
         return tenantDomain;
     }
 
     public void setTenantDomain(String tenantDomain) {
+
         this.tenantDomain = tenantDomain;
     }
 
     public UUID getChallenge() {
+
         return challenge;
     }
 
     public void setChallenge(UUID challenge) {
+
         this.challenge = challenge;
     }
 
     public String getFirstName() {
+
         return firstName;
     }
 
     public void setFirstName(String firstName) {
+
         this.firstName = firstName;
     }
 
     public String getLastName() {
+
         return lastName;
     }
 
     public void setLastName(String lastName) {
+
         this.lastName = lastName;
     }
 
     public String getHost() {
+
         return host;
     }
 
     public void setHost(String host) {
+
         this.host = host;
     }
 
     public String getBasePath() {
+
         return basePath;
     }
 
     public void setBasePath(String basePath) {
+
         this.basePath = basePath;
     }
 
     public String getRegistrationEndpoint() {
+
         return registrationEndpoint;
     }
 
     public void setRegistrationEndpoint(String registrationEndpoint) {
+
         this.registrationEndpoint = registrationEndpoint;
     }
 
     public String getRemoveDeviceEndpoint() {
+
         return removeDeviceEndpoint;
     }
 
     public void setRemoveDeviceEndpoint(String removeDeviceEndpoint) {
+
         this.removeDeviceEndpoint = removeDeviceEndpoint;
     }
 
     public String getAuthenticationEndpoint() {
+
         return authenticationEndpoint;
     }
 
     public void setAuthenticationEndpoint(String authenticationEndpoint) {
+
         this.authenticationEndpoint = authenticationEndpoint;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -36,6 +36,7 @@ import org.wso2.carbon.user.core.service.RealmService;
         immediate = true
 )
 public class PushDeviceHandlerServiceComponent implements BundleActivator {
+
     private static final Log log = LogFactory.getLog(PushDeviceHandlerServiceComponent.class);
     private static RealmService realmService;
 
@@ -63,6 +64,7 @@ public class PushDeviceHandlerServiceComponent implements BundleActivator {
     @Activate
     @Override
     public void start(BundleContext bundleContext) throws Exception {
+
         try {
             bundleContext.registerService(UserStoreConfigListener.class.getName(),
                     new UserStoreConfigListenerImpl(), null);
@@ -76,6 +78,7 @@ public class PushDeviceHandlerServiceComponent implements BundleActivator {
     @Deactivate
     @Override
     public void stop(BundleContext bundleContext) throws Exception {
+
         if (log.isDebugEnabled()) {
             log.debug("Deactivating Push Device Handler bundle...");
         }

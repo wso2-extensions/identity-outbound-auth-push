@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -21,21 +21,24 @@ package org.wso2.carbon.identity.application.authenticator.push.device.handler.c
 import org.wso2.carbon.identity.application.authentication.framework.store.SessionDataStore;
 import org.wso2.carbon.identity.application.common.cache.BaseCache;
 import org.wso2.carbon.utils.CarbonUtils;
+
 /**
  * Push device cache.
  */
 public class DeviceCache extends
         BaseCache<PushDeviceHandlerCacheKey, DeviceCacheEntry> {
+
     private static final String PUSH_DEVICE_CACHE_NAME = "PushDeviceCache";
 
     private static volatile DeviceCache cache;
 
-
     public DeviceCache() {
+
         super(PUSH_DEVICE_CACHE_NAME, true);
     }
 
     public static DeviceCache getInstance() {
+
         CarbonUtils.checkSecurity();
         if (cache == null) {
             synchronized (RegistrationRequestChallengeCache.class) {
@@ -46,25 +49,30 @@ public class DeviceCache extends
     }
 
     private void storeToSessionStore(String id, DeviceCacheEntry entry) {
+
         SessionDataStore.getInstance().storeSessionData(id, PUSH_DEVICE_CACHE_NAME, entry);
     }
 
     private DeviceCacheEntry getFromSessionStore(String id) {
+
         return (DeviceCacheEntry) SessionDataStore.getInstance().
                 getSessionData(id, PUSH_DEVICE_CACHE_NAME);
     }
 
     private void clearFromSessionStore(String id) {
+
         SessionDataStore.getInstance().clearSessionData(id, PUSH_DEVICE_CACHE_NAME);
     }
 
     public void clearCacheEntryByRequestId(PushDeviceHandlerCacheKey key) {
+
         super.clearCacheEntry(key);
         clearFromSessionStore(key.getRequestId());
     }
 
     public void addToCacheByRequestId(PushDeviceHandlerCacheKey key,
                                       DeviceCacheEntry entry) {
+
         super.addToCache(key, entry);
         storeToSessionStore(key.getRequestId(), entry);
 

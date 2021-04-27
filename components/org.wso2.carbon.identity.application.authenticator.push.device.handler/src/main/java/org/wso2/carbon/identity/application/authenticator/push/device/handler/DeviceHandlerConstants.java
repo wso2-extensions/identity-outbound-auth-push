@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -22,6 +22,7 @@ package org.wso2.carbon.identity.application.authenticator.push.device.handler;
  * This class contains the constants used in this module.
  */
 public class DeviceHandlerConstants {
+
     public static final String USERNAME = "USER_NAME";
     public static final String DOMAIN_NAME = "DOMAIN_NAME";
     public static final String USER_STORE = "USER_STORE";
@@ -43,7 +44,9 @@ public class DeviceHandlerConstants {
      * This class contains the SQL queries used in the DAO class.
      */
     public static class SQLQUERIES {
+
         private SQLQUERIES() {
+
         }
 
         public static final String REGISTER_DEVICE = "INSERT INTO BIOMETRIC_AUTHENTICATION_DEVICE " +

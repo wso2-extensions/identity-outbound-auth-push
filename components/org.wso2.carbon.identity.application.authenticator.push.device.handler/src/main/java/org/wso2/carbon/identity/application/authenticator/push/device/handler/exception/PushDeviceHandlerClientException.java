@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -24,18 +24,22 @@ package org.wso2.carbon.identity.application.authenticator.push.device.handler.e
 public class PushDeviceHandlerClientException extends PushDeviceHandlerException {
 
     public PushDeviceHandlerClientException(String message) {
+
         super(message);
     }
 
     public PushDeviceHandlerClientException(String errorCode, String message) {
+
         super(errorCode, message);
     }
 
     public PushDeviceHandlerClientException(String message, Throwable cause) {
+
         super(message, cause);
     }
 
     public PushDeviceHandlerClientException(String errorCode, String message, Throwable cause) {
+
         super(errorCode, message, cause);
     }
 }

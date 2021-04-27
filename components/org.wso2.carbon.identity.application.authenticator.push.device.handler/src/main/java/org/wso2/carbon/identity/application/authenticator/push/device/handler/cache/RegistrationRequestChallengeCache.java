@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -33,12 +33,13 @@ public class RegistrationRequestChallengeCache extends
 
     private static volatile RegistrationRequestChallengeCache cache;
 
-
     public RegistrationRequestChallengeCache() {
+
         super(Registration_Request_Challenge_Cache, true);
     }
 
     public static RegistrationRequestChallengeCache getInstance() {
+
         CarbonUtils.checkSecurity();
         if (cache == null) {
             synchronized (RegistrationRequestChallengeCache.class) {
@@ -49,35 +50,38 @@ public class RegistrationRequestChallengeCache extends
     }
 
     private void storeToSessionStore(String id, RegistrationRequestChallengeCacheEntry entry) {
+
         SessionDataStore.getInstance().storeSessionData(id, Registration_Request_Challenge_Cache, entry);
     }
 
     private RegistrationRequestChallengeCacheEntry getFromSessionStore(String id) {
+
         return (RegistrationRequestChallengeCacheEntry) SessionDataStore.getInstance().
                 getSessionData(id, Registration_Request_Challenge_Cache);
     }
 
     private void clearFromSessionStore(String id) {
+
         SessionDataStore.getInstance().clearSessionData(id, Registration_Request_Challenge_Cache);
     }
 
     public void clearCacheEntryByRequestId(PushDeviceHandlerCacheKey key) {
+
         super.clearCacheEntry(key);
         clearFromSessionStore(key.getRequestId());
     }
 
     public void addToCacheByRequestId(PushDeviceHandlerCacheKey key,
                                       RegistrationRequestChallengeCacheEntry entry) {
+
         super.addToCache(key, entry);
         storeToSessionStore(key.getRequestId(), entry);
 
     }
 
-
     public RegistrationRequestChallengeCacheEntry getValueFromCacheByRequestId(PushDeviceHandlerCacheKey key) {
 
         return getFromSessionStore(key.getRequestId());
     }
-
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -24,6 +24,7 @@ import java.io.Serializable;
  * This class contains the attributes and operations of the request received from the device .
  */
 public class RegistrationRequest implements Serializable {
+
     private String deviceId;
     private String deviceName;
     private String deviceModel;
@@ -33,6 +34,7 @@ public class RegistrationRequest implements Serializable {
 
     public RegistrationRequest(String deviceId, String deviceName, String deviceModel, String pushId,
                                String publicKey, String signature) {
+
         this.deviceId = deviceId;
         this.deviceName = deviceName;
         this.deviceModel = deviceModel;
@@ -42,53 +44,66 @@ public class RegistrationRequest implements Serializable {
     }
 
     public RegistrationRequest() {
+
     }
 
     public String getDeviceId() {
+
         return deviceId;
     }
 
     public void setDeviceId(String deviceId) {
+
         this.deviceId = deviceId;
     }
 
     public String getDeviceName() {
+
         return deviceName;
     }
 
     public void setDeviceName(String deviceName) {
+
         this.deviceName = deviceName;
     }
 
     public String getDeviceModel() {
+
         return deviceModel;
     }
 
     public void setDeviceModel(String deviceModel) {
+
         this.deviceModel = deviceModel;
     }
 
     public String getPushId() {
+
         return pushId;
     }
 
     public void setPushId(String pushId) {
+
         this.pushId = pushId;
     }
 
     public String getPublicKey() {
+
         return publicKey;
     }
 
     public void setPublicKey(String publicKey) {
+
         this.publicKey = publicKey;
     }
 
     public String getSignature() {
+
         return signature;
     }
 
     public void setSignature(String signature) {
+
         this.signature = signature;
     }
 }

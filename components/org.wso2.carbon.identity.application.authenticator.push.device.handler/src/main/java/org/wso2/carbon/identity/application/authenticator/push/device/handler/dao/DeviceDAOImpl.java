@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -43,6 +43,7 @@ import java.util.List;
  * This class implements DeviceDAO interface .
  */
 public class DeviceDAOImpl implements DeviceDAO {
+
     private static final Log log = LogFactory.getLog(DeviceDAOImpl.class);
     private static DeviceDAO dao = new DeviceDAOImpl();
 
@@ -51,11 +52,13 @@ public class DeviceDAOImpl implements DeviceDAO {
     }
 
     public static DeviceDAO getInstance() {
+
         return dao;
     }
 
     @Override
     public void registerDevice(Device device) throws SQLException {
+
         Connection connection = IdentityDatabaseUtil.getDBConnection();
         PreparedStatement preparedStatement = null;
         preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQUERIES.REGISTER_DEVICE);
@@ -76,6 +79,7 @@ public class DeviceDAOImpl implements DeviceDAO {
 
     @Override
     public void unregisterDevice(String deviceId) throws SQLException {
+
         Connection connection = IdentityDatabaseUtil.getDBConnection();
         PreparedStatement preparedStatement = null;
 
@@ -87,6 +91,7 @@ public class DeviceDAOImpl implements DeviceDAO {
 
     @Override
     public void editDeviceName(String deviceId, String newDeviceName) throws SQLException {
+
         Connection connection = IdentityDatabaseUtil.getDBConnection();
         PreparedStatement preparedStatement = null;
 
@@ -94,7 +99,6 @@ public class DeviceDAOImpl implements DeviceDAO {
         preparedStatement.setString(1, newDeviceName);
         preparedStatement.setString(2, deviceId);
         preparedStatement.execute();
-
 
         IdentityDatabaseUtil.closeAllConnections(connection, null, preparedStatement);
 
@@ -126,7 +130,6 @@ public class DeviceDAOImpl implements DeviceDAO {
             }
         }
 
-
         IdentityDatabaseUtil.closeAllConnections(connection, null, preparedStatement);
 
         return device;
@@ -135,6 +138,7 @@ public class DeviceDAOImpl implements DeviceDAO {
     @Override
     public List<Device> listDevices(String username, String userStore, String tenantDomain)
             throws SQLException, UserStoreException {
+
         String userId = getUserIdFromUsername(username);
         List<Device> devices = new ArrayList<>();
         Connection connection = IdentityDatabaseUtil.getDBConnection();
@@ -166,6 +170,7 @@ public class DeviceDAOImpl implements DeviceDAO {
 
     @Override
     public String getPublicKey(String deviceId) throws SQLException {
+
         Connection connection = IdentityDatabaseUtil.getDBConnection();
         PreparedStatement preparedStatement = null;
         String publicKey = null;
@@ -180,12 +185,12 @@ public class DeviceDAOImpl implements DeviceDAO {
 
         }
 
-
         IdentityDatabaseUtil.closeAllConnections(connection, null, preparedStatement);
         return publicKey;
     }
 
     private String getUserIdFromUsername(String username) throws UserStoreException {
+
         AbstractUserStoreManager userStoreManager = (AbstractUserStoreManager) CarbonContext.
                 getThreadLocalCarbonContext().getUserRealm().getUserStoreManager();
         return userStoreManager.getUserIDFromUserName(username);
@@ -193,6 +198,7 @@ public class DeviceDAOImpl implements DeviceDAO {
     }
 
     public User getAuthenticatedUser() throws PushDeviceHandlerClientException {
+
         User user = User.getUserFromUserName(CarbonContext.getThreadLocalCarbonContext().getUsername());
         if (user.getUserName() == null) {
             log.error("Error while retrieving data of the user");
@@ -203,10 +209,12 @@ public class DeviceDAOImpl implements DeviceDAO {
     }
 
     private Date timestampToDate(Timestamp timestamp) {
+
         return new Date(timestamp.getTime());
     }
 
     private Timestamp dateToTimestamp(Date date) {
+
         return new Timestamp(date.getTime());
     }
 }
