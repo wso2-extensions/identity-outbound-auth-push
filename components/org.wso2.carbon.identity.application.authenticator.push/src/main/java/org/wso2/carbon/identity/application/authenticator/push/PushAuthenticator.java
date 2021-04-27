@@ -98,7 +98,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                 get(context.getCurrentStep() - 1).getAuthenticatedUser();
         String sessionDataKey = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
         try {
-            ArrayList<Device> deviceList;
+            List<Device> deviceList;
             deviceList = deviceHandler.listDevices(user.getUserName(), user.getUserStoreDomain(),
                     user.getTenantDomain());
             request.getSession().setAttribute(PushAuthenticatorConstants.DEVICES_LIST, deviceList);
