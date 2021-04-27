@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -32,7 +32,7 @@ public class RegistrationRequestChallengeCacheEntry extends CacheEntry {
     private String tenantDomain;
     private boolean registered;
 
-    public RegistrationRequestChallengeCacheEntry(UUID challenge, String username, //String userStore,
+    public RegistrationRequestChallengeCacheEntry(UUID challenge, String username,
                                                   String tenantDomain, boolean registered) {
 
         this.challenge = challenge;

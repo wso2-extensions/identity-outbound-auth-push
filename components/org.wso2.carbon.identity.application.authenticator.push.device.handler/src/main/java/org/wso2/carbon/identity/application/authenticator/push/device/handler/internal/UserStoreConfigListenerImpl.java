@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -18,15 +18,13 @@
 
 package org.wso2.carbon.identity.application.authenticator.push.device.handler.internal;
 
-
 import org.wso2.carbon.identity.user.store.configuration.listener.AbstractUserStoreConfigListener;
 import org.wso2.carbon.user.api.UserStoreException;
 
 /**
- *Operations to be carried out if changes are made to the userstore .
+ * Operations to be carried out if changes are made to the userstore .
  */
 public class UserStoreConfigListenerImpl extends AbstractUserStoreConfigListener {
-
 
     @Override
     public void onUserStorePreDelete(int tenantId, String userStoreName) throws UserStoreException {

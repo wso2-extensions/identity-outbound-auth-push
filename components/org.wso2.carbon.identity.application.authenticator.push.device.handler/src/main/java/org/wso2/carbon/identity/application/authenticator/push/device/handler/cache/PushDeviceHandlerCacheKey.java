@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -29,15 +29,18 @@ public class PushDeviceHandlerCacheKey extends CacheKey {
     private String requestId;
 
     public PushDeviceHandlerCacheKey(String requestId) {
+
         this.requestId = requestId;
     }
 
     public String getRequestId() {
+
         return requestId;
     }
 
     @Override
     public boolean equals(Object o) {
+
         if (!(o instanceof PushDeviceHandlerCacheKey)) {
             return false;
         }
@@ -46,6 +49,7 @@ public class PushDeviceHandlerCacheKey extends CacheKey {
 
     @Override
     public int hashCode() {
+
         return requestId.hashCode();
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -41,6 +41,7 @@ public interface DeviceHandler {
 
     /**
      * Register a new device
+     *
      * @param registrationRequest HTTP request for device registration
      * @return registered device
      * @throws IdentityException
@@ -68,7 +69,7 @@ public interface DeviceHandler {
     /**
      * Edit the name of a registered device
      *
-     * @param deviceId ID of the device to update the name of
+     * @param deviceId      ID of the device to update the name of
      * @param newDeviceName New name for the device
      * @throws PushDeviceHandlerServerException
      */
@@ -87,8 +88,8 @@ public interface DeviceHandler {
     /**
      * Get the list of registered devices for a given user
      *
-     * @param username username of the authenticated user
-     * @param userStore userstore of the authenticated user
+     * @param username     username of the authenticated user
+     * @param userStore    userstore of the authenticated user
      * @param tenantDomain tenant domain of the authenticated user
      * @return list of devices for the authenticated user
      * @throws PushDeviceHandlerServerException
@@ -100,6 +101,7 @@ public interface DeviceHandler {
 
     /**
      * Get discovery data for a new device registration
+     *
      * @return discovery data
      */
     DiscoveryData getDiscoveryData();

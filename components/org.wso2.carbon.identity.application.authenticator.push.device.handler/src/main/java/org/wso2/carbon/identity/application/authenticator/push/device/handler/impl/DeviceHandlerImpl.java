@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -123,7 +123,7 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
             DeviceDAOImpl.getInstance().unregisterDevice(deviceId);
         } catch (SQLException e) {
             String errorMessage = String.format("Error occurred when trying to remove device: %s from the"
-                            + " database.", deviceId);
+                    + " database.", deviceId);
             throw new PushDeviceHandlerServerException(errorMessage, e);
         }
 
@@ -156,7 +156,7 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
             return DeviceDAOImpl.getInstance().getDevice(deviceId);
         } catch (SQLException e) {
             String errorMessage = String.format("Error occurred when trying to get device: %s from the database.",
-                     deviceId);
+                    deviceId);
             throw new PushDeviceHandlerServerException(errorMessage, e);
         }
     }
@@ -169,7 +169,7 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
             return DeviceDAOImpl.getInstance().listDevices(username, userStore, tenantDomain);
         } catch (SQLException e) {
             String errorMessage = String.format("Error occurred when trying to get the device list for user: %s"
-                            + "from the database.", username);
+                    + "from the database.", username);
             throw new PushDeviceHandlerServerException(errorMessage, e);
         }
     }
@@ -236,15 +236,15 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
     /**
      * Verify the signature using the public key for the registered device
      *
-     * @param signature signature of the signed challenge
-     * @param pushId pushID of the device
+     * @param signature    signature of the signed challenge
+     * @param pushId       pushID of the device
      * @param publicKeyStr public key for the registered device
-     * @param cacheEntry cached data
+     * @param cacheEntry   cached data
      * @return boolean verification
      * @throws NoSuchAlgorithmException Invalid algorithm
-     * @throws InvalidKeySpecException Invalid key specification
-     * @throws InvalidKeyException Invalid key
-     * @throws SignatureException Signature object is not initialised properly
+     * @throws InvalidKeySpecException  Invalid key specification
+     * @throws InvalidKeyException      Invalid key
+     * @throws SignatureException       Signature object is not initialised properly
      */
     private boolean verifySignature(String signature, String pushId, String publicKeyStr,
                                     RegistrationRequestChallengeCacheEntry cacheEntry)
@@ -265,7 +265,7 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
      * Get the user ID from the username
      *
      * @param username username of the user
-     * @param realm user realm for the tenant
+     * @param realm    user realm for the tenant
      * @return user ID
      * @throws UserStoreException userstore exception
      */
