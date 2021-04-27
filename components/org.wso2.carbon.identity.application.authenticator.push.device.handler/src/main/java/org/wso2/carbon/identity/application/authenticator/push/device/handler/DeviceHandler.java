@@ -39,21 +39,78 @@ import java.util.ArrayList;
  */
 public interface DeviceHandler {
 
+    /**
+     * Register a new device
+     * @param registrationRequest HTTP request for device registration
+     * @return registered device
+     * @throws IdentityException
+     * @throws UserStoreException
+     * @throws JsonProcessingException
+     * @throws InvalidKeyException
+     * @throws NoSuchAlgorithmException
+     * @throws SignatureException
+     * @throws UnsupportedEncodingException
+     * @throws InvalidKeySpecException
+     */
     Device registerDevice(RegistrationRequest registrationRequest) throws
             IdentityException, UserStoreException, JsonProcessingException, InvalidKeyException,
             NoSuchAlgorithmException, SignatureException, UnsupportedEncodingException, InvalidKeySpecException;
 
+    /**
+     * Unregister a device
+     *
+     * @param deviceId ID of the device to unregister
+     * @throws PushDeviceHandlerClientException
+     * @throws PushDeviceHandlerServerException
+     */
     void unregisterDevice(String deviceId) throws PushDeviceHandlerClientException, PushDeviceHandlerServerException;
 
+    /**
+     * Edit the name of a registered device
+     *
+     * @param deviceId ID of the device to update the name of
+     * @param newDeviceName New name for the device
+     * @throws PushDeviceHandlerServerException
+     */
     void editDeviceName(String deviceId, String newDeviceName) throws PushDeviceHandlerServerException;
 
+    /**
+     * Get a device by the device ID
+     *
+     * @param deviceId ID of the registered device
+     * @return the device
+     * @throws PushDeviceHandlerClientException
+     * @throws PushDeviceHandlerServerException
+     */
     Device getDevice(String deviceId) throws PushDeviceHandlerClientException, PushDeviceHandlerServerException;
 
+    /**
+     * Get the list of registered devices for a given user
+     *
+     * @param username username of the authenticated user
+     * @param userStore userstore of the authenticated user
+     * @param tenantDomain tenant domain of the authenticated user
+     * @return list of devices for the authenticated user
+     * @throws PushDeviceHandlerServerException
+     * @throws PushDeviceHandlerClientException
+     * @throws UserStoreException
+     */
     ArrayList<Device> listDevices(String username, String userStore, String tenantDomain)
             throws PushDeviceHandlerServerException, PushDeviceHandlerClientException, UserStoreException;
 
+    /**
+     * Get discovery data for a new device registration
+     * @return discovery data
+     */
     DiscoveryData getDiscoveryData();
 
+    /**
+     * Get public key for registered device
+     *
+     * @param deviceId ID of the registered device
+     * @return Public key string
+     * @throws PushDeviceHandlerServerException
+     */
     String getPublicKey(String deviceId) throws PushDeviceHandlerServerException;
 
 }
