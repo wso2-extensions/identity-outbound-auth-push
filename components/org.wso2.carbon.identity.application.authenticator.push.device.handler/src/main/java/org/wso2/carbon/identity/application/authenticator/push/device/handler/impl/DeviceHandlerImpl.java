@@ -59,7 +59,7 @@ import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Base64;
 import java.util.Map;
 import java.util.UUID;
@@ -167,7 +167,7 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
     }
 
     @Override
-    public ArrayList<Device> listDevices(String username, String userStore, String tenantDomain)
+    public List<Device> listDevices(String username, String userStore, String tenantDomain)
             throws PushDeviceHandlerServerException, PushDeviceHandlerClientException, UserStoreException {
 
         try {

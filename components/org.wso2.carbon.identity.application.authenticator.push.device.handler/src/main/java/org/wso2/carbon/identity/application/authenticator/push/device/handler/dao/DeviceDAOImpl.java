@@ -39,9 +39,10 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
- * This class implements DeviecDAO interface .
+ * This class implements DeviceDAO interface .
  */
 public class DeviceDAOImpl implements DeviceDAO {
     private static final Log log = LogFactory.getLog(DeviceDAOImpl.class);
@@ -133,10 +134,10 @@ public class DeviceDAOImpl implements DeviceDAO {
         return device;
     }
 
-    public ArrayList<Device> listDevices(String username, String userStore, String tenantDomain) throws PushDeviceHandlerServerException,
+    public List<Device> listDevices(String username, String userStore, String tenantDomain) throws PushDeviceHandlerServerException,
             PushDeviceHandlerClientException, SQLException, IOException, UserStoreException {
         String userId = getUserIdFromUsername(username);
-        ArrayList<Device> devices = new ArrayList<>();
+        List<Device> devices = new ArrayList<>();
         Connection connection = IdentityDatabaseUtil.getDBConnection();
         PreparedStatement preparedStatement = null;
         Device device = null;

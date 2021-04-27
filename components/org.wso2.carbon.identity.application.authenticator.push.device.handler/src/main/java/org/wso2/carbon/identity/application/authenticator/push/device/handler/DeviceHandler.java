@@ -32,7 +32,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This interface contains the operations of the DeviceHandlerImpl class.
@@ -95,7 +95,7 @@ public interface DeviceHandler {
      * @throws PushDeviceHandlerClientException
      * @throws UserStoreException
      */
-    ArrayList<Device> listDevices(String username, String userStore, String tenantDomain)
+    List<Device> listDevices(String username, String userStore, String tenantDomain)
             throws PushDeviceHandlerServerException, PushDeviceHandlerClientException, UserStoreException;
 
     /**
