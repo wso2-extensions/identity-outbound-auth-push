@@ -91,9 +91,9 @@ public class FirebasePushNotificationSenderImpl implements PushNotificationSende
 
             JSONObject biometricNotificationInfo = new JSONObject();
             biometricNotificationInfo.put(BiometricAuthenticatorConstants.BODY, message);
-            biometricNotificationInfo.put(BiometricAuthenticatorConstants.CONTENT_AVAILABLE, true);
-            biometricNotificationInfo.put(BiometricAuthenticatorConstants.PRIORITY,
-                    BiometricAuthenticatorConstants.HIGH);
+//            biometricNotificationInfo.put(BiometricAuthenticatorConstants.CONTENT_AVAILABLE, true);
+//            biometricNotificationInfo.put(BiometricAuthenticatorConstants.PRIORITY,
+//                    BiometricAuthenticatorConstants.HIGH);
 
             JSONObject biometricNotificationData = new JSONObject();
             biometricNotificationData.put(BiometricAuthenticatorConstants.DEVICE_ID, deviceId);
@@ -104,9 +104,9 @@ public class FirebasePushNotificationSenderImpl implements PushNotificationSende
             // specifically open a different activity in android app except the default main activity.
             biometricNotificationData.put(BiometricAuthenticatorConstants.CLICK_ACTION,
                     BiometricAuthenticatorConstants.DISPLAY_ANDROID_ACTIVITY);
-            biometricNotificationData.put(BiometricAuthenticatorConstants.CONTENT_AVAILABLE, true);
-            biometricNotificationData.put(BiometricAuthenticatorConstants.PRIORITY,
-                    BiometricAuthenticatorConstants.HIGH);
+//            biometricNotificationData.put(BiometricAuthenticatorConstants.CONTENT_AVAILABLE, true);
+//            biometricNotificationData.put(BiometricAuthenticatorConstants.PRIORITY,
+//                    BiometricAuthenticatorConstants.HIGH);
 
             JSONObject json = new JSONObject();
             json.put(BiometricAuthenticatorConstants.TO, pushId.trim());

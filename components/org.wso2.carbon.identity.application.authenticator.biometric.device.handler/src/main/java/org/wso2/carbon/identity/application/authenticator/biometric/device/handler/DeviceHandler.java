@@ -52,7 +52,9 @@ public interface DeviceHandler {
 
     Device getDevice(String deviceId) throws IOException, BiometricDeviceHandlerClientException, SQLException, BiometricdeviceHandlerServerException;
 
-    ArrayList<Device> lisDevices(String username, String userStore, String tenantDomain) throws BiometricdeviceHandlerServerException, BiometricDeviceHandlerClientException, SQLException, UserStoreException, IOException;
+    ArrayList<Device> listDevices(String username, String userStore, String tenantDomain) throws BiometricdeviceHandlerServerException, BiometricDeviceHandlerClientException, SQLException, UserStoreException, IOException;
+
+    DiscoveryData getDiscoveryData(String username, String userStore, String tenantDomain);
 
     DiscoveryData getDiscoveryData();
 

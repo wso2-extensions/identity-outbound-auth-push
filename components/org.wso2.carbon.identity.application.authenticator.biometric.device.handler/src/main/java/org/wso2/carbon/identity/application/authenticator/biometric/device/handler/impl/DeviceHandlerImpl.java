@@ -127,7 +127,7 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
     }
 
     @Override
-    public ArrayList<Device> lisDevices(String username, String userStore, String tenantDomain)
+    public ArrayList<Device> listDevices(String username, String userStore, String tenantDomain)
             throws BiometricdeviceHandlerServerException,
             BiometricDeviceHandlerClientException, SQLException, UserStoreException, IOException {
         return DeviceDAOImpl.getInstance().listDevices(username, userStore, tenantDomain);
@@ -135,16 +135,22 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
 
     @Override
     public DiscoveryData getDiscoveryData() {
+
+        return null;
+    }
+
+    @Override
+    public DiscoveryData getDiscoveryData(String username, String userStore, String tenantDomain) {
         if (log.isDebugEnabled()) {
             log.debug("Retrieving data to generate QR code");
         }
         String deviceId = UUID.randomUUID().toString();
         User user = getAuthenticatedUser();
-        String tenantDomain = user.getTenantDomain();
+        tenantDomain = user.getTenantDomain();
         UUID challenge = UUID.randomUUID();
-        String registrationUrl = "https://192.168.8.153:9443" +  "/t/" +
+        String registrationUrl = "https://192.168.1.112:9443" +  "/t/" +
                 user.getTenantDomain() + "/api/users/v1/me/biometricdevice";
-        String authUrl = "https://192.168.8.153:9443/biometric-auth";
+        String authUrl = "https://192.168.1.112:9443/biometric-auth";
         RegistrationRequestChallengeCache.getInstance().addToCacheByRequestId
                 (new BiometricDeviceHandlerCacheKey(deviceId), new RegistrationRequestChallengeCacheEntry(challenge,
                         user.getUserName(), user.getUserStoreDomain(), user.getTenantDomain(), false));
@@ -169,10 +175,10 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
             throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException {
 
         byte[] signatureBytes = Base64.getDecoder().decode(signature);
-        Signature sign = Signature.getInstance("SHA256withDSA");
+        Signature sign = Signature.getInstance("SHA256withRSA");
         byte[] publicKeyData = Base64.getDecoder().decode(publicKeyStr);
         X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKeyData);
-        KeyFactory kf = KeyFactory.getInstance("DSA");
+        KeyFactory kf = KeyFactory.getInstance("RSA");
         PublicKey publicKey = kf.generatePublic(spec);
         sign.initVerify(publicKey);
         sign.update(cacheEntry.getChallenge().toString().getBytes());
