@@ -32,7 +32,7 @@ public class DeviceCache extends
 
     private static volatile DeviceCache cache;
 
-    public DeviceCache() {
+    private DeviceCache() {
 
         super(PUSH_DEVICE_CACHE_NAME, true);
     }
