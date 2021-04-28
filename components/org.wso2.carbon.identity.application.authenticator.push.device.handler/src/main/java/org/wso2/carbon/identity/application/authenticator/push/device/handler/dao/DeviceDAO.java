@@ -26,15 +26,33 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- * This class defines the database related operations .
+ * This class defines the database related operations
  */
-
 public interface DeviceDAO {
 
+    /**
+     * Registers a new device by storing in the database
+     *
+     * @param device Object containing data for the device
+     * @throws SQLException
+     */
     void registerDevice(Device device) throws SQLException;
 
+    /**
+     * Unregisters a device by removing it from the database
+     *
+     * @param deviceId Unique ID for the device to be deleted
+     * @throws SQLException
+     */
     void unregisterDevice(String deviceId) throws SQLException;
 
+    /**
+     * Update the properties of a given device
+     *
+     * @param deviceId      Unique ID for the device to be deleted
+     * @param newDeviceName New name for the given device
+     * @throws SQLException
+     */
     void editDeviceName(String deviceId, String newDeviceName) throws SQLException;
 
     Device getDevice(String deviceId) throws PushDeviceHandlerServerException, SQLException;
@@ -42,9 +60,21 @@ public interface DeviceDAO {
     List<Device> listDevices(String username, String userStore, String tenantDomain)
             throws SQLException, UserStoreException;
 
+    /**
+     * Delete all the devices for the given user from the database
+     *
+     * @param userId    Unique ID to identify the user
+     * @param userStore
+     */
     void deleteAllDevicesOfUser(int userId, String userStore);
 
+    /**
+     * Get the public key for a specific device from the database
+     *
+     * @param deviceId Unique ID to identify the device
+     * @return Public Key string
+     * @throws SQLException
+     */
     String getPublicKey(String deviceId) throws SQLException;
 
-    ;
 }
