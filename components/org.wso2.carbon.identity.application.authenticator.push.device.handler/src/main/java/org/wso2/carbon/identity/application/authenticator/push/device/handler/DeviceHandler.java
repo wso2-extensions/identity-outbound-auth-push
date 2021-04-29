@@ -18,20 +18,12 @@
 
 package org.wso2.carbon.identity.application.authenticator.push.device.handler;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerClientException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerServerException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.Device;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.RegistrationDiscoveryData;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.RegistrationRequest;
-import org.wso2.carbon.identity.base.IdentityException;
-import org.wso2.carbon.user.api.UserStoreException;
 
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SignatureException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 
 /**
@@ -44,18 +36,11 @@ public interface DeviceHandler {
      *
      * @param registrationRequest HTTP request for device registration
      * @return registered device
-     * @throws IdentityException
-     * @throws UserStoreException
-     * @throws JsonProcessingException
-     * @throws InvalidKeyException
-     * @throws NoSuchAlgorithmException
-     * @throws SignatureException
-     * @throws UnsupportedEncodingException
-     * @throws InvalidKeySpecException
+     * @throws PushDeviceHandlerServerException
+     * @throws PushDeviceHandlerClientException
      */
-    Device registerDevice(RegistrationRequest registrationRequest) throws
-            IdentityException, UserStoreException, JsonProcessingException, InvalidKeyException,
-            NoSuchAlgorithmException, SignatureException, UnsupportedEncodingException, InvalidKeySpecException;
+    Device registerDevice(RegistrationRequest registrationRequest)
+            throws PushDeviceHandlerServerException, PushDeviceHandlerClientException;
 
     /**
      * Unregister a device
@@ -93,11 +78,9 @@ public interface DeviceHandler {
      * @param tenantDomain tenant domain of the authenticated user
      * @return list of devices for the authenticated user
      * @throws PushDeviceHandlerServerException
-     * @throws PushDeviceHandlerClientException
-     * @throws UserStoreException
      */
     List<Device> listDevices(String username, String userStore, String tenantDomain)
-            throws PushDeviceHandlerServerException, PushDeviceHandlerClientException, UserStoreException;
+            throws PushDeviceHandlerServerException;
 
     /**
      * Get discovery data for a new device registration
