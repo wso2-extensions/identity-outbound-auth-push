@@ -22,7 +22,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerClientException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerServerException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.Device;
-import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.DiscoveryData;
+import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.RegistrationDiscoveryData;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.RegistrationRequest;
 import org.wso2.carbon.identity.base.IdentityException;
 import org.wso2.carbon.user.api.UserStoreException;
@@ -104,7 +104,7 @@ public interface DeviceHandler {
      *
      * @return discovery data
      */
-    DiscoveryData getDiscoveryData();
+    RegistrationDiscoveryData getRegistrationDiscoveryData();
 
     /**
      * Get public key for registered device

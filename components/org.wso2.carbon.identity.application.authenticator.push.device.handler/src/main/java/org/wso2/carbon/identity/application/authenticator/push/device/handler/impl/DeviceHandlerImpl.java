@@ -35,7 +35,7 @@ import org.wso2.carbon.identity.application.authenticator.push.device.handler.da
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerClientException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerServerException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.Device;
-import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.DiscoveryData;
+import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.RegistrationDiscoveryData;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.RegistrationRequest;
 import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.base.IdentityException;
@@ -175,7 +175,7 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
     }
 
     @Override
-    public DiscoveryData getDiscoveryData() {
+    public RegistrationDiscoveryData getRegistrationDiscoveryData() {
 
         User user = getAuthenticatedUser();
 
@@ -205,7 +205,7 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
         RegistrationRequestChallengeCache.getInstance().addToCacheByRequestId
                 (new PushDeviceHandlerCacheKey(deviceId), new RegistrationRequestChallengeCacheEntry(challenge,
                         user.getUserName(), user.getTenantDomain(), false));
-        return new DiscoveryData(deviceId, user.getUserName(), firstName, lastName, tenantDomain, host, basePath,
+        return new RegistrationDiscoveryData(deviceId, user.getUserName(), firstName, lastName, tenantDomain, host, basePath,
                 registrationEndpoint, removeDeviceEndpoint, authenticationEndpoint, challenge);
     }
 

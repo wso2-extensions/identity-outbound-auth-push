@@ -31,7 +31,7 @@ import org.wso2.carbon.identity.application.authenticator.push.device.handler.ca
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.dao.DeviceDAOImpl;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.impl.DeviceHandlerImpl;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.Device;
-import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.DiscoveryData;
+import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.RegistrationDiscoveryData;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.RegistrationRequest;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.user.core.common.User;
@@ -51,7 +51,7 @@ import static org.powermock.api.mockito.PowerMockito.*;
 @PrepareForTest({DeviceDAOImpl.class, PushDeviceHandlerCacheKey.class, DeviceCache.class,
         FrameworkUtils.class, MultitenantUtils.class, IdentityTenantUtil.class, DeviceCacheEntry.class,
         RegistrationRequestChallengeCache.class, RegistrationRequestChallengeCacheEntry.class,
-        DeviceDAOImpl.class, Device.class, DiscoveryData.class,
+        DeviceDAOImpl.class, Device.class, RegistrationDiscoveryData.class,
         RegistrationRequest.class})
 @PowerMockIgnore({"javax.crypto.*" })
 

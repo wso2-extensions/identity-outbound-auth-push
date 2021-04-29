@@ -24,7 +24,7 @@ import java.util.UUID;
 /**
  * This class contains the attributes sent to generate the qr code .
  */
-public class DiscoveryData implements Serializable {
+public class RegistrationDiscoveryData implements Serializable {
 
     String deviceId;
     String username;
@@ -38,9 +38,9 @@ public class DiscoveryData implements Serializable {
     String authenticationEndpoint;
     UUID challenge;
 
-    public DiscoveryData(String deviceId, String username, String firstName, String lastName, String tenantDomain,
-                         String host, String basePath, String registrationEndpoint, String removeDeviceEndpoint,
-                         String authenticationEndpoint, UUID challenge) {
+    public RegistrationDiscoveryData(String deviceId, String username, String firstName, String lastName,
+                                     String tenantDomain, String host, String basePath, String registrationEndpoint,
+                                     String removeDeviceEndpoint, String authenticationEndpoint, UUID challenge) {
 
         this.deviceId = deviceId;
         this.username = username;
@@ -55,7 +55,7 @@ public class DiscoveryData implements Serializable {
         this.challenge = challenge;
     }
 
-    public DiscoveryData() {
+    public RegistrationDiscoveryData() {
 
     }
 
