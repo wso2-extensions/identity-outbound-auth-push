@@ -73,11 +73,11 @@ public interface DeviceHandler {
     /**
      * Get the list of registered devices for a given user
      *
-     * @param username username of the authenticated user
-     * @return list of devices for the authenticated user
+     * @param userId Unique ID of the authenticated user
+     * @return list of devices of the authenticated user
      * @throws PushDeviceHandlerServerException
      */
-    List<Device> listDevices(String username) throws PushDeviceHandlerServerException;
+    List<Device> listDevices(String userId) throws PushDeviceHandlerServerException;
 
     /**
      * Get discovery data for a new device registration

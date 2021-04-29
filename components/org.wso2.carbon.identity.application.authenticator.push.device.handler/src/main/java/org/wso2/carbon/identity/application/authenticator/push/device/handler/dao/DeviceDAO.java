@@ -68,13 +68,11 @@ public interface DeviceDAO {
     /**
      * Get the list of devices for the user using the username
      *
-     * @param username username of the user requesting the device list
+     * @param userId Unique ID of the user requesting the device list
      * @return
      * @throws SQLException
-     * @throws UserStoreException
      */
-    List<Device> listDevices(String username)
-            throws SQLException, UserStoreException;
+    List<Device> listDevices(String userId) throws SQLException;
 
     /**
      * Delete all the devices for the given user from the database

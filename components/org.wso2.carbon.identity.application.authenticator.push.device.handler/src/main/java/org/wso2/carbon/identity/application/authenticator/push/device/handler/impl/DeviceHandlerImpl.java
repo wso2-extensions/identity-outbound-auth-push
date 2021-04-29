@@ -172,18 +172,14 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
     }
 
     @Override
-    public List<Device> listDevices(String username)
-            throws PushDeviceHandlerServerException {
+    public List<Device> listDevices(String userId) throws PushDeviceHandlerServerException {
 
         try {
-            return DeviceDAOImpl.getInstance().listDevices(username);
+            return DeviceDAOImpl.getInstance().listDevices(userId);
         } catch (SQLException e) {
-            String errorMessage = String.format("Error occurred when trying to get the device list for user: %s"
-                    + "from the database.", username);
+            String errorMessage = String.format("Error occurred when trying to get the device list for user with ID: %s"
+                    + "from the database.", userId);
             throw new PushDeviceHandlerServerException(errorMessage, e);
-        } catch (UserStoreException e) {
-            throw new PushDeviceHandlerServerException("Error occurred when trying to get the device list for user: "
-                    + username + ".");
         }
     }
 

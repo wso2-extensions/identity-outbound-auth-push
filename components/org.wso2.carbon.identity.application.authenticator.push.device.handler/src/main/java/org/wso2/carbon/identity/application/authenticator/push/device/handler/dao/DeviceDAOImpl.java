@@ -20,9 +20,7 @@ package org.wso2.carbon.identity.application.authenticator.push.device.handler.d
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.DeviceHandlerConstants;
-import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerClientException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerServerException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.Device;
 import org.wso2.carbon.identity.application.common.model.User;
@@ -124,9 +122,10 @@ public class DeviceDAOImpl implements DeviceDAO {
                 device.setRegistrationTime(timestampToDate(resultSet.getTimestamp(6)));
                 device.setLastUsedTime(timestampToDate(resultSet.getTimestamp(7)));
             } else {
-                log.error("The requested device is not registered in the system");
                 IdentityDatabaseUtil.closeAllConnections(connection, null, preparedStatement);
-                throw new PushDeviceHandlerServerException("Device Not found.");
+                String errorMessage =
+                        String.format("The requested device: %s is not registered in the system.", deviceId);
+                throw new PushDeviceHandlerServerException(errorMessage);
             }
         }
 
@@ -136,14 +135,12 @@ public class DeviceDAOImpl implements DeviceDAO {
     }
 
     @Override
-    public List<Device> listDevices(String username)
-            throws SQLException, UserStoreException {
+    public List<Device> listDevices(String userId) throws SQLException {
 
-        String userId = getUserIdFromUsername(username);
         List<Device> devices = new ArrayList<>();
         Connection connection = IdentityDatabaseUtil.getDBConnection();
-        PreparedStatement preparedStatement = null;
-        Device device = null;
+        PreparedStatement preparedStatement;
+        Device device;
         preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQUERIES.LIST_DEVICES);
         preparedStatement.setString(1, userId);
         ResultSet resultSet = preparedStatement.executeQuery();
@@ -189,30 +186,23 @@ public class DeviceDAOImpl implements DeviceDAO {
         return publicKey;
     }
 
-    private String getUserIdFromUsername(String username) throws UserStoreException {
-
-        AbstractUserStoreManager userStoreManager = (AbstractUserStoreManager) CarbonContext.
-                getThreadLocalCarbonContext().getUserRealm().getUserStoreManager();
-        return userStoreManager.getUserIDFromUserName(username);
-
-    }
-
-    public User getAuthenticatedUser() throws PushDeviceHandlerClientException {
-
-        User user = User.getUserFromUserName(CarbonContext.getThreadLocalCarbonContext().getUsername());
-        if (user.getUserName() == null) {
-            log.error("Error while retrieving data of the user");
-            throw new PushDeviceHandlerClientException("Authenticated user could not be retrieved");
-        }
-        user.setTenantDomain(CarbonContext.getThreadLocalCarbonContext().getTenantDomain());
-        return user;
-    }
-
+    /**
+     * Convert timestamp to date type
+     *
+     * @param timestamp Timestamp object
+     * @return Date object
+     */
     private Date timestampToDate(Timestamp timestamp) {
 
         return new Date(timestamp.getTime());
     }
 
+    /**
+     * Convert date to timestamp type
+     *
+     * @param date Date object
+     * @return Timestamp object
+     */
     private Timestamp dateToTimestamp(Date date) {
 
         return new Timestamp(date.getTime());
