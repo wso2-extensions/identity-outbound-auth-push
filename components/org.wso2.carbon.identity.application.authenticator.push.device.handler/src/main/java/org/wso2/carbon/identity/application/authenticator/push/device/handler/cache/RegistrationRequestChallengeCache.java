@@ -29,13 +29,13 @@ import org.wso2.carbon.utils.CarbonUtils;
 public class RegistrationRequestChallengeCache extends
         BaseCache<PushDeviceHandlerCacheKey, RegistrationRequestChallengeCacheEntry> {
 
-    private static final String Registration_Request_Challenge_Cache = "RegistrationRequestChallengeCache";
+    private static final String REGISTRATION_REQUEST_CHALLENGE_CACHE = "RegistrationRequestChallengeCache";
 
     private static volatile RegistrationRequestChallengeCache cache;
 
     public RegistrationRequestChallengeCache() {
 
-        super(Registration_Request_Challenge_Cache, true);
+        super(REGISTRATION_REQUEST_CHALLENGE_CACHE, true);
     }
 
     public static RegistrationRequestChallengeCache getInstance() {
@@ -51,18 +51,18 @@ public class RegistrationRequestChallengeCache extends
 
     private void storeToSessionStore(String id, RegistrationRequestChallengeCacheEntry entry) {
 
-        SessionDataStore.getInstance().storeSessionData(id, Registration_Request_Challenge_Cache, entry);
+        SessionDataStore.getInstance().storeSessionData(id, REGISTRATION_REQUEST_CHALLENGE_CACHE, entry);
     }
 
     private RegistrationRequestChallengeCacheEntry getFromSessionStore(String id) {
 
         return (RegistrationRequestChallengeCacheEntry) SessionDataStore.getInstance().
-                getSessionData(id, Registration_Request_Challenge_Cache);
+                getSessionData(id, REGISTRATION_REQUEST_CHALLENGE_CACHE);
     }
 
     private void clearFromSessionStore(String id) {
 
-        SessionDataStore.getInstance().clearSessionData(id, Registration_Request_Challenge_Cache);
+        SessionDataStore.getInstance().clearSessionData(id, REGISTRATION_REQUEST_CHALLENGE_CACHE);
     }
 
     public void clearCacheEntryByRequestId(PushDeviceHandlerCacheKey key) {
