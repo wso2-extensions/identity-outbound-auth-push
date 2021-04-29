@@ -201,8 +201,14 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
         }
 
         String deviceId = UUID.randomUUID().toString();
-        String firstName = userClaims.get(DeviceHandlerConstants.GIVEN_NAME_USER_CLAIM);
-        String lastName = userClaims.get(DeviceHandlerConstants.LAST_NAME_USER_CLAIM);
+
+        String firstName = null;
+        String lastName = null;
+        if (userClaims != null) {
+            firstName = userClaims.get(DeviceHandlerConstants.GIVEN_NAME_USER_CLAIM);
+            lastName = userClaims.get(DeviceHandlerConstants.LAST_NAME_USER_CLAIM);
+        }
+
         String tenantDomain = user.getTenantDomain();
         String host = IdentityUtil.getServerURL(null, false, false);
         String basePath = "/t/" + user.getTenantDomain() + "/api/users/v1/me";
@@ -213,8 +219,8 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
         RegistrationRequestChallengeCache.getInstance().addToCacheByRequestId
                 (new PushDeviceHandlerCacheKey(deviceId), new RegistrationRequestChallengeCacheEntry(challenge,
                         user.getUserName(), user.getTenantDomain(), false));
-        return new RegistrationDiscoveryData(deviceId, user.getUserName(), firstName, lastName, tenantDomain, host, basePath,
-                registrationEndpoint, removeDeviceEndpoint, authenticationEndpoint, challenge);
+        return new RegistrationDiscoveryData(deviceId, user.getUserName(), firstName, lastName, tenantDomain, host,
+                basePath, registrationEndpoint, removeDeviceEndpoint, authenticationEndpoint, challenge);
     }
 
     @Override
@@ -259,10 +265,10 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
             throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException {
 
         byte[] signatureBytes = Base64.getDecoder().decode(signature);
-        Signature sign = Signature.getInstance("SHA256withRSA");
+        Signature sign = Signature.getInstance(DeviceHandlerConstants.HASHING_ALGORITHM);
         byte[] publicKeyData = Base64.getDecoder().decode(publicKeyStr);
         X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKeyData);
-        KeyFactory kf = KeyFactory.getInstance("RSA");
+        KeyFactory kf = KeyFactory.getInstance(DeviceHandlerConstants.SIGNATURE_ALGORITHM);
         PublicKey publicKey = kf.generatePublic(spec);
         sign.initVerify(publicKey);
         sign.update((cacheEntry.getChallenge().toString() + "." + pushId).getBytes());

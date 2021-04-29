@@ -40,6 +40,9 @@ public class DeviceHandlerConstants {
     public static final String GIVEN_NAME_USER_CLAIM = "http://wso2.org/claims/givenname";
     public static final String LAST_NAME_USER_CLAIM = "http://wso2.org/claims/lastname";
 
+    public static final String HASHING_ALGORITHM = "SHA256withRSA";
+    public static final String SIGNATURE_ALGORITHM = "RSA";
+
     /**
      * This class contains the SQL queries used in the DAO class.
      */
