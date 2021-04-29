@@ -172,11 +172,11 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
     }
 
     @Override
-    public List<Device> listDevices(String username, String userStore, String tenantDomain)
+    public List<Device> listDevices(String username)
             throws PushDeviceHandlerServerException {
 
         try {
-            return DeviceDAOImpl.getInstance().listDevices(username, userStore, tenantDomain);
+            return DeviceDAOImpl.getInstance().listDevices(username);
         } catch (SQLException e) {
             String errorMessage = String.format("Error occurred when trying to get the device list for user: %s"
                     + "from the database.", username);

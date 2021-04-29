@@ -55,9 +55,25 @@ public interface DeviceDAO {
      */
     void editDeviceName(String deviceId, String newDeviceName) throws SQLException;
 
+    /**
+     * Get the device object using the device class
+     *
+     * @param deviceId Unique ID of the required device
+     * @return
+     * @throws PushDeviceHandlerServerException
+     * @throws SQLException
+     */
     Device getDevice(String deviceId) throws PushDeviceHandlerServerException, SQLException;
 
-    List<Device> listDevices(String username, String userStore, String tenantDomain)
+    /**
+     * Get the list of devices for the user using the username
+     *
+     * @param username username of the user requesting the device list
+     * @return
+     * @throws SQLException
+     * @throws UserStoreException
+     */
+    List<Device> listDevices(String username)
             throws SQLException, UserStoreException;
 
     /**

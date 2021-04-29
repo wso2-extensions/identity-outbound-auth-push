@@ -136,7 +136,7 @@ public class DeviceDAOImpl implements DeviceDAO {
     }
 
     @Override
-    public List<Device> listDevices(String username, String userStore, String tenantDomain)
+    public List<Device> listDevices(String username)
             throws SQLException, UserStoreException {
 
         String userId = getUserIdFromUsername(username);

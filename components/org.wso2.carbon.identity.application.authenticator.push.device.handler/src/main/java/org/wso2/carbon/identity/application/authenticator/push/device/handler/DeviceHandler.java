@@ -73,14 +73,11 @@ public interface DeviceHandler {
     /**
      * Get the list of registered devices for a given user
      *
-     * @param username     username of the authenticated user
-     * @param userStore    userstore of the authenticated user
-     * @param tenantDomain tenant domain of the authenticated user
+     * @param username username of the authenticated user
      * @return list of devices for the authenticated user
      * @throws PushDeviceHandlerServerException
      */
-    List<Device> listDevices(String username, String userStore, String tenantDomain)
-            throws PushDeviceHandlerServerException;
+    List<Device> listDevices(String username) throws PushDeviceHandlerServerException;
 
     /**
      * Get discovery data for a new device registration
