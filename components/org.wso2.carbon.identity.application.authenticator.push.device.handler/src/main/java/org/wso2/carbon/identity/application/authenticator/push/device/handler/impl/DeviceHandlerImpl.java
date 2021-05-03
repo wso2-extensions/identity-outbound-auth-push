@@ -18,7 +18,6 @@
 
 package org.wso2.carbon.identity.application.authenticator.push.device.handler.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.CarbonContext;
@@ -27,8 +26,6 @@ import org.wso2.carbon.identity.application.authentication.framework.exception.A
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.DeviceHandler;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.DeviceHandlerConstants;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.cache.PushDeviceHandlerCacheKey;
-import org.wso2.carbon.identity.application.authenticator.push.device.handler.cache.DeviceCache;
-import org.wso2.carbon.identity.application.authenticator.push.device.handler.cache.DeviceCacheEntry;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.cache.RegistrationRequestChallengeCache;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.cache.RegistrationRequestChallengeCacheEntry;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.dao.DeviceDAOImpl;
@@ -107,8 +104,6 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
             device = new Device(registrationRequest.getDeviceId(), userId, registrationRequest.getDeviceName(),
                     registrationRequest.getDeviceModel(), registrationRequest.getPushId(),
                     registrationRequest.getPublicKey());
-            DeviceCache.getInstance().addToCacheByRequestId(new PushDeviceHandlerCacheKey(device.getDeviceId()),
-                    new DeviceCacheEntry(device));
             try {
                 DeviceDAOImpl.getInstance().registerDevice(device);
             } catch (SQLException e) {
@@ -143,16 +138,7 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
     public void editDeviceName(String deviceId, String newDeviceName) throws PushDeviceHandlerServerException {
 
         try {
-            DeviceCacheEntry cacheEntry = DeviceCache.getInstance()
-                    .getValueFromCacheByRequestId(new PushDeviceHandlerCacheKey(deviceId));
-            if (cacheEntry != null) {
-                if (!cacheEntry.getDevice().getDeviceName().equals(newDeviceName)) {
-                    DeviceDAOImpl.getInstance().editDeviceName(deviceId, newDeviceName);
-                }
-                DeviceCache.getInstance().clearCacheEntryByRequestId(new PushDeviceHandlerCacheKey(deviceId));
-            } else {
-                DeviceDAOImpl.getInstance().editDeviceName(deviceId, newDeviceName);
-            }
+            DeviceDAOImpl.getInstance().editDeviceName(deviceId, newDeviceName);
         } catch (SQLException e) {
             throw new PushDeviceHandlerServerException("Error occurred when updating the name of device: "
                     + deviceId + ".");
