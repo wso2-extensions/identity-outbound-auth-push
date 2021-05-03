@@ -33,7 +33,7 @@ public class RegistrationRequestChallengeCache extends
 
     private static volatile RegistrationRequestChallengeCache cache;
 
-    public RegistrationRequestChallengeCache() {
+    private RegistrationRequestChallengeCache() {
 
         super(REGISTRATION_REQUEST_CHALLENGE_CACHE, true);
     }
