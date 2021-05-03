@@ -106,11 +106,15 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
                     registrationRequest.getPublicKey());
             try {
                 DeviceDAOImpl.getInstance().registerDevice(device);
+                cacheEntry.setRegistered(true);
             } catch (SQLException e) {
                 throw new PushDeviceHandlerServerException("Error occurred when trying to register device: "
                         + registrationRequest.getDeviceId() + ".", e);
             }
         } else {
+            RegistrationRequestChallengeCache.getInstance().clearCacheEntryByRequestId(
+                    new PushDeviceHandlerCacheKey(registrationRequest.getDeviceId()));
+
             String errorMessage = String.format("The device: %s is already registered.",
                     registrationRequest.getDeviceId());
             throw new PushDeviceHandlerClientException(errorMessage);
