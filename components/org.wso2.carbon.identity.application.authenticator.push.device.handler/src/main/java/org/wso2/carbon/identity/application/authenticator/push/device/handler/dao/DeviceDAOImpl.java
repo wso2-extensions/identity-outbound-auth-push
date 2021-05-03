@@ -23,10 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.DeviceHandlerConstants;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerServerException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.Device;
-import org.wso2.carbon.identity.application.common.model.User;
 import org.wso2.carbon.identity.core.util.IdentityDatabaseUtil;
-import org.wso2.carbon.user.api.UserStoreException;
-import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -59,7 +56,7 @@ public class DeviceDAOImpl implements DeviceDAO {
 
         Connection connection = IdentityDatabaseUtil.getDBConnection();
         PreparedStatement preparedStatement = null;
-        preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQUERIES.REGISTER_DEVICE);
+        preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQueries.REGISTER_DEVICE);
         preparedStatement.setString(1, device.getDeviceId());
         preparedStatement.setString(2, device.getUserId());
         preparedStatement.setString(3, device.getDeviceName());
@@ -81,7 +78,7 @@ public class DeviceDAOImpl implements DeviceDAO {
         Connection connection = IdentityDatabaseUtil.getDBConnection();
         PreparedStatement preparedStatement = null;
 
-        preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQUERIES.UNREGISTER_DEVICE);
+        preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQueries.UNREGISTER_DEVICE);
         preparedStatement.setString(1, deviceId);
         preparedStatement.execute();
         IdentityDatabaseUtil.closeAllConnections(connection, null, preparedStatement);
@@ -93,7 +90,7 @@ public class DeviceDAOImpl implements DeviceDAO {
         Connection connection = IdentityDatabaseUtil.getDBConnection();
         PreparedStatement preparedStatement = null;
 
-        preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQUERIES.EDIT_DEVICE_NAME);
+        preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQueries.EDIT_DEVICE_NAME);
         preparedStatement.setString(1, newDeviceName);
         preparedStatement.setString(2, deviceId);
         preparedStatement.execute();
@@ -109,7 +106,7 @@ public class DeviceDAOImpl implements DeviceDAO {
         PreparedStatement preparedStatement = null;
         Device device = new Device();
 
-        preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQUERIES.GET_DEVICE);
+        preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQueries.GET_DEVICE);
         preparedStatement.setString(1, deviceId);
         ResultSet resultSet = preparedStatement.executeQuery();
         if (resultSet != null) {
@@ -141,7 +138,7 @@ public class DeviceDAOImpl implements DeviceDAO {
         Connection connection = IdentityDatabaseUtil.getDBConnection();
         PreparedStatement preparedStatement;
         Device device;
-        preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQUERIES.LIST_DEVICES);
+        preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQueries.LIST_DEVICES);
         preparedStatement.setString(1, userId);
         ResultSet resultSet = preparedStatement.executeQuery();
         if (resultSet != null) {
@@ -172,7 +169,7 @@ public class DeviceDAOImpl implements DeviceDAO {
         PreparedStatement preparedStatement = null;
         String publicKey = null;
 
-        preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQUERIES.GET_PUBLIC_KEY);
+        preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQueries.GET_PUBLIC_KEY);
         preparedStatement.setString(1, deviceId);
         ResultSet resultSet = preparedStatement.executeQuery();
         if (resultSet != null) {

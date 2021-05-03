@@ -46,25 +46,23 @@ public class DeviceHandlerConstants {
     /**
      * This class contains the SQL queries used in the DAO class.
      */
-    public static class SQLQUERIES {
+    public static class SQLQueries {
 
-        private SQLQUERIES() {
+        private SQLQueries() {
 
         }
 
-        public static final String REGISTER_DEVICE = "INSERT INTO BIOMETRIC_AUTHENTICATION_DEVICE " +
+        public static final String REGISTER_DEVICE = "INSERT INTO PUSH_AUTHENTICATION_DEVICE " +
                 "(ID,USER_ID,NAME,MODEL,PUSH_ID,PUBLIC_KEY,REGISTRATION_TIME,LAST_USED_TIME)" +
                 " VALUES (?,?,?,?,?,?,?,?)";
-        public static final String UNREGISTER_DEVICE = "DELETE FROM BIOMETRIC_AUTHENTICATION_DEVICE WHERE ID = ?";
-        public static final String EDIT_DEVICE_NAME = "UPDATE BIOMETRIC_AUTHENTICATION_DEVICE SET NAME = ? WHERE" +
+        public static final String UNREGISTER_DEVICE = "DELETE FROM PUSH_AUTHENTICATION_DEVICE WHERE ID = ?";
+        public static final String EDIT_DEVICE_NAME = "UPDATE PUSH_AUTHENTICATION_DEVICE SET NAME = ? WHERE" +
                 " ID = ?";
         public static final String GET_DEVICE = "SELECT ID,NAME,MODEL,PUSH_ID,PUBLIC_KEY," +
-                "REGISTRATION_TIME,LAST_USED_TIME FROM BIOMETRIC_AUTHENTICATION_DEVICE WHERE ID = ?";
+                "REGISTRATION_TIME,LAST_USED_TIME FROM PUSH_AUTHENTICATION_DEVICE WHERE ID = ?";
         public static final String LIST_DEVICES = "SELECT ID,NAME,MODEL,REGISTRATION_TIME," +
-                "LAST_USED_TIME FROM BIOMETRIC_AUTHENTICATION_DEVICE WHERE USER_ID = ?";
-        public static final String GET_PUBLIC_KEY = "SELECT PUBLIC_KEY FROM BIOMETRIC_AUTHENTICATION_DEVICE " +
+                "LAST_USED_TIME FROM PUSH_AUTHENTICATION_DEVICE WHERE USER_ID = ?";
+        public static final String GET_PUBLIC_KEY = "SELECT PUBLIC_KEY FROM PUSH_AUTHENTICATION_DEVICE " +
                 "WHERE ID = ?";
     }
 }
-
-// TODO: Change queries as push once the DB changes have been made
