@@ -58,7 +58,8 @@ public interface DeviceHandler {
      * @param updatedDevice New name for the device
      * @throws PushDeviceHandlerServerException
      */
-    void editDevice(String deviceId, Device updatedDevice) throws PushDeviceHandlerServerException;
+    void editDevice(String deviceId, Device updatedDevice)
+            throws PushDeviceHandlerServerException, PushDeviceHandlerClientException;
 
     /**
      * Get a device by the device ID
@@ -84,7 +85,7 @@ public interface DeviceHandler {
      *
      * @return discovery data
      */
-    RegistrationDiscoveryData getRegistrationDiscoveryData();
+    RegistrationDiscoveryData getRegistrationDiscoveryData() throws PushDeviceHandlerServerException;
 
     /**
      * Get public key for registered device
@@ -93,6 +94,6 @@ public interface DeviceHandler {
      * @return Public key string
      * @throws PushDeviceHandlerServerException
      */
-    String getPublicKey(String deviceId) throws PushDeviceHandlerServerException;
+    String getPublicKey(String deviceId) throws PushDeviceHandlerServerException, PushDeviceHandlerClientException;
 
 }

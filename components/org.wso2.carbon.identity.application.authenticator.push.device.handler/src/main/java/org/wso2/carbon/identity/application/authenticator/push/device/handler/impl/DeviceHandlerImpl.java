@@ -126,7 +126,15 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
     }
 
     @Override
-    public void unregisterDevice(String deviceId) throws PushDeviceHandlerServerException {
+    public void unregisterDevice(String deviceId)
+            throws PushDeviceHandlerServerException, PushDeviceHandlerClientException {
+
+        try {
+            getDevice(deviceId);
+        } catch (PushDeviceHandlerClientException e) {
+            String errorMessage = String.format("Failed to remove device: %s as it was not found.", deviceId);
+            throw new PushDeviceHandlerClientException(errorMessage);
+        }
 
         try {
             DeviceDAOImpl.getInstance().unregisterDevice(deviceId);
@@ -139,7 +147,15 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
     }
 
     @Override
-    public void editDevice(String deviceId, Device updatedDevice) throws PushDeviceHandlerServerException {
+    public void editDevice(String deviceId, Device updatedDevice)
+            throws PushDeviceHandlerServerException, PushDeviceHandlerClientException {
+
+        try {
+            getDevice(deviceId);
+        } catch (PushDeviceHandlerClientException e) {
+            String errorMessage = String.format("Failed to edit device: %s as it was not found.", deviceId);
+            throw new PushDeviceHandlerClientException(errorMessage);
+        }
 
         try {
             DeviceDAOImpl.getInstance().editDevice(deviceId, updatedDevice);
@@ -150,10 +166,17 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
     }
 
     @Override
-    public Device getDevice(String deviceId) throws PushDeviceHandlerServerException {
+    public Device getDevice(String deviceId) throws PushDeviceHandlerServerException, PushDeviceHandlerClientException {
 
         try {
-            return DeviceDAOImpl.getInstance().getDevice(deviceId);
+            Device device = DeviceDAOImpl.getInstance().getDevice(deviceId);
+            if (device.getDeviceId() != null) {
+                return device;
+            } else {
+                String errorMessage = String.format("Device: %s was not found.", deviceId);
+                throw new PushDeviceHandlerClientException(errorMessage);
+            }
+
         } catch (SQLException e) {
             String errorMessage = String.format("Error occurred when trying to get device: %s from the database.",
                     deviceId);
@@ -174,7 +197,7 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
     }
 
     @Override
-    public RegistrationDiscoveryData getRegistrationDiscoveryData() {
+    public RegistrationDiscoveryData getRegistrationDiscoveryData() throws PushDeviceHandlerServerException {
 
         User user = getAuthenticatedUser();
 
@@ -186,7 +209,7 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
         try {
             userClaims = getUserClaimValues(user);
         } catch (AuthenticationFailedException e) {
-            log.error("Error occurred when trying to get the user clams for user: "
+            throw new PushDeviceHandlerServerException("Error occurred when trying to get the user claims for user: "
                     + user.toFullQualifiedUsername() + ".", e);
         }
 
@@ -215,7 +238,16 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
     }
 
     @Override
-    public String getPublicKey(String deviceId) throws PushDeviceHandlerServerException {
+    public String getPublicKey(String deviceId)
+            throws PushDeviceHandlerServerException, PushDeviceHandlerClientException {
+
+        try {
+            getDevice(deviceId);
+        } catch (PushDeviceHandlerClientException e) {
+            String errorMessage =
+                    String.format("Failed to get public key for device: %s as it was not found.", deviceId);
+            throw new PushDeviceHandlerClientException(errorMessage);
+        }
 
         try {
             return DeviceDAOImpl.getInstance().getPublicKey(deviceId);
