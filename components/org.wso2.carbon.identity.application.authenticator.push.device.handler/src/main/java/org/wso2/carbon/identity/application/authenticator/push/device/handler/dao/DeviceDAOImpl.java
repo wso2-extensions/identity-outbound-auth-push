@@ -93,8 +93,7 @@ public class DeviceDAOImpl implements DeviceDAO {
         preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQueries.EDIT_DEVICE);
         preparedStatement.setString(1, updatedDevice.getDeviceName());
         preparedStatement.setString(2, updatedDevice.getPushId());
-        preparedStatement.setString(3, updatedDevice.getPublicKey());
-        preparedStatement.setString(4, deviceId);
+        preparedStatement.setString(3, deviceId);
         preparedStatement.execute();
 
         IdentityDatabaseUtil.closeAllConnections(connection, null, preparedStatement);

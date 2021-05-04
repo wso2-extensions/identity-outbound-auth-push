@@ -56,8 +56,8 @@ public class DeviceHandlerConstants {
                 "(ID,USER_ID,NAME,MODEL,PUSH_ID,PUBLIC_KEY,REGISTRATION_TIME,LAST_USED_TIME)" +
                 " VALUES (?,?,?,?,?,?,?,?)";
         public static final String UNREGISTER_DEVICE = "DELETE FROM PUSH_AUTHENTICATION_DEVICE WHERE ID = ?";
-        public static final String EDIT_DEVICE = "UPDATE PUSH_AUTHENTICATION_DEVICE SET NAME = ?, PUSH_ID = ?, " +
-                "PUBLIC_KEY = ? WHERE ID = ?";
+        public static final String EDIT_DEVICE = "UPDATE PUSH_AUTHENTICATION_DEVICE SET NAME = ?, PUSH_ID = ? " +
+                "WHERE ID = ?";
         public static final String GET_DEVICE = "SELECT ID,NAME,MODEL,PUSH_ID,PUBLIC_KEY," +
                 "REGISTRATION_TIME,LAST_USED_TIME FROM PUSH_AUTHENTICATION_DEVICE WHERE ID = ?";
         public static final String LIST_DEVICES = "SELECT ID,NAME,MODEL,REGISTRATION_TIME," +
