@@ -201,7 +201,8 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
 
         String tenantDomain = user.getTenantDomain();
         String host = IdentityUtil.getServerURL(null, false, false);
-        String basePath = "/t/" + user.getTenantDomain() + "/api/users/v1/me";
+        String basePath = DeviceHandlerConstants.TENANT_QUALIFIED_PATH + user.getTenantDomain()
+                + DeviceHandlerConstants.ME_API_PATH;
         String registrationEndpoint = DeviceHandlerConstants.REGISTRATION_ENDPOINT;
         String removeDeviceEndpoint = DeviceHandlerConstants.REMOVE_DEVICE_ENDPOINT;
         String authenticationEndpoint = DeviceHandlerConstants.AUTHENTICATION_ENDPOINT;

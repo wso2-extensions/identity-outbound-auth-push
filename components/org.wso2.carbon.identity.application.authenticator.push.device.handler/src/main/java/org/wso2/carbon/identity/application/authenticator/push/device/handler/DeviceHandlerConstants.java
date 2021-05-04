@@ -37,6 +37,8 @@ public class DeviceHandlerConstants {
     public static final String REGISTRATION_ENDPOINT = "/push-auth/devices";
     public static final String REMOVE_DEVICE_ENDPOINT = "/push-auth/devices/remove";
     public static final String AUTHENTICATION_ENDPOINT = "/push-auth/authenticate";
+    public static final String TENANT_QUALIFIED_PATH = "/t/";
+    public static final String ME_API_PATH = "/api/users/v1/me";
     public static final String GIVEN_NAME_USER_CLAIM = "http://wso2.org/claims/givenname";
     public static final String LAST_NAME_USER_CLAIM = "http://wso2.org/claims/lastname";
 
