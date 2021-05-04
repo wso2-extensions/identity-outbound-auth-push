@@ -139,10 +139,10 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
     }
 
     @Override
-    public void editDeviceName(String deviceId, String newDeviceName) throws PushDeviceHandlerServerException {
+    public void editDevice(String deviceId, Device updatedDevice) throws PushDeviceHandlerServerException {
 
         try {
-            DeviceDAOImpl.getInstance().editDeviceName(deviceId, newDeviceName);
+            DeviceDAOImpl.getInstance().editDevice(deviceId, updatedDevice);
         } catch (SQLException e) {
             throw new PushDeviceHandlerServerException("Error occurred when updating the name of device: "
                     + deviceId + ".");

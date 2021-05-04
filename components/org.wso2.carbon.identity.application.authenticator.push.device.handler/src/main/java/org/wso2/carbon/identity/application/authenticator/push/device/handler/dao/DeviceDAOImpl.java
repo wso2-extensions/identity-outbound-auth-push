@@ -55,7 +55,7 @@ public class DeviceDAOImpl implements DeviceDAO {
     public void registerDevice(Device device) throws SQLException {
 
         Connection connection = IdentityDatabaseUtil.getDBConnection();
-        PreparedStatement preparedStatement = null;
+        PreparedStatement preparedStatement;
         preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQueries.REGISTER_DEVICE);
         preparedStatement.setString(1, device.getDeviceId());
         preparedStatement.setString(2, device.getUserId());
@@ -76,7 +76,7 @@ public class DeviceDAOImpl implements DeviceDAO {
     public void unregisterDevice(String deviceId) throws SQLException {
 
         Connection connection = IdentityDatabaseUtil.getDBConnection();
-        PreparedStatement preparedStatement = null;
+        PreparedStatement preparedStatement;
 
         preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQueries.UNREGISTER_DEVICE);
         preparedStatement.setString(1, deviceId);
@@ -85,14 +85,16 @@ public class DeviceDAOImpl implements DeviceDAO {
     }
 
     @Override
-    public void editDeviceName(String deviceId, String newDeviceName) throws SQLException {
+    public void editDevice(String deviceId, Device updatedDevice) throws SQLException {
 
         Connection connection = IdentityDatabaseUtil.getDBConnection();
-        PreparedStatement preparedStatement = null;
+        PreparedStatement preparedStatement;
 
-        preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQueries.EDIT_DEVICE_NAME);
-        preparedStatement.setString(1, newDeviceName);
-        preparedStatement.setString(2, deviceId);
+        preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQueries.EDIT_DEVICE);
+        preparedStatement.setString(1, updatedDevice.getDeviceName());
+        preparedStatement.setString(2, updatedDevice.getPushId());
+        preparedStatement.setString(3, updatedDevice.getPublicKey());
+        preparedStatement.setString(4, deviceId);
         preparedStatement.execute();
 
         IdentityDatabaseUtil.closeAllConnections(connection, null, preparedStatement);
@@ -103,7 +105,7 @@ public class DeviceDAOImpl implements DeviceDAO {
     public Device getDevice(String deviceId) throws PushDeviceHandlerServerException, SQLException {
 
         Connection connection = IdentityDatabaseUtil.getDBConnection();
-        PreparedStatement preparedStatement = null;
+        PreparedStatement preparedStatement;
         Device device = new Device();
 
         preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQueries.GET_DEVICE);
@@ -166,7 +168,7 @@ public class DeviceDAOImpl implements DeviceDAO {
     public String getPublicKey(String deviceId) throws SQLException {
 
         Connection connection = IdentityDatabaseUtil.getDBConnection();
-        PreparedStatement preparedStatement = null;
+        PreparedStatement preparedStatement;
         String publicKey = null;
 
         preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQueries.GET_PUBLIC_KEY);

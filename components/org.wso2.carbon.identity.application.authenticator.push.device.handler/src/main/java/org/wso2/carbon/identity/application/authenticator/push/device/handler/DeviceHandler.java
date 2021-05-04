@@ -55,10 +55,10 @@ public interface DeviceHandler {
      * Edit the name of a registered device
      *
      * @param deviceId      ID of the device to update the name of
-     * @param newDeviceName New name for the device
+     * @param updatedDevice New name for the device
      * @throws PushDeviceHandlerServerException
      */
-    void editDeviceName(String deviceId, String newDeviceName) throws PushDeviceHandlerServerException;
+    void editDevice(String deviceId, Device updatedDevice) throws PushDeviceHandlerServerException;
 
     /**
      * Get a device by the device ID

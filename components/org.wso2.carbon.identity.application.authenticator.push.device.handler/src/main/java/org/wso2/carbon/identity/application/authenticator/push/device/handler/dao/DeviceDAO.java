@@ -20,7 +20,6 @@ package org.wso2.carbon.identity.application.authenticator.push.device.handler.d
 
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerServerException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.Device;
-import org.wso2.carbon.user.api.UserStoreException;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -50,10 +49,10 @@ public interface DeviceDAO {
      * Update the properties of a given device
      *
      * @param deviceId      Unique ID for the device to be deleted
-     * @param newDeviceName New name for the given device
+     * @param updatedDevice New name for the given device
      * @throws SQLException
      */
-    void editDeviceName(String deviceId, String newDeviceName) throws SQLException;
+    void editDevice(String deviceId, Device updatedDevice) throws SQLException;
 
     /**
      * Get the device object using the device class
