@@ -19,15 +19,12 @@
 
 package org.wso2.carbon.identity.application.authenticator.push.servlet.servlet;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.application.authentication.framework.context.AuthenticationContext;
-import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundConstants;
-import org.wso2.carbon.identity.application.authenticator.push.PushAuthenticator;
 import org.wso2.carbon.identity.application.authenticator.push.PushAuthenticatorConstants;
 import org.wso2.carbon.identity.application.authenticator.push.cache.AuthContextCache;
 import org.wso2.carbon.identity.application.authenticator.push.cache.AuthContextCacheEntry;
@@ -41,17 +38,13 @@ import org.wso2.carbon.identity.application.authenticator.push.device.handler.De
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerClientException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerServerException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.impl.DeviceHandlerImpl;
-import org.wso2.carbon.identity.application.authenticator.push.servlet.PushServletConstants;
-import org.wso2.carbon.identity.application.authenticator.push.servlet.model.WaitStatus;
 import org.wso2.carbon.identity.application.authenticator.push.servlet.store.impl.PushDataStoreImpl;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.MediaType;
 
 /**
  * The Push Servlet class manages the status of the push authentication process with the session data key,
@@ -64,50 +57,9 @@ public class PushServlet extends HttpServlet {
     private static final Log log = LogFactory.getLog(PushServlet.class);
     private PushDataStoreImpl pushDataStoreInstance = PushDataStoreImpl.getInstance();
 
-//    @Override
-//    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-//            throws IOException {
-//        String action = null;
-//        action = request.getParameter("ACTION");
-//        String key = request.getParameter("sessionDataKey");
-//        if (action == null) {
-//            action = "WaitResponse";
-//        }
-//        switch (action) {
-//            case "Authenticate": {
-//                String deviceId = request.getParameter("deviceId");
-//                PushAuthenticator authenticator = new PushAuthenticator();
-//                authenticator.sendRequest(request, response, deviceId, key);
-//                break;
-//            }
-//            case "WaitResponse": {
-//                if (!(request.getParameterMap().containsKey(PushServletConstants.INITIATOR))) {
-//                    if (log.isDebugEnabled()) {
-//                        log.debug("Invalid request as the query parameter for initiator is missing.");
-//                    }
-//                } else {
-//                    // If the initiator is not null, else block is executed.
-//                    String initiator = request.getParameter(PushServletConstants.INITIATOR);
-//                    if (!(PushServletConstants.WEB.equals(initiator) && request.getParameterMap()
-//                            .containsKey(InboundConstants.RequestProcessor.CONTEXT_KEY))) {
-//                        if (log.isDebugEnabled()) {
-//                            log.debug("Unsupported HTTP GET request or session data key is null.");
-//                        }
-//                    } else {
-//                        // If the initiator is equal to WEB and if the query parameter session data
-//                        // key is not null, else block is executed.
-//                        handleWebResponse(request, response);
-//                    }
-//                }
-//                break;
-//            }
-//        }
-//
-//    }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
 
         // Handles request from devices page for sending the request from the selected device
 
@@ -126,7 +78,6 @@ public class PushServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         // Handles request from the mobile app for authentication
-        // TODO: Remove the delete device endpoint from here
 
         String action = request.getParameter("ACTION");
         if (action == null) {
@@ -176,7 +127,6 @@ public class PushServlet extends HttpServlet {
             String sessionDataKeyMobile = validator.getSessionDataKey(token);
             String status = PushAuthenticatorConstants.COMPLETED;
             pushDataStoreInstance.addPushData(sessionDataKeyMobile, status);
-            // TODO: change response to 202 Accepted
             response.setStatus(HttpServletResponse.SC_OK);
             if (log.isDebugEnabled()) {
                 log.debug("Session data key received from the mobile application: " + sessionDataKeyMobile);
