@@ -205,7 +205,7 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
             log.debug("Retrieving data to generate QR code for user: " + user.toFullQualifiedUsername() + ".");
         }
 
-        Map<String, String> userClaims = null;
+        Map<String, String> userClaims;
         try {
             userClaims = getUserClaimValues(user);
         } catch (AuthenticationFailedException e) {
