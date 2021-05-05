@@ -21,17 +21,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>org.wso2.carbon.identity.outbound.auth.biometric</groupId>
-        <artifactId>identity-outbound-auth-biometric</artifactId>
+        <groupId>org.wso2.carbon.identity.outbound.auth.push</groupId>
+        <artifactId>identity-outbound-auth-push</artifactId>
         <relativePath>../../pom.xml</relativePath>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>org.wso2.carbon.identity.application.authenticator.biometric.servlet</artifactId>
+    <artifactId>org.wso2.carbon.identity.application.authenticator.push.servlet</artifactId>
     <packaging>bundle</packaging>
-    <name>WSO2 Carbon - Endpoint for Biometric Authenticator</name>
-    <description>Identity Application Biometric Authentication Endpoint</description>
+    <name>WSO2 Carbon - Endpoint for Push Authenticator</name>
+    <description>Identity Application Push Authentication Endpoint</description>
     <url>http://www.wso2.com</url>
 
     <dependencies>
@@ -85,8 +85,8 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon.identity.application.authenticator.biometric</groupId>
-            <artifactId>org.wso2.carbon.identity.application.authenticator.biometric</artifactId>
+            <groupId>org.wso2.carbon.identity.application.authenticator.push</groupId>
+            <artifactId>org.wso2.carbon.identity.application.authenticator.push</artifactId>
         </dependency>
     </dependencies>
     <build>
@@ -99,17 +99,18 @@
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
-                        <Private-Package>org.wso2.carbon.identity.application.authenticator.biometric.servlet.internal</Private-Package>
+                        <Private-Package>org.wso2.carbon.identity.application.authenticator.push.servlet.internal</Private-Package>
                         <Export-Package>
-                            !org.wso2.carbon.identity.application.authenticator.biometric.servlet.internal,
-                            org.wso2.carbon.identity.application.authenticator.biometric.servlet,
-                            org.wso2.carbon.identity.application.authenticator.biometric.servlet.model,
-                            org.wso2.carbon.identity.application.authenticator.biometric.servlet.servlet,
-                            org.wso2.carbon.identity.application.authenticator.biometric.servlet.store,
-                            org.wso2.carbon.identity.application.authenticator.biometric.servlet.store.impl,
+                            !org.wso2.carbon.identity.application.authenticator.push.servlet.internal,
+                            org.wso2.carbon.identity.application.authenticator.push.servlet,
+                            org.wso2.carbon.identity.application.authenticator.push.servlet.model,
+                            org.wso2.carbon.identity.application.authenticator.push.servlet.servlet,
+                            org.wso2.carbon.identity.application.authenticator.push.servlet.store,
+                            org.wso2.carbon.identity.application.authenticator.push.servlet.store.impl,
                         </Export-Package>
                         <Import-Package>
                             com.google.gson;version="${com.googlecode.json-simple.version}",
+                            org.wso2.carbon.identity.application.authentication.framework.context;version="[5.12,6)",
                             javax.servlet;version= "[2.6,3)",
                             javax.servlet.http;version="[2.6,3)",
                             org.apache.commons.lang;version="[2.6,3)",
@@ -117,11 +118,15 @@
                             org.eclipse.equinox.http.helper,
                             org.osgi.service.component;version="[1.2.0,2.0.0)",
                             org.osgi.service.http;version="[1.2,2)",
-                            org.wso2.carbon.identity.application.authenticator.biometric;version="[1.0,2)",
-                            org.wso2.carbon.identity.application.authenticator.biometric.device.handler;version="[1.0,2)",
-                            org.wso2.carbon.identity.application.authenticator.biometric.device.handler.model;version="[1.0,2)",
-                            org.wso2.carbon.identity.application.authenticator.biometric.device.handler.exception;version="[1.0,2)",
-                            org.wso2.carbon.identity.application.authenticator.biometric.device.handler.impl;version="[1.0,2)"
+                            org.wso2.carbon.identity.application.authenticator.push;version="[1.0,2)",
+                            org.wso2.carbon.identity.application.authenticator.push.validator;version="[1.0,2)",
+                            org.wso2.carbon.identity.application.authenticator.push.dto;version="[1.0,2)",
+                            org.wso2.carbon.identity.application.authenticator.push.dto.impl;version="[1.0,2)",
+                            org.wso2.carbon.identity.application.authenticator.push.cache;version="[1.0,2)",
+                            org.wso2.carbon.identity.application.authenticator.push.device.handler;version="[1.0,2)",
+                            org.wso2.carbon.identity.application.authenticator.push.device.handler.model;version="[1.0,2)",
+                            org.wso2.carbon.identity.application.authenticator.push.device.handler.exception;version="[1.0,2)",
+                            org.wso2.carbon.identity.application.authenticator.push.device.handler.impl;version="[1.0,2)"
                         </Import-Package>
                     </instructions>
                 </configuration>

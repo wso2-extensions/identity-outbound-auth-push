@@ -17,35 +17,36 @@
  *
  */
 
-package org.wso2.carbon.identity.application.authenticator.biometric.servlet.store;
+package org.wso2.carbon.identity.application.authenticator.push.servlet.store;
 
 /**
  * Updates a hash-map which stores session data key against signed challenge from the mobile application.
  */
-public interface BiometricDataStore {
+public interface PushDataStore {
 
     /**
-     * Returns the signed challenge stored against the session data key in biometric data store.
+     * Returns the signed challenge stored against the session data key in push data store.
      */
     String getSignedChallenge(String sessionDataKey);
 
     /**
-     * Returns the authentication status stored against the session data key in biometric data store.
+     * Returns the authentication status stored against the session data key in push data store.
      */
     String getAuthStatus(String sessionDataKey);
 
     /**
-     * Adds a new record of session data key against signed challenge to the biometric data store.
+     * Adds a new record of session data key against signed challenge to the push data store.
      */
-    void addBiometricData(String sessionDataKey, String signedChallenge, String authStatus, String signature,
-                          String deviceId);
+    void addPushData(String sessionDataKey, String authStatus);
 
     /**
-     * Removes the record with the given session data key in biometric data store.
+     * Removes the record with the given session data key in push data store.
      */
-    void removeBiometricData(String sessionDataKey);
+    void removePushData(String sessionDataKey);
 
     String getSignature(String sessionDataKey);
 
     String getDeviceId(String sessionDataKey);
+
+    String getToken(String sessionDataKey);
 }
