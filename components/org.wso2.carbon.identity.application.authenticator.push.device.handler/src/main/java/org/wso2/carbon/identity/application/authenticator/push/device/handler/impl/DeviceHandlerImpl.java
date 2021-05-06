@@ -98,7 +98,7 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
                         IdentityTenantUtil.getRealm(cacheEntry.getTenantDomain(), cacheEntry.getUsername()));
             } catch (UserStoreException | IdentityException e) {
                 throw new PushDeviceHandlerServerException("Error occurred when trying to get the user ID to "
-                        + "register device: " + registrationRequest.getDeviceId() + ".");
+                        + "register device: " + registrationRequest.getDeviceId() + ".", e);
             }
 
             device = new Device(registrationRequest.getDeviceId(), userId, registrationRequest.getDeviceName(),
@@ -133,7 +133,7 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
             getDevice(deviceId);
         } catch (PushDeviceHandlerClientException e) {
             String errorMessage = String.format("Failed to remove device: %s as it was not found.", deviceId);
-            throw new PushDeviceHandlerClientException(errorMessage);
+            throw new PushDeviceHandlerClientException(errorMessage, e);
         }
 
         try {
@@ -154,14 +154,14 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
             getDevice(deviceId);
         } catch (PushDeviceHandlerClientException e) {
             String errorMessage = String.format("Failed to edit device: %s as it was not found.", deviceId);
-            throw new PushDeviceHandlerClientException(errorMessage);
+            throw new PushDeviceHandlerClientException(errorMessage, e);
         }
 
         try {
             DeviceDAOImpl.getInstance().editDevice(deviceId, updatedDevice);
         } catch (SQLException e) {
             throw new PushDeviceHandlerServerException("Error occurred when updating the name of device: "
-                    + deviceId + ".");
+                    + deviceId + ".", e);
         }
     }
 
@@ -246,7 +246,7 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
         } catch (PushDeviceHandlerClientException e) {
             String errorMessage =
                     String.format("Failed to get public key for device: %s as it was not found.", deviceId);
-            throw new PushDeviceHandlerClientException(errorMessage);
+            throw new PushDeviceHandlerClientException(errorMessage, e);
         }
 
         try {
