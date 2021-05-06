@@ -108,28 +108,31 @@ public class PushServlet extends HttpServlet {
      * @param request  HTTP request
      * @param response HTTP response
      * @throws IOException
-     * @throws ServletException
      */
-    private void handleMobileResponse(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    private void handleMobileResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         JsonObject json = new JsonParser().parse(request.getReader().readLine()).getAsJsonObject();
         String token = json.get("authResponse").getAsString();
         if (StringUtils.isEmpty(token)) {
-            String errorMessage = "The authentication response token received from mobile app is null.";
-
+            String errorMessage = "The request did not have an authentication response token.";
+            if (log.isDebugEnabled()) {
+                log.error(errorMessage);
+            }
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, errorMessage);
-            throw new ServletException(errorMessage);
         } else {
             // If the query parameters session data key and challenge are not null, else block is executed..
             PushJWTValidator validator = new PushJWTValidator();
             String sessionDataKey = validator.getSessionDataKey(token);
 
             if (StringUtils.isEmpty(sessionDataKey)) {
-                String errorMessage = String.format("Authentication response received from device: %s doesn't contain "
-                        + "required session data key.", validator.getDeviceId(token));
-
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, errorMessage);
-                throw new ServletException(errorMessage);
+                String errorMessage = String.format("Authentication response token received from device: %s doesn't "
+                        + "contain a session data key.", validator.getDeviceId(token));
+                if (log.isDebugEnabled()) {
+                    log.error(errorMessage);
+                }
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Authentication response token doesn't have "
+                        + "a session data key.");
+                return;
             }
 
             AuthenticationContext context = AuthContextCache.getInstance().getValueFromCacheByRequestId
