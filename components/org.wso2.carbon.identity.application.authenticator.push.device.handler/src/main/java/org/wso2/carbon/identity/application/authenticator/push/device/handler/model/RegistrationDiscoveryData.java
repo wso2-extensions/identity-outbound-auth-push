@@ -26,17 +26,17 @@ import java.util.UUID;
  */
 public class RegistrationDiscoveryData implements Serializable {
 
-    String deviceId;
-    String username;
-    String firstName;
-    String lastName;
-    String tenantDomain;
-    String host;
-    String basePath;
-    String registrationEndpoint;
-    String removeDeviceEndpoint;
-    String authenticationEndpoint;
-    UUID challenge;
+    private String deviceId;
+    private String username;
+    private String firstName;
+    private String lastName;
+    private String tenantDomain;
+    private String host;
+    private String basePath;
+    private String registrationEndpoint;
+    private String removeDeviceEndpoint;
+    private String authenticationEndpoint;
+    private UUID challenge;
 
     public RegistrationDiscoveryData(String deviceId, String username, String firstName, String lastName,
                                      String tenantDomain, String host, String basePath, String registrationEndpoint,
