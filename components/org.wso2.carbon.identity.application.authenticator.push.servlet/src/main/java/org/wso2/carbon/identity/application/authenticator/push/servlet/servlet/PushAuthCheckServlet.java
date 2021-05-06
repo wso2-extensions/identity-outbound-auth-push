@@ -29,13 +29,13 @@ public class PushAuthCheckServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        // Handling request from authenticator wait page to check status of the auth request
         if (!(request.getParameterMap().containsKey(InboundConstants.RequestProcessor.CONTEXT_KEY))) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            if (log.isDebugEnabled()) {
-                log.debug("Unsupported HTTP GET request or session data key is null.");
-            }
+
+            throw new ServletException("Error occurred when checking authentication status. The session data key was "
+                    + "null or the HTTP request was unsupported.");
         } else {
-            // Else block gets executed if the session dta key is not null
             handleWebResponse(request, response);
         }
     }
@@ -52,7 +52,7 @@ public class PushAuthCheckServlet extends HttpServlet {
                 log.debug("Mobile authentication response has not been received yet!");
             }
 
-        } else if (status.equals(PushServletConstants.Status.COMPLETED.name())){
+        } else if (status.equals(PushServletConstants.Status.COMPLETED.name())) {
             // TODO: Change to validate through a constant instead of enum
             // If the signed challenge sent from the mobile application is not null,else block is executed..
             response.setStatus(HttpServletResponse.SC_OK);
@@ -60,13 +60,15 @@ public class PushAuthCheckServlet extends HttpServlet {
             pushDataStoreInstance.removePushData(sessionDataKeyWeb);
             response.setContentType(MediaType.APPLICATION_JSON);
             String json = new Gson().toJson(waitResponse);
+
             if (log.isDebugEnabled()) {
                 log.debug("Json Response to the wait page: " + json);
             }
-            try (PrintWriter out = response.getWriter()) {
-                out.print(json);
-                out.flush();
-            }
+
+            PrintWriter out = response.getWriter();
+            out.print(json);
+            out.flush();
+
         } else {
             if (log.isDebugEnabled()) {
                 log.debug("Unknown value given for status!");

@@ -42,6 +42,7 @@ import org.wso2.carbon.identity.application.authenticator.push.servlet.store.imp
 
 import java.io.IOException;
 import java.sql.SQLException;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -57,9 +58,8 @@ public class PushServlet extends HttpServlet {
     private static final Log log = LogFactory.getLog(PushServlet.class);
     private PushDataStoreImpl pushDataStoreInstance = PushDataStoreImpl.getInstance();
 
-
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 
         // Handles request from devices page for sending the request from the selected device
 
@@ -70,12 +70,15 @@ public class PushServlet extends HttpServlet {
         try {
             requestSender.sendRequest(request, response, deviceId, key);
         } catch (PushAuthenticatorException e) {
-            e.printStackTrace();
+            String errorMessage = String.format("Error occurred when trying to send the authentication request to "
+                    + "device %s after selecting from multiple devices.", deviceId);
+            throw new ServletException(errorMessage, e);
         }
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
 
         // Handles request from the mobile app for authentication
 
@@ -99,20 +102,26 @@ public class PushServlet extends HttpServlet {
 
     }
 
-    private void handleMobileResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void handleMobileResponse(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
         JsonObject json = new JsonParser().parse(request.getReader().readLine()).getAsJsonObject();
         String token = json.get("authResponse").getAsString();
         if (StringUtils.isEmpty(token)) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Received authentication response token is null");
+            String errorMessage = "The authentication response token received from mobile app is null.";
+
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, errorMessage);
+            throw new ServletException(errorMessage);
         } else {
             // If the query parameters session data key and challenge are not null, else block is executed..
             PushJWTValidator validator = new PushJWTValidator();
             String sessionDataKey = validator.getSessionDataKey(token);
 
             if (StringUtils.isEmpty(sessionDataKey)) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-                        "Received authentication response doesn't contain required session data key");
+                String errorMessage = String.format("Authentication response received from device: %s doesn't contain "
+                        + "required session data key.", validator.getDeviceId(token));
+
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, errorMessage);
+                throw new ServletException(errorMessage);
             }
 
             AuthenticationContext context = AuthContextCache.getInstance().getValueFromCacheByRequestId
@@ -129,7 +138,7 @@ public class PushServlet extends HttpServlet {
             pushDataStoreInstance.addPushData(sessionDataKeyMobile, status);
             response.setStatus(HttpServletResponse.SC_OK);
             if (log.isDebugEnabled()) {
-                log.debug("Session data key received from the mobile application: " + sessionDataKeyMobile);
+                log.debug("Session data key received from the mobile application: " + sessionDataKeyMobile + ".");
             }
         }
     }
