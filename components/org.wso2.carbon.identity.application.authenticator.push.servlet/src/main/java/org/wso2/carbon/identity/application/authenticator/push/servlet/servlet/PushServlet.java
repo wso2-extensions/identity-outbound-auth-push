@@ -102,6 +102,14 @@ public class PushServlet extends HttpServlet {
 
     }
 
+    /**
+     * Handles authentication request received from mobile app
+     *
+     * @param request  HTTP request
+     * @param response HTTP response
+     * @throws IOException
+     * @throws ServletException
+     */
     private void handleMobileResponse(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
         JsonObject json = new JsonParser().parse(request.getReader().readLine()).getAsJsonObject();
@@ -143,6 +151,15 @@ public class PushServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Handles request from mobile app to remove a registered device
+     *
+     * @param request  HTTP request
+     * @param response HTTP response
+     * @throws PushDeviceHandlerClientException
+     * @throws PushDeviceHandlerServerException
+     * @throws SQLException
+     */
     private void deleteDevice(HttpServletRequest request, HttpServletResponse response)
             throws PushDeviceHandlerClientException, PushDeviceHandlerServerException, SQLException {
 

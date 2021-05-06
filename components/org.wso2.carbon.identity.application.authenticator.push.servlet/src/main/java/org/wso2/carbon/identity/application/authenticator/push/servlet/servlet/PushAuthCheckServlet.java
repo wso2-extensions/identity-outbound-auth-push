@@ -40,6 +40,13 @@ public class PushAuthCheckServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Handles requests received from the wait page to check the authentication status
+     *
+     * @param request  HTTP request
+     * @param response HTTP response
+     * @throws IOException
+     */
     private void handleWebResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         WaitStatus waitResponse = new WaitStatus();
