@@ -19,11 +19,11 @@
 <component xmlns="http://products.wso2.org/carbon">
     <ManagementPermissions>
         <ManagementPermission>
-            <DisplayName>Push Device Management</DisplayName>
+            <DisplayName>Identity</DisplayName>
             <ResourceId>/permission/admin/manage/identity</ResourceId>
         </ManagementPermission>
         <ManagementPermission>
-            <DisplayName>Push Device Management</DisplayName>
+            <DisplayName>User</DisplayName>
             <ResourceId>/permission/admin/manage/identity/user</ResourceId>
         </ManagementPermission>
         <ManagementPermission>
@@ -35,11 +35,11 @@
             <ResourceId>/permission/admin/manage/identity/user/push_device_mgt/delete</ResourceId>
         </ManagementPermission>
         <ManagementPermission>
-            <DisplayName>View</DisplayName>
+            <DisplayName>List</DisplayName>
             <ResourceId>/permission/admin/manage/identity/user/push_device_mgt/list</ResourceId>
         </ManagementPermission>
         <ManagementPermission>
-            <DisplayName>List</DisplayName>
+            <DisplayName>View</DisplayName>
             <ResourceId>/permission/admin/manage/identity/user/push_device_mgt/view</ResourceId>
         </ManagementPermission>
     </ManagementPermissions>
