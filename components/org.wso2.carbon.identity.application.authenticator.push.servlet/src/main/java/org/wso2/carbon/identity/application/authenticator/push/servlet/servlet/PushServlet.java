@@ -25,7 +25,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.application.authentication.framework.context.AuthenticationContext;
-import org.wso2.carbon.identity.application.authenticator.push.PushAuthenticatorConstants;
 import org.wso2.carbon.identity.application.authenticator.push.cache.AuthContextCache;
 import org.wso2.carbon.identity.application.authenticator.push.cache.AuthContextCacheEntry;
 import org.wso2.carbon.identity.application.authenticator.push.cache.AuthContextcacheKey;
@@ -33,6 +32,7 @@ import org.wso2.carbon.identity.application.authenticator.push.dto.AuthDataDTO;
 import org.wso2.carbon.identity.application.authenticator.push.exception.PushAuthenticatorException;
 import org.wso2.carbon.identity.application.authenticator.push.notification.handler.RequestSender;
 import org.wso2.carbon.identity.application.authenticator.push.notification.handler.impl.RequestSenderImpl;
+import org.wso2.carbon.identity.application.authenticator.push.servlet.PushServletConstants;
 import org.wso2.carbon.identity.application.authenticator.push.validator.PushJWTValidator;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.DeviceHandler;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerClientException;
@@ -63,9 +63,9 @@ public class PushServlet extends HttpServlet {
 
         // Handles request from devices page for sending the request from the selected device
 
-        String key = request.getParameter("sessionDataKey");
+        String key = request.getParameter(PushServletConstants.SESSION_DATA_KEY);
 
-        String deviceId = request.getParameter("deviceId");
+        String deviceId = request.getParameter(PushServletConstants.DEVICE_ID);
         RequestSender requestSender = new RequestSenderImpl();
         try {
             requestSender.sendRequest(request, response, deviceId, key);
@@ -112,7 +112,7 @@ public class PushServlet extends HttpServlet {
     private void handleMobileResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         JsonObject json = new JsonParser().parse(request.getReader().readLine()).getAsJsonObject();
-        String token = json.get("authResponse").getAsString();
+        String token = json.get(PushServletConstants.AUTH_RESPONSE).getAsString();
         if (StringUtils.isEmpty(token)) {
             String errorMessage = "The request did not have an authentication response token.";
             if (log.isDebugEnabled()) {
@@ -138,14 +138,14 @@ public class PushServlet extends HttpServlet {
             AuthenticationContext context = AuthContextCache.getInstance().getValueFromCacheByRequestId
                     (new AuthContextcacheKey(sessionDataKey)).getAuthenticationContext();
 
-            AuthDataDTO authDataDTO = (AuthDataDTO) context.getProperty("authData");
+            AuthDataDTO authDataDTO = (AuthDataDTO) context.getProperty(PushServletConstants.AUTH_DATA);
             authDataDTO.setAuthToken(token);
-            context.setProperty("authData", authDataDTO);
+            context.setProperty(PushServletConstants.AUTH_DATA, authDataDTO);
             AuthContextCache.getInstance().addToCacheByRequestId(new AuthContextcacheKey(sessionDataKey),
                     new AuthContextCacheEntry(context));
 
             String sessionDataKeyMobile = validator.getSessionDataKey(token);
-            String status = PushAuthenticatorConstants.COMPLETED;
+            String status = PushServletConstants.COMPLETED;
             pushDataStoreInstance.addPushData(sessionDataKeyMobile, status);
             response.setStatus(HttpServletResponse.SC_OK);
             if (log.isDebugEnabled()) {
@@ -167,7 +167,7 @@ public class PushServlet extends HttpServlet {
             throws PushDeviceHandlerClientException, PushDeviceHandlerServerException, SQLException {
 
         DeviceHandler deviceHandler = new DeviceHandlerImpl();
-        deviceHandler.unregisterDevice(request.getParameter("deviceId"));
+        deviceHandler.unregisterDevice(request.getParameter(PushServletConstants.DEVICE_ID));
         response.setStatus(HttpServletResponse.SC_OK);
     }
 }

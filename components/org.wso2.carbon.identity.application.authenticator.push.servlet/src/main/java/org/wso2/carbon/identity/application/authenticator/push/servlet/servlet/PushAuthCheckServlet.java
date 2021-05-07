@@ -62,11 +62,10 @@ public class PushAuthCheckServlet extends HttpServlet {
                 log.debug("Mobile authentication response has not been received yet!");
             }
 
-        } else if (status.equals(PushServletConstants.Status.COMPLETED.name())) {
-            // TODO: Change to validate through a constant instead of enum
+        } else if (status.equals(PushServletConstants.COMPLETED)) {
             // If the signed challenge sent from the mobile application is not null,else block is executed..
             response.setStatus(HttpServletResponse.SC_OK);
-            waitResponse.setStatus(PushServletConstants.Status.COMPLETED.name());
+            waitResponse.setStatus(PushServletConstants.COMPLETED);
             pushDataStoreInstance.removePushData(sessionDataKeyWeb);
             response.setContentType(MediaType.APPLICATION_JSON);
             String json = new Gson().toJson(waitResponse);

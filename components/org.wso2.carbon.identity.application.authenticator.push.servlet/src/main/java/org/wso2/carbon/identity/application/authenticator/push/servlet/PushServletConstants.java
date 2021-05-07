@@ -31,11 +31,10 @@ public class PushServletConstants {
     public static final String SIGNED_CHALLENGE = "signedChallenge";
     public static final String PUSH_AUTH_ENDPOINT = "/push-auth/authenticate";
     public static final String PUSH_AUTH_STATUS_ENDPOINT = "/push-auth/check-status";
+    public static final String COMPLETED = "COMPLETED";
 
-    /**
-     * Object holding wait status. The status of the response from mobile is either COMPLETED or REJECTED.
-     */
-    public enum Status {
-        COMPLETED, REJECTED
-    }
+    public static final String SESSION_DATA_KEY = "sessionDataKey";
+    public static final String DEVICE_ID = "deviceId";
+    public static final String AUTH_DATA = "authData";
+    public static final String AUTH_RESPONSE = "authResponse";
 }
