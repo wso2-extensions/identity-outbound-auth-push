@@ -31,14 +31,9 @@ import org.wso2.carbon.identity.application.authenticator.push.cache.AuthContext
 import org.wso2.carbon.identity.application.authenticator.push.dto.AuthDataDTO;
 import org.wso2.carbon.identity.application.authenticator.push.servlet.PushServletConstants;
 import org.wso2.carbon.identity.application.authenticator.push.validator.PushJWTValidator;
-import org.wso2.carbon.identity.application.authenticator.push.device.handler.DeviceHandler;
-import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerClientException;
-import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerServerException;
-import org.wso2.carbon.identity.application.authenticator.push.device.handler.impl.DeviceHandlerImpl;
 import org.wso2.carbon.identity.application.authenticator.push.servlet.store.impl.PushDataStoreImpl;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -59,26 +54,11 @@ public class PushServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
 
-        // Handles request from the mobile app for authentication
-
-        String action = request.getParameter("ACTION");
-        if (action == null) {
-            action = "AUTH_REQUEST";
-        }
-        if (action.equals("DELETE")) {
-            try {
-                deleteDevice(request, response);
-            } catch (PushDeviceHandlerClientException e) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Device not found");
-            } catch (PushDeviceHandlerServerException e) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Server Error");
-            } catch (SQLException e) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "SQL Exception");
-            }
-        } else {
-            handleMobileResponse(request, response);
+        if (log.isDebugEnabled()) {
+            log.error("Authentication request received from mobile app.");
         }
 
+        handleMobileResponse(request, response);
     }
 
     /**
@@ -133,20 +113,4 @@ public class PushServlet extends HttpServlet {
         }
     }
 
-    /**
-     * Handles request from mobile app to remove a registered device
-     *
-     * @param request  HTTP request
-     * @param response HTTP response
-     * @throws PushDeviceHandlerClientException
-     * @throws PushDeviceHandlerServerException
-     * @throws SQLException
-     */
-    private void deleteDevice(HttpServletRequest request, HttpServletResponse response)
-            throws PushDeviceHandlerClientException, PushDeviceHandlerServerException, SQLException {
-
-        DeviceHandler deviceHandler = new DeviceHandlerImpl();
-        deviceHandler.unregisterDevice(request.getParameter(PushServletConstants.DEVICE_ID));
-        response.setStatus(HttpServletResponse.SC_OK);
-    }
 }
