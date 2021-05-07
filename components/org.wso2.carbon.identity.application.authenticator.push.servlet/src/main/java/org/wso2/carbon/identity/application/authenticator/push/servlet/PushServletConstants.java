@@ -31,6 +31,7 @@ public class PushServletConstants {
     public static final String SIGNED_CHALLENGE = "signedChallenge";
     public static final String PUSH_AUTH_ENDPOINT = "/push-auth/authenticate";
     public static final String PUSH_AUTH_STATUS_ENDPOINT = "/push-auth/check-status";
+    public static final String PUSH_AUTH_SEND_ENDPOINT = "/push-auth/send";
     public static final String COMPLETED = "COMPLETED";
 
     public static final String SESSION_DATA_KEY = "sessionDataKey";
