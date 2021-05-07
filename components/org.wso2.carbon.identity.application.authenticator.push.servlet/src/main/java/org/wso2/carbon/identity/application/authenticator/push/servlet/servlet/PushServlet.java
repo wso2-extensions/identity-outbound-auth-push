@@ -103,7 +103,7 @@ public class PushServlet extends HttpServlet {
                     new AuthContextCacheEntry(context));
 
             String sessionDataKeyMobile = validator.getSessionDataKey(token);
-            String status = PushServletConstants.COMPLETED;
+            String status = PushServletConstants.Status.COMPLETED.name();
             pushDataStoreInstance.addPushData(sessionDataKeyMobile, status);
             response.setStatus(HttpServletResponse.SC_OK);
             if (log.isDebugEnabled()) {

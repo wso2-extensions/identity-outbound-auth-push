@@ -50,36 +50,35 @@ public class PushAuthCheckServlet extends HttpServlet {
      */
     private void handleWebResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        WaitStatus waitResponse = new WaitStatus();
+        WaitStatus waitStatus = new WaitStatus();
         String sessionDataKeyWeb = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
         String status = pushDataStoreInstance.getAuthStatus(sessionDataKeyWeb);
 
         if (status == null) {
             response.setStatus(HttpServletResponse.SC_OK);
+            waitStatus.setStatus(PushServletConstants.Status.PENDING.name());
+            response.setContentType(MediaType.APPLICATION_JSON);
+
             if (log.isDebugEnabled()) {
                 log.debug("Mobile authentication response has not been received yet.");
             }
 
-        } else if (status.equals(PushServletConstants.COMPLETED)) {
+        } else if (status.equals(PushServletConstants.Status.COMPLETED.name())) {
             response.setStatus(HttpServletResponse.SC_OK);
-            waitResponse.setStatus(PushServletConstants.COMPLETED);
-            pushDataStoreInstance.removePushData(sessionDataKeyWeb);
+            waitStatus.setStatus(PushServletConstants.Status.COMPLETED.name());
             response.setContentType(MediaType.APPLICATION_JSON);
-            String json = new Gson().toJson(waitResponse);
+
+            pushDataStoreInstance.removePushData(sessionDataKeyWeb);
 
             if (log.isDebugEnabled()) {
-                log.debug("Authentication completed.");
+                log.debug("Mobile authentication has been received. Proceeding to authenticate.");
             }
 
-            PrintWriter out = response.getWriter();
-            out.print(json);
-            out.flush();
-
-        } else {
-            if (log.isDebugEnabled()) {
-                log.debug("Unknown value given for status.");
-            }
-            response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
         }
+
+        String waitResponse = new Gson().toJson(waitStatus);
+        PrintWriter out = response.getWriter();
+        out.print(waitResponse);
+        out.flush();
     }
 }
