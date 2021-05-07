@@ -79,7 +79,6 @@ public class PushServlet extends HttpServlet {
             }
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, errorMessage);
         } else {
-            // If the query parameters session data key and challenge are not null, else block is executed..
             PushJWTValidator validator = new PushJWTValidator();
             String sessionDataKey = validator.getSessionDataKey(token);
 
@@ -108,7 +107,7 @@ public class PushServlet extends HttpServlet {
             pushDataStoreInstance.addPushData(sessionDataKeyMobile, status);
             response.setStatus(HttpServletResponse.SC_OK);
             if (log.isDebugEnabled()) {
-                log.debug("Session data key received from the mobile application: " + sessionDataKeyMobile + ".");
+                log.debug("Completed processing auth response from mobile app.");
             }
         }
     }
