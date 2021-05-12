@@ -194,7 +194,7 @@ public class DeviceDAOImpl implements DeviceDAO {
     }
 
     /**
-     * Convert timestamp to date type
+     * Convert timestamp to date type.
      *
      * @param timestamp Timestamp object
      * @return Date object
@@ -205,7 +205,7 @@ public class DeviceDAOImpl implements DeviceDAO {
     }
 
     /**
-     * Convert date to timestamp type
+     * Convert date to timestamp type.
      *
      * @param date Date object
      * @return Timestamp object

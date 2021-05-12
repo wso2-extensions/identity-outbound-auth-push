@@ -55,8 +55,8 @@ import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -260,7 +260,7 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
     }
 
     /**
-     * Get the authenticated user
+     * Get the authenticated user.
      *
      * @return authenticated user
      */
@@ -272,7 +272,7 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
     }
 
     /**
-     * Verify the signature using the public key for the registered device
+     * Verify the signature using the public key for the registered device.
      *
      * @param signature    signature of the signed challenge
      * @param pushId       pushID of the device
@@ -300,7 +300,7 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
     }
 
     /**
-     * Get the user ID from the username
+     * Get the user ID from the username.
      *
      * @param username username of the user
      * @param realm    user realm for the tenant
@@ -314,7 +314,7 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
     }
 
     /**
-     * Get the user claim values for required fields
+     * Get the user claim values for required fields.
      *
      * @param authenticatedUser Authenticated user
      * @return Retrieved user claims

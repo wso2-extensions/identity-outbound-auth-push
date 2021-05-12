@@ -25,12 +25,12 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- * This class defines the database related operations
+ * This class defines the database related operations.
  */
 public interface DeviceDAO {
 
     /**
-     * Registers a new device by storing in the database
+     * Registers a new device by storing in the database.
      *
      * @param device Object containing data for the device
      * @throws SQLException
@@ -38,7 +38,7 @@ public interface DeviceDAO {
     void registerDevice(Device device) throws SQLException;
 
     /**
-     * Unregisters a device by removing it from the database
+     * Unregisters a device by removing it from the database.
      *
      * @param deviceId Unique ID for the device to be deleted
      * @throws SQLException
@@ -46,7 +46,7 @@ public interface DeviceDAO {
     void unregisterDevice(String deviceId) throws SQLException;
 
     /**
-     * Update the properties of a given device
+     * Update the properties of a given device.
      *
      * @param deviceId      Unique ID for the device to be deleted
      * @param updatedDevice New name for the given device
@@ -55,7 +55,7 @@ public interface DeviceDAO {
     void editDevice(String deviceId, Device updatedDevice) throws SQLException;
 
     /**
-     * Get the device object using the device class
+     * Get the device object using the device class.
      *
      * @param deviceId Unique ID of the required device
      * @return
@@ -65,7 +65,7 @@ public interface DeviceDAO {
     Device getDevice(String deviceId) throws PushDeviceHandlerServerException, SQLException;
 
     /**
-     * Get the list of devices for the user using the username
+     * Get the list of devices for the user using the username.
      *
      * @param userId Unique ID of the user requesting the device list
      * @return
@@ -74,7 +74,7 @@ public interface DeviceDAO {
     List<Device> listDevices(String userId) throws SQLException;
 
     /**
-     * Delete all the devices for the given user from the database
+     * Delete all the devices for the given user from the database.
      *
      * @param userId    Unique ID to identify the user
      * @param userStore
@@ -82,7 +82,7 @@ public interface DeviceDAO {
     void deleteAllDevicesOfUser(int userId, String userStore);
 
     /**
-     * Get the public key for a specific device from the database
+     * Get the public key for a specific device from the database.
      *
      * @param deviceId Unique ID to identify the device
      * @return Public Key string
