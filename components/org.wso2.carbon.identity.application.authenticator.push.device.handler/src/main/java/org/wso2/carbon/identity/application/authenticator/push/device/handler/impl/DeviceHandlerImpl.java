@@ -45,6 +45,7 @@ import org.wso2.carbon.user.core.UserCoreConstants;
 import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
 
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -294,7 +295,7 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
         KeyFactory kf = KeyFactory.getInstance(DeviceHandlerConstants.SIGNATURE_ALGORITHM);
         PublicKey publicKey = kf.generatePublic(spec);
         sign.initVerify(publicKey);
-        sign.update((cacheEntry.getChallenge().toString() + "." + pushId).getBytes());
+        sign.update((cacheEntry.getChallenge().toString() + "." + pushId).getBytes(StandardCharsets.UTF_8));
         return sign.verify(signatureBytes);
     }
 
