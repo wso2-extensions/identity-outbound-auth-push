@@ -55,48 +55,54 @@ public class DeviceDAOImpl implements DeviceDAO {
     public void registerDevice(Device device) throws SQLException {
 
         Connection connection = IdentityDatabaseUtil.getDBConnection(true);
-        PreparedStatement preparedStatement;
-        preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQueries.REGISTER_DEVICE);
-        preparedStatement.setString(1, device.getDeviceId());
-        preparedStatement.setString(2, device.getUserId());
-        preparedStatement.setString(3, device.getDeviceName());
-        preparedStatement.setString(4, device.getDeviceModel());
-        preparedStatement.setString(5, device.getPushId());
-        preparedStatement.setString(6, device.getPublicKey());
-        preparedStatement.setTimestamp(7, new Timestamp(new Date().getTime()));
-        preparedStatement.setTimestamp(8, new Timestamp(new Date().getTime()));
-        preparedStatement.execute();
-        if (!connection.getAutoCommit()) {
-            connection.commit();
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQueries.REGISTER_DEVICE);
+            preparedStatement.setString(1, device.getDeviceId());
+            preparedStatement.setString(2, device.getUserId());
+            preparedStatement.setString(3, device.getDeviceName());
+            preparedStatement.setString(4, device.getDeviceModel());
+            preparedStatement.setString(5, device.getPushId());
+            preparedStatement.setString(6, device.getPublicKey());
+            preparedStatement.setTimestamp(7, new Timestamp(new Date().getTime()));
+            preparedStatement.setTimestamp(8, new Timestamp(new Date().getTime()));
+            preparedStatement.execute();
+            if (!connection.getAutoCommit()) {
+                connection.commit();
+            }
+        } finally {
+            IdentityDatabaseUtil.closeAllConnections(connection, null, preparedStatement);
         }
-        IdentityDatabaseUtil.closeAllConnections(connection, null, preparedStatement);
     }
 
     @Override
     public void unregisterDevice(String deviceId) throws SQLException {
 
         Connection connection = IdentityDatabaseUtil.getDBConnection(true);
-        PreparedStatement preparedStatement;
-
-        preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQueries.UNREGISTER_DEVICE);
-        preparedStatement.setString(1, deviceId);
-        preparedStatement.execute();
-        IdentityDatabaseUtil.closeAllConnections(connection, null, preparedStatement);
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQueries.UNREGISTER_DEVICE);
+            preparedStatement.setString(1, deviceId);
+            preparedStatement.execute();
+        } finally {
+            IdentityDatabaseUtil.closeAllConnections(connection, null, preparedStatement);
+        }
     }
 
     @Override
     public void editDevice(String deviceId, Device updatedDevice) throws SQLException {
 
         Connection connection = IdentityDatabaseUtil.getDBConnection(true);
-        PreparedStatement preparedStatement;
-
-        preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQueries.EDIT_DEVICE);
-        preparedStatement.setString(1, updatedDevice.getDeviceName());
-        preparedStatement.setString(2, updatedDevice.getPushId());
-        preparedStatement.setString(3, deviceId);
-        preparedStatement.execute();
-
-        IdentityDatabaseUtil.closeAllConnections(connection, null, preparedStatement);
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQueries.EDIT_DEVICE);
+            preparedStatement.setString(1, updatedDevice.getDeviceName());
+            preparedStatement.setString(2, updatedDevice.getPushId());
+            preparedStatement.setString(3, deviceId);
+            preparedStatement.execute();
+        } finally {
+            IdentityDatabaseUtil.closeAllConnections(connection, null, preparedStatement);
+        }
 
     }
 
@@ -104,28 +110,30 @@ public class DeviceDAOImpl implements DeviceDAO {
     public Device getDevice(String deviceId) throws PushDeviceHandlerServerException, SQLException {
 
         Connection connection = IdentityDatabaseUtil.getDBConnection(true);
-        PreparedStatement preparedStatement;
+        PreparedStatement preparedStatement = null;
         Device device = new Device();
-
-        preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQueries.GET_DEVICE);
-        preparedStatement.setString(1, deviceId);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        if (resultSet.next()) {
-            device.setDeviceId(resultSet.getString(1));
-            device.setDeviceName(resultSet.getString(2));
-            device.setDeviceModel(resultSet.getString(3));
-            device.setPushId(resultSet.getString(4));
-            device.setPublicKey(resultSet.getString(5));
-            device.setRegistrationTime(timestampToDate(resultSet.getTimestamp(6)));
-            device.setLastUsedTime(timestampToDate(resultSet.getTimestamp(7)));
-        } else {
+        ResultSet resultSet = null;
+        try {
+            preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQueries.GET_DEVICE);
+            preparedStatement.setString(1, deviceId);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                device.setDeviceId(resultSet.getString(1));
+                device.setDeviceName(resultSet.getString(2));
+                device.setDeviceModel(resultSet.getString(3));
+                device.setPushId(resultSet.getString(4));
+                device.setPublicKey(resultSet.getString(5));
+                device.setRegistrationTime(timestampToDate(resultSet.getTimestamp(6)));
+                device.setLastUsedTime(timestampToDate(resultSet.getTimestamp(7)));
+            } else {
+                IdentityDatabaseUtil.closeAllConnections(connection, resultSet, preparedStatement);
+                String errorMessage =
+                        String.format("The requested device: %s is not registered in the system.", deviceId);
+                throw new PushDeviceHandlerServerException(errorMessage);
+            }
+        } finally {
             IdentityDatabaseUtil.closeAllConnections(connection, resultSet, preparedStatement);
-            String errorMessage =
-                    String.format("The requested device: %s is not registered in the system.", deviceId);
-            throw new PushDeviceHandlerServerException(errorMessage);
         }
-
-        IdentityDatabaseUtil.closeAllConnections(connection, resultSet, preparedStatement);
 
         return device;
     }
@@ -135,21 +143,25 @@ public class DeviceDAOImpl implements DeviceDAO {
 
         List<Device> devices = new ArrayList<>();
         Connection connection = IdentityDatabaseUtil.getDBConnection(true);
-        PreparedStatement preparedStatement;
-        Device device;
-        preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQueries.LIST_DEVICES);
-        preparedStatement.setString(1, userId);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()) {
-            device = new Device();
-            device.setDeviceId(resultSet.getString(1));
-            device.setDeviceName(resultSet.getString(2));
-            device.setDeviceModel(resultSet.getString(3));
-            device.setRegistrationTime(timestampToDate(resultSet.getTimestamp(4)));
-            device.setLastUsedTime(timestampToDate(resultSet.getTimestamp(5)));
-            devices.add(device);
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            Device device;
+            preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQueries.LIST_DEVICES);
+            preparedStatement.setString(1, userId);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                device = new Device();
+                device.setDeviceId(resultSet.getString(1));
+                device.setDeviceName(resultSet.getString(2));
+                device.setDeviceModel(resultSet.getString(3));
+                device.setRegistrationTime(timestampToDate(resultSet.getTimestamp(4)));
+                device.setLastUsedTime(timestampToDate(resultSet.getTimestamp(5)));
+                devices.add(device);
+            }
+        } finally {
+            IdentityDatabaseUtil.closeAllConnections(connection, resultSet, preparedStatement);
         }
-        IdentityDatabaseUtil.closeAllConnections(connection, resultSet, preparedStatement);
 
         return devices;
     }
@@ -163,17 +175,21 @@ public class DeviceDAOImpl implements DeviceDAO {
     public String getPublicKey(String deviceId) throws SQLException {
 
         Connection connection = IdentityDatabaseUtil.getDBConnection(true);
-        PreparedStatement preparedStatement;
+        PreparedStatement preparedStatement = null;
         String publicKey = null;
+        ResultSet resultSet = null;
 
-        preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQueries.GET_PUBLIC_KEY);
-        preparedStatement.setString(1, deviceId);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        if (resultSet.next()) {
-            publicKey = (resultSet.getString(1));
+        try {
+            preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQueries.GET_PUBLIC_KEY);
+            preparedStatement.setString(1, deviceId);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                publicKey = (resultSet.getString(1));
+            }
+        } finally {
+            IdentityDatabaseUtil.closeAllConnections(connection, resultSet, preparedStatement);
         }
 
-        IdentityDatabaseUtil.closeAllConnections(connection, resultSet, preparedStatement);
         return publicKey;
     }
 
