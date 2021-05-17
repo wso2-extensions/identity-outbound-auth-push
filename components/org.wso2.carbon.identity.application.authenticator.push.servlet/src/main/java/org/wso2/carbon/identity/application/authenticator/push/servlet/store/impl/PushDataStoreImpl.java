@@ -40,19 +40,13 @@ public class PushDataStoreImpl implements PushDataStore, Serializable {
     }
 
     @Override
-    public String getSignedChallenge(String sessionDataKey) {
-
-        return pushDataStore.get(sessionDataKey);
-    }
-
-    @Override
     public String getAuthStatus(String sessionDataKey) {
 
         return pushDataStore.get(sessionDataKey + "status");
     }
 
     @Override
-    public void addPushData(String sessionDataKey, String authStatus) {
+    public void updateAuthStatus(String sessionDataKey, String authStatus) {
 
         pushDataStore.put(sessionDataKey + "status", authStatus);
     }
@@ -61,23 +55,5 @@ public class PushDataStoreImpl implements PushDataStore, Serializable {
     public void removePushData(String sessionDataKey) {
 
         pushDataStore.remove(sessionDataKey);
-    }
-
-    @Override
-    public String getSignature(String sessionDataKey) {
-
-        return pushDataStore.get(sessionDataKey + "signature");
-    }
-
-    @Override
-    public String getDeviceId(String sessionDataKey) {
-
-        return pushDataStore.get(sessionDataKey + "deviceId");
-    }
-
-    @Override
-    public String getToken(String sessionDataKey) {
-
-        return pushDataStore.get(sessionDataKey + "token");
     }
 }

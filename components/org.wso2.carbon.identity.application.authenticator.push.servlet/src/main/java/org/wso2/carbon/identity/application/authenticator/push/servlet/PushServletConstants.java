@@ -24,11 +24,6 @@ package org.wso2.carbon.identity.application.authenticator.push.servlet;
  */
 public class PushServletConstants {
 
-    public static final String INITIATOR = "initiator";
-    public static final String MOBILE = "mobile";
-    public static final String WEB = "web";
-    public static final String CHALLENGE = "challenge";
-    public static final String SIGNED_CHALLENGE = "signedChallenge";
     public static final String PUSH_AUTH_ENDPOINT = "/push-auth/authenticate";
     public static final String PUSH_AUTH_STATUS_ENDPOINT = "/push-auth/check-status";
     public static final String PUSH_AUTH_SEND_ENDPOINT = "/push-auth/send";

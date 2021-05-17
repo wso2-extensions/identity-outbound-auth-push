@@ -103,7 +103,8 @@
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
-                        <Private-Package>org.wso2.carbon.identity.application.authenticator.push.servlet.internal</Private-Package>
+                        <Private-Package>org.wso2.carbon.identity.application.authenticator.push.servlet.internal
+                        </Private-Package>
                         <Export-Package>
                             !org.wso2.carbon.identity.application.authenticator.push.servlet.internal,
                             org.wso2.carbon.identity.application.authenticator.push.servlet,

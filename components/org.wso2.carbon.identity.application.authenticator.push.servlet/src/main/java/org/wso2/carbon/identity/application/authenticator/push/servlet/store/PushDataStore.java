@@ -25,28 +25,18 @@ package org.wso2.carbon.identity.application.authenticator.push.servlet.store;
 public interface PushDataStore {
 
     /**
-     * Returns the signed challenge stored against the session data key in push data store.
-     */
-    String getSignedChallenge(String sessionDataKey);
-
-    /**
      * Returns the authentication status stored against the session data key in push data store.
      */
     String getAuthStatus(String sessionDataKey);
 
     /**
-     * Adds a new record of session data key against signed challenge to the push data store.
+     * Adds a new record of session data key against auth status to the push data store.
      */
-    void addPushData(String sessionDataKey, String authStatus);
+    void updateAuthStatus(String sessionDataKey, String authStatus);
 
     /**
      * Removes the record with the given session data key in push data store.
      */
     void removePushData(String sessionDataKey);
 
-    String getSignature(String sessionDataKey);
-
-    String getDeviceId(String sessionDataKey);
-
-    String getToken(String sessionDataKey);
 }
