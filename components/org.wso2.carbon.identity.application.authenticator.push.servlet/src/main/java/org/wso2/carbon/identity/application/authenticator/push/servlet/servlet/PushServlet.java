@@ -25,12 +25,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.application.authentication.framework.context.AuthenticationContext;
-import org.wso2.carbon.identity.application.authenticator.push.cache.AuthContextCache;
-import org.wso2.carbon.identity.application.authenticator.push.cache.AuthContextCacheEntry;
-import org.wso2.carbon.identity.application.authenticator.push.cache.AuthContextcacheKey;
+import org.wso2.carbon.identity.application.authenticator.push.core.PushAuthContextManager;
+import org.wso2.carbon.identity.application.authenticator.push.core.PushJWTValidator;
+import org.wso2.carbon.identity.application.authenticator.push.core.impl.PushAuthContextManagerImpl;
 import org.wso2.carbon.identity.application.authenticator.push.dto.AuthDataDTO;
 import org.wso2.carbon.identity.application.authenticator.push.servlet.PushServletConstants;
-import org.wso2.carbon.identity.application.authenticator.push.validator.PushJWTValidator;
 import org.wso2.carbon.identity.application.authenticator.push.servlet.store.impl.PushDataStoreImpl;
 
 import java.io.IOException;
@@ -48,7 +47,7 @@ public class PushServlet extends HttpServlet {
 
     private static final long serialVersionUID = -2050679246736808648L;
     private static final Log log = LogFactory.getLog(PushServlet.class);
-    private PushDataStoreImpl pushDataStoreInstance = PushDataStoreImpl.getInstance();
+    private final PushDataStoreImpl pushDataStoreInstance = PushDataStoreImpl.getInstance();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -70,6 +69,7 @@ public class PushServlet extends HttpServlet {
      */
     private void handleMobileResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+        PushAuthContextManager contextManager = new PushAuthContextManagerImpl();
         JsonObject json = new JsonParser().parse(request.getReader().readLine()).getAsJsonObject();
         String token = json.get(PushServletConstants.AUTH_RESPONSE).getAsString();
         if (StringUtils.isEmpty(token)) {
@@ -93,14 +93,12 @@ public class PushServlet extends HttpServlet {
                 return;
             }
 
-            AuthenticationContext context = AuthContextCache.getInstance().getValueFromCacheByRequestId
-                    (new AuthContextcacheKey(sessionDataKey)).getAuthenticationContext();
+            AuthenticationContext context = contextManager.getContext(sessionDataKey);
 
             AuthDataDTO authDataDTO = (AuthDataDTO) context.getProperty(PushServletConstants.AUTH_DATA);
             authDataDTO.setAuthToken(token);
             context.setProperty(PushServletConstants.AUTH_DATA, authDataDTO);
-            AuthContextCache.getInstance().addToCacheByRequestId(new AuthContextcacheKey(sessionDataKey),
-                    new AuthContextCacheEntry(context));
+            contextManager.storeContext(sessionDataKey, context);
 
             String sessionDataKeyMobile = validator.getSessionDataKey(token);
             String status = PushServletConstants.Status.COMPLETED.name();

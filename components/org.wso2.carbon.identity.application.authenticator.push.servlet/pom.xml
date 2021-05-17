@@ -88,6 +88,10 @@
             <groupId>org.wso2.carbon.identity.outbound.auth.push</groupId>
             <artifactId>org.wso2.carbon.identity.application.authenticator.push</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.identity.outbound.auth.push</groupId>
+            <artifactId>org.wso2.carbon.identity.application.authenticator.push.core</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -118,15 +122,18 @@
                             org.eclipse.equinox.http.helper,
                             org.osgi.service.component;version="[1.2.0,2.0.0)",
                             org.osgi.service.http;version="[1.2,2)",
-                            org.wso2.carbon.identity.application.authenticator.push;version="[1.0,2)",
-                            org.wso2.carbon.identity.application.authenticator.push.validator;version="[1.0,2)",
-                            org.wso2.carbon.identity.application.authenticator.push.dto;version="[1.0,2)",
-                            org.wso2.carbon.identity.application.authenticator.push.dto.impl;version="[1.0,2)",
-                            org.wso2.carbon.identity.application.authenticator.push.cache;version="[1.0,2)",
-                            org.wso2.carbon.identity.application.authenticator.push.device.handler;version="[1.0,2)",
-                            org.wso2.carbon.identity.application.authenticator.push.device.handler.model;version="[1.0,2)",
-                            org.wso2.carbon.identity.application.authenticator.push.device.handler.exception;version="[1.0,2)",
-                            org.wso2.carbon.identity.application.authenticator.push.device.handler.impl;version="[1.0,2)"
+                            org.wso2.carbon.identity.application.authenticator.push;version="[0.1,1)",
+                            org.wso2.carbon.identity.application.authenticator.push.validator;version="[0.1,1)",
+                            org.wso2.carbon.identity.application.authenticator.push.dto;version="[0.1,1)",
+                            org.wso2.carbon.identity.application.authenticator.push.dto.impl;version="[0.1,1)",
+                            org.wso2.carbon.identity.application.authenticator.push.cache;version="[0.1,1)",
+                            org.wso2.carbon.identity.application.authenticator.push.device.handler;version="[0.1,1)",
+                            org.wso2.carbon.identity.application.authenticator.push.device.handler.model;version="[0.1,1)",
+                            org.wso2.carbon.identity.application.authenticator.push.device.handler.exception;version="[0.1,1)",
+                            org.wso2.carbon.identity.application.authenticator.push.device.handler.impl;version="[0.1,1)",
+                            org.wso2.carbon.identity.application.authenticator.push.core;version="[0.1,1)",
+                            org.wso2.carbon.identity.application.authenticator.push.core.impl;version="[0.1,1)",
+                            org.wso2.carbon.identity.application.authenticator.push.core.exception;version="[0.1,1)",
                         </Import-Package>
                     </instructions>
                 </configuration>
