@@ -25,8 +25,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
-import org.wso2.carbon.identity.user.store.configuration.listener.UserStoreConfigListener;
-import org.wso2.carbon.user.core.service.RealmService;
+import org.wso2.carbon.identity.application.authenticator.push.device.handler.DeviceHandler;
+import org.wso2.carbon.identity.application.authenticator.push.device.handler.impl.DeviceHandlerImpl;
 
 /**
  * This class activates the device handler bundle.
@@ -38,36 +38,14 @@ import org.wso2.carbon.user.core.service.RealmService;
 public class PushDeviceHandlerServiceComponent implements BundleActivator {
 
     private static final Log log = LogFactory.getLog(PushDeviceHandlerServiceComponent.class);
-    private static RealmService realmService;
-
-    protected void setRealmService(RealmService realmService) {
-
-        if (log.isDebugEnabled()) {
-            log.debug("Setting the Realm Service.");
-        }
-        PushDeviceHandlerServiceComponent.realmService = realmService;
-    }
-
-    protected void unsetRealmService(RealmService realmService) {
-
-        if (log.isDebugEnabled()) {
-            log.debug("UnSetting the Realm Service");
-        }
-        PushDeviceHandlerServiceComponent.realmService = null;
-    }
-
-    public static RealmService getRealmService() {
-
-        return realmService;
-    }
 
     @Activate
     @Override
     public void start(BundleContext bundleContext) throws Exception {
 
         try {
-            bundleContext.registerService(UserStoreConfigListener.class.getName(),
-                    new UserStoreConfigListenerImpl(), null);
+            bundleContext.registerService(DeviceHandler.class.getName(),
+                    new DeviceHandlerImpl(), null);
             log.debug("Activating Push Device Handler bundle...");
 
         } catch (Exception e) {
