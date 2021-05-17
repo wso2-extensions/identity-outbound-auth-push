@@ -38,7 +38,7 @@ public class PushServletConstants {
     public static final String AUTH_RESPONSE = "authResponse";
 
     /**
-     * Object holding authentication mobile response status
+     * Object holding authentication mobile response status.
      */
     public enum Status {
         COMPLETED, PENDING

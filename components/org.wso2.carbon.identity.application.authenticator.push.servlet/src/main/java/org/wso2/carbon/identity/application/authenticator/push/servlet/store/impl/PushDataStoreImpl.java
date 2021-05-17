@@ -31,8 +31,8 @@ import java.util.Map;
 public class PushDataStoreImpl implements PushDataStore, Serializable {
 
     private static final long serialVersionUID = 8385881451715660472L;
-    private static PushDataStoreImpl pushDataStoreInstance = new PushDataStoreImpl();
-    private Map<String, String> pushDataStore = new HashMap<>();
+    private static final PushDataStoreImpl pushDataStoreInstance = new PushDataStoreImpl();
+    private final Map<String, String> pushDataStore = new HashMap<>();
 
     public static PushDataStoreImpl getInstance() {
 
@@ -47,31 +47,37 @@ public class PushDataStoreImpl implements PushDataStore, Serializable {
 
     @Override
     public String getAuthStatus(String sessionDataKey) {
-       return pushDataStore.get(sessionDataKey + "status");
+
+        return pushDataStore.get(sessionDataKey + "status");
     }
 
     @Override
     public void addPushData(String sessionDataKey, String authStatus) {
+
         pushDataStore.put(sessionDataKey + "status", authStatus);
     }
 
     @Override
     public void removePushData(String sessionDataKey) {
+
         pushDataStore.remove(sessionDataKey);
     }
 
     @Override
     public String getSignature(String sessionDataKey) {
+
         return pushDataStore.get(sessionDataKey + "signature");
     }
 
     @Override
     public String getDeviceId(String sessionDataKey) {
+
         return pushDataStore.get(sessionDataKey + "deviceId");
     }
 
     @Override
     public String getToken(String sessionDataKey) {
+
         return pushDataStore.get(sessionDataKey + "token");
     }
 }

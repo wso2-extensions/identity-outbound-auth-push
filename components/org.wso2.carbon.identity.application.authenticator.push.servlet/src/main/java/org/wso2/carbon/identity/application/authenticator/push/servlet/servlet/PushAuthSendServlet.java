@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet for sending an auth request from the select device page
+ * Servlet for sending an auth request from the select device page.
  */
 public class PushAuthSendServlet extends HttpServlet {
 

@@ -8,21 +8,21 @@ import org.wso2.carbon.identity.application.authenticator.push.servlet.PushServl
 import org.wso2.carbon.identity.application.authenticator.push.servlet.model.WaitStatus;
 import org.wso2.carbon.identity.application.authenticator.push.servlet.store.impl.PushDataStoreImpl;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MediaType;
-import java.io.IOException;
-import java.io.PrintWriter;
 
 /**
- * Servlet for handling the status checks for authentication requests from the push authenticator wait page
+ * Servlet for handling the status checks for authentication requests from the push authenticator wait page.
  */
 public class PushAuthCheckServlet extends HttpServlet {
 
     private static final Log log = LogFactory.getLog(PushAuthCheckServlet.class);
-    private PushDataStoreImpl pushDataStoreInstance = PushDataStoreImpl.getInstance();
+    private final PushDataStoreImpl pushDataStoreInstance = PushDataStoreImpl.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -42,7 +42,7 @@ public class PushAuthCheckServlet extends HttpServlet {
     }
 
     /**
-     * Handles requests received from the wait page to check the authentication status
+     * Handles requests received from the wait page to check the authentication status.
      *
      * @param request  HTTP request
      * @param response HTTP response

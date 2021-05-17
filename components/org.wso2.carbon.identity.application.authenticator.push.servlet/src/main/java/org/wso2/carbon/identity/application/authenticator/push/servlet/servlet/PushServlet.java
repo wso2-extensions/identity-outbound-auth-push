@@ -61,7 +61,7 @@ public class PushServlet extends HttpServlet {
     }
 
     /**
-     * Handles authentication request received from mobile app
+     * Handles authentication request received from mobile app.
      *
      * @param request  HTTP request
      * @param response HTTP response

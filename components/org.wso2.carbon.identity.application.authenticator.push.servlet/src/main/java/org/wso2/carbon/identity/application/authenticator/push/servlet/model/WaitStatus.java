@@ -20,19 +20,20 @@
 package org.wso2.carbon.identity.application.authenticator.push.servlet.model;
 
 /**
- * This class represents the status of the response sent from the mobile app
+ * This class represents the status of the response sent from the mobile app.
  */
 public class WaitStatus {
+
     private String status;
 
-
     public String getStatus() {
+
         return status;
     }
 
     public void setStatus(String status) {
+
         this.status = status;
     }
-
 
 }
