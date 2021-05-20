@@ -19,19 +19,21 @@
 
 package org.wso2.carbon.identity.application.authenticator.push.core.exception;
 
+import org.wso2.carbon.identity.base.IdentityException;
+
 /**
  * Exception class for Push authentication core module.
  */
-public class IdentityPushException extends Exception {
+public class IdentityPushAuthException extends IdentityException {
 
     private static final long serialVersionUID = 1481059218426478592L;
 
-    public IdentityPushException(String message) {
+    public IdentityPushAuthException(String message) {
 
         super(message);
     }
 
-    public IdentityPushException(String message, Throwable e) {
+    public IdentityPushAuthException(String message, Throwable e) {
 
         super(message, e);
     }

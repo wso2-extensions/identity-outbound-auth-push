@@ -28,7 +28,7 @@ import com.nimbusds.jwt.SignedJWT;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.identity.application.authenticator.push.core.exception.IdentityPushException;
+import org.wso2.carbon.identity.application.authenticator.push.core.exception.PushAuthTokenValidationException;
 import org.wso2.carbon.identity.oauth.config.OAuthServerConfiguration;
 
 import java.security.KeyFactory;
@@ -54,36 +54,36 @@ public class PushJWTValidator {
      * @param jwt       JWT to be validated
      * @param publicKey Public key the JWT has been signed with
      * @return Boolean value for validation
-     * @throws IdentityPushException
+     * @throws PushAuthTokenValidationException
      */
     public JWTClaimsSet validate(String jwt, String publicKey)
-            throws IdentityPushException {
+            throws PushAuthTokenValidationException {
 
         if (!isJWT(jwt)) {
-            throw new IdentityPushException("Token is not a valid JWT.");
+            throw new PushAuthTokenValidationException("Token is not a valid JWT.");
         }
 
         try {
             SignedJWT signedJWT = SignedJWT.parse(jwt);
             JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
             if (claimsSet == null) {
-                throw new IdentityPushException("Token validation failed. Claim values were not found.");
+                throw new PushAuthTokenValidationException("Token validation failed. Claim values were not found.");
             }
 
             if (!validateSignature(publicKey, signedJWT)) {
-                throw new IdentityPushException("Token signature validation failed.");
+                throw new PushAuthTokenValidationException("Token signature validation failed.");
             }
 
             if (!checkExpirationTime(claimsSet.getExpirationTime())) {
-                throw new IdentityPushException("Token validation failed. JWT is expired.");
+                throw new PushAuthTokenValidationException("Token validation failed. JWT is expired.");
             }
             if (!checkNotBeforeTime(claimsSet.getNotBeforeTime())) {
-                throw new IdentityPushException("Token validation failed. JWT is not active.");
+                throw new PushAuthTokenValidationException("Token validation failed. JWT is not active.");
             }
 
             return claimsSet;
         } catch (ParseException e) {
-            throw new IdentityPushException("Error occurred while validating jwt", e);
+            throw new PushAuthTokenValidationException("Error occurred while validating jwt", e);
         }
     }
 
@@ -93,9 +93,10 @@ public class PushJWTValidator {
      * @param publicKeyStr Public key for used for signing the JWT
      * @param signedJWT    Signed JWT
      * @return Boolean value for signature validation
-     * @throws IdentityPushException Error when validating the signature
+     * @throws PushAuthTokenValidationException Error when validating the signature
      */
-    private boolean validateSignature(String publicKeyStr, SignedJWT signedJWT) throws IdentityPushException {
+    private boolean validateSignature(String publicKeyStr, SignedJWT signedJWT)
+            throws PushAuthTokenValidationException {
 
         try {
             byte[] publicKeyData = Base64.getDecoder().decode(publicKeyStr);
@@ -106,7 +107,7 @@ public class PushJWTValidator {
             JWSVerifier verifier = new RSASSAVerifier(publicKey);
             return signedJWT.verify(verifier);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException | JOSEException e) {
-            throw new IdentityPushException("Error occurred when validating token signature.", e);
+            throw new PushAuthTokenValidationException("Error occurred when validating token signature.", e);
         }
     }
 
