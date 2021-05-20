@@ -28,7 +28,7 @@ import org.wso2.carbon.utils.CarbonUtils;
 public class PushAuthContextCache extends
         BaseCache<PushAuthContextCacheKey, PushAuthContextCacheEntry> {
 
-    private static final String AUTH_CONTEXT_CACHE_NAME = "PushAuthContextCache";
+    private static final String PUSH_AUTH_CONTEXT_CACHE = "PushAuthContextCache";
     private static volatile PushAuthContextCache cache;
 
     private PushAuthContextCache(String cacheName) {
@@ -38,7 +38,7 @@ public class PushAuthContextCache extends
 
     private PushAuthContextCache() {
 
-        super(AUTH_CONTEXT_CACHE_NAME, true);
+        super(PUSH_AUTH_CONTEXT_CACHE, true);
     }
 
     public static PushAuthContextCache getInstance() {
@@ -54,18 +54,18 @@ public class PushAuthContextCache extends
 
     private void storeToSessionStore(String id, PushAuthContextCacheEntry entry) {
 
-        SessionDataStore.getInstance().storeSessionData(id, AUTH_CONTEXT_CACHE_NAME, entry);
+        SessionDataStore.getInstance().storeSessionData(id, PUSH_AUTH_CONTEXT_CACHE, entry);
     }
 
     private PushAuthContextCacheEntry getFromSessionStore(String id) {
 
         return (PushAuthContextCacheEntry) SessionDataStore.getInstance().
-                getSessionData(id, AUTH_CONTEXT_CACHE_NAME);
+                getSessionData(id, PUSH_AUTH_CONTEXT_CACHE);
     }
 
     private void clearFromSessionStore(String id) {
 
-        SessionDataStore.getInstance().clearSessionData(id, AUTH_CONTEXT_CACHE_NAME);
+        SessionDataStore.getInstance().clearSessionData(id, PUSH_AUTH_CONTEXT_CACHE);
     }
 
     public void clearCacheEntryByRequestId(PushAuthContextCacheKey key) {
