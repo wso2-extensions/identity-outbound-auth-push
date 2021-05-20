@@ -101,7 +101,7 @@ public class PushJWTValidator {
         try {
             byte[] publicKeyData = Base64.getDecoder().decode(publicKeyStr);
             X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKeyData);
-            KeyFactory kf = KeyFactory.getInstance("RSA");
+            KeyFactory kf = KeyFactory.getInstance(PushAuthCommonConstants.SIGNING_ALGORITHM);
             RSAPublicKey publicKey = (RSAPublicKey) kf.generatePublic(spec);
 
             JWSVerifier verifier = new RSASSAVerifier(publicKey);
