@@ -23,6 +23,7 @@ import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.jwt.SignedJWT;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -55,37 +56,35 @@ public class PushJWTValidator {
      * @return Boolean value for validation
      * @throws IdentityPushException
      */
-    public boolean validate(String jwt, String publicKey)
+    public JWTClaimsSet validate(String jwt, String publicKey)
             throws IdentityPushException {
 
         if (!isJWT(jwt)) {
-            return false;
+            throw new IdentityPushException("Token is not a valid JWT.");
         }
 
         try {
             SignedJWT signedJWT = SignedJWT.parse(jwt);
             JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
             if (claimsSet == null) {
-                throw new IdentityPushException("Claim values are empty in the given jwt.");
+                throw new IdentityPushException("Token validation failed. Claim values were not found.");
             }
 
-            // JWT Signature validation
             if (!validateSignature(publicKey, signedJWT)) {
-                return false;
+                throw new IdentityPushException("Token signature validation failed.");
             }
 
-            // Validation of expiry time
             if (!checkExpirationTime(claimsSet.getExpirationTime())) {
-                return false;
+                throw new IdentityPushException("Token validation failed. JWT is expired.");
             }
-            // Validation of active time
             if (!checkNotBeforeTime(claimsSet.getNotBeforeTime())) {
-                return false;
+                throw new IdentityPushException("Token validation failed. JWT is not active.");
             }
+
+            return claimsSet;
         } catch (ParseException e) {
-            throw new IdentityPushException("Error while validating jwt", e);
+            throw new IdentityPushException("Error occurred while validating jwt", e);
         }
-        return true;
     }
 
     /**
@@ -96,7 +95,7 @@ public class PushJWTValidator {
      * @return Boolean value for signature validation
      * @throws IdentityPushException Error when validating the signature
      */
-    public static boolean validateSignature(String publicKeyStr, SignedJWT signedJWT) throws IdentityPushException {
+    private boolean validateSignature(String publicKeyStr, SignedJWT signedJWT) throws IdentityPushException {
 
         try {
             byte[] publicKeyData = Base64.getDecoder().decode(publicKeyStr);
@@ -109,68 +108,6 @@ public class PushJWTValidator {
         } catch (NoSuchAlgorithmException | InvalidKeySpecException | JOSEException e) {
             throw new IdentityPushException("Error occurred when validating token signature.", e);
         }
-    }
-
-    /**
-     * Get claim values from JWT by name.
-     *
-     * @param jwt   JWT string
-     * @param claim Name of the required claim
-     * @return Retrieved claim
-     */
-    public String getJWTClaim(String jwt, String claim) {
-
-        try {
-            if (!isJWT(jwt)) {
-                return null;
-            } else {
-                SignedJWT signedJWT = SignedJWT.parse(jwt);
-                JWTClaimsSet claimSet = signedJWT.getJWTClaimsSet();
-                if (claimSet != null) {
-                    return (String) claimSet.getClaim(claim);
-                } else {
-                    return null;
-                }
-            }
-        } catch (ParseException e) {
-            if (!log.isDebugEnabled()) {
-                log.error("Error occurred while parsing JWT string", e);
-            }
-            return null;
-        }
-    }
-
-    /**
-     * Get Device ID from JWT.
-     *
-     * @param jwt JWT string
-     * @return Device ID
-     */
-    public String getDeviceId(String jwt) {
-
-        return getJWTClaim(jwt, "did");
-    }
-
-    /**
-     * Get Session data key from JWT.
-     *
-     * @param jwt JWT string
-     * @return Session data key
-     */
-    public String getSessionDataKey(String jwt) {
-
-        return getJWTClaim(jwt, "sid");
-    }
-
-    /**
-     * Get Authentication status from JWT.
-     *
-     * @param jwt JWT string
-     * @return Authentication status
-     */
-    public String getAuthStatus(String jwt) {
-
-        return getJWTClaim(jwt, "res");
     }
 
     /**
@@ -210,12 +147,24 @@ public class PushJWTValidator {
      * Validate legitimacy of JWT.
      *
      * @param tokenIdentifier JWT string
-     * @return Boolean validation for if the string is a JWT
      */
     private boolean isJWT(String tokenIdentifier) {
 
-        // JWT token contains 3 base64 encoded components separated by periods.
-        return StringUtils.countMatches(tokenIdentifier, DOT_SEPARATOR) == 2;
+        if (StringUtils.isBlank(tokenIdentifier)) {
+            return false;
+        }
+        if (StringUtils.countMatches(tokenIdentifier, DOT_SEPARATOR) != 2) {
+            return false;
+        }
+        try {
+            JWTParser.parse(tokenIdentifier);
+            return true;
+        } catch (ParseException e) {
+            if (log.isDebugEnabled()) {
+                log.debug("Provided token identifier is not a parsable JWT.", e);
+            }
+            return false;
+        }
     }
 
 }
