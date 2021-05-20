@@ -30,11 +30,6 @@ import org.wso2.carbon.identity.application.authenticator.push.core.cache.PushAu
  */
 public class PushAuthContextManagerImpl implements PushAuthContextManager {
 
-    public PushAuthContextManagerImpl() {
-
-        super();
-    }
-
     @Override
     public void storeContext(String key, AuthenticationContext context) {
 
