@@ -17,7 +17,7 @@
  *
  */
 
-package org.wso2.carbon.identity.application.authenticator.push.core;
+package org.wso2.carbon.identity.application.authenticator.push.common;
 
 import org.wso2.carbon.identity.application.authentication.framework.context.AuthenticationContext;
 

@@ -17,13 +17,13 @@
  *
  */
 
-package org.wso2.carbon.identity.application.authenticator.push.core.impl;
+package org.wso2.carbon.identity.application.authenticator.push.common.impl;
 
 import org.wso2.carbon.identity.application.authentication.framework.context.AuthenticationContext;
-import org.wso2.carbon.identity.application.authenticator.push.core.PushAuthContextManager;
-import org.wso2.carbon.identity.application.authenticator.push.core.cache.PushAuthContextCache;
-import org.wso2.carbon.identity.application.authenticator.push.core.cache.PushAuthContextCacheEntry;
-import org.wso2.carbon.identity.application.authenticator.push.core.cache.PushAuthContextCacheKey;
+import org.wso2.carbon.identity.application.authenticator.push.common.PushAuthContextManager;
+import org.wso2.carbon.identity.application.authenticator.push.common.cache.PushAuthContextCache;
+import org.wso2.carbon.identity.application.authenticator.push.common.cache.PushAuthContextCacheEntry;
+import org.wso2.carbon.identity.application.authenticator.push.common.cache.PushAuthContextCacheKey;
 
 /**
  * Implements PushAuthContextManager interface.

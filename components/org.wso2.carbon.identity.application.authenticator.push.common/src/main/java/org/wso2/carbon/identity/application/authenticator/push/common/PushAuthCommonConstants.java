@@ -17,7 +17,7 @@
  *
  */
 
-package org.wso2.carbon.identity.application.authenticator.push.core;
+package org.wso2.carbon.identity.application.authenticator.push.common;
 
 /**
  * Constants for Push authentication common component.

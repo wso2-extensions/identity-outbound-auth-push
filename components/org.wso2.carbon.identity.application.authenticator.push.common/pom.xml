@@ -9,7 +9,7 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>org.wso2.carbon.identity.application.authenticator.push.core</artifactId>
+    <artifactId>org.wso2.carbon.identity.application.authenticator.push.common</artifactId>
     <packaging>bundle</packaging>
 
     <dependencies>
@@ -228,7 +228,7 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Private-Package>
-                            org.wso2.carbon.identity.application.authenticator.push.core.internal,
+                            org.wso2.carbon.identity.application.authenticator.push.common.internal,
                         </Private-Package>
                         <Import-Package>
                             org.apache.commons.logging;version="[ 1.2,2)",
@@ -252,11 +252,11 @@
                             com.nimbusds.jwt;version="[7.3,8)",
                         </Import-Package>
                         <Export-Package>
-                            !org.wso2.carbon.identity.application.authenticator.push.core.internal,
-                            org.wso2.carbon.identity.application.authenticator.push.core.cache,
-                            org.wso2.carbon.identity.application.authenticator.push.core,
-                            org.wso2.carbon.identity.application.authenticator.push.core.impl,
-                            org.wso2.carbon.identity.application.authenticator.push.core.exception
+                            !org.wso2.carbon.identity.application.authenticator.push.common.internal,
+                            org.wso2.carbon.identity.application.authenticator.push.common.cache,
+                            org.wso2.carbon.identity.application.authenticator.push.common,
+                            org.wso2.carbon.identity.application.authenticator.push.common.impl,
+                            org.wso2.carbon.identity.application.authenticator.push.common.exception
                         </Export-Package>
                     </instructions>
                 </configuration>

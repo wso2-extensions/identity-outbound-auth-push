@@ -16,7 +16,7 @@
  * under the License.
  */
 
-package org.wso2.carbon.identity.application.authenticator.push.core.cache;
+package org.wso2.carbon.identity.application.authenticator.push.common.cache;
 
 import org.wso2.carbon.identity.application.common.cache.CacheKey;
 

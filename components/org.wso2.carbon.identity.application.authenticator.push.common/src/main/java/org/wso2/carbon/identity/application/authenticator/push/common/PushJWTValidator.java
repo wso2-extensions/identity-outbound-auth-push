@@ -17,7 +17,7 @@
  *
  */
 
-package org.wso2.carbon.identity.application.authenticator.push.core;
+package org.wso2.carbon.identity.application.authenticator.push.common;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSVerifier;
@@ -28,7 +28,7 @@ import com.nimbusds.jwt.SignedJWT;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.identity.application.authenticator.push.core.exception.PushAuthTokenValidationException;
+import org.wso2.carbon.identity.application.authenticator.push.common.exception.PushAuthTokenValidationException;
 import org.wso2.carbon.identity.oauth.config.OAuthServerConfiguration;
 
 import java.security.KeyFactory;
