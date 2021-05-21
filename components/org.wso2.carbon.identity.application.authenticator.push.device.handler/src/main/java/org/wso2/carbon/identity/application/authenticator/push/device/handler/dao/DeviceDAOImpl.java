@@ -21,7 +21,6 @@ package org.wso2.carbon.identity.application.authenticator.push.device.handler.d
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.DeviceHandlerConstants;
-import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerServerException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.Device;
 import org.wso2.carbon.identity.core.util.IdentityDatabaseUtil;
 
@@ -33,6 +32,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This class implements DeviceDAO interface .
@@ -107,17 +107,18 @@ public class DeviceDAOImpl implements DeviceDAO {
     }
 
     @Override
-    public Device getDevice(String deviceId) throws PushDeviceHandlerServerException, SQLException {
+    public Optional<Device> getDevice(String deviceId) throws SQLException {
 
         Connection connection = IdentityDatabaseUtil.getDBConnection(true);
         PreparedStatement preparedStatement = null;
-        Device device = new Device();
+        Device device = null;
         ResultSet resultSet = null;
         try {
             preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQueries.GET_DEVICE);
             preparedStatement.setString(1, deviceId);
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
+                device = new Device();
                 device.setDeviceId(resultSet.getString(DeviceHandlerConstants.DEVICE_ID));
                 device.setDeviceName(resultSet.getString(DeviceHandlerConstants.DEVICE_NAME));
                 device.setDeviceModel(resultSet.getString(DeviceHandlerConstants.DEVICE_MODEL));
@@ -126,16 +127,12 @@ public class DeviceDAOImpl implements DeviceDAO {
                 device.setRegistrationTime(timestampToDate(resultSet.
                         getTimestamp(DeviceHandlerConstants.REGISTRATION_TIME)));
                 device.setLastUsedTime(timestampToDate(resultSet.getTimestamp(DeviceHandlerConstants.LAST_USED_TIME)));
-            } else {
-                String errorMessage =
-                        String.format("The requested device: %s is not registered in the system.", deviceId);
-                throw new PushDeviceHandlerServerException(errorMessage);
             }
         } finally {
             IdentityDatabaseUtil.closeAllConnections(connection, resultSet, preparedStatement);
         }
 
-        return device;
+        return Optional.ofNullable(device);
     }
 
     @Override
@@ -173,7 +170,7 @@ public class DeviceDAOImpl implements DeviceDAO {
     }
 
     @Override
-    public String getPublicKey(String deviceId) throws SQLException {
+    public Optional<String> getPublicKey(String deviceId) throws SQLException {
 
         Connection connection = IdentityDatabaseUtil.getDBConnection(true);
         PreparedStatement preparedStatement = null;
@@ -191,7 +188,7 @@ public class DeviceDAOImpl implements DeviceDAO {
             IdentityDatabaseUtil.closeAllConnections(connection, resultSet, preparedStatement);
         }
 
-        return publicKey;
+        return Optional.ofNullable(publicKey);
     }
 
     /**

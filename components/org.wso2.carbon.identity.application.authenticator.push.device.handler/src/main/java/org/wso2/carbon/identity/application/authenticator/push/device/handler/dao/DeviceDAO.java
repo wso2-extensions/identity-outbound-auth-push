@@ -18,12 +18,12 @@
 
 package org.wso2.carbon.identity.application.authenticator.push.device.handler.dao;
 
-import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerClientException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerServerException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.Device;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * This class defines the database related operations.
@@ -60,10 +60,9 @@ public interface DeviceDAO {
      *
      * @param deviceId Unique ID of the required device
      * @return
-     * @throws PushDeviceHandlerServerException
      * @throws SQLException
      */
-    Device getDevice(String deviceId) throws SQLException, PushDeviceHandlerClientException;
+    Optional<Device> getDevice(String deviceId) throws SQLException;
 
     /**
      * Get the list of devices for the user using the username.
@@ -89,6 +88,6 @@ public interface DeviceDAO {
      * @return Public Key string
      * @throws SQLException
      */
-    String getPublicKey(String deviceId) throws SQLException;
+    Optional<String> getPublicKey(String deviceId) throws SQLException;
 
 }

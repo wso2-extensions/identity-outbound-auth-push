@@ -58,6 +58,7 @@ import java.sql.SQLException;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -167,9 +168,9 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
     public Device getDevice(String deviceId) throws PushDeviceHandlerServerException, PushDeviceHandlerClientException {
 
         try {
-            Device device = DeviceDAOImpl.getInstance().getDevice(deviceId);
-            if (device.getDeviceId() != null) {
-                return device;
+            Optional<Device> device = DeviceDAOImpl.getInstance().getDevice(deviceId);
+            if (device.isPresent()) {
+                return device.get();
             } else {
                 String errorMessage = String.format("Device: %s was not found.", deviceId);
                 throw new PushDeviceHandlerClientException(errorMessage);
@@ -236,15 +237,14 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
             throws PushDeviceHandlerServerException, PushDeviceHandlerClientException {
 
         try {
-            getDevice(deviceId);
-        } catch (PushDeviceHandlerClientException e) {
-            String errorMessage =
-                    String.format("Failed to get public key for device: %s as it was not found.", deviceId);
-            throw new PushDeviceHandlerClientException(errorMessage, e);
-        }
-
-        try {
-            return DeviceDAOImpl.getInstance().getPublicKey(deviceId);
+            Optional<String> publicKey = DeviceDAOImpl.getInstance().getPublicKey(deviceId);
+            if (publicKey.isPresent()) {
+                return publicKey.get();
+            } else {
+                String errorMessage =
+                        String.format("Failed to get public key for device: %s as it was not found.", deviceId);
+                throw new PushDeviceHandlerClientException(errorMessage);
+            }
         } catch (SQLException e) {
             String errorMessage = String.format("Error occurred when trying to get the pubic key for device: %s "
                     + "from the database.", deviceId);

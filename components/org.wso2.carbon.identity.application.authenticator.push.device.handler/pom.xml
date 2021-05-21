@@ -241,7 +241,9 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Private-Package>
-                            org.wso2.carbon.identity.application.authenticator.push.device.handler.internal
+                            org.wso2.carbon.identity.application.authenticator.push.device.handler.internal,
+                            org.wso2.carbon.identity.application.authenticator.push.device.handler.cache,
+                            org.wso2.carbon.identity.application.authenticator.push.device.handler.dao
                         </Private-Package>
                         <Import-Package>
                             com.fasterxml.jackson.core;version="[2.9,3)",
