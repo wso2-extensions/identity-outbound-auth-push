@@ -78,9 +78,6 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
             throw new PushDeviceHandlerClientException("Unidentified request when trying to register device: "
                     + registrationRequest.getDeviceId() + ".");
         }
-        if (log.isDebugEnabled()) {
-            log.debug("Verifying digital signature for device: " + registrationRequest.getDeviceId() + ".");
-        }
         try {
             if (!verifySignature(registrationRequest.getSignature(), registrationRequest.getPushId(),
                     registrationRequest.getPublicKey(), cacheEntry)) {
@@ -201,10 +198,6 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
     public RegistrationDiscoveryData getRegistrationDiscoveryData() throws PushDeviceHandlerServerException {
 
         User user = getAuthenticatedUser();
-
-        if (log.isDebugEnabled()) {
-            log.debug("Retrieving data to generate QR code for user: " + user.toFullQualifiedUsername() + ".");
-        }
 
         Map<String, String> userClaims;
         try {
