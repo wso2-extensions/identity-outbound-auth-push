@@ -66,7 +66,7 @@ public class DeviceDAOImpl implements DeviceDAO {
             preparedStatement.setString(6, device.getPublicKey());
             preparedStatement.setTimestamp(7, new Timestamp(new Date().getTime()));
             preparedStatement.setTimestamp(8, new Timestamp(new Date().getTime()));
-            preparedStatement.execute();
+            preparedStatement.executeUpdate();
             if (!connection.getAutoCommit()) {
                 connection.commit();
             }
@@ -83,7 +83,7 @@ public class DeviceDAOImpl implements DeviceDAO {
         try {
             preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQueries.UNREGISTER_DEVICE);
             preparedStatement.setString(1, deviceId);
-            preparedStatement.execute();
+            preparedStatement.executeUpdate();
         } finally {
             IdentityDatabaseUtil.closeAllConnections(connection, null, preparedStatement);
         }
@@ -99,7 +99,7 @@ public class DeviceDAOImpl implements DeviceDAO {
             preparedStatement.setString(1, updatedDevice.getDeviceName());
             preparedStatement.setString(2, updatedDevice.getPushId());
             preparedStatement.setString(3, deviceId);
-            preparedStatement.execute();
+            preparedStatement.executeUpdate();
         } finally {
             IdentityDatabaseUtil.closeAllConnections(connection, null, preparedStatement);
         }
@@ -126,7 +126,6 @@ public class DeviceDAOImpl implements DeviceDAO {
                 device.setRegistrationTime(timestampToDate(resultSet.getTimestamp(6)));
                 device.setLastUsedTime(timestampToDate(resultSet.getTimestamp(7)));
             } else {
-                IdentityDatabaseUtil.closeAllConnections(connection, resultSet, preparedStatement);
                 String errorMessage =
                         String.format("The requested device: %s is not registered in the system.", deviceId);
                 throw new PushDeviceHandlerServerException(errorMessage);
