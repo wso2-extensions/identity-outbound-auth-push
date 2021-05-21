@@ -90,6 +90,20 @@ public class DeviceDAOImpl implements DeviceDAO {
     }
 
     @Override
+    public void deleteAllDevicesOfUser(String userId) throws SQLException {
+        Connection connection = IdentityDatabaseUtil.getDBConnection(true);
+        PreparedStatement preparedStatement = null;
+        try {
+            preparedStatement = connection.prepareStatement(DeviceHandlerConstants.SQLQueries.REMOVE_USER_DEVICES);
+            preparedStatement.setString(1, userId);
+            preparedStatement.executeUpdate();
+        } finally {
+            IdentityDatabaseUtil.closeAllConnections(connection, null, preparedStatement);
+        }
+    }
+
+
+    @Override
     public void editDevice(String deviceId, Device updatedDevice) throws SQLException {
 
         Connection connection = IdentityDatabaseUtil.getDBConnection(true);
@@ -164,10 +178,6 @@ public class DeviceDAOImpl implements DeviceDAO {
         return devices;
     }
 
-    @Override
-    public void deleteAllDevicesOfUser(int tenant, String userStore) {
-
-    }
 
     @Override
     public Optional<String> getPublicKey(String deviceId) throws SQLException {

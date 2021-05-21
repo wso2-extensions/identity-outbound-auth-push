@@ -18,7 +18,6 @@
 
 package org.wso2.carbon.identity.application.authenticator.push.device.handler.dao;
 
-import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerServerException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.Device;
 
 import java.sql.SQLException;
@@ -76,10 +75,9 @@ public interface DeviceDAO {
     /**
      * Delete all the devices for the given user from the database.
      *
-     * @param userId    Unique ID to identify the user
-     * @param userStore
+     * @param userId Unique ID to identify the user
      */
-    void deleteAllDevicesOfUser(int userId, String userStore);
+    void deleteAllDevicesOfUser(String userId) throws SQLException;
 
     /**
      * Get the public key for a specific device from the database.

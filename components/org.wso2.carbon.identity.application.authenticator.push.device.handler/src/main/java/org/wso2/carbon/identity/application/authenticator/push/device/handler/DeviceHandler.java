@@ -52,6 +52,15 @@ public interface DeviceHandler {
     void unregisterDevice(String deviceId) throws PushDeviceHandlerClientException, PushDeviceHandlerServerException;
 
     /**
+     * Remove all devices of a registered user.
+     *
+     * @param userId Unique ID of the user
+     * @throws PushDeviceHandlerServerException if the UserID is not valid
+     * @throws PushDeviceHandlerClientException if server errors occur
+     */
+    void removeUserDevices(String userId) throws PushDeviceHandlerServerException, PushDeviceHandlerClientException;
+
+    /**
      * Edit the name of a registered device.
      *
      * @param deviceId      ID of the device to update the name of

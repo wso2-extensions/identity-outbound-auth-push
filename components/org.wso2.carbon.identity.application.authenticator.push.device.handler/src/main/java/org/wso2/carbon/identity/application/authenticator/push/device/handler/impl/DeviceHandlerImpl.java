@@ -145,6 +145,29 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
     }
 
     @Override
+    public void removeUserDevices(String userId)
+            throws PushDeviceHandlerServerException, PushDeviceHandlerClientException {
+
+        try {
+            if (!isUserExist(userId)) {
+                String errorMessage = String.format("Failed to remove devices as user %s was not found.", userId);
+                throw new PushDeviceHandlerClientException(errorMessage);
+            }
+        } catch (UserStoreException e) {
+            throw new PushDeviceHandlerServerException("Error occurred when trying to remove devices of user: "
+                    + userId + ".");
+        }
+
+        try {
+            DeviceDAOImpl.getInstance().deleteAllDevicesOfUser(userId);
+        } catch (SQLException e) {
+            String errorMessage = String.format("Error occurred when trying to remove devices for user: %s from the"
+                    + " database.", userId);
+            throw new PushDeviceHandlerServerException(errorMessage, e);
+        }
+    }
+
+    @Override
     public void editDevice(String deviceId, Device updatedDevice)
             throws PushDeviceHandlerServerException, PushDeviceHandlerClientException {
 
@@ -303,6 +326,20 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
 
         AbstractUserStoreManager userStoreManager = (AbstractUserStoreManager) realm.getUserStoreManager();
         return userStoreManager.getUserIDFromUserName(username);
+    }
+
+    /**
+     * Validate if the required user exists.
+     *
+     * @param userId Unique ID of the user
+     * @return boolean depicting the existence if the user
+     * @throws UserStoreException
+     */
+    private boolean isUserExist(String userId) throws UserStoreException {
+
+        UserRealm userRealm = CarbonContext.getThreadLocalCarbonContext().getUserRealm();
+        return userRealm.getUserStoreManager().isExistingUser(userId);
+
     }
 
     /**
