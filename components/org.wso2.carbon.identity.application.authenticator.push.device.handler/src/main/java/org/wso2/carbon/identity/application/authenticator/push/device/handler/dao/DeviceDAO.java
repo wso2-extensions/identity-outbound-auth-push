@@ -18,6 +18,7 @@
 
 package org.wso2.carbon.identity.application.authenticator.push.device.handler.dao;
 
+import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerClientException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerServerException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.Device;
 
@@ -62,7 +63,7 @@ public interface DeviceDAO {
      * @throws PushDeviceHandlerServerException
      * @throws SQLException
      */
-    Device getDevice(String deviceId) throws PushDeviceHandlerServerException, SQLException;
+    Device getDevice(String deviceId) throws SQLException, PushDeviceHandlerClientException;
 
     /**
      * Get the list of devices for the user using the username.

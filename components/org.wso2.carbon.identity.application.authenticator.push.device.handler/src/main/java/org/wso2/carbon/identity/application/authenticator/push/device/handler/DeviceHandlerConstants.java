@@ -27,9 +27,9 @@ public class DeviceHandlerConstants {
     public static final String DOMAIN_NAME = "DOMAIN_NAME";
     public static final String USER_STORE = "USER_STORE";
     public static final String USER_ID = "USER_ID";
-    public static final String ID = "ID";
-    public static final String NAME = "NAME";
-    public static final String MODEL = "MODEL";
+    public static final String DEVICE_ID = "ID";
+    public static final String DEVICE_NAME = "NAME";
+    public static final String DEVICE_MODEL = "MODEL";
     public static final String PUSH_ID = "PUSH_ID";
     public static final String PUBLIC_KEY = "PUBLIC_KEY";
     public static final String REGISTRATION_TIME = "REGISTRATION_TIME";

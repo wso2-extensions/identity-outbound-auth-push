@@ -118,13 +118,14 @@ public class DeviceDAOImpl implements DeviceDAO {
             preparedStatement.setString(1, deviceId);
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                device.setDeviceId(resultSet.getString(1));
-                device.setDeviceName(resultSet.getString(2));
-                device.setDeviceModel(resultSet.getString(3));
-                device.setPushId(resultSet.getString(4));
-                device.setPublicKey(resultSet.getString(5));
-                device.setRegistrationTime(timestampToDate(resultSet.getTimestamp(6)));
-                device.setLastUsedTime(timestampToDate(resultSet.getTimestamp(7)));
+                device.setDeviceId(resultSet.getString(DeviceHandlerConstants.DEVICE_ID));
+                device.setDeviceName(resultSet.getString(DeviceHandlerConstants.DEVICE_NAME));
+                device.setDeviceModel(resultSet.getString(DeviceHandlerConstants.DEVICE_MODEL));
+                device.setPushId(resultSet.getString(DeviceHandlerConstants.PUSH_ID));
+                device.setPublicKey(resultSet.getString(DeviceHandlerConstants.PUBLIC_KEY));
+                device.setRegistrationTime(timestampToDate(resultSet.
+                        getTimestamp(DeviceHandlerConstants.REGISTRATION_TIME)));
+                device.setLastUsedTime(timestampToDate(resultSet.getTimestamp(DeviceHandlerConstants.LAST_USED_TIME)));
             } else {
                 String errorMessage =
                         String.format("The requested device: %s is not registered in the system.", deviceId);
@@ -151,11 +152,12 @@ public class DeviceDAOImpl implements DeviceDAO {
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 device = new Device();
-                device.setDeviceId(resultSet.getString(1));
-                device.setDeviceName(resultSet.getString(2));
-                device.setDeviceModel(resultSet.getString(3));
-                device.setRegistrationTime(timestampToDate(resultSet.getTimestamp(4)));
-                device.setLastUsedTime(timestampToDate(resultSet.getTimestamp(5)));
+                device.setDeviceId(resultSet.getString(DeviceHandlerConstants.DEVICE_ID));
+                device.setDeviceName(resultSet.getString(DeviceHandlerConstants.DEVICE_NAME));
+                device.setDeviceModel(resultSet.getString(DeviceHandlerConstants.DEVICE_MODEL));
+                device.setRegistrationTime(timestampToDate(resultSet
+                        .getTimestamp(DeviceHandlerConstants.REGISTRATION_TIME)));
+                device.setLastUsedTime(timestampToDate(resultSet.getTimestamp(DeviceHandlerConstants.LAST_USED_TIME)));
                 devices.add(device);
             }
         } finally {
@@ -183,7 +185,7 @@ public class DeviceDAOImpl implements DeviceDAO {
             preparedStatement.setString(1, deviceId);
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                publicKey = (resultSet.getString(1));
+                publicKey = (resultSet.getString(DeviceHandlerConstants.PUBLIC_KEY));
             }
         } finally {
             IdentityDatabaseUtil.closeAllConnections(connection, resultSet, preparedStatement);
