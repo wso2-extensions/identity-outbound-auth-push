@@ -129,14 +129,13 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
             throws PushDeviceHandlerServerException, PushDeviceHandlerClientException {
 
         try {
-            getDevice(deviceId);
-        } catch (PushDeviceHandlerClientException e) {
-            String errorMessage = String.format("Failed to remove device: %s as it was not found.", deviceId);
-            throw new PushDeviceHandlerClientException(errorMessage, e);
-        }
-
-        try {
-            DeviceDAOImpl.getInstance().unregisterDevice(deviceId);
+            Optional<Device> device = DeviceDAOImpl.getInstance().getDevice(deviceId);
+            if (device.isPresent()) {
+                DeviceDAOImpl.getInstance().unregisterDevice(deviceId);
+            } else {
+                String errorMessage = String.format("Failed to remove device: %s as it was not found.", deviceId);
+                throw new PushDeviceHandlerClientException(errorMessage);
+            }
         } catch (SQLException e) {
             String errorMessage = String.format("Error occurred when trying to remove device: %s from the"
                     + " database.", deviceId);
