@@ -251,6 +251,7 @@
                             com.yubico.internal.util,org.apache.commons.lang;version="[2.6,3)",
                             org.apache.commons.logging;version="[ 1.2,2)",
                             org.osgi.framework;version="[1.8,2)",
+                            org.osgi.service.component;version="${osgi.service.component.imp.pkg.version.range}",
                             org.wso2.carbon.context;version="[4.6,5)",
                             org.wso2.carbon.identity.application.authentication.framework.store;version="[5.12,6)",
                             org.wso2.carbon.identity.application.authentication.framework.exception;version="[5.12,6)",
