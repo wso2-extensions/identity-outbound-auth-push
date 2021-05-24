@@ -214,20 +214,17 @@
                 <version>${identity.framework.version}</version>
             </dependency>
 
-            <!-- https://mvnrepository.com/artifact/org.wso2.carbon/org.wso2.carbon.user.core -->
             <dependency>
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.user.core</artifactId>
                 <version>4.6.0</version>
             </dependency>
 
-            <!-- https://mvnrepository.com/artifact/org.wso2.carbon.utils/org.wso2.carbon.database.utils -->
             <dependency>
                 <groupId>org.wso2.carbon.utils</groupId>
                 <artifactId>org.wso2.carbon.database.utils</artifactId>
                 <version>2.0.9</version>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/org.wso2.carbon/org.wso2.carbon.registry.core -->
             <dependency>
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.registry.core</artifactId>
@@ -243,13 +240,11 @@
                 <artifactId>org.wso2.carbon.identity.application.common</artifactId>
                 <version>${identity.framework.version}</version>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/org.wso2.carbon/org.wso2.carbon.core -->
             <dependency>
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.core</artifactId>
                 <version>5.2.8</version>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/org.wso2.carbon.commons/org.wso2.carbon.tenant.common -->
             <dependency>
                 <groupId>org.wso2.carbon.commons</groupId>
                 <artifactId>org.wso2.carbon.tenant.common</artifactId>
@@ -260,7 +255,6 @@
                 <artifactId>org.wso2.carbon.core.common</artifactId>
                 <version>4.6.0</version>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/org.osgi/org.osgi.core -->
             <dependency>
                 <groupId>org.osgi</groupId>
                 <artifactId>org.osgi.core</artifactId>
@@ -273,57 +267,48 @@
                 <artifactId>webauthn-server-core</artifactId>
                 <version>1.6.0</version>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/org.wso2.carbon/org.wso2.carbon.utils -->
             <dependency>
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.utils</artifactId>
                 <version>4.6.0</version>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/org.wso2.carbon/org.wso2.carbon.context -->
             <dependency>
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.context</artifactId>
                 <version>3.2.0</version>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/org.osgi/org.osgi.framework -->
             <dependency>
                 <groupId>org.osgi</groupId>
                 <artifactId>org.osgi.framework</artifactId>
                 <version>1.9.0</version>
                 <scope>provided</scope>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/org.wso2.carbon/org.wso2.carbon.user.api -->
             <dependency>
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.user.api</artifactId>
                 <version>4.0.6</version>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/org.jetbrains/annotations -->
             <dependency>
                 <groupId>org.jetbrains</groupId>
                 <artifactId>annotations</artifactId>
                 <version>16.0.1</version>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/org.apache.felix/org.apache.felix.scr.ds-annotations -->
             <dependency>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>org.apache.felix.scr.ds-annotations</artifactId>
                 <version>1.2.10</version>
                 <scope>provided</scope>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/org.wso2.carbon.extension.identity.authenticator.utils/org.wso2.carbon.extension.identity.helper -->
             <dependency>
                 <groupId>org.wso2.carbon.extension.identity.authenticator.utils</groupId>
                 <artifactId>org.wso2.carbon.extension.identity.helper</artifactId>
                 <version>1.2.0</version>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/org.wso2.carbon.identity.outbound.auth.oidc/org.wso2.carbon.identity.application.authenticator.oidc -->
             <dependency>
                 <groupId>org.wso2.carbon.identity.outbound.auth.oidc</groupId>
                 <artifactId>org.wso2.carbon.identity.application.authenticator.oidc</artifactId>
                 <version>5.1.6</version>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/javax.ws.rs/javax.ws.rs-api -->
             <dependency>
                 <groupId>javax.ws.rs</groupId>
                 <artifactId>javax.ws.rs-api</artifactId>
@@ -339,7 +324,6 @@
                 <artifactId>org.wso2.carbon.identity.application.authenticator.push</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/ua.parser.wso2/ua-parser -->
             <dependency>
                 <groupId>ua.parser.wso2</groupId>
                 <artifactId>ua-parser</artifactId>
