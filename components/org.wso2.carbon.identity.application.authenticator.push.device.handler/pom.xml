@@ -83,10 +83,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon.identity.framework</groupId>
-            <artifactId>org.wso2.carbon.identity.user.store.configuration</artifactId>
-        </dependency>
-        <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
         </dependency>
@@ -127,22 +123,18 @@
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.wso2.carbon/org.wso2.carbon.utils -->
         <dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.utils</artifactId>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.wso2.carbon/org.wso2.carbon.context -->
         <dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.context</artifactId>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.osgi/org.osgi.framework -->
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.framework</artifactId>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.wso2.carbon/org.wso2.carbon.user.api -->
         <dependency>
             <groupId>org.wso2.carbon.identity.framework</groupId>
             <artifactId>org.wso2.carbon.identity.application.authentication.framework</artifactId>
@@ -152,23 +144,10 @@
             <artifactId>org.wso2.carbon.identity.core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon.identity.framework</groupId>
-            <artifactId>org.wso2.carbon.identity.base</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.user.api</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.identity.framework</groupId>
-            <artifactId>org.wso2.carbon.identity.base</artifactId>
-        </dependency>
-
     </dependencies>
     <build>
         <plugins>
@@ -176,10 +155,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${org.apache.maven.compiler.plugin}</version>
-                <configuration>
-                    <source>8</source>
-                    <target>8</target>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -223,7 +198,7 @@
                                         <limit implementation="org.jacoco.report.check.Limit">
                                             <counter>COMPLEXITY</counter>
                                             <value>COVEREDRATIO</value>
-                                            <!--<minimum>0.60</minimum>-->
+                                            <minimum>0.60</minimum>
                                         </limit>
                                     </limits>
                                 </rule>
@@ -246,9 +221,6 @@
                             org.wso2.carbon.identity.application.authenticator.push.device.handler.dao
                         </Private-Package>
                         <Import-Package>
-                            com.fasterxml.jackson.core;version="[2.9,3)",
-                            com.fasterxml.jackson.databind;version="[2.9,3)",
-                            com.yubico.internal.util,org.apache.commons.lang;version="[2.6,3)",
                             org.apache.commons.logging;version="[ 1.2,2)",
                             org.osgi.framework;version="[1.8,2)",
                             org.osgi.service.component;version="${osgi.service.component.imp.pkg.version.range}",
@@ -259,10 +231,8 @@
                             org.wso2.carbon.identity.application.common.model;version="[5.12,6)",
                             org.wso2.carbon.identity.base;version="[5.12,6)",
                             org.wso2.carbon.identity.core.util;version="[5.12,6)",
-                            org.wso2.carbon.identity.user.store.configuration.listener;version="[5.12,6)",
                             org.wso2.carbon.user.api;version="[1.0,2)",
                             org.wso2.carbon.user.core.common;version="[4.6,5)",
-                            org.wso2.carbon.user.core.service;version="[4.6,5)",
                             org.wso2.carbon.utils;version="[4.6,5)"
                         </Import-Package>
                         <Export-Package>
