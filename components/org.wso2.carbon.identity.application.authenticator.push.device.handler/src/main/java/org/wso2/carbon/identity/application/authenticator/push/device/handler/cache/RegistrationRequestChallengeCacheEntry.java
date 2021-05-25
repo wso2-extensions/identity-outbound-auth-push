@@ -20,19 +20,17 @@ package org.wso2.carbon.identity.application.authenticator.push.device.handler.c
 
 import org.wso2.carbon.identity.application.common.cache.CacheEntry;
 
-import java.util.UUID;
-
 /**
  * Push device handler cache entry.
  */
 public class RegistrationRequestChallengeCacheEntry extends CacheEntry {
 
-    private UUID challenge;
+    private String challenge;
     private String username;
     private String tenantDomain;
     private boolean registered;
 
-    public RegistrationRequestChallengeCacheEntry(UUID challenge, String username,
+    public RegistrationRequestChallengeCacheEntry(String challenge, String username,
                                                   String tenantDomain, boolean registered) {
 
         this.challenge = challenge;
@@ -41,12 +39,12 @@ public class RegistrationRequestChallengeCacheEntry extends CacheEntry {
         this.registered = registered;
     }
 
-    public UUID getChallenge() {
+    public String getChallenge() {
 
         return challenge;
     }
 
-    public void setChallenge(UUID challenge) {
+    public void setChallenge(String challenge) {
 
         this.challenge = challenge;
     }

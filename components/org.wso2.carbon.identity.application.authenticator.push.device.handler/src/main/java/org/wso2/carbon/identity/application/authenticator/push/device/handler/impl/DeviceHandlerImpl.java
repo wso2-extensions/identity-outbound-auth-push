@@ -244,7 +244,7 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
         String registrationEndpoint = DeviceHandlerConstants.REGISTRATION_ENDPOINT;
         String removeDeviceEndpoint = DeviceHandlerConstants.REMOVE_DEVICE_ENDPOINT;
         String authenticationEndpoint = DeviceHandlerConstants.AUTHENTICATION_ENDPOINT;
-        UUID challenge = UUID.randomUUID();
+        String challenge = UUID.randomUUID().toString();
         RegistrationRequestChallengeCache.getInstance().addToCacheByRequestId
                 (new PushDeviceHandlerCacheKey(deviceId), new RegistrationRequestChallengeCacheEntry(challenge,
                         user.getUserName(), user.getTenantDomain(), false));

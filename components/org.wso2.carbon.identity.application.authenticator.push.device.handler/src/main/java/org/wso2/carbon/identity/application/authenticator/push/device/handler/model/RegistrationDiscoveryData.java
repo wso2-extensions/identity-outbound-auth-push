@@ -19,7 +19,6 @@
 package org.wso2.carbon.identity.application.authenticator.push.device.handler.model;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 /**
  * This class contains the attributes sent to generate the qr code .
@@ -36,11 +35,11 @@ public class RegistrationDiscoveryData implements Serializable {
     private String registrationEndpoint;
     private String removeDeviceEndpoint;
     private String authenticationEndpoint;
-    private UUID challenge;
+    private String challenge;
 
     public RegistrationDiscoveryData(String deviceId, String username, String firstName, String lastName,
                                      String tenantDomain, String host, String basePath, String registrationEndpoint,
-                                     String removeDeviceEndpoint, String authenticationEndpoint, UUID challenge) {
+                                     String removeDeviceEndpoint, String authenticationEndpoint, String challenge) {
 
         this.deviceId = deviceId;
         this.username = username;
@@ -89,12 +88,12 @@ public class RegistrationDiscoveryData implements Serializable {
         this.tenantDomain = tenantDomain;
     }
 
-    public UUID getChallenge() {
+    public String getChallenge() {
 
         return challenge;
     }
 
-    public void setChallenge(UUID challenge) {
+    public void setChallenge(String challenge) {
 
         this.challenge = challenge;
     }
