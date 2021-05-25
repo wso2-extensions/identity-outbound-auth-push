@@ -28,6 +28,7 @@ import org.wso2.carbon.identity.application.authenticator.push.device.handler.De
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.cache.PushDeviceHandlerCacheKey;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.cache.RegistrationRequestChallengeCache;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.cache.RegistrationRequestChallengeCacheEntry;
+import org.wso2.carbon.identity.application.authenticator.push.device.handler.dao.DeviceDAO;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.dao.DeviceDAOImpl;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerClientException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerServerException;
@@ -67,6 +68,7 @@ import java.util.UUID;
 public class DeviceHandlerImpl implements DeviceHandler, Serializable {
 
     private static final Log log = LogFactory.getLog(DeviceHandler.class);
+    private DeviceDAO deviceDAO;
 
     @Override
     public Device registerDevice(RegistrationRequest registrationRequest)
@@ -103,8 +105,10 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
             device = new Device(registrationRequest.getDeviceId(), userId, registrationRequest.getDeviceName(),
                     registrationRequest.getDeviceModel(), registrationRequest.getPushId(),
                     registrationRequest.getPublicKey());
+
+            deviceDAO = new DeviceDAOImpl();
             try {
-                DeviceDAOImpl.getInstance().registerDevice(device);
+                deviceDAO.registerDevice(device);
                 cacheEntry.setRegistered(true);
             } catch (SQLException e) {
                 throw new PushDeviceHandlerServerException("Error occurred when trying to register device: "
@@ -128,10 +132,11 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
     public void unregisterDevice(String deviceId)
             throws PushDeviceHandlerServerException, PushDeviceHandlerClientException {
 
+        deviceDAO = new DeviceDAOImpl();
         try {
-            Optional<Device> device = DeviceDAOImpl.getInstance().getDevice(deviceId);
+            Optional<Device> device = deviceDAO.getDevice(deviceId);
             if (device.isPresent()) {
-                DeviceDAOImpl.getInstance().unregisterDevice(deviceId);
+                deviceDAO.unregisterDevice(deviceId);
             } else {
                 String errorMessage = String.format("Failed to remove device: %s as it was not found.", deviceId);
                 throw new PushDeviceHandlerClientException(errorMessage);
@@ -147,8 +152,9 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
     @Override
     public void removeUserDevices(String userId) throws PushDeviceHandlerServerException {
 
+        deviceDAO = new DeviceDAOImpl();
         try {
-            DeviceDAOImpl.getInstance().deleteAllDevicesOfUser(userId);
+            deviceDAO.deleteAllDevicesOfUser(userId);
         } catch (SQLException e) {
             String errorMessage = String.format("Error occurred when trying to remove devices for user: %s from the"
                     + " database.", userId);
@@ -167,8 +173,9 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
             throw new PushDeviceHandlerClientException(errorMessage, e);
         }
 
+        deviceDAO = new DeviceDAOImpl();
         try {
-            DeviceDAOImpl.getInstance().editDevice(deviceId, updatedDevice);
+            deviceDAO.editDevice(deviceId, updatedDevice);
         } catch (SQLException e) {
             throw new PushDeviceHandlerServerException("Error occurred when updating the name of device: "
                     + deviceId + ".", e);
@@ -178,8 +185,9 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
     @Override
     public Device getDevice(String deviceId) throws PushDeviceHandlerServerException, PushDeviceHandlerClientException {
 
+        deviceDAO = new DeviceDAOImpl();
         try {
-            Optional<Device> device = DeviceDAOImpl.getInstance().getDevice(deviceId);
+            Optional<Device> device = deviceDAO.getDevice(deviceId);
             if (device.isPresent()) {
                 return device.get();
             } else {
@@ -197,8 +205,9 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
     @Override
     public List<Device> listDevices(String userId) throws PushDeviceHandlerServerException {
 
+        deviceDAO = new DeviceDAOImpl();
         try {
-            return DeviceDAOImpl.getInstance().listDevices(userId);
+            return deviceDAO.listDevices(userId);
         } catch (SQLException e) {
             String errorMessage = String.format("Error occurred when trying to get the device list for user with ID: %s"
                     + "from the database.", userId);
@@ -247,8 +256,9 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
     public String getPublicKey(String deviceId)
             throws PushDeviceHandlerServerException, PushDeviceHandlerClientException {
 
+        deviceDAO = new DeviceDAOImpl();
         try {
-            Optional<String> publicKey = DeviceDAOImpl.getInstance().getPublicKey(deviceId);
+            Optional<String> publicKey = deviceDAO.getPublicKey(deviceId);
             if (publicKey.isPresent()) {
                 return publicKey.get();
             } else {

@@ -40,16 +40,6 @@ import java.util.Optional;
 public class DeviceDAOImpl implements DeviceDAO {
 
     private static final Log log = LogFactory.getLog(DeviceDAOImpl.class);
-    private static DeviceDAO dao = new DeviceDAOImpl();
-
-    private DeviceDAOImpl() {
-
-    }
-
-    public static DeviceDAO getInstance() {
-
-        return dao;
-    }
 
     @Override
     public void registerDevice(Device device) throws SQLException {
@@ -91,6 +81,7 @@ public class DeviceDAOImpl implements DeviceDAO {
 
     @Override
     public void deleteAllDevicesOfUser(String userId) throws SQLException {
+
         Connection connection = IdentityDatabaseUtil.getDBConnection(true);
         PreparedStatement preparedStatement = null;
         try {
@@ -101,7 +92,6 @@ public class DeviceDAOImpl implements DeviceDAO {
             IdentityDatabaseUtil.closeAllConnections(connection, null, preparedStatement);
         }
     }
-
 
     @Override
     public void editDevice(String deviceId, Device updatedDevice) throws SQLException {
@@ -177,7 +167,6 @@ public class DeviceDAOImpl implements DeviceDAO {
 
         return devices;
     }
-
 
     @Override
     public Optional<String> getPublicKey(String deviceId) throws SQLException {
