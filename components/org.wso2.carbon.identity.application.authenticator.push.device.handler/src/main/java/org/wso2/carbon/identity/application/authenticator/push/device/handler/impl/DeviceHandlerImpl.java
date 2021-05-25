@@ -18,8 +18,6 @@
 
 package org.wso2.carbon.identity.application.authenticator.push.device.handler.impl;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.application.authentication.framework.exception.AuthenticationFailedException;
@@ -45,7 +43,6 @@ import org.wso2.carbon.user.api.UserStoreManager;
 import org.wso2.carbon.user.core.UserCoreConstants;
 import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
 
-import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
@@ -65,65 +62,34 @@ import java.util.UUID;
 /**
  * This class implements the DeviceHandler interface.
  */
-public class DeviceHandlerImpl implements DeviceHandler, Serializable {
+public class DeviceHandlerImpl implements DeviceHandler {
 
-    private static final Log log = LogFactory.getLog(DeviceHandler.class);
     private DeviceDAO deviceDAO;
 
     @Override
     public Device registerDevice(RegistrationRequest registrationRequest)
             throws PushDeviceHandlerServerException, PushDeviceHandlerClientException {
 
-        Device device;
         RegistrationRequestChallengeCacheEntry cacheEntry = RegistrationRequestChallengeCache.getInstance()
                 .getValueFromCacheByRequestId(new PushDeviceHandlerCacheKey(registrationRequest.getDeviceId()));
+
         if (cacheEntry == null) {
             throw new PushDeviceHandlerClientException("Unidentified request when trying to register device: "
                     + registrationRequest.getDeviceId() + ".");
         }
-        try {
-            if (!verifySignature(registrationRequest.getSignature(), registrationRequest.getPushId(),
-                    registrationRequest.getPublicKey(), cacheEntry)) {
-                throw new PushDeviceHandlerClientException("Could not verify signature to register device: "
-                        + registrationRequest.getDeviceId() + ".");
-            }
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException | InvalidKeyException | SignatureException e) {
-            throw new PushDeviceHandlerServerException("Error occurred when trying to verify the signature for device: "
-                    + registrationRequest.getDeviceId() + ".", e);
-        }
 
+        Device device;
         if (!cacheEntry.isRegistered()) {
-            String userId;
-            try {
-                userId = getUserIdFromUsername(cacheEntry.getUsername(),
-                        IdentityTenantUtil.getRealm(cacheEntry.getTenantDomain(), cacheEntry.getUsername()));
-            } catch (UserStoreException | IdentityException e) {
-                throw new PushDeviceHandlerServerException("Error occurred when trying to get the user ID to "
-                        + "register device: " + registrationRequest.getDeviceId() + ".", e);
-            }
-
-            device = new Device(registrationRequest.getDeviceId(), userId, registrationRequest.getDeviceName(),
-                    registrationRequest.getDeviceModel(), registrationRequest.getPushId(),
-                    registrationRequest.getPublicKey());
-
-            deviceDAO = new DeviceDAOImpl();
-            try {
-                deviceDAO.registerDevice(device);
-                cacheEntry.setRegistered(true);
-            } catch (SQLException e) {
-                throw new PushDeviceHandlerServerException("Error occurred when trying to register device: "
-                        + registrationRequest.getDeviceId() + ".", e);
-            }
+            handleSignatureVerification(registrationRequest, cacheEntry);
+            device = handleDeviceRegistration(registrationRequest, cacheEntry);
+            clearCache(registrationRequest.getDeviceId());
         } else {
-            RegistrationRequestChallengeCache.getInstance().clearCacheEntryByRequestId(
-                    new PushDeviceHandlerCacheKey(registrationRequest.getDeviceId()));
+            clearCache(registrationRequest.getDeviceId());
             String errorMessage = String.format("The device: %s is already registered.",
                     registrationRequest.getDeviceId());
             throw new PushDeviceHandlerClientException(errorMessage);
         }
 
-        RegistrationRequestChallengeCache.getInstance().clearCacheEntryByRequestId(
-                new PushDeviceHandlerCacheKey(registrationRequest.getDeviceId()));
         return device;
     }
 
@@ -173,25 +139,8 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
             throw new PushDeviceHandlerClientException(errorMessage, e);
         }
 
-        deviceDAO = new DeviceDAOImpl();
-        try {
-            if (updatedDevice.getDeviceId().equals(currentDevice.getDeviceId())) {
-                int changes = 0;
-                if (!updatedDevice.getDeviceName().isEmpty()) {
-                    currentDevice.setDeviceName(updatedDevice.getDeviceName());
-                    changes++;
-                }
-                if (!updatedDevice.getPushId().isEmpty()) {
-                    currentDevice.setPushId(updatedDevice.getPushId());
-                    changes++;
-                }
-                if (changes > 0) {
-                    deviceDAO.editDevice(deviceId, updatedDevice);
-                }
-            }
-        } catch (SQLException e) {
-            throw new PushDeviceHandlerServerException("Error occurred when updating the name of device: "
-                    + deviceId + ".", e);
+        if (updatedDevice.getDeviceId().equals(currentDevice.getDeviceId())) {
+            handleEditDevice(currentDevice, updatedDevice);
         }
     }
 
@@ -233,6 +182,42 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
 
         User user = getAuthenticatedUser();
 
+        RegistrationDiscoveryData discoveryData = prepareDiscoveryData(user);
+        addToCache(user, discoveryData);
+
+        return discoveryData;
+    }
+
+    @Override
+    public String getPublicKey(String deviceId)
+            throws PushDeviceHandlerServerException, PushDeviceHandlerClientException {
+
+        deviceDAO = new DeviceDAOImpl();
+        try {
+            Optional<String> publicKey = deviceDAO.getPublicKey(deviceId);
+            if (publicKey.isPresent()) {
+                return publicKey.get();
+            } else {
+                String errorMessage =
+                        String.format("Failed to get public key for device: %s as it was not found.", deviceId);
+                throw new PushDeviceHandlerClientException(errorMessage);
+            }
+        } catch (SQLException e) {
+            String errorMessage = String.format("Error occurred when trying to get the pubic key for device: %s "
+                    + "from the database.", deviceId);
+            throw new PushDeviceHandlerServerException(errorMessage, e);
+        }
+    }
+
+    /**
+     * Prepare the discovery data to be sent.
+     *
+     * @param user Authenticated user
+     * @return Prepared discovery data for new device registration
+     * @throws PushDeviceHandlerServerException - if an error occurs while getting user claims
+     */
+    private RegistrationDiscoveryData prepareDiscoveryData(User user) throws PushDeviceHandlerServerException {
+
         Map<String, String> userClaims;
         try {
             userClaims = getUserClaimValues(user);
@@ -258,32 +243,125 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
         String removeDeviceEndpoint = DeviceHandlerConstants.REMOVE_DEVICE_ENDPOINT;
         String authenticationEndpoint = DeviceHandlerConstants.AUTHENTICATION_ENDPOINT;
         String challenge = UUID.randomUUID().toString();
-        RegistrationRequestChallengeCache.getInstance().addToCacheByRequestId
-                (new PushDeviceHandlerCacheKey(deviceId), new RegistrationRequestChallengeCacheEntry(challenge,
-                        user.getUserName(), user.getTenantDomain(), false));
+
         return new RegistrationDiscoveryData(deviceId, user.getUserName(), firstName, lastName, tenantDomain, host,
                 basePath, registrationEndpoint, removeDeviceEndpoint, authenticationEndpoint, challenge);
     }
 
-    @Override
-    public String getPublicKey(String deviceId)
-            throws PushDeviceHandlerServerException, PushDeviceHandlerClientException {
+    /**
+     * Handle the signature verification and exceptions.
+     *
+     * @param registrationRequest Object holding data for registering a new device
+     * @param cacheEntry          Stored cache for the registration instance
+     * @throws PushDeviceHandlerClientException - if the signature is not valid
+     * @throws PushDeviceHandlerServerException - if a server error occurs while validating the signature
+     */
+    private void handleSignatureVerification(
+            RegistrationRequest registrationRequest, RegistrationRequestChallengeCacheEntry cacheEntry)
+            throws PushDeviceHandlerClientException, PushDeviceHandlerServerException {
+
+        try {
+            if (!verifySignature(registrationRequest.getSignature(), registrationRequest.getPushId(),
+                    registrationRequest.getPublicKey(), cacheEntry)) {
+                throw new PushDeviceHandlerClientException("Could not verify signature to register device: "
+                        + registrationRequest.getDeviceId() + ".");
+            }
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException | InvalidKeyException | SignatureException e) {
+            throw new PushDeviceHandlerServerException("Error occurred when trying to verify the signature for device: "
+                    + registrationRequest.getDeviceId() + ".", e);
+        }
+    }
+
+    /**
+     * Handle process of registering the device.
+     *
+     * @param registrationRequest Object holding data for registering a new device
+     * @param cacheEntry          Stored cache for the registration instance
+     * @return The device object once the registration if the registration is successful
+     * @throws PushDeviceHandlerServerException - if a server error occurs
+     */
+    private Device handleDeviceRegistration(
+            RegistrationRequest registrationRequest, RegistrationRequestChallengeCacheEntry cacheEntry)
+            throws PushDeviceHandlerServerException {
+
+        String userId;
+        try {
+            userId = getUserIdFromUsername(cacheEntry.getUsername(),
+                    IdentityTenantUtil.getRealm(cacheEntry.getTenantDomain(), cacheEntry.getUsername()));
+        } catch (UserStoreException | IdentityException e) {
+            throw new PushDeviceHandlerServerException("Error occurred when trying to get the user ID to "
+                    + "register device: " + registrationRequest.getDeviceId() + ".", e);
+        }
+
+        Device device = new Device(registrationRequest.getDeviceId(), userId, registrationRequest.getDeviceName(),
+                registrationRequest.getDeviceModel(), registrationRequest.getPushId(),
+                registrationRequest.getPublicKey());
 
         deviceDAO = new DeviceDAOImpl();
         try {
-            Optional<String> publicKey = deviceDAO.getPublicKey(deviceId);
-            if (publicKey.isPresent()) {
-                return publicKey.get();
-            } else {
-                String errorMessage =
-                        String.format("Failed to get public key for device: %s as it was not found.", deviceId);
-                throw new PushDeviceHandlerClientException(errorMessage);
+            deviceDAO.registerDevice(device);
+            cacheEntry.setRegistered(true);
+
+        } catch (SQLException e) {
+            throw new PushDeviceHandlerServerException("Error occurred when trying to register device: "
+                    + registrationRequest.getDeviceId() + ".", e);
+        }
+
+        return device;
+    }
+
+    /**
+     * Handle validations and complete the edit device process.
+     *
+     * @param currentDevice Device information stored in system
+     * @param updatedDevice Updated device information
+     * @throws PushDeviceHandlerServerException - if an error occurs while storing data in the database
+     */
+    private void handleEditDevice(Device currentDevice, Device updatedDevice) throws PushDeviceHandlerServerException {
+
+        deviceDAO = new DeviceDAOImpl();
+        try {
+            int changes = 0;
+            if (!updatedDevice.getDeviceName().isEmpty()) {
+                currentDevice.setDeviceName(updatedDevice.getDeviceName());
+                changes++;
+            }
+            if (!updatedDevice.getPushId().isEmpty()) {
+                currentDevice.setPushId(updatedDevice.getPushId());
+                changes++;
+            }
+            if (changes > 0) {
+                deviceDAO.editDevice(currentDevice.getDeviceId(), updatedDevice);
             }
         } catch (SQLException e) {
-            String errorMessage = String.format("Error occurred when trying to get the pubic key for device: %s "
-                    + "from the database.", deviceId);
-            throw new PushDeviceHandlerServerException(errorMessage, e);
+            throw new PushDeviceHandlerServerException("Error occurred when updating the name of device: "
+                    + currentDevice.getDeviceId() + ".", e);
         }
+    }
+
+    /**
+     * Add registration data to cache.
+     *
+     * @param user          Authenticated user
+     * @param discoveryData Generated discovery data for the instance
+     */
+    private void addToCache(User user, RegistrationDiscoveryData discoveryData) {
+
+        RegistrationRequestChallengeCache.getInstance().addToCacheByRequestId(
+                new PushDeviceHandlerCacheKey(discoveryData.getDeviceId()),
+                new RegistrationRequestChallengeCacheEntry(discoveryData.getChallenge(), user.getUserName(),
+                        user.getTenantDomain(), false));
+    }
+
+    /**
+     * Clear stored cache for device registration instance.
+     *
+     * @param deviceID Unique ID for new device
+     */
+    private void clearCache(String deviceID) {
+
+        RegistrationRequestChallengeCache.getInstance().clearCacheEntryByRequestId(
+                new PushDeviceHandlerCacheKey(deviceID));
     }
 
     /**
@@ -322,7 +400,7 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
         KeyFactory kf = KeyFactory.getInstance(DeviceHandlerConstants.SIGNATURE_ALGORITHM);
         PublicKey publicKey = kf.generatePublic(spec);
         sign.initVerify(publicKey);
-        sign.update((cacheEntry.getChallenge().toString() + "." + pushId).getBytes(StandardCharsets.UTF_8));
+        sign.update((cacheEntry.getChallenge() + "." + pushId).getBytes(StandardCharsets.UTF_8));
         return sign.verify(signatureBytes);
     }
 
