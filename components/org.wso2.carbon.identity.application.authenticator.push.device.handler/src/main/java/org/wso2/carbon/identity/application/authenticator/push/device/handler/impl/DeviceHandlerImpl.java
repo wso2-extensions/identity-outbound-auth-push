@@ -117,7 +117,6 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
         } else {
             RegistrationRequestChallengeCache.getInstance().clearCacheEntryByRequestId(
                     new PushDeviceHandlerCacheKey(registrationRequest.getDeviceId()));
-
             String errorMessage = String.format("The device: %s is already registered.",
                     registrationRequest.getDeviceId());
             throw new PushDeviceHandlerClientException(errorMessage);
@@ -166,8 +165,9 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
     public void editDevice(String deviceId, Device updatedDevice)
             throws PushDeviceHandlerServerException, PushDeviceHandlerClientException {
 
+        Device currentDevice;
         try {
-            getDevice(deviceId);
+            currentDevice = getDevice(deviceId);
         } catch (PushDeviceHandlerClientException e) {
             String errorMessage = String.format("Failed to edit device: %s as it was not found.", deviceId);
             throw new PushDeviceHandlerClientException(errorMessage, e);
@@ -175,7 +175,20 @@ public class DeviceHandlerImpl implements DeviceHandler, Serializable {
 
         deviceDAO = new DeviceDAOImpl();
         try {
-            deviceDAO.editDevice(deviceId, updatedDevice);
+            if (updatedDevice.getDeviceId().equals(currentDevice.getDeviceId())) {
+                int changes = 0;
+                if (!updatedDevice.getDeviceName().isEmpty()) {
+                    currentDevice.setDeviceName(updatedDevice.getDeviceName());
+                    changes++;
+                }
+                if (!updatedDevice.getPushId().isEmpty()) {
+                    currentDevice.setPushId(updatedDevice.getPushId());
+                    changes++;
+                }
+                if (changes > 0) {
+                    deviceDAO.editDevice(deviceId, updatedDevice);
+                }
+            }
         } catch (SQLException e) {
             throw new PushDeviceHandlerServerException("Error occurred when updating the name of device: "
                     + deviceId + ".", e);
