@@ -79,7 +79,7 @@ public class DeviceHandlerImpl implements DeviceHandler {
         }
 
         Device device;
-        if (!cacheEntry.isRegistered()) {
+        if (!cacheEntry.isDeviceAlreadyRegistered()) {
             handleSignatureVerification(registrationRequest, cacheEntry);
             device = handleDeviceRegistration(registrationRequest, cacheEntry);
             clearCache(registrationRequest.getDeviceId());

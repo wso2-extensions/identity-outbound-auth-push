@@ -69,7 +69,7 @@ public class RegistrationRequestChallengeCacheEntry extends CacheEntry {
         this.tenantDomain = tenantDomain;
     }
 
-    public boolean isRegistered() {
+    public boolean isDeviceAlreadyRegistered() {
 
         return registered;
     }
