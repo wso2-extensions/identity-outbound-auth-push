@@ -51,8 +51,8 @@ public class PushAuthSendServlet extends HttpServlet {
         try {
             requestSender.sendRequest(request, response, deviceId, key);
         } catch (PushAuthenticatorException e) {
-            String errorMessage = String.format("Error occurred when trying to send an authentication request to "
-                    + "device %s after selecting from multiple devices.", deviceId);
+            String errorMessage = String.format(PushServletConstants
+                    .ErrorMessages.ERROR_CODE_SEND_REQUEST_FAILED.toString(), deviceId);
             throw new ServletException(errorMessage, e);
         }
     }

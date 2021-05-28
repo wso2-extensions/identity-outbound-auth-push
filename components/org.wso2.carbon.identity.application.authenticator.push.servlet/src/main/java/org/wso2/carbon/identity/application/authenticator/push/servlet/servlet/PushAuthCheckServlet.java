@@ -33,8 +33,7 @@ public class PushAuthCheckServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 
             if (log.isDebugEnabled()) {
-                log.error("Error occurred when checking authentication status. The session data key was "
-                        + "null or the HTTP request was unsupported.");
+                log.debug(PushServletConstants.ErrorMessages.ERROR_CODE_WEB_SESSION_DATA_KEY_NOT_FOUND.toString());
             }
 
         } else {

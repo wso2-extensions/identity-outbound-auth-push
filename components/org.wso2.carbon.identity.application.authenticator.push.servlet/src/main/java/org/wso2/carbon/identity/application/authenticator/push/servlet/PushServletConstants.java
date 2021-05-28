@@ -38,4 +38,72 @@ public class PushServletConstants {
     public enum Status {
         COMPLETED, PENDING
     }
+
+    /**
+     * Enum which contains error codes and corresponding error messages.
+     */
+    public enum ErrorMessages {
+
+        ERROR_CODE_AUTH_RESPONSE_TOKEN_NOT_FOUND(
+                "PBA-15001",
+                "The request did not contain an authentication response token"
+        ),
+        ERROR_CODE_SESSION_DATA_KEY_NOT_FOUND(
+                "PBA-15002",
+                "Authentication response token received from device: %s does not contain a session data key."
+        ),
+        ERROR_CODE_GET_DEVICE_ID_FAILED(
+                "PBA-15003",
+                "Error occurred when extracting the auth response token."
+        ),
+        ERROR_CODE_GET_PUBLIC_KEY_FAILED(
+                "PBA-15004",
+                "Error occurred when trying to get the public key from device: %s."
+        ),
+        ERROR_CODE_TOKEN_VALIDATION_FAILED(
+                "PBA-15005",
+                "Error occurred when validating auth response token from device: %s."
+        ),
+        ERROR_CODE_PARSE_JWT_FAILED(
+                "PBA-15006",
+                "Error occurred when parsing auth response token to JWT."
+        ),
+        ERROR_CODE_WEB_SESSION_DATA_KEY_NOT_FOUND(
+                "PBA-15007",
+                "Error occurred when checking authentication status. The session data key was null or "
+                        + "the HTTP request was not supported."
+        ),
+        ERROR_CODE_SEND_REQUEST_FAILED(
+                "PBA-15008",
+                "Error occurred when trying to send an authentication request to device %s after "
+                        + "selecting from multiple devices."
+        );
+
+
+
+        private final String code;
+        private final String message;
+
+        ErrorMessages(String code, String message) {
+
+            this.code = code;
+            this.message = message;
+        }
+
+        public String getCode() {
+
+            return code;
+        }
+
+        public String getMessage() {
+
+            return message;
+        }
+
+        @Override
+        public String toString() {
+
+            return code + " - " + message;
+        }
+    }
 }

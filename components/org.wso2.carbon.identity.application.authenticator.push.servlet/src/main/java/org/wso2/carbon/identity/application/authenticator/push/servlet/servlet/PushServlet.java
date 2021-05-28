@@ -82,25 +82,24 @@ public class PushServlet extends HttpServlet {
         String token = json.get(PushServletConstants.AUTH_RESPONSE).getAsString();
 
         if (StringUtils.isEmpty(token)) {
-            String errorMessage = "The request did not have an authentication response token.";
             if (log.isDebugEnabled()) {
-                log.debug(errorMessage);
+                log.debug(PushServletConstants.ErrorMessages.ERROR_CODE_AUTH_RESPONSE_TOKEN_NOT_FOUND.toString());
             }
 
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, errorMessage);
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST,
+                    PushServletConstants.ErrorMessages.ERROR_CODE_AUTH_RESPONSE_TOKEN_NOT_FOUND.toString());
         } else {
             String deviceId = getDeviceIdFromToken(token);
             String sessionDataKey = getSessionDataKeyFromToken(token, deviceId);
 
             if (StringUtils.isEmpty(sessionDataKey)) {
-                String errorMessage = String.format("Authentication response token received from device: %s doesn't "
-                        + "contain a session data key.", deviceId);
+                String errorMessage = String.format(
+                        PushServletConstants.ErrorMessages.ERROR_CODE_SESSION_DATA_KEY_NOT_FOUND.toString(), deviceId);
 
                 if (log.isDebugEnabled()) {
                     log.debug(errorMessage);
                 }
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Authentication response token doesn't have "
-                        + "a session data key.");
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, errorMessage);
             } else {
                 addToContext(sessionDataKey, token);
                 String status = PushServletConstants.Status.COMPLETED.name();
@@ -127,7 +126,8 @@ public class PushServlet extends HttpServlet {
         try {
             return String.valueOf(JWTParser.parse(token).getHeader().getCustomParam("did"));
         } catch (ParseException e) {
-            throw new ServletException("Error occurred when extracting token", e);
+            throw new ServletException(PushServletConstants
+                    .ErrorMessages.ERROR_CODE_GET_DEVICE_ID_FAILED.toString(), e);
         }
     }
 
@@ -150,13 +150,15 @@ public class PushServlet extends HttpServlet {
             JWTClaimsSet claimsSet = validator.validate(token, publicKey);
             return claimsSet.getStringClaim("sid");
         } catch (PushDeviceHandlerServerException | PushDeviceHandlerClientException e) {
-            throw new ServletException("Error occurred when trying to get the public key for device: "
-                    + deviceId + ".");
+            String errorMessage = String.format(PushServletConstants
+                    .ErrorMessages.ERROR_CODE_GET_PUBLIC_KEY_FAILED.toString(), deviceId);
+            throw new ServletException(errorMessage);
         } catch (PushAuthTokenValidationException e) {
-            throw new ServletException("Error occurred when validation the auth response token from device: "
-                    + deviceId + ".");
+            String errorMessage = String.format(PushServletConstants
+                    .ErrorMessages.ERROR_CODE_TOKEN_VALIDATION_FAILED.toString(), deviceId);
+            throw new ServletException(errorMessage);
         } catch (ParseException e) {
-            throw new ServletException("Error occurred when parsing auth response token to JWT");
+            throw new ServletException(PushServletConstants.ErrorMessages.ERROR_CODE_PARSE_JWT_FAILED.toString());
         }
     }
 
