@@ -74,8 +74,9 @@ public class DeviceHandlerImpl implements DeviceHandler {
                 .getValueFromCacheByRequestId(new PushDeviceHandlerCacheKey(registrationRequest.getDeviceId()));
 
         if (cacheEntry == null) {
-            throw new PushDeviceHandlerClientException("Unidentified request when trying to register device: "
-                    + registrationRequest.getDeviceId() + ".");
+            String errorMessage = String.format(DeviceHandlerConstants.ErrorMessages
+                    .ERROR_CODE_CACHE_ENTRY_NOT_FOUND.toString(), registrationRequest.getDeviceId());
+            throw new PushDeviceHandlerClientException(errorMessage);
         }
 
         Device device;
@@ -85,8 +86,8 @@ public class DeviceHandlerImpl implements DeviceHandler {
             clearCache(registrationRequest.getDeviceId());
         } else {
             clearCache(registrationRequest.getDeviceId());
-            String errorMessage = String.format("The device: %s is already registered.",
-                    registrationRequest.getDeviceId());
+            String errorMessage = String.format(DeviceHandlerConstants.ErrorMessages
+                            .ERROR_CODE_DEVICE_ALREADY_REGISTERED.toString(), registrationRequest.getDeviceId());
             throw new PushDeviceHandlerClientException(errorMessage);
         }
 
@@ -103,12 +104,13 @@ public class DeviceHandlerImpl implements DeviceHandler {
             if (device.isPresent()) {
                 deviceDAO.unregisterDevice(deviceId);
             } else {
-                String errorMessage = String.format("Failed to remove device: %s as it was not found.", deviceId);
+                String errorMessage = String.format(DeviceHandlerConstants.ErrorMessages
+                        .ERROR_CODE_UNREGISTER_UNAVAILABLE_DEVICE.toString(), deviceId);
                 throw new PushDeviceHandlerClientException(errorMessage);
             }
         } catch (SQLException e) {
-            String errorMessage = String.format("Error occurred when trying to remove device: %s from the"
-                    + " database.", deviceId);
+            String errorMessage = String.format(
+                    DeviceHandlerConstants.ErrorMessages.ERROR_CODE_UNREGISTER_DEVICE_FAILED.toString(), deviceId);
             throw new PushDeviceHandlerServerException(errorMessage, e);
         }
 
@@ -121,8 +123,8 @@ public class DeviceHandlerImpl implements DeviceHandler {
         try {
             deviceDAO.deleteAllDevicesOfUser(userId);
         } catch (SQLException e) {
-            String errorMessage = String.format("Error occurred when trying to remove devices for user: %s from the"
-                    + " database.", userId);
+            String errorMessage = String.format(
+                    DeviceHandlerConstants.ErrorMessages.ERROR_CODE_REMOVE_ALL_DEVICES_FAILED.toString(), userId);
             throw new PushDeviceHandlerServerException(errorMessage, e);
         }
     }
@@ -135,7 +137,8 @@ public class DeviceHandlerImpl implements DeviceHandler {
         try {
             currentDevice = getDevice(deviceId);
         } catch (PushDeviceHandlerClientException e) {
-            String errorMessage = String.format("Failed to edit device: %s as it was not found.", deviceId);
+            String errorMessage = String.format(
+                    DeviceHandlerConstants.ErrorMessages.ERROR_CODE_EDIT_DEVICE_NOT_FOUND.toString(), deviceId);
             throw new PushDeviceHandlerClientException(errorMessage, e);
         }
 
@@ -153,13 +156,14 @@ public class DeviceHandlerImpl implements DeviceHandler {
             if (device.isPresent()) {
                 return device.get();
             } else {
-                String errorMessage = String.format("Device: %s was not found.", deviceId);
+                String errorMessage = String.format(
+                        DeviceHandlerConstants.ErrorMessages.ERROR_CODE_DEVICE_NOT_FOUND.toString(), deviceId);
                 throw new PushDeviceHandlerClientException(errorMessage);
             }
 
         } catch (SQLException e) {
-            String errorMessage = String.format("Error occurred when trying to get device: %s from the database.",
-                    deviceId);
+            String errorMessage = String.format(
+                    DeviceHandlerConstants.ErrorMessages.ERROR_CODE_GET_DEVICE_FAILED.toString(), deviceId);
             throw new PushDeviceHandlerServerException(errorMessage, e);
         }
     }
@@ -171,8 +175,8 @@ public class DeviceHandlerImpl implements DeviceHandler {
         try {
             return deviceDAO.listDevices(userId);
         } catch (SQLException e) {
-            String errorMessage = String.format("Error occurred when trying to get the device list for user with ID: %s"
-                    + "from the database.", userId);
+            String errorMessage = String.format(
+                    DeviceHandlerConstants.ErrorMessages.ERROR_CODE_DEVICE_LIST_NOT_FOUND.toString(), userId);
             throw new PushDeviceHandlerServerException(errorMessage, e);
         }
     }
@@ -199,12 +203,13 @@ public class DeviceHandlerImpl implements DeviceHandler {
                 return publicKey.get();
             } else {
                 String errorMessage =
-                        String.format("Failed to get public key for device: %s as it was not found.", deviceId);
+                        String.format(DeviceHandlerConstants
+                                .ErrorMessages.ERROR_CODE_PUBLIC_KEY_NOT_FOUND.toString(), deviceId);
                 throw new PushDeviceHandlerClientException(errorMessage);
             }
         } catch (SQLException e) {
-            String errorMessage = String.format("Error occurred when trying to get the pubic key for device: %s "
-                    + "from the database.", deviceId);
+            String errorMessage = String.format(
+                    DeviceHandlerConstants.ErrorMessages.ERROR_CODE_GET_PUBLIC_KEY_FAILED.toString(), deviceId);
             throw new PushDeviceHandlerServerException(errorMessage, e);
         }
     }
@@ -222,8 +227,9 @@ public class DeviceHandlerImpl implements DeviceHandler {
         try {
             userClaims = getUserClaimValues(user);
         } catch (AuthenticationFailedException e) {
-            throw new PushDeviceHandlerServerException("Error occurred when trying to get the user claims for user: "
-                    + user.toFullQualifiedUsername() + ".", e);
+            String errorMessage = String.format(DeviceHandlerConstants.ErrorMessages
+                    .ERROR_CODE_GET_USER_CLAIMS_FAILED.toString(), user.toFullQualifiedUsername());
+            throw new PushDeviceHandlerServerException(errorMessage, e);
         }
 
         String deviceId = UUID.randomUUID().toString();
@@ -263,12 +269,14 @@ public class DeviceHandlerImpl implements DeviceHandler {
         try {
             if (!verifySignature(registrationRequest.getSignature(), registrationRequest.getPushId(),
                     registrationRequest.getPublicKey(), cacheEntry)) {
-                throw new PushDeviceHandlerClientException("Could not verify signature to register device: "
-                        + registrationRequest.getDeviceId() + ".");
+                String errorMessage = String.format(DeviceHandlerConstants
+                        .ErrorMessages.ERROR_CODE_INVALID_SIGNATURE.toString(), registrationRequest.getDeviceId());
+                throw new PushDeviceHandlerClientException(errorMessage);
             }
         } catch (NoSuchAlgorithmException | InvalidKeySpecException | InvalidKeyException | SignatureException e) {
-            throw new PushDeviceHandlerServerException("Error occurred when trying to verify the signature for device: "
-                    + registrationRequest.getDeviceId() + ".", e);
+            String errorMessage = String.format(DeviceHandlerConstants.ErrorMessages
+                    .ERROR_CODE_SIGNATURE_VERIFICATION_FAILED.toString(), registrationRequest.getDeviceId());
+            throw new PushDeviceHandlerServerException(errorMessage, e);
         }
     }
 
@@ -289,8 +297,9 @@ public class DeviceHandlerImpl implements DeviceHandler {
             userId = getUserIdFromUsername(cacheEntry.getUsername(),
                     IdentityTenantUtil.getRealm(cacheEntry.getTenantDomain(), cacheEntry.getUsername()));
         } catch (UserStoreException | IdentityException e) {
-            throw new PushDeviceHandlerServerException("Error occurred when trying to get the user ID to "
-                    + "register device: " + registrationRequest.getDeviceId() + ".", e);
+            String errorMessage = String.format(DeviceHandlerConstants.ErrorMessages
+                    .ERROR_CODE_FAILED_TO_GET_USER_ID.toString(), registrationRequest.getDeviceId());
+            throw new PushDeviceHandlerServerException(errorMessage, e);
         }
 
         Device device = new Device(registrationRequest.getDeviceId(), userId, registrationRequest.getDeviceName(),
@@ -303,8 +312,9 @@ public class DeviceHandlerImpl implements DeviceHandler {
             cacheEntry.setRegistered(true);
 
         } catch (SQLException e) {
-            throw new PushDeviceHandlerServerException("Error occurred when trying to register device: "
-                    + registrationRequest.getDeviceId() + ".", e);
+            String errorMessage = String.format(DeviceHandlerConstants.ErrorMessages
+                    .ERROR_CODE_REGISTER_DEVICE_FAILED.toString(), registrationRequest.getDeviceId());
+            throw new PushDeviceHandlerServerException(errorMessage, e);
         }
 
         return device;
@@ -334,8 +344,9 @@ public class DeviceHandlerImpl implements DeviceHandler {
                 deviceDAO.editDevice(currentDevice.getDeviceId(), updatedDevice);
             }
         } catch (SQLException e) {
-            throw new PushDeviceHandlerServerException("Error occurred when updating the name of device: "
-                    + currentDevice.getDeviceId() + ".", e);
+            String errorMessage = String.format(DeviceHandlerConstants
+                    .ErrorMessages.ERROR_CODE_EDIT_DEVICE_FAILED.toString(), currentDevice.getDeviceId());
+            throw new PushDeviceHandlerServerException(errorMessage, e);
         }
     }
 
