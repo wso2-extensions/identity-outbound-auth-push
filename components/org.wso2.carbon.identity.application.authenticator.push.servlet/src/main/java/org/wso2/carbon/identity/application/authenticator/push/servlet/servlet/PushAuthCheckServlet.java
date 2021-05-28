@@ -52,29 +52,25 @@ public class PushAuthCheckServlet extends HttpServlet {
     private void handleWebResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         WaitStatus waitStatus = new WaitStatus();
+
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType(MediaType.APPLICATION_JSON);
+
         String sessionDataKeyWeb = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
         String status = pushDataStoreInstance.getAuthStatus(sessionDataKeyWeb);
-
         if (status == null) {
-            response.setStatus(HttpServletResponse.SC_OK);
             waitStatus.setStatus(PushServletConstants.Status.PENDING.name());
-            response.setContentType(MediaType.APPLICATION_JSON);
 
             if (log.isDebugEnabled()) {
                 log.debug("Mobile authentication response has not been received yet.");
             }
-
         } else if (status.equals(PushServletConstants.Status.COMPLETED.name())) {
-            response.setStatus(HttpServletResponse.SC_OK);
             waitStatus.setStatus(PushServletConstants.Status.COMPLETED.name());
-            response.setContentType(MediaType.APPLICATION_JSON);
-
             pushDataStoreInstance.removePushData(sessionDataKeyWeb);
 
             if (log.isDebugEnabled()) {
                 log.debug("Mobile authentication has been received. Proceeding to authenticate.");
             }
-
         }
 
         String waitResponse = new Gson().toJson(waitStatus);
