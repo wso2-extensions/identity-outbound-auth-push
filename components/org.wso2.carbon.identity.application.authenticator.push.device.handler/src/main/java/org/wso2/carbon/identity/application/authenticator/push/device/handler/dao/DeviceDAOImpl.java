@@ -200,15 +200,4 @@ public class DeviceDAOImpl implements DeviceDAO {
 
         return new Date(timestamp.getTime());
     }
-
-    /**
-     * Convert date to timestamp type.
-     *
-     * @param date Date object
-     * @return Timestamp object
-     */
-    private Timestamp dateToTimestamp(Date date) {
-
-        return new Timestamp(date.getTime());
-    }
 }

@@ -24,7 +24,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.wso2.carbon.identity.application.authenticator.push.device.handler</artifactId>
     <packaging>bundle</packaging>
-    <name>WSO2 Carbon - Device Handler Library for Push Authentication</name>
+
     <parent>
         <groupId>org.wso2.carbon.identity.outbound.auth.push</groupId>
         <artifactId>identity-outbound-auth-push</artifactId>
