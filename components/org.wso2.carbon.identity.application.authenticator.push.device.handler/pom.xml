@@ -216,9 +216,7 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Private-Package>
-                            org.wso2.carbon.identity.application.authenticator.push.device.handler.internal,
-                            org.wso2.carbon.identity.application.authenticator.push.device.handler.cache,
-                            org.wso2.carbon.identity.application.authenticator.push.device.handler.dao
+                            org.wso2.carbon.identity.application.authenticator.push.device.handler.internal
                         </Private-Package>
                         <Import-Package>
                             org.apache.commons.logging;version="[ 1.2,2)",
@@ -236,7 +234,9 @@
                             org.wso2.carbon.utils;version="[4.6,5)"
                         </Import-Package>
                         <Export-Package>
-                            !org.wso2.carbon.identity.application.authenticator.push.device.handler.internal,
+                            !org.wso2.carbon.identity.application.authenticator.push.device.handler.internal;
+                            !org.wso2.carbon.identity.application.authenticator.push.device.handler.cache;
+                            !org.wso2.carbon.identity.application.authenticator.push.device.handler.dao;
                             org.wso2.carbon.identity.application.authenticator.push.device.handler;
                             org.wso2.carbon.identity.application.authenticator.push.device.handler.exception;
                             org.wso2.carbon.identity.application.authenticator.push.device.handler.model;
