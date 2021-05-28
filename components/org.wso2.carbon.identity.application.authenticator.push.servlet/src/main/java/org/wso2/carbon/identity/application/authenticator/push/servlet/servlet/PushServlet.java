@@ -37,7 +37,7 @@ import org.wso2.carbon.identity.application.authenticator.push.device.handler.ex
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.impl.DeviceHandlerImpl;
 import org.wso2.carbon.identity.application.authenticator.push.dto.AuthDataDTO;
 import org.wso2.carbon.identity.application.authenticator.push.servlet.PushServletConstants;
-import org.wso2.carbon.identity.application.authenticator.push.servlet.store.impl.PushDataStoreImpl;
+import org.wso2.carbon.identity.application.authenticator.push.servlet.store.PushDataStore;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -55,7 +55,7 @@ public class PushServlet extends HttpServlet {
 
     private static final long serialVersionUID = -2050679246736808648L;
     private static final Log log = LogFactory.getLog(PushServlet.class);
-    private final PushDataStoreImpl pushDataStoreInstance = PushDataStoreImpl.getInstance();
+    private final PushDataStore pushDataStoreInstance = PushDataStore.getInstance();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

@@ -19,24 +19,57 @@
 
 package org.wso2.carbon.identity.application.authenticator.push.servlet.store;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * Updates a hash-map which stores session data key against signed challenge from the mobile application.
+ * Updates a hash-map which stores the status of the authentication request.
  */
-public interface PushDataStore {
+public class PushDataStore implements Serializable {
+
+    private static final long serialVersionUID = 8385881451715660472L;
+    private static final PushDataStore pushDataStoreInstance = new PushDataStore();
+    private final Map<String, String> pushDataStore = new HashMap<>();
+
+    private PushDataStore() {
+
+    }
+
+    public static PushDataStore getInstance() {
+
+        return pushDataStoreInstance;
+    }
 
     /**
      * Returns the authentication status stored against the session data key in push data store.
+     *
+     * @param sessionDataKey Unique ID for the session
+     * @return Authentication status
      */
-    String getAuthStatus(String sessionDataKey);
+    public String getAuthStatus(String sessionDataKey) {
+
+        return pushDataStore.get(sessionDataKey + "status");
+    }
 
     /**
      * Adds a new record of session data key against auth status to the push data store.
+     *
+     * @param sessionDataKey Unique ID for the session
+     * @param authStatus     Authentication status
      */
-    void updateAuthStatus(String sessionDataKey, String authStatus);
+    public void updateAuthStatus(String sessionDataKey, String authStatus) {
+
+        pushDataStore.put(sessionDataKey + "status", authStatus);
+    }
 
     /**
      * Removes the record with the given session data key in push data store.
+     *
+     * @param sessionDataKey Unique ID for the session
      */
-    void removePushData(String sessionDataKey);
+    public void removePushData(String sessionDataKey) {
 
+        pushDataStore.remove(sessionDataKey);
+    }
 }

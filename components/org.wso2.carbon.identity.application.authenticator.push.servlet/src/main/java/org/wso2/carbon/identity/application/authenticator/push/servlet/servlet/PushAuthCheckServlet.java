@@ -6,7 +6,7 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundConstants;
 import org.wso2.carbon.identity.application.authenticator.push.servlet.PushServletConstants;
 import org.wso2.carbon.identity.application.authenticator.push.servlet.model.WaitStatus;
-import org.wso2.carbon.identity.application.authenticator.push.servlet.store.impl.PushDataStoreImpl;
+import org.wso2.carbon.identity.application.authenticator.push.servlet.store.PushDataStore;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -23,7 +23,7 @@ public class PushAuthCheckServlet extends HttpServlet {
 
     private static final Log log = LogFactory.getLog(PushAuthCheckServlet.class);
     private static final long serialVersionUID = -913670970043040923L;
-    private final PushDataStoreImpl pushDataStoreInstance = PushDataStoreImpl.getInstance();
+    private final PushDataStore pushDataStoreInstance = PushDataStore.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
