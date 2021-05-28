@@ -49,8 +49,8 @@ public class Device implements Serializable {
         this.deviceModel = deviceModel;
         this.pushId = pushId;
         this.publicKey = publicKey;
-        this.registrationTime = registrationTime;
-        this.lastUsedTime = lastUsedTime;
+        this.registrationTime = new Date(registrationTime.getTime());
+        this.lastUsedTime = new Date(lastUsedTime.getTime());
     }
 
     public Device(String deviceId, String deviceName, String deviceModel,
@@ -61,8 +61,8 @@ public class Device implements Serializable {
         this.deviceModel = deviceModel;
         this.pushId = pushId;
         this.publicKey = publicKey;
-        this.registrationTime = registrationTime;
-        this.lastUsedTime = lastUsedTime;
+        this.registrationTime = new Date(registrationTime.getTime());
+        this.lastUsedTime = new Date(lastUsedTime.getTime());
     }
 
     public Device(String deviceName, String deviceModel, String pushId, String publicKey) {
@@ -146,21 +146,21 @@ public class Device implements Serializable {
 
     public Date getRegistrationTime() {
 
-        return registrationTime;
+        return new Date(registrationTime.getTime());
     }
 
     public void setRegistrationTime(Date registrationTime) {
 
-        this.registrationTime = registrationTime;
+        this.registrationTime = new Date(registrationTime.getTime());
     }
 
     public Date getLastUsedTime() {
 
-        return lastUsedTime;
+        return new Date(lastUsedTime.getTime());
     }
 
     public void setLastUsedTime(Date lastUsedTime) {
 
-        this.lastUsedTime = lastUsedTime;
+        this.lastUsedTime = new Date(lastUsedTime.getTime());
     }
 }
