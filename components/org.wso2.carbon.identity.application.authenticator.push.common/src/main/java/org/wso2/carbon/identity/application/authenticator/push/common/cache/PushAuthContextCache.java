@@ -31,11 +31,6 @@ public class PushAuthContextCache extends
     private static final String PUSH_AUTH_CONTEXT_CACHE = "PushAuthContextCache";
     private static volatile PushAuthContextCache cache;
 
-    private PushAuthContextCache(String cacheName) {
-
-        super(cacheName);
-    }
-
     private PushAuthContextCache() {
 
         super(PUSH_AUTH_CONTEXT_CACHE, true);
@@ -43,7 +38,6 @@ public class PushAuthContextCache extends
 
     public static PushAuthContextCache getInstance() {
 
-        CarbonUtils.checkSecurity();
         if (cache == null) {
             synchronized (PushAuthContextCache.class) {
                 cache = new PushAuthContextCache();
@@ -59,8 +53,7 @@ public class PushAuthContextCache extends
 
     private PushAuthContextCacheEntry getFromSessionStore(String id) {
 
-        return (PushAuthContextCacheEntry) SessionDataStore.getInstance().
-                getSessionData(id, PUSH_AUTH_CONTEXT_CACHE);
+        return (PushAuthContextCacheEntry) SessionDataStore.getInstance().getSessionData(id, PUSH_AUTH_CONTEXT_CACHE);
     }
 
     private void clearFromSessionStore(String id) {
@@ -84,6 +77,10 @@ public class PushAuthContextCache extends
 
     public PushAuthContextCacheEntry getValueFromCacheByRequestId(PushAuthContextCacheKey key) {
 
-        return getFromSessionStore(key.getRequestId());
+        PushAuthContextCacheEntry cacheEntry = super.getValueFromCache(key);
+        if (cacheEntry == null) {
+            cacheEntry = getFromSessionStore(key.getRequestId());
+        }
+        return cacheEntry;
     }
 }
