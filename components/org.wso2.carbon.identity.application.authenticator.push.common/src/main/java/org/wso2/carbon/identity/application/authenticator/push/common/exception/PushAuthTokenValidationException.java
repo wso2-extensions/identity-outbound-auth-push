@@ -19,6 +19,9 @@
 
 package org.wso2.carbon.identity.application.authenticator.push.common.exception;
 
+/**
+ * Exception class for JWT validations
+ */
 public class PushAuthTokenValidationException extends IdentityPushAuthException {
 
     public PushAuthTokenValidationException(String message) {
