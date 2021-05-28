@@ -80,10 +80,11 @@ public class PushServlet extends HttpServlet {
 
         JsonObject json = new JsonParser().parse(request.getReader().readLine()).getAsJsonObject();
         String token = json.get(PushServletConstants.AUTH_RESPONSE).getAsString();
+
         if (StringUtils.isEmpty(token)) {
             String errorMessage = "The request did not have an authentication response token.";
             if (log.isDebugEnabled()) {
-                log.error(errorMessage);
+                log.debug(errorMessage);
             }
 
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, errorMessage);
@@ -96,7 +97,7 @@ public class PushServlet extends HttpServlet {
                         + "contain a session data key.", deviceId);
 
                 if (log.isDebugEnabled()) {
-                    log.error(errorMessage);
+                    log.debug(errorMessage);
                 }
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Authentication response token doesn't have "
                         + "a session data key.");
@@ -122,6 +123,7 @@ public class PushServlet extends HttpServlet {
      * @throws ServletException if the token string fails to parse to JWT
      */
     private String getDeviceIdFromToken(String token) throws ServletException {
+
         try {
             return String.valueOf(JWTParser.parse(token).getHeader().getCustomParam("did"));
         } catch (ParseException e) {
@@ -132,11 +134,11 @@ public class PushServlet extends HttpServlet {
     /**
      * Derive the SessionDataKey from the auth response token.
      *
-     * @param token Auth response token
+     * @param token    Auth response token
      * @param deviceId Unique ID of the device trying to authenticate
      * @return SessionDataKey
      * @throws ServletException if the auth response token fails to parse to JWT or the public key for the device
-     * is not retrieved or if the token is not valid
+     *                          is not retrieved or if the token is not valid
      */
     private String getSessionDataKeyFromToken(String token, String deviceId) throws ServletException {
 
@@ -162,7 +164,7 @@ public class PushServlet extends HttpServlet {
      * Add the received auth response token to the authentication context.
      *
      * @param sessionDataKey Unique key to identify the session
-     * @param token Auth response token
+     * @param token          Auth response token
      */
     private void addToContext(String sessionDataKey, String token) {
 
