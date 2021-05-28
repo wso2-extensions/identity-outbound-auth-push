@@ -22,6 +22,7 @@ import javax.ws.rs.core.MediaType;
 public class PushAuthCheckServlet extends HttpServlet {
 
     private static final Log log = LogFactory.getLog(PushAuthCheckServlet.class);
+    private static final long serialVersionUID = -913670970043040923L;
     private final PushDataStoreImpl pushDataStoreInstance = PushDataStoreImpl.getInstance();
 
     @Override

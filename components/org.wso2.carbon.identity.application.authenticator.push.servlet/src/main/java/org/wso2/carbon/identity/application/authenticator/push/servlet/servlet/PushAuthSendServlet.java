@@ -38,6 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 public class PushAuthSendServlet extends HttpServlet {
 
     private static final Log log = LogFactory.getLog(PushAuthSendServlet.class);
+    private static final long serialVersionUID = 3499692110941777290L;
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
