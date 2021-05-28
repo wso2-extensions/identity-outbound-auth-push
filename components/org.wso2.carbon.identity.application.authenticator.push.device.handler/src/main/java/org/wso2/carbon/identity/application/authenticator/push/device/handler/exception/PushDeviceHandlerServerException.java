@@ -23,6 +23,8 @@ package org.wso2.carbon.identity.application.authenticator.push.device.handler.e
  */
 public class PushDeviceHandlerServerException extends PushDeviceHandlerException {
 
+    private static final long serialVersionUID = -3791909577807841657L;
+
     public PushDeviceHandlerServerException(String message) {
 
         super(message);

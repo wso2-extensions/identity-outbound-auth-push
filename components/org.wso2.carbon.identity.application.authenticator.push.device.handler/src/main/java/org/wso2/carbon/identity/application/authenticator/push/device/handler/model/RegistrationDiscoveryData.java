@@ -25,6 +25,7 @@ import java.io.Serializable;
  */
 public class RegistrationDiscoveryData implements Serializable {
 
+    private static final long serialVersionUID = 556476858529842173L;
     private String deviceId;
     private String username;
     private String firstName;

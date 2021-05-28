@@ -25,6 +25,8 @@ import org.wso2.carbon.identity.base.IdentityException;
  */
 public class PushDeviceHandlerException extends IdentityException {
 
+    private static final long serialVersionUID = -5090109069640776773L;
+
     public PushDeviceHandlerException(String message) {
 
         super(message);

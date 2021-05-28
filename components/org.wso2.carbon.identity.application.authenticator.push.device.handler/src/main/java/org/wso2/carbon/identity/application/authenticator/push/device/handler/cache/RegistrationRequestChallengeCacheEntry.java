@@ -25,6 +25,7 @@ import org.wso2.carbon.identity.application.common.cache.CacheEntry;
  */
 public class RegistrationRequestChallengeCacheEntry extends CacheEntry {
 
+    private static final long serialVersionUID = 8124565317341927680L;
     private String challenge;
     private String username;
     private String tenantDomain;

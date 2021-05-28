@@ -26,6 +26,7 @@ import java.util.Date;
  */
 public class Device implements Serializable {
 
+    private static final long serialVersionUID = -1036750138091729862L;
     private String deviceId;
     private String userId;
     private String deviceName;

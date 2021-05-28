@@ -26,7 +26,7 @@ import org.wso2.carbon.identity.application.common.cache.CacheKey;
 public class PushDeviceHandlerCacheKey extends CacheKey {
 
     private static final long serialVersionUID = -2846349295093760499L;
-    private String requestId;
+    private final String requestId;
 
     public PushDeviceHandlerCacheKey(String requestId) {
 
