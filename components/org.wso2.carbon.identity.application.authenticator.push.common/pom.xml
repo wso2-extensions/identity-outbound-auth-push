@@ -11,6 +11,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.wso2.carbon.identity.application.authenticator.push.common</artifactId>
     <packaging>bundle</packaging>
+    <name>WSO2 Carbon - Common Library for Push Authentication</name>
 
     <dependencies>
         <dependency>
@@ -56,7 +57,6 @@
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.service.component.annotations</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon.identity.framework</groupId>
@@ -72,26 +72,6 @@
             <artifactId>org.osgi.service.component</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-module-testng</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-api-mockito</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-module-junit4</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
         </dependency>
@@ -103,22 +83,10 @@
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.wso2.carbon/org.wso2.carbon.utils -->
         <dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.utils</artifactId>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.wso2.carbon/org.wso2.carbon.context -->
-        <dependency>
-            <groupId>org.wso2.carbon</groupId>
-            <artifactId>org.wso2.carbon.context</artifactId>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.osgi/org.osgi.framework -->
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.framework</artifactId>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.wso2.carbon/org.wso2.carbon.user.api -->
         <dependency>
             <groupId>org.wso2.carbon.identity.framework</groupId>
             <artifactId>org.wso2.carbon.identity.application.authentication.framework</artifactId>
@@ -128,31 +96,16 @@
             <artifactId>org.wso2.carbon.identity.core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon.identity.framework</groupId>
-            <artifactId>org.wso2.carbon.identity.base</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon</groupId>
-            <artifactId>org.wso2.carbon.user.api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.identity.framework</groupId>
-            <artifactId>org.wso2.carbon.identity.base</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.wso2.orbit.com.nimbusds</groupId>
             <artifactId>nimbus-jose-jwt</artifactId>
-            <version>7.3.0.wso2v1</version>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon.identity.inbound.auth.oauth2</groupId>
             <artifactId>org.wso2.carbon.identity.oauth</artifactId>
-            <version>6.4.126</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
@@ -162,10 +115,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${org.apache.maven.compiler.plugin}</version>
-                <configuration>
-                    <source>8</source>
-                    <target>8</target>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -209,7 +158,7 @@
                                         <limit implementation="org.jacoco.report.check.Limit">
                                             <counter>COMPLEXITY</counter>
                                             <value>COVEREDRATIO</value>
-                                            <!--<minimum>0.60</minimum>-->
+                                            <minimum>0.00</minimum>
                                         </limit>
                                     </limits>
                                 </rule>
@@ -221,38 +170,25 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <!--                <version>1.4.0</version>-->
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
-                        <Private-Package>
-                            org.wso2.carbon.identity.application.authenticator.push.common.internal,
-                        </Private-Package>
                         <Import-Package>
                             org.apache.commons.logging;version="[ 1.2,2)",
-                            org.osgi.framework;version="[1.8,2)",
-                            org.wso2.carbon.context;version="[4.6,5)",
+                            org.apache.commons.lang;version="[ 1.2,2)",
                             org.wso2.carbon.identity.application.authentication.framework.context;version="[5.12,6)",
-                            org.wso2.carbon.identity.application.authentication.framework.exception;version="[5.12,6)",
                             org.wso2.carbon.identity.application.authentication.framework.store;version="[5.12,6)",
                             org.wso2.carbon.identity.application.common.cache;version="[5.12,6)",
-                            org.wso2.carbon.identity.application.common.model;version="[5.12,6)",
                             org.wso2.carbon.identity.base;version="[5.12,6)",
-                            org.wso2.carbon.identity.core.util;version="[5.12,6)",
-                            org.wso2.carbon.identity.user.store.configuration.listener;version="[5.12,6)",
                             org.wso2.carbon.identity.oauth.config;version="[6.4,7)",
-                            org.wso2.carbon.user.api;version="[1.0,2)",
-                            org.wso2.carbon.user.core.common;version="[4.6,5)",
-                            org.wso2.carbon.user.core.service;version="[4.6,5)",
                             org.wso2.carbon.utils;version="[4.6,5)",
                             com.nimbusds.jose;version="[7.3,8)",
                             com.nimbusds.jose.crypto;version="[7.3,8)",
                             com.nimbusds.jwt;version="[7.3,8)",
                         </Import-Package>
                         <Export-Package>
-                            !org.wso2.carbon.identity.application.authenticator.push.common.internal,
                             org.wso2.carbon.identity.application.authenticator.push.common.cache,
                             org.wso2.carbon.identity.application.authenticator.push.common,
                             org.wso2.carbon.identity.application.authenticator.push.common.impl,
