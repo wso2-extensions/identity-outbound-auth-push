@@ -31,6 +31,8 @@ public class PushServletConstants {
     public static final String DEVICE_ID = "deviceId";
     public static final String AUTH_DATA = "authData";
     public static final String AUTH_RESPONSE = "authResponse";
+    public static final String TOKEN_DEVICE_ID = "did";
+    public static final String TOKEN_SESSION_DATA_KEY = "sid";
 
     /**
      * Object holding authentication mobile response status.
@@ -78,8 +80,6 @@ public class PushServletConstants {
                 "Error occurred when trying to send an authentication request to device %s after "
                         + "selecting from multiple devices."
         );
-
-
 
         private final String code;
         private final String message;

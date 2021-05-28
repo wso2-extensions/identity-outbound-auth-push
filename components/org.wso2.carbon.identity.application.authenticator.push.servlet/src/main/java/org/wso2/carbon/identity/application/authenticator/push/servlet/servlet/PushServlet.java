@@ -120,7 +120,8 @@ public class PushServlet extends HttpServlet {
     private String getDeviceIdFromToken(String token) throws ServletException {
 
         try {
-            return String.valueOf(JWTParser.parse(token).getHeader().getCustomParam("did"));
+            return String.valueOf(JWTParser.parse(token).getHeader().getCustomParam(
+                    PushServletConstants.TOKEN_DEVICE_ID));
         } catch (ParseException e) {
             throw new ServletException(PushServletConstants
                     .ErrorMessages.ERROR_CODE_GET_DEVICE_ID_FAILED.toString(), e);
@@ -144,7 +145,7 @@ public class PushServlet extends HttpServlet {
         try {
             String publicKey = deviceHandler.getPublicKey(deviceId);
             JWTClaimsSet claimsSet = validator.validate(token, publicKey);
-            return claimsSet.getStringClaim("sid");
+            return claimsSet.getStringClaim(PushServletConstants.TOKEN_SESSION_DATA_KEY);
         } catch (PushDeviceHandlerServerException | PushDeviceHandlerClientException e) {
             String errorMessage = String.format(PushServletConstants
                     .ErrorMessages.ERROR_CODE_GET_PUBLIC_KEY_FAILED.toString(), deviceId);
