@@ -61,10 +61,6 @@ public class PushServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
 
-        if (log.isDebugEnabled()) {
-            log.error("Authentication request received from mobile app.");
-        }
-
         handleMobileResponse(request, response);
     }
 

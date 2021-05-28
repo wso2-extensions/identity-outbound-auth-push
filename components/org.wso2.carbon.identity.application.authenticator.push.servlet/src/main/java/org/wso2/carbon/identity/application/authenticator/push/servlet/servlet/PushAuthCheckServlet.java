@@ -30,7 +30,7 @@ public class PushAuthCheckServlet extends HttpServlet {
             throws ServletException, IOException {
 
         if (!(request.getParameterMap().containsKey(InboundConstants.RequestProcessor.CONTEXT_KEY))) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 
             if (log.isDebugEnabled()) {
                 log.debug(PushServletConstants.ErrorMessages.ERROR_CODE_WEB_SESSION_DATA_KEY_NOT_FOUND.toString());
@@ -76,5 +76,6 @@ public class PushAuthCheckServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         out.print(waitResponse);
         out.flush();
+        out.close();
     }
 }
