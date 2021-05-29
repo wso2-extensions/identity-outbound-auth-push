@@ -56,7 +56,7 @@ public class PushJWTValidator {
      * @return Boolean value for validation
      * @throws PushAuthTokenValidationException
      */
-    public JWTClaimsSet validate(String jwt, String publicKey)
+    public JWTClaimsSet getValidatedClaimSet(String jwt, String publicKey)
             throws PushAuthTokenValidationException {
 
         if (!isJWT(jwt)) {
