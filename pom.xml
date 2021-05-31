@@ -34,6 +34,13 @@
     <version>0.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
+    <modules>
+        <module>components/org.wso2.carbon.identity.application.authenticator.push</module>
+        <module>components/org.wso2.carbon.identity.application.authenticator.push.servlet</module>
+        <module>components/org.wso2.carbon.identity.application.authenticator.push.device.handler</module>
+        <module>components/org.wso2.carbon.identity.application.authenticator.push.common</module>
+    </modules>
+
     <url>http://wso2.org</url>
     <build>
         <pluginManagement>
@@ -378,6 +385,7 @@
             </releases>
         </repository>
     </repositories>
+
     <properties>
         <maven.buildnumber.plugin.version>1.4</maven.buildnumber.plugin.version>
         <maven.bundle.plugin.version>3.2.0</maven.bundle.plugin.version>
@@ -434,10 +442,4 @@
         <javax.ws.rs.version>2.1.1</javax.ws.rs.version>
         <identity.inbound.auth.oauth2.version>6.4.126</identity.inbound.auth.oauth2.version>
     </properties>
-    <modules>
-        <module>components/org.wso2.carbon.identity.application.authenticator.push</module>
-        <module>components/org.wso2.carbon.identity.application.authenticator.push.servlet</module>
-        <module>components/org.wso2.carbon.identity.application.authenticator.push.device.handler</module>
-        <module>components/org.wso2.carbon.identity.application.authenticator.push.common</module>
-    </modules>
 </project>
