@@ -20,7 +20,6 @@ package org.wso2.carbon.identity.application.authenticator.push.common.cache;
 
 import org.wso2.carbon.identity.application.authentication.framework.store.SessionDataStore;
 import org.wso2.carbon.identity.application.common.cache.BaseCache;
-import org.wso2.carbon.utils.CarbonUtils;
 
 /**
  * Class handling push authentication cache.
