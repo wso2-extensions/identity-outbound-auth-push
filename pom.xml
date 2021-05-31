@@ -106,7 +106,6 @@
 
     <dependencyManagement>
         <dependencies>
-
             <dependency>
                 <groupId>org.wso2.carbon.identity</groupId>
                 <artifactId>org.wso2.carbon.identity.sso.saml</artifactId>
@@ -189,15 +188,12 @@
                 <version>${powermock.version}</version>
                 <scope>test</scope>
             </dependency>
-
-
             <dependency>
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
                 <version>${commons.lang.version}</version>
                 <scope>compile</scope>
             </dependency>
-
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
@@ -213,13 +209,11 @@
                 <artifactId>org.wso2.carbon.identity.user.store.configuration</artifactId>
                 <version>${identity.framework.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.user.core</artifactId>
                 <version>4.6.0</version>
             </dependency>
-
             <dependency>
                 <groupId>org.wso2.carbon.utils</groupId>
                 <artifactId>org.wso2.carbon.database.utils</artifactId>
@@ -261,7 +255,6 @@
                 <version>6.0.0</version>
                 <scope>provided</scope>
             </dependency>
-
             <dependency>
                 <groupId>com.yubico</groupId>
                 <artifactId>webauthn-server-core</artifactId>
@@ -321,6 +314,11 @@
             </dependency>
             <dependency>
                 <groupId>org.wso2.carbon.identity.outbound.auth.push</groupId>
+                <artifactId>org.wso2.carbon.identity.application.authenticator.push.common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity.outbound.auth.push</groupId>
                 <artifactId>org.wso2.carbon.identity.application.authenticator.push</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -334,7 +332,17 @@
                 <artifactId>jackson-core</artifactId>
                 <version>${jackson.core.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>org.wso2.carbon.identity.inbound.auth.oauth2</groupId>
+                <artifactId>org.wso2.carbon.identity.oauth</artifactId>
+                <version>6.4.126</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.orbit.com.nimbusds</groupId>
+                <artifactId>nimbus-jose-jwt</artifactId>
+                <version>${nimbusds.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -417,5 +425,6 @@
         <module>components/org.wso2.carbon.identity.application.authenticator.push</module>
         <module>components/org.wso2.carbon.identity.application.authenticator.push.servlet</module>
         <module>components/org.wso2.carbon.identity.application.authenticator.push.device.handler</module>
+        <module>components/org.wso2.carbon.identity.application.authenticator.push.common</module>
     </modules>
 </project>
