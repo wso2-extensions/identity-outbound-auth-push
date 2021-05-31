@@ -47,9 +47,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * The Push Servlet class manages the status of the push authentication process with the session data key,
- * by processing the responses from the push authenticator devices(mobile devices) and replying to the polling
- * requests from the web client.
+ * Servlet for handling authentication requests sent from mobile device.
  */
 public class PushServlet extends HttpServlet {
 
@@ -144,7 +142,7 @@ public class PushServlet extends HttpServlet {
 
         try {
             String publicKey = deviceHandler.getPublicKey(deviceId);
-            JWTClaimsSet claimsSet = validator.validate(token, publicKey);
+            JWTClaimsSet claimsSet = validator.getValidatedClaimSet(token, publicKey);
             return claimsSet.getStringClaim(PushServletConstants.TOKEN_SESSION_DATA_KEY);
         } catch (PushDeviceHandlerServerException | PushDeviceHandlerClientException e) {
             String errorMessage = String.format(PushServletConstants
