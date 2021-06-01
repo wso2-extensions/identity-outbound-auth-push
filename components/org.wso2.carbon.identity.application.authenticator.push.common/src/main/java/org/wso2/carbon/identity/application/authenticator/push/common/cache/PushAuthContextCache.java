@@ -45,27 +45,55 @@ public class PushAuthContextCache extends
         return cache;
     }
 
+    /**
+     * Store authentication context to the session data store
+     *
+     * @param id SessionDataKey for the session
+     * @param entry PushAuthContextCacheEntry containing push authentication context
+     */
     private void storeToSessionStore(String id, PushAuthContextCacheEntry entry) {
 
         SessionDataStore.getInstance().storeSessionData(id, PUSH_AUTH_CONTEXT_CACHE, entry);
     }
 
+    /**
+     * Gets the push authentication context from SessionDataStore by the SessionDataKey
+     *
+     * @param id SessionDataKey used as the ID
+     * @return Push authentication context
+     */
     private PushAuthContextCacheEntry getFromSessionStore(String id) {
 
         return (PushAuthContextCacheEntry) SessionDataStore.getInstance().getSessionData(id, PUSH_AUTH_CONTEXT_CACHE);
     }
 
+    /**
+     * Remove cached authentication context by SessionDataKey
+     *
+     * @param id SessionDataKey for the session
+     */
     private void clearFromSessionStore(String id) {
 
         SessionDataStore.getInstance().clearSessionData(id, PUSH_AUTH_CONTEXT_CACHE);
     }
 
+    /**
+     * Clear stored cache under the SessionDataKey
+     *
+     * @param key PushAuthenticationContextKey with SessionDataKey
+     */
     public void clearCacheEntryByRequestId(PushAuthContextCacheKey key) {
 
         super.clearCacheEntry(key);
         clearFromSessionStore(key.getRequestId());
     }
 
+    /**
+     * Add the authentication context to cache by the SessionDataKey
+     *
+     * @param key PushAuthenticationContextKey with SessionDataKey
+     * @param entry PushAuthenticationCacheEntry containing authentication context
+     */
     public void addToCacheByRequestId(PushAuthContextCacheKey key,
                                       PushAuthContextCacheEntry entry) {
 
@@ -74,6 +102,12 @@ public class PushAuthContextCache extends
 
     }
 
+    /**
+     * Gets the push authentication context from cache by the SessionDataKey
+     *
+     * @param key PushAuthenticationContextKey with SessionDataKey
+     * @return PushAuthenticationCacheEntry containing authentication context
+     */
     public PushAuthContextCacheEntry getValueFromCacheByRequestId(PushAuthContextCacheKey key) {
 
         PushAuthContextCacheEntry cacheEntry = super.getValueFromCache(key);
