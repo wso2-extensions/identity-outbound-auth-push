@@ -90,7 +90,11 @@
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon.identity.outbound.auth.push</groupId>
-            <artifactId>org.wso2.carbon.identity.application.authenticator.push.core</artifactId>
+            <artifactId>org.wso2.carbon.identity.application.authenticator.push.common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.identity.outbound.auth.push</groupId>
+            <artifactId>org.wso2.carbon.identity.application.authenticator.push.device.handler</artifactId>
         </dependency>
     </dependencies>
     <build>
@@ -103,8 +107,7 @@
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
-                        <Private-Package>org.wso2.carbon.identity.application.authenticator.push.servlet.internal
-                        </Private-Package>
+                        <Private-Package>org.wso2.carbon.identity.application.authenticator.push.servlet.internal</Private-Package>
                         <Export-Package>
                             !org.wso2.carbon.identity.application.authenticator.push.servlet.internal,
                             org.wso2.carbon.identity.application.authenticator.push.servlet,
@@ -115,26 +118,28 @@
                         </Export-Package>
                         <Import-Package>
                             com.google.gson;version="${com.googlecode.json-simple.version}",
-                            org.wso2.carbon.identity.application.authentication.framework.context;version="[5.12,6)",
-                            javax.servlet;version= "[2.6,3)",
-                            javax.servlet.http;version="[2.6,3)",
-                            org.apache.commons.lang;version="[2.6,3)",
-                            org.apache.commons.logging;version="[1.2,2)",
+                            com.nimbusds.jose;version="${com.nimbusds.version.range}",
+                            com.nimbusds.jwt;version="${com.nimbusds.version.range}",
+                            org.wso2.carbon.identity.application.authentication.framework.context;version="${org.wso2.carbon.identity.version.range}",
+                            org.wso2.carbon.identity.application.authentication.framework.inbound;version="${org.wso2.carbon.identity.version.range}",
+                            javax.servlet;version= "${javax.version.range}",
+                            javax.servlet.http;version="${javax.version.range}",
+                            javax.ws.rs.core;version="${javax.version.range}",
+                            org.apache.commons.lang;version="${org.apache.commons.lang.version.range}",
+                            org.apache.commons.logging;version="${org.apache.commons.version.range}",
                             org.eclipse.equinox.http.helper,
-                            org.osgi.service.component;version="[1.2.0,2.0.0)",
-                            org.osgi.service.http;version="[1.2,2)",
-                            org.wso2.carbon.identity.application.authenticator.push;version="[0.1,1)",
-                            org.wso2.carbon.identity.application.authenticator.push.validator;version="[0.1,1)",
-                            org.wso2.carbon.identity.application.authenticator.push.dto;version="[0.1,1)",
-                            org.wso2.carbon.identity.application.authenticator.push.dto.impl;version="[0.1,1)",
-                            org.wso2.carbon.identity.application.authenticator.push.cache;version="[0.1,1)",
-                            org.wso2.carbon.identity.application.authenticator.push.device.handler;version="[0.1,1)",
-                            org.wso2.carbon.identity.application.authenticator.push.device.handler.model;version="[0.1,1)",
-                            org.wso2.carbon.identity.application.authenticator.push.device.handler.exception;version="[0.1,1)",
-                            org.wso2.carbon.identity.application.authenticator.push.device.handler.impl;version="[0.1,1)",
-                            org.wso2.carbon.identity.application.authenticator.push.core;version="[0.1,1)",
-                            org.wso2.carbon.identity.application.authenticator.push.core.impl;version="[0.1,1)",
-                            org.wso2.carbon.identity.application.authenticator.push.core.exception;version="[0.1,1)",
+                            org.osgi.service.component;version="${org.osgi.service.version.range}",
+                            org.osgi.service.http;version="${org.osgi.service.version.range}",
+                            org.wso2.carbon.identity.application.authenticator.push.dto,
+                            org.wso2.carbon.identity.application.authenticator.push.exception,
+                            org.wso2.carbon.identity.application.authenticator.push.notification.handler,
+                            org.wso2.carbon.identity.application.authenticator.push.notification.handler.impl,
+                            org.wso2.carbon.identity.application.authenticator.push.device.handler,
+                            org.wso2.carbon.identity.application.authenticator.push.device.handler.exception,
+                            org.wso2.carbon.identity.application.authenticator.push.device.handler.impl,
+                            org.wso2.carbon.identity.application.authenticator.push.common,
+                            org.wso2.carbon.identity.application.authenticator.push.common.impl,
+                            org.wso2.carbon.identity.application.authenticator.push.common.exception,
                         </Import-Package>
                     </instructions>
                 </configuration>
@@ -181,7 +186,7 @@
                                         <limit implementation="org.jacoco.report.check.Limit">
                                             <counter>COMPLEXITY</counter>
                                             <value>COVEREDRATIO</value>
-                                            <!--<minimum>0.20</minimum>-->
+                                            <minimum>0.00</minimum>
                                         </limit>
                                     </limits>
                                 </rule>
