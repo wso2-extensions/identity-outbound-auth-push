@@ -22,7 +22,6 @@
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.user.core</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.wso2.carbon.utils</groupId>
             <artifactId>org.wso2.carbon.database.utils</artifactId>
@@ -53,7 +52,6 @@
             <groupId>org.wso2.carbon.commons</groupId>
             <artifactId>org.wso2.carbon.tenant.common</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.service.component.annotations</artifactId>
@@ -66,7 +64,6 @@
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.service.component</artifactId>
@@ -76,16 +73,8 @@
             <artifactId>gson</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon</groupId>
-            <artifactId>org.wso2.carbon.utils</artifactId>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon.identity.framework</groupId>
@@ -102,11 +91,6 @@
         <dependency>
             <groupId>org.wso2.orbit.com.nimbusds</groupId>
             <artifactId>nimbus-jose-jwt</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.identity.inbound.auth.oauth2</groupId>
-            <artifactId>org.wso2.carbon.identity.oauth</artifactId>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
     <build>
@@ -182,8 +166,6 @@
                             org.wso2.carbon.identity.application.authentication.framework.store;version="[5.12,6)",
                             org.wso2.carbon.identity.application.common.cache;version="[5.12,6)",
                             org.wso2.carbon.identity.base;version="[5.12,6)",
-                            org.wso2.carbon.identity.oauth.config;version="[6.4,7)",
-                            org.wso2.carbon.utils;version="[4.6,5)",
                             com.nimbusds.jose;version="[7.3,8)",
                             com.nimbusds.jose.crypto;version="[7.3,8)",
                             com.nimbusds.jwt;version="[7.3,8)",

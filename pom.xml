@@ -36,12 +36,12 @@
     <url>http://wso2.org</url>
 
     <modules>
+        <module>components/org.wso2.carbon.identity.application.authenticator.push.common</module>
         <module>components/org.wso2.carbon.identity.application.authenticator.push</module>
         <module>components/org.wso2.carbon.identity.application.authenticator.push.servlet</module>
         <module>components/org.wso2.carbon.identity.application.authenticator.push.device.handler</module>
-        <module>components/org.wso2.carbon.identity.application.authenticator.push.common</module>
     </modules>
-    
+
     <build>
         <pluginManagement>
             <plugins>
@@ -262,16 +262,6 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>com.yubico</groupId>
-                <artifactId>webauthn-server-core</artifactId>
-                <version>${com.yubico.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wso2.carbon</groupId>
-                <artifactId>org.wso2.carbon.utils</artifactId>
-                <version>${org.wso2.carbon.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.context</artifactId>
                 <version>${org.wso2.carbon.context.version}</version>
@@ -288,11 +278,6 @@
                 <version>${org.wso2.carbon.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.jetbrains</groupId>
-                <artifactId>annotations</artifactId>
-                <version>${org.jetbrains.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>org.apache.felix.scr.ds-annotations</artifactId>
                 <version>${org.apache.felix.annotations.version}</version>
@@ -302,11 +287,6 @@
                 <groupId>org.wso2.carbon.extension.identity.authenticator.utils</groupId>
                 <artifactId>org.wso2.carbon.extension.identity.helper</artifactId>
                 <version>${identity.authenticator.utils.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wso2.carbon.identity.outbound.auth.oidc</groupId>
-                <artifactId>org.wso2.carbon.identity.application.authenticator.oidc</artifactId>
-                <version>${identity.outbound.auth.oidc.version}</version>
             </dependency>
             <dependency>
                 <groupId>javax.ws.rs</groupId>
@@ -337,11 +317,6 @@
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
                 <version>${jackson.core.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wso2.carbon.identity.inbound.auth.oauth2</groupId>
-                <artifactId>org.wso2.carbon.identity.oauth</artifactId>
-                <version>${identity.inbound.auth.oauth2.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.wso2.orbit.com.nimbusds</groupId>
