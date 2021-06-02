@@ -367,16 +367,9 @@
         <maven.compiler.plugin.version>2.3.1</maven.compiler.plugin.version>
         <findbugs.maven.plugin.version>3.0.4</findbugs.maven.plugin.version>
         <identity.framework.version>5.17.5</identity.framework.version>
-        <identity.framework.imp.pkg.version.range>[5.14.67, 6.0.0)</identity.framework.imp.pkg.version.range>
-        <carbon.identity.package.export.version>${project.version}</carbon.identity.package.export.version>
         <jacoco.version>0.8.2</jacoco.version>
         <carbon.identity.version>5.0.7</carbon.identity.version>
         <commons.logging.version>1.1.1</commons.logging.version>
-        <carbon.kernel.version>4.4.3</carbon.kernel.version>
-        <oltu.version>1.0.0.wso2v2</oltu.version>
-        <org.apache.oltu.oauth2.client.version>1.0.0</org.apache.oltu.oauth2.client.version>
-        <oltu.package.import.version.range>[1.0.0, 2.0.0)</oltu.package.import.version.range>
-        <wso2.json>3.0.0.wso2v1</wso2.json>
         <org.eclipse.equinox.version>1.0.0</org.eclipse.equinox.version>
         <com.google.code.gson.version>2.2.4</com.google.code.gson.version>
         <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
@@ -386,17 +379,8 @@
         <org.osgi.framework.version>1.9.0</org.osgi.framework.version>
         <org.osgi.core.version>6.0.0</org.osgi.core.version>
         <com.googlecode.json-simple.version>1.1.1</com.googlecode.json-simple.version>
-        <import.package.version.javax.servlet>[2.6.0,3.6.0]</import.package.version.javax.servlet>
-        <org.apache.felix.maven.version>2.3.5</org.apache.felix.maven.version>
         <org.json.simple.version>0.0.0</org.json.simple.version>
-        <org.apache.commons.logging.version>1.0.4</org.apache.commons.logging.version>
         <org.apache.maven.compiler.plugin>2.0</org.apache.maven.compiler.plugin>
-        <org.apache.felix.maven.src.plugin>1.7.2</org.apache.felix.maven.src.plugin>
-        <apache.felix.scr.ds.annotations.version>1.2.8</apache.felix.scr.ds.annotations.version>
-        <maven.scr.plugin.version>1.7.2</maven.scr.plugin.version>
-        <osgi.service.http.imp.pkg.version.range>[1.2.1, 2.0.0)</osgi.service.http.imp.pkg.version.range>
-        <osgi.framework.imp.pkg.version.range>[1.7.0, 2.0.0)</osgi.framework.imp.pkg.version.range>
-        <javax.servlet.http.version>[4.0.0,5.0.0]</javax.servlet.http.version>
         <org.apache.httpcomponents.version>[4.5.0,5.5.0)</org.apache.httpcomponents.version>
         <powermock.version>1.6.5</powermock.version>
         <commons.lang.version>20030203.000129</commons.lang.version>
@@ -408,13 +392,9 @@
         <org.wso2.carbon.context.version>3.2.0</org.wso2.carbon.context.version>
         <org.wso2.carbon.utils.version>2.0.9</org.wso2.carbon.utils.version>
         <org.wso2.carbon.commons.version>4.7.24</org.wso2.carbon.commons.version>
-        <com.yubico.version>1.6.0</com.yubico.version>
-        <org.jetbrains.version>16.0.1</org.jetbrains.version>
         <org.apache.felix.annotations.version>1.2.10</org.apache.felix.annotations.version>
         <identity.authenticator.utils.version>1.2.0</identity.authenticator.utils.version>
-        <identity.outbound.auth.oidc.version>5.1.6</identity.outbound.auth.oidc.version>
         <javax.ws.rs.version>2.1.1</javax.ws.rs.version>
-        <identity.inbound.auth.oauth2.version>6.4.126</identity.inbound.auth.oauth2.version>
         <!-- Version Ranges -->
         <org.wso2.carbon.identity.version.range>[5.12,6)</org.wso2.carbon.identity.version.range>
         <org.wso2.carbon.version.range>[4.6,5)</org.wso2.carbon.version.range>
@@ -427,4 +407,5 @@
         <org.osgi.framework.version.range>[1.8,2)</org.osgi.framework.version.range>
         <nimbusds.osgi.version.range>[7.3.0,8.0.0)</nimbusds.osgi.version.range>
     </properties>
+
 </project>
