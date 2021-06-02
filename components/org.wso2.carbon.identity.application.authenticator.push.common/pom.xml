@@ -160,15 +160,15 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Import-Package>
-                            org.apache.commons.logging;version="[ 1.2,2)",
-                            org.apache.commons.lang;version="[ 1.2,2)",
-                            org.wso2.carbon.identity.application.authentication.framework.context;version="[5.12,6)",
-                            org.wso2.carbon.identity.application.authentication.framework.store;version="[5.12,6)",
-                            org.wso2.carbon.identity.application.common.cache;version="[5.12,6)",
-                            org.wso2.carbon.identity.base;version="[5.12,6)",
-                            com.nimbusds.jose;version="[7.3,8)",
-                            com.nimbusds.jose.crypto;version="[7.3,8)",
-                            com.nimbusds.jwt;version="[7.3,8)",
+                            org.apache.commons.logging;version="${org.apache.commons.version.range}",
+                            org.apache.commons.lang;version="${org.apache.commons.lang.version.range}",
+                            org.wso2.carbon.identity.application.authentication.framework.context;version="${org.wso2.carbon.identity.version.range}",
+                            org.wso2.carbon.identity.application.authentication.framework.store;version="${org.wso2.carbon.identity.version.range}",
+                            org.wso2.carbon.identity.application.common.cache;version="${org.wso2.carbon.identity.version.range}",
+                            org.wso2.carbon.identity.base;version="${org.wso2.carbon.identity.version.range}",
+                            com.nimbusds.jose;version="${com.nimbusds.version.range}",
+                            com.nimbusds.jose.crypto;version="${com.nimbusds.version.range}",
+                            com.nimbusds.jwt;version="${com.nimbusds.version.range}",
                         </Import-Package>
                         <Export-Package>
                             org.wso2.carbon.identity.application.authenticator.push.common.cache,
