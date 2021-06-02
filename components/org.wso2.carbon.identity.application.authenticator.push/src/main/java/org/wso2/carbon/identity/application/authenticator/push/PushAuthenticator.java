@@ -45,7 +45,9 @@ import org.wso2.carbon.identity.application.authenticator.push.notification.hand
 import org.wso2.carbon.identity.application.authenticator.push.util.Config;
 import org.wso2.carbon.identity.application.authenticator.push.validator.PushJWTValidator;
 import org.wso2.carbon.identity.application.common.model.Property;
+import org.wso2.carbon.user.api.UserRealm;
 import org.wso2.carbon.user.api.UserStoreException;
+import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -99,8 +101,8 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         String sessionDataKey = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
         try {
             List<Device> deviceList;
-            deviceList = deviceHandler.listDevices(user.getUserName(), user.getUserStoreDomain(),
-                    user.getTenantDomain());
+            RequestSenderImpl realm = new RequestSenderImpl();
+            deviceList = deviceHandler.listDevices(getUserIdFromUsername(user.getUserName(), realm.getUserRealm(user)));
             request.getSession().setAttribute(PushAuthenticatorConstants.DEVICES_LIST, deviceList);
             JSONObject object;
             JSONArray array = new JSONArray();
@@ -136,12 +138,6 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         } catch (PushDeviceHandlerServerException e) {
             throw new AuthenticationFailedException("Error occurred when trying to redirect to the registered devices"
                     + " page. Devices were not found for user: " + user.toFullQualifiedUsername() + ".", e);
-        } catch (PushDeviceHandlerClientException e) {
-            throw new AuthenticationFailedException("Error occurred when trying to redirect to registered devices page."
-                    + " Authenticated user was not found.", e);
-        } catch (SQLException e) {
-            throw new AuthenticationFailedException("Error occurred when trying to get the device list for user: "
-                    + user.toFullQualifiedUsername() + ".", e);
         } catch (UserStoreException e) {
             throw new AuthenticationFailedException("Error occurred when trying to get the authenticated user.", e);
         } catch (IOException e) {
@@ -242,7 +238,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
     }
 
     /**
-     * Validate the signature using the JWT received from mobile app
+     * Validate the signature using the JWT received from mobile app.
      *
      * @param jwt       JWT generated from mobile app
      * @param challenge Challenge stored in cache to correlate with JWT
@@ -257,16 +253,11 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
 
         PushJWTValidator validator = new PushJWTValidator();
         String deviceId = validator.getDeviceId(jwt);
-        String publicKeyStr;
+        String publicKeyStr = null;
         try {
             publicKeyStr = handler.getPublicKey(deviceId);
-        } catch (SQLException e) {
-            String errorMessage = String
-                    .format("Error occurred when trying to get public key for device: %s from the database.", deviceId);
-            throw new PushAuthenticatorException(errorMessage, e);
-        } catch (IOException e) {
-            throw new PushAuthenticatorException("Error occurred when trying to get public key for device: "
-                    + deviceId + ".", e);
+        } catch (PushDeviceHandlerServerException | PushDeviceHandlerClientException e) {
+            e.printStackTrace();
         }
 
         try {
@@ -276,6 +267,12 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                     + " Failed to parse string to JWT.", e);
         }
         return isValid;
+    }
+
+    private String getUserIdFromUsername(String username, UserRealm realm) throws UserStoreException {
+
+        AbstractUserStoreManager userStoreManager = (AbstractUserStoreManager) realm.getUserStoreManager();
+        return userStoreManager.getUserIDFromUserName(username);
     }
 
 }
