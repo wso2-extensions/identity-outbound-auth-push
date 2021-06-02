@@ -29,7 +29,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.application.authenticator.push.common.exception.PushAuthTokenValidationException;
-import org.wso2.carbon.identity.oauth.config.OAuthServerConfiguration;
 
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
@@ -46,6 +45,7 @@ import java.util.Date;
 public class PushJWTValidator {
 
     private static final String DOT_SEPARATOR = ".";
+    private static final long DEFAULT_TIME_SKEW_IN_SECONDS = 300L;
     private static final Log log = LogFactory.getLog(PushJWTValidator.class);
 
     /**
@@ -119,7 +119,7 @@ public class PushJWTValidator {
      */
     private boolean checkExpirationTime(Date expirationTime) {
 
-        long timeStampSkewMillis = OAuthServerConfiguration.getInstance().getTimeStampSkewInSeconds() * 1000;
+        long timeStampSkewMillis = DEFAULT_TIME_SKEW_IN_SECONDS * 1000;
         long expirationTimeInMillis = expirationTime.getTime();
         long currentTimeInMillis = System.currentTimeMillis();
         return (currentTimeInMillis + timeStampSkewMillis) <= expirationTimeInMillis;
@@ -134,7 +134,7 @@ public class PushJWTValidator {
     private boolean checkNotBeforeTime(Date notBeforeTime) {
 
         if (notBeforeTime != null) {
-            long timeStampSkewMillis = OAuthServerConfiguration.getInstance().getTimeStampSkewInSeconds() * 1000;
+            long timeStampSkewMillis = DEFAULT_TIME_SKEW_IN_SECONDS * 1000;
             long notBeforeTimeMillis = notBeforeTime.getTime();
             long currentTimeInMillis = System.currentTimeMillis();
             return currentTimeInMillis + timeStampSkewMillis >= notBeforeTimeMillis;
