@@ -53,12 +53,8 @@ public class RequestSenderImpl implements RequestSender {
         Device device;
         try {
             device = deviceHandler.getDevice(deviceId);
-        } catch (PushDeviceHandlerClientException | IOException e) {
+        } catch (PushDeviceHandlerClientException e) {
             throw new PushAuthenticatorException("Error occurred when trying to get device: " + deviceId + ".", e);
-        } catch (SQLException e) {
-            String errorMessage = String
-                    .format("Error when trying to get device: %s from the database.", deviceId);
-            throw new PushAuthenticatorException(errorMessage, e);
         } catch (PushDeviceHandlerServerException e) {
             String errorMessage = String
                     .format("Error occurred when trying to get device: %s. Device may not be registered.", deviceId);
@@ -173,7 +169,7 @@ public class RequestSenderImpl implements RequestSender {
      * @return The userRealm.
      * @throws AuthenticationFailedException Exception on authentication failure.
      */
-    private UserRealm getUserRealm(AuthenticatedUser authenticatedUser) throws AuthenticationFailedException {
+    public UserRealm getUserRealm(AuthenticatedUser authenticatedUser) throws AuthenticationFailedException {
 
         UserRealm userRealm = null;
         try {
