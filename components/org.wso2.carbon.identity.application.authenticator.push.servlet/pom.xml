@@ -82,7 +82,6 @@
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon.identity.outbound.auth.push</groupId>
