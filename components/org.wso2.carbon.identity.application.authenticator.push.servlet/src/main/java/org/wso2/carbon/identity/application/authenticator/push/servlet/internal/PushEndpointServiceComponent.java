@@ -39,7 +39,7 @@ import javax.servlet.Servlet;
  * Service component class for the Push Servlet initialization.
  */
 @Component(
-        name = "identity.application.authenticator.push.servlet",
+        name = "org.wso2.carbon.identity.application.authenticator.push.servlet",
         immediate = true)
 public class PushEndpointServiceComponent {
 
