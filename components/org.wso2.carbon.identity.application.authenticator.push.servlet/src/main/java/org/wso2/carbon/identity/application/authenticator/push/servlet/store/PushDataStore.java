@@ -49,7 +49,7 @@ public class PushDataStore implements Serializable {
      */
     public String getAuthStatus(String sessionDataKey) {
 
-        return pushDataStore.get(sessionDataKey + "status");
+        return pushDataStore.get(sessionDataKey);
     }
 
     /**
@@ -60,7 +60,7 @@ public class PushDataStore implements Serializable {
      */
     public void updateAuthStatus(String sessionDataKey, String authStatus) {
 
-        pushDataStore.put(sessionDataKey + "status", authStatus);
+        pushDataStore.put(sessionDataKey, authStatus);
     }
 
     /**
