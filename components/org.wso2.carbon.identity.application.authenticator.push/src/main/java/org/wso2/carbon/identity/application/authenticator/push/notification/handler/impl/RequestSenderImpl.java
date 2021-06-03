@@ -139,7 +139,7 @@ public class RequestSenderImpl implements RequestSender {
      *
      * @param authenticatedUser Authenticated user
      * @return Retrieved user claims
-     * @throws AuthenticationFailedException
+     * @throws AuthenticationFailedException if the user claims cannot be read
      */
     private Map<String, String> getUserClaimValues(AuthenticatedUser authenticatedUser)
             throws AuthenticationFailedException {

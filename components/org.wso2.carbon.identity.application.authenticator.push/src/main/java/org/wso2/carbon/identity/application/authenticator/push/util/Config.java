@@ -7,7 +7,7 @@ import org.wso2.carbon.identity.application.authentication.framework.context.Aut
 import org.wso2.carbon.identity.application.authenticator.push.PushAuthenticatorConstants;
 
 /**
- * Util class for getting redirect pages from configuration files
+ * Util class for getting redirect pages from configuration files.
  */
 public class Config {
 
