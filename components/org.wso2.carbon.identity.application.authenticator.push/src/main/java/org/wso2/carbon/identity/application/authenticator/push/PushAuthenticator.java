@@ -41,7 +41,6 @@ import org.wso2.carbon.identity.application.authenticator.push.device.handler.ex
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.impl.DeviceHandlerImpl;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.Device;
 import org.wso2.carbon.identity.application.authenticator.push.dto.AuthDataDTO;
-import org.wso2.carbon.identity.application.authenticator.push.dto.impl.AuthDataDTOImpl;
 import org.wso2.carbon.identity.application.authenticator.push.exception.PushAuthenticatorException;
 import org.wso2.carbon.identity.application.authenticator.push.notification.handler.RequestSender;
 import org.wso2.carbon.identity.application.authenticator.push.notification.handler.impl.RequestSenderImpl;
@@ -115,7 +114,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                 array.add(object);
             }
 
-            AuthDataDTO authDataDTO = new AuthDataDTOImpl();
+            AuthDataDTO authDataDTO = new AuthDataDTO();
             context.setProperty(PushAuthenticatorConstants.CONTEXT_AUTH_DATA, authDataDTO);
             contextManager.storeContext(sessionDataKey, context);
 

@@ -1,35 +1,33 @@
 package org.wso2.carbon.identity.application.authenticator.push.dto;
 
+import java.io.Serializable;
+
 /**
- * Interface for Authentication Data DTO.
+ * DTO class for holding authentication data.
  */
-public interface AuthDataDTO {
+public class AuthDataDTO implements Serializable {
 
-    /**
-     * Store the related challenge text for the session context.
-     *
-     * @param challenge Random challenge for authentication request
-     */
-    void setChallenge(String challenge);
+    private static final long serialVersionUID = 5355319579322887235L;
+    private String challenge;
+    private String authToken;
 
-    /**
-     * Get the challenge text for the session context.
-     *
-     * @return Stored random challenge for authentication request
-     */
-    String getChallenge();
+    public void setChallenge(String challenge) {
 
-    /**
-     * Store the JWT containing the authentication response data.
-     *
-     * @param authToken JWT containing information for the authentication request
-     */
-    void setAuthToken(String authToken);
+        this.challenge = challenge;
+    }
 
-    /**
-     * Get the stored JWT containing the authentication response data.
-     *
-     * @return Stored authentication response token
-     */
-    String getAuthToken();
+    public String getChallenge() {
+
+        return this.challenge;
+    }
+
+    public void setAuthToken(String authToken) {
+
+        this.authToken = authToken;
+    }
+
+    public String getAuthToken() {
+
+        return this.authToken;
+    }
 }
