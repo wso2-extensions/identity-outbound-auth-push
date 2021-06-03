@@ -17,6 +17,7 @@ import org.wso2.carbon.identity.application.authenticator.push.device.handler.mo
 import org.wso2.carbon.identity.application.authenticator.push.dto.AuthDataDTO;
 import org.wso2.carbon.identity.application.authenticator.push.exception.PushAuthenticatorException;
 import org.wso2.carbon.identity.application.authenticator.push.internal.PushAuthenticatorServiceComponent;
+import org.wso2.carbon.identity.application.authenticator.push.notification.handler.FirebasePushNotificationSender;
 import org.wso2.carbon.identity.application.authenticator.push.notification.handler.RequestSender;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
@@ -80,7 +81,7 @@ public class RequestSenderImpl implements RequestSender {
         context.setProperty(PushAuthenticatorConstants.CONTEXT_AUTH_DATA, authDataDTO);
         contextManager.storeContext(key, context);
 
-        FirebasePushNotificationSenderImpl pushNotificationSender = FirebasePushNotificationSenderImpl.getInstance();
+        FirebasePushNotificationSender pushNotificationSender = FirebasePushNotificationSender.getInstance();
         pushNotificationSender.init(serverKey, fcmUrl);
         try {
             pushNotificationSender.sendPushNotification(deviceId, pushId, message, randomChallenge, sessionDataKey,
