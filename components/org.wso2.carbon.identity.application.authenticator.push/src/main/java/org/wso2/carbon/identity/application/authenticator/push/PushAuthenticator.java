@@ -202,7 +202,6 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                     throw new AuthenticationFailedException(errorMessage);
                 }
             } else {
-                authenticationContext.setProperty(PushAuthenticatorConstants.AUTHENTICATION_FAILED, true);
                 String errorMessage = String
                         .format("Authentication failed! JWT signature is not valid for device: %s of user: %s.",
                                 deviceId, user);
@@ -210,8 +209,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             }
 
         } catch (IOException e) {
-            String errorMessage = null;
-            errorMessage = String.format(
+            String errorMessage = String.format(
                     "Error occurred when redirecting to the request denied page for device: %s of user: %s.",
                     deviceId, user);
             throw new AuthenticationFailedException(errorMessage, e);
