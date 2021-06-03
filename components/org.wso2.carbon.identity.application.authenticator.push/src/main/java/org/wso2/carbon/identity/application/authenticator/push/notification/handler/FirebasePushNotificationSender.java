@@ -67,18 +67,18 @@ public class FirebasePushNotificationSender {
     /**
      * Method to send push notification to mobile app via Firebase Cloud messaging.
      *
-     * @param deviceId              Unique ID of the device the notification is sent to
-     * @param pushId                Unique ID provided from mobile client
-     * @param message               Message to be displayed in the push notification
-     * @param randomChallenge       Random challenge for the authentication request
-     * @param sessionDataKey        Session data key for the authentication request
-     * @param username              Username of the user requesting to authenticate
-     * @param fullName              Full name of the user requesting to authenticate
-     * @param organization          Tenant domain of the user requesting to authenticate
-     * @param serviceProviderName   Service provider the user is attempting to access
-     * @param hostname              IP address of the user's device
-     * @param userOS                Operating system of the user's device
-     * @param userBrowser           Browser used by the user to authenticate
+     * @param deviceId            Unique ID of the device the notification is sent to
+     * @param pushId              Unique ID provided from mobile client
+     * @param message             Message to be displayed in the push notification
+     * @param randomChallenge     Random challenge for the authentication request
+     * @param sessionDataKey      Session data key for the authentication request
+     * @param username            Username of the user requesting to authenticate
+     * @param fullName            Full name of the user requesting to authenticate
+     * @param organization        Tenant domain of the user requesting to authenticate
+     * @param serviceProviderName Service provider the user is attempting to access
+     * @param hostname            IP address of the user's device
+     * @param userOS              Operating system of the user's device
+     * @param userBrowser         Browser used by the user to authenticate
      * @throws AuthenticationFailedException if an error occurs while sending the push notification request
      */
     public void sendPushNotification(String deviceId, String pushId, String message, String randomChallenge,
