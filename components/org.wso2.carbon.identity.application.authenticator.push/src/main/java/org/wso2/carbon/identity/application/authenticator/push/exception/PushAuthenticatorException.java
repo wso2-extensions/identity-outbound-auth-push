@@ -22,9 +22,11 @@ package org.wso2.carbon.identity.application.authenticator.push.exception;
 import org.wso2.carbon.identity.base.IdentityException;
 
 /**
- * Push authenticator exception class
+ * Push authenticator exception class.
  */
 public class PushAuthenticatorException extends IdentityException {
+
+    private static final long serialVersionUID = -2682448348777277042L;
 
     public PushAuthenticatorException(String message) {
 
