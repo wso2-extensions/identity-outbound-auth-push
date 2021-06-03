@@ -7,9 +7,8 @@ import org.wso2.carbon.identity.application.authentication.framework.exception.A
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundConstants;
 import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticatedUser;
 import org.wso2.carbon.identity.application.authenticator.push.PushAuthenticatorConstants;
-import org.wso2.carbon.identity.application.authenticator.push.cache.AuthContextCache;
-import org.wso2.carbon.identity.application.authenticator.push.cache.AuthContextCacheEntry;
-import org.wso2.carbon.identity.application.authenticator.push.cache.AuthContextcacheKey;
+import org.wso2.carbon.identity.application.authenticator.push.common.PushAuthContextManager;
+import org.wso2.carbon.identity.application.authenticator.push.common.impl.PushAuthContextManagerImpl;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.DeviceHandler;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerClientException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerServerException;
@@ -32,14 +31,13 @@ import ua_parser.Parser;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
 import java.util.Map;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Implements the functionality for request sender
+ * Implements the functionality for request sender.
  */
 public class RequestSenderImpl implements RequestSender {
 
@@ -60,8 +58,9 @@ public class RequestSenderImpl implements RequestSender {
                     .format("Error occurred when trying to get device: %s. Device may not be registered.", deviceId);
             throw new PushAuthenticatorException(errorMessage, e);
         }
-        AuthenticationContext context = AuthContextCache.getInstance().getValueFromCacheByRequestId
-                (new AuthContextcacheKey(key)).getAuthenticationContext();
+
+        PushAuthContextManager contextManager = new PushAuthContextManagerImpl();
+        AuthenticationContext context = contextManager.getContext(key);
 
         AuthenticatedUser user = context.getSequenceConfig().getStepMap().
                 get(context.getCurrentStep() - 1).getAuthenticatedUser();
@@ -80,8 +79,7 @@ public class RequestSenderImpl implements RequestSender {
         AuthDataDTO authDataDTO = (AuthDataDTO) context.getProperty(PushAuthenticatorConstants.CONTEXT_AUTH_DATA);
         authDataDTO.setChallenge(randomChallenge);
         context.setProperty(PushAuthenticatorConstants.CONTEXT_AUTH_DATA, authDataDTO);
-        AuthContextCache.getInstance().addToCacheByRequestId(new AuthContextcacheKey(key),
-                new AuthContextCacheEntry(context));
+        contextManager.storeContext(key, context);
 
         String pushId = device.getPushId();
 
@@ -137,7 +135,7 @@ public class RequestSenderImpl implements RequestSender {
     }
 
     /**
-     * Get the user claim values for required fields
+     * Get the user claim values for required fields.
      *
      * @param authenticatedUser Authenticated user
      * @return Retrieved user claims

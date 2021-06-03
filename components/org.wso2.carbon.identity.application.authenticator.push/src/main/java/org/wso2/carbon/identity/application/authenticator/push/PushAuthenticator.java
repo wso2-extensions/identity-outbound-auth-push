@@ -19,6 +19,8 @@
 
 package org.wso2.carbon.identity.application.authenticator.push;
 
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.JWTParser;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.simple.JSONArray;
@@ -29,9 +31,10 @@ import org.wso2.carbon.identity.application.authentication.framework.context.Aut
 import org.wso2.carbon.identity.application.authentication.framework.exception.AuthenticationFailedException;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundConstants;
 import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticatedUser;
-import org.wso2.carbon.identity.application.authenticator.push.cache.AuthContextCache;
-import org.wso2.carbon.identity.application.authenticator.push.cache.AuthContextCacheEntry;
-import org.wso2.carbon.identity.application.authenticator.push.cache.AuthContextcacheKey;
+import org.wso2.carbon.identity.application.authenticator.push.common.PushAuthContextManager;
+import org.wso2.carbon.identity.application.authenticator.push.common.PushJWTValidator;
+import org.wso2.carbon.identity.application.authenticator.push.common.exception.PushAuthTokenValidationException;
+import org.wso2.carbon.identity.application.authenticator.push.common.impl.PushAuthContextManagerImpl;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.DeviceHandler;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerClientException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerServerException;
@@ -43,16 +46,12 @@ import org.wso2.carbon.identity.application.authenticator.push.exception.PushAut
 import org.wso2.carbon.identity.application.authenticator.push.notification.handler.RequestSender;
 import org.wso2.carbon.identity.application.authenticator.push.notification.handler.impl.RequestSenderImpl;
 import org.wso2.carbon.identity.application.authenticator.push.util.Config;
-import org.wso2.carbon.identity.application.authenticator.push.validator.PushJWTValidator;
 import org.wso2.carbon.identity.application.common.model.Property;
-import org.wso2.carbon.user.api.UserRealm;
-import org.wso2.carbon.user.api.UserStoreException;
-import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
 
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -96,13 +95,13 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                                                  AuthenticationContext context) throws AuthenticationFailedException {
 
         DeviceHandler deviceHandler = new DeviceHandlerImpl();
+        PushAuthContextManager contextManager = new PushAuthContextManagerImpl();
         AuthenticatedUser user = context.getSequenceConfig().getStepMap().
                 get(context.getCurrentStep() - 1).getAuthenticatedUser();
         String sessionDataKey = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
         try {
             List<Device> deviceList;
-            RequestSenderImpl realm = new RequestSenderImpl();
-            deviceList = deviceHandler.listDevices(getUserIdFromUsername(user.getUserName(), realm.getUserRealm(user)));
+            deviceList = deviceHandler.listDevices(user.getUserName());
             request.getSession().setAttribute(PushAuthenticatorConstants.DEVICES_LIST, deviceList);
             JSONObject object;
             JSONArray array = new JSONArray();
@@ -118,8 +117,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
 
             AuthDataDTO authDataDTO = new AuthDataDTOImpl();
             context.setProperty(PushAuthenticatorConstants.CONTEXT_AUTH_DATA, authDataDTO);
-            AuthContextCache.getInstance().addToCacheByRequestId(new AuthContextcacheKey(sessionDataKey),
-                    new AuthContextCacheEntry(context));
+            contextManager.storeContext(sessionDataKey, context);
 
             if (deviceList.size() == 1) {
                 RequestSender requestSender = new RequestSenderImpl();
@@ -138,8 +136,6 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         } catch (PushDeviceHandlerServerException e) {
             throw new AuthenticationFailedException("Error occurred when trying to redirect to the registered devices"
                     + " page. Devices were not found for user: " + user.toFullQualifiedUsername() + ".", e);
-        } catch (UserStoreException e) {
-            throw new AuthenticationFailedException("Error occurred when trying to get the authenticated user.", e);
         } catch (IOException e) {
             throw new AuthenticationFailedException("Error occurred when trying to redirect to the registered devices"
                     + " page for user: " + user.toFullQualifiedUsername() + ".", e);
@@ -157,24 +153,42 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         AuthenticatedUser user = authenticationContext.getSequenceConfig().
                 getStepMap().get(authenticationContext.getCurrentStep() - 1).getAuthenticatedUser();
 
-        AuthContextcacheKey authContextCacheKey = new AuthContextcacheKey(httpServletRequest
+        PushAuthContextManager contextManager = new PushAuthContextManagerImpl();
+        AuthenticationContext sessionContext = contextManager.getContext(httpServletRequest
                 .getParameter(PushAuthenticatorConstants.SESSION_DATA_KEY));
-        AuthenticationContext sessionContext = AuthContextCache
-                .getInstance()
-                .getValueFromCacheByRequestId(authContextCacheKey)
-                .getAuthenticationContext();
-
         AuthDataDTO authDataDTO = (AuthDataDTO) sessionContext
                 .getProperty(PushAuthenticatorConstants.CONTEXT_AUTH_DATA);
 
         String jwt = authDataDTO.getAuthToken();
         String serverChallenge = authDataDTO.getChallenge();
 
-        PushJWTValidator validator = new PushJWTValidator();
+        String deviceId = getDeviceIdFromToken(jwt);
+
+        DeviceHandler deviceHandler = new DeviceHandlerImpl();
+        String publicKey;
         try {
-            if (validateSignature(jwt, serverChallenge)) {
-                String authStatus = validator.getAuthStatus(jwt);
-                // TODO: Change Successful to Allowed
+            publicKey = deviceHandler.getPublicKey(deviceId);
+        } catch (PushDeviceHandlerServerException e) {
+            throw new AuthenticationFailedException("Error occurred when trying to get the public key.");
+        } catch (PushDeviceHandlerClientException e) {
+            throw new AuthenticationFailedException("Public key error");
+        }
+
+        PushJWTValidator validator = new PushJWTValidator();
+        JWTClaimsSet claimsSet = null;
+        try {
+            claimsSet = validator.getValidatedClaimSet(jwt, publicKey);
+        } catch (PushAuthTokenValidationException e) {
+            String errorMessage = String
+                    .format("Error occurred when trying to validate the JWT signature from device: %s of user: %s.",
+                            deviceId, user);
+            throw new AuthenticationFailedException(errorMessage, e);
+        }
+        try {
+            if (claimsSet != null) {
+                validateChallenge(claimsSet, serverChallenge, deviceId);
+
+                String authStatus = claimsSet.getStringClaim(jwt);
                 if (authStatus.equals(PushAuthenticatorConstants.AUTH_REQUEST_STATUS_SUCCESS)) {
                     authenticationContext.setSubject(user);
                 } else if (authStatus.equals(PushAuthenticatorConstants.AUTH_REQUEST_STATUS_DENIED)) {
@@ -188,27 +202,28 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                     throw new AuthenticationFailedException(errorMessage);
                 }
             } else {
-                authenticationContext.setProperty(PushAuthenticatorConstants.AUTHENTICATION_STATUS, true);
+                authenticationContext.setProperty(PushAuthenticatorConstants.AUTHENTICATION_FAILED, true);
                 String errorMessage = String
                         .format("Authentication failed! JWT signature is not valid for device: %s of user: %s.",
-                                validator.getDeviceId(jwt), user);
+                                deviceId, user);
                 throw new AuthenticationFailedException(errorMessage);
             }
 
         } catch (IOException e) {
-            String errorMessage = String
-                    .format("Error occurred when redirecting to the request denied page for device: %s of user: %s.",
-                            validator.getDeviceId(jwt), user);
+            String errorMessage = null;
+            errorMessage = String.format(
+                    "Error occurred when redirecting to the request denied page for device: %s of user: %s.",
+                    deviceId, user);
             throw new AuthenticationFailedException(errorMessage, e);
-        } catch (PushAuthenticatorException e) {
-            String errorMessage = String
-                    .format("Error occurred when trying to validate the JWT signature from device: %s of user: %s.",
-                            validator.getDeviceId(jwt), user);
-            throw new AuthenticationFailedException(errorMessage, e);
+        } catch (ParseException e) {
+            throw new AuthenticationFailedException("Error occurred when parsing the authentication response token", e);
         }
 
-        AuthContextCache.getInstance().clearCacheEntryByRequestId(new AuthContextcacheKey(
-                validator.getSessionDataKey(jwt)));
+        try {
+            contextManager.clearContext(claimsSet.getStringClaim("sid"));
+        } catch (ParseException e) {
+            throw new AuthenticationFailedException("Error occurred when getting token claim to clear cache", e);
+        }
     }
 
     @Override
@@ -238,41 +253,48 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
     }
 
     /**
-     * Validate the signature using the JWT received from mobile app.
+     * Validate the correlation between the challenged saved in the server and received from the auth response.
      *
-     * @param jwt       JWT generated from mobile app
+     * @param claimsSet JWT claim set for the validated auth response token
      * @param challenge Challenge stored in cache to correlate with JWT
-     * @return Boolean for validity of the signature
-     * @throws PushAuthenticatorException Exception in push authenticator
+     * @param deviceId  Unique ID for the device trying to authenticate the user
+     * @throws AuthenticationFailedException if the jwt fails to parse when getting the challenge claim
      */
-    private boolean validateSignature(String jwt, String challenge)
-            throws PushAuthenticatorException {
-
-        boolean isValid;
-        DeviceHandler handler = new DeviceHandlerImpl();
-
-        PushJWTValidator validator = new PushJWTValidator();
-        String deviceId = validator.getDeviceId(jwt);
-        String publicKeyStr = null;
-        try {
-            publicKeyStr = handler.getPublicKey(deviceId);
-        } catch (PushDeviceHandlerServerException | PushDeviceHandlerClientException e) {
-            e.printStackTrace();
-        }
+    private void validateChallenge(JWTClaimsSet claimsSet, String challenge, String deviceId)
+            throws AuthenticationFailedException {
 
         try {
-            isValid = validator.validate(jwt, publicKeyStr, challenge);
-        } catch (Exception e) {
-            throw new PushAuthenticatorException("Error occurred when validating the signature."
-                    + " Failed to parse string to JWT.", e);
+            if (claimsSet != null) {
+                if (!claimsSet.getStringClaim("chg").equals(challenge)) {
+                    String errorMessage = String
+                            .format("Authentication failed! Challenge received from %s  was not valid.", deviceId);
+                    throw new AuthenticationFailedException(errorMessage);
+                }
+            } else {
+                String errorMessage = String
+                        .format("Authentication failed! JWT claim set received from %s  was null.", deviceId);
+                throw new AuthenticationFailedException(errorMessage);
+            }
+        } catch (ParseException e) {
+            throw new AuthenticationFailedException("Failed to get challenge from the auth response token received " +
+                    "from device: " + deviceId + ".");
         }
-        return isValid;
     }
 
-    private String getUserIdFromUsername(String username, UserRealm realm) throws UserStoreException {
+    /**
+     * Derive the Device ID from the auth response token header.
+     *
+     * @param token Auth response token
+     * @return Device ID
+     * @throws AuthenticationFailedException if the token string fails to parse to JWT
+     */
+    private String getDeviceIdFromToken(String token) throws AuthenticationFailedException {
 
-        AbstractUserStoreManager userStoreManager = (AbstractUserStoreManager) realm.getUserStoreManager();
-        return userStoreManager.getUserIDFromUserName(username);
+        try {
+            return String.valueOf(JWTParser.parse(token).getHeader().getCustomParam("did"));
+        } catch (ParseException e) {
+            throw new AuthenticationFailedException("Error occurred when trying to get the device ID", e);
+        }
     }
 
 }
