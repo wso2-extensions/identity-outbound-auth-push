@@ -23,6 +23,8 @@ package org.wso2.carbon.identity.application.authenticator.push.dto;
  * DTO class for push notification data.
  */
 public class PushNotificationDataDTO {
+    private String serverKey;
+    private String fcmUrl;
     private String deviceId;
     private String pushId;
     private String message;
@@ -35,6 +37,26 @@ public class PushNotificationDataDTO {
     private String hostname;
     private String userOS;
     private String userBrowser;
+
+    public String getServerKey() {
+
+        return serverKey;
+    }
+
+    public void setServerKey(String serverKey) {
+
+        this.serverKey = serverKey;
+    }
+
+    public String getFcmUrl() {
+
+        return fcmUrl;
+    }
+
+    public void setFcmUrl(String fcmUrl) {
+
+        this.fcmUrl = fcmUrl;
+    }
 
     public String getDeviceId() {
 
