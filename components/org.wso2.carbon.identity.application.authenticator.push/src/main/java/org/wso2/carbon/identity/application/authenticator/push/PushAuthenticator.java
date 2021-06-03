@@ -159,25 +159,16 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         AuthDataDTO authDataDTO = (AuthDataDTO) sessionContext
                 .getProperty(PushAuthenticatorConstants.CONTEXT_AUTH_DATA);
 
-        String jwt = authDataDTO.getAuthToken();
+        String authResponseToken = authDataDTO.getAuthToken();
         String serverChallenge = authDataDTO.getChallenge();
 
-        String deviceId = getDeviceIdFromToken(jwt);
-
-        DeviceHandler deviceHandler = new DeviceHandlerImpl();
-        String publicKey;
-        try {
-            publicKey = deviceHandler.getPublicKey(deviceId);
-        } catch (PushDeviceHandlerServerException e) {
-            throw new AuthenticationFailedException("Error occurred when trying to get the public key.");
-        } catch (PushDeviceHandlerClientException e) {
-            throw new AuthenticationFailedException("Public key error");
-        }
+        String deviceId = getDeviceIdFromToken(authResponseToken);
+        String publicKey = getPublicKey(deviceId);
 
         PushJWTValidator validator = new PushJWTValidator();
-        JWTClaimsSet claimsSet = null;
+        JWTClaimsSet claimsSet;
         try {
-            claimsSet = validator.getValidatedClaimSet(jwt, publicKey);
+            claimsSet = validator.getValidatedClaimSet(authResponseToken, publicKey);
         } catch (PushAuthTokenValidationException e) {
             String errorMessage = String
                     .format("Error occurred when trying to validate the JWT signature from device: %s of user: %s.",
@@ -188,30 +179,27 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             if (claimsSet != null) {
                 validateChallenge(claimsSet, serverChallenge, deviceId);
 
-                String authStatus = claimsSet.getStringClaim(jwt);
+                String authStatus = claimsSet.getStringClaim(authResponseToken);
                 if (authStatus.equals(PushAuthenticatorConstants.AUTH_REQUEST_STATUS_SUCCESS)) {
                     authenticationContext.setSubject(user);
                 } else if (authStatus.equals(PushAuthenticatorConstants.AUTH_REQUEST_STATUS_DENIED)) {
-                    String deniedPage = "/authenticationendpoint/retry.do"
-                            + "?status=" + PushAuthenticatorConstants.AUTH_DENIED_PARAM
-                            + "&statusMsg=" + PushAuthenticatorConstants.AUTH_DENIED_MESSAGE;
-                    httpServletResponse.sendRedirect(deniedPage);
+                    redirectDeniedPage(httpServletResponse);
                 } else {
                     String errorMessage = String.format("Authentication failed! Auth status for user" +
-                            " '%s' is not available in JWT.", user);
+                            " '%s' is not available in JWT.", user.toFullQualifiedUsername());
                     throw new AuthenticationFailedException(errorMessage);
                 }
             } else {
                 String errorMessage = String
                         .format("Authentication failed! JWT signature is not valid for device: %s of user: %s.",
-                                deviceId, user);
+                                deviceId, user.toFullQualifiedUsername());
                 throw new AuthenticationFailedException(errorMessage);
             }
 
         } catch (IOException e) {
             String errorMessage = String.format(
                     "Error occurred when redirecting to the request denied page for device: %s of user: %s.",
-                    deviceId, user);
+                    deviceId, user.toFullQualifiedUsername());
             throw new AuthenticationFailedException(errorMessage, e);
         } catch (ParseException e) {
             throw new AuthenticationFailedException("Error occurred when parsing the authentication response token", e);
@@ -293,6 +281,24 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         } catch (ParseException e) {
             throw new AuthenticationFailedException("Error occurred when trying to get the device ID", e);
         }
+    }
+
+    private String getPublicKey(String deviceId) throws AuthenticationFailedException {
+        DeviceHandler deviceHandler = new DeviceHandlerImpl();
+        try {
+            return deviceHandler.getPublicKey(deviceId);
+        } catch (PushDeviceHandlerServerException e) {
+            throw new AuthenticationFailedException("Error occurred when trying to get the public key.");
+        } catch (PushDeviceHandlerClientException e) {
+            throw new AuthenticationFailedException("Public key error");
+        }
+    }
+
+    private void redirectDeniedPage(HttpServletResponse httpServletResponse) throws IOException {
+        String deniedPage = "/authenticationendpoint/retry.do"
+                + "?status=" + PushAuthenticatorConstants.AUTH_DENIED_PARAM
+                + "&statusMsg=" + PushAuthenticatorConstants.AUTH_DENIED_MESSAGE;
+        httpServletResponse.sendRedirect(deniedPage);
     }
 
 }

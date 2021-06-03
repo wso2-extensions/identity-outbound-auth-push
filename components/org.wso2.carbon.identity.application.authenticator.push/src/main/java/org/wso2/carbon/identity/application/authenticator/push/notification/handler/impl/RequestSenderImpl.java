@@ -45,69 +45,40 @@ public class RequestSenderImpl implements RequestSender {
 
     @Override
     public void sendRequest(HttpServletRequest request, HttpServletResponse response, String deviceId, String key)
-            throws PushAuthenticatorException {
+            throws PushAuthenticatorException, AuthenticationFailedException {
 
-        DeviceHandler deviceHandler = new DeviceHandlerImpl();
-        Device device;
-        try {
-            device = deviceHandler.getDevice(deviceId);
-        } catch (PushDeviceHandlerClientException e) {
-            throw new PushAuthenticatorException("Error occurred when trying to get device: " + deviceId + ".", e);
-        } catch (PushDeviceHandlerServerException e) {
-            String errorMessage = String
-                    .format("Error occurred when trying to get device: %s. Device may not be registered.", deviceId);
-            throw new PushAuthenticatorException(errorMessage, e);
-        }
-
+        Device device = getDevice(deviceId);
         PushAuthContextManager contextManager = new PushAuthContextManagerImpl();
         AuthenticationContext context = contextManager.getContext(key);
-
         AuthenticatedUser user = context.getSequenceConfig().getStepMap().
                 get(context.getCurrentStep() - 1).getAuthenticatedUser();
-        String username = user.getUserName();
+
         Map<String, String> authenticatorProperties = context.getAuthenticatorProperties();
         String serverKey = authenticatorProperties.get(PushAuthenticatorConstants.SERVER_KEY);
         String fcmUrl = authenticatorProperties.get(PushAuthenticatorConstants.FCM_URL);
+
+        String username = user.getUserName();
         String hostname = request.getRemoteAddr();
-
         String serviceProviderName = context.getServiceProviderName();
-
         String message = username + " is requesting to log into " + serviceProviderName;
         String sessionDataKey = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
-        UUID challenge = UUID.randomUUID();
-        String randomChallenge = challenge.toString();
+        String randomChallenge = String.valueOf(UUID.randomUUID());
+        String pushId = device.getPushId();
+        String fullName = getFullName(user);
+        String organization = user.getTenantDomain();
+
+        String userOS = null;
+        String userBrowser = null;
+        Client client = getClient(request);
+        if (client != null) {
+            userOS = client.os.family;
+            userBrowser = client.userAgent.family;
+        }
+
         AuthDataDTO authDataDTO = (AuthDataDTO) context.getProperty(PushAuthenticatorConstants.CONTEXT_AUTH_DATA);
         authDataDTO.setChallenge(randomChallenge);
         context.setProperty(PushAuthenticatorConstants.CONTEXT_AUTH_DATA, authDataDTO);
         contextManager.storeContext(key, context);
-
-        String pushId = device.getPushId();
-
-        Map<String, String> userClaims;
-        try {
-            userClaims = getUserClaimValues(user);
-        } catch (AuthenticationFailedException e) {
-            throw new PushAuthenticatorException("Error occurred when retrieving user claims for user: "
-                    + user.toFullQualifiedUsername() + ".", e);
-        }
-
-        String fullName =
-                userClaims.get(PushAuthenticatorConstants.FIRST_NAME_CLAIM) + " " +
-                        userClaims.get(PushAuthenticatorConstants.LAST_NAME_CLAIM);
-        String organization = user.getTenantDomain();
-
-        String userAgentString = request.getHeader("user-agent");
-        Parser uaParser;
-        String userOS = null;
-        String userBrowser = null;
-        try {
-            uaParser = new Parser();
-            Client uaClient = uaParser.parse(userAgentString);
-            userOS = uaClient.os.family;
-            userBrowser = uaClient.userAgent.family;
-        } catch (IOException e) {
-            log.error("Error occurred while trying to get the user's OS or Web browser.", e);
-        }
 
         FirebasePushNotificationSenderImpl pushNotificationSender = FirebasePushNotificationSenderImpl.getInstance();
         pushNotificationSender.init(serverKey, fcmUrl);
@@ -119,19 +90,7 @@ public class RequestSenderImpl implements RequestSender {
                     + deviceId + ".", e);
         }
 
-        try {
-            String waitPage = PushAuthenticatorConstants.WAIT_PAGE
-                    + "?sessionDataKey="
-                    + URLEncoder.encode(sessionDataKey, StandardCharsets.UTF_8.name())
-                    + "&challenge="
-                    + URLEncoder.encode(String.valueOf(challenge), StandardCharsets.UTF_8.name());
-            response.sendRedirect(waitPage);
-        } catch (IOException e) {
-            String errorMessage = String.format("Error occurred when trying to to redirect user: %s to the wait page.",
-                    user.toFullQualifiedUsername());
-            throw new PushAuthenticatorException(errorMessage, e);
-        }
-
+        redirectWaitPage(response, sessionDataKey, user);
     }
 
     /**
@@ -167,7 +126,7 @@ public class RequestSenderImpl implements RequestSender {
      * @return The userRealm.
      * @throws AuthenticationFailedException Exception on authentication failure.
      */
-    public UserRealm getUserRealm(AuthenticatedUser authenticatedUser) throws AuthenticationFailedException {
+    private UserRealm getUserRealm(AuthenticatedUser authenticatedUser) throws AuthenticationFailedException {
 
         UserRealm userRealm = null;
         try {
@@ -182,5 +141,85 @@ public class RequestSenderImpl implements RequestSender {
                     + authenticatedUser.toFullQualifiedUsername() + ".", e);
         }
         return userRealm;
+    }
+
+    /**
+     * Get the device by the device ID.
+     *
+     * @param deviceId Unique ID for the device
+     * @return device object
+     * @throws PushAuthenticatorException if an error occurs while getting the device or if the device is not
+     *         registered
+     */
+    private Device getDevice(String deviceId) throws PushAuthenticatorException {
+
+        DeviceHandler deviceHandler = new DeviceHandlerImpl();
+        try {
+            return deviceHandler.getDevice(deviceId);
+        } catch (PushDeviceHandlerClientException e) {
+            throw new PushAuthenticatorException("Error occurred when trying to get device: " + deviceId + ".", e);
+        } catch (PushDeviceHandlerServerException e) {
+            String errorMessage = String
+                    .format("Error occurred when trying to get device: %s. Device may not be registered.", deviceId);
+            throw new PushAuthenticatorException(errorMessage, e);
+        }
+    }
+
+    /**
+     * Process the full name of the user by getting user claims.
+     *
+     * @param user Authenticated user
+     * @return Full name of the user
+     * @throws AuthenticationFailedException if an error occurs while getting user claims
+     */
+    private String getFullName(AuthenticatedUser user) throws AuthenticationFailedException {
+
+        Map<String, String> userClaims;
+        userClaims = getUserClaimValues(user);
+
+        return userClaims.get(PushAuthenticatorConstants.FIRST_NAME_CLAIM) + " "
+                + userClaims.get(PushAuthenticatorConstants.LAST_NAME_CLAIM);
+    }
+
+    /**
+     * Get the client properties using the user-agent request header.
+     *
+     * @param request HTTP request
+     * @return UA Client
+     */
+    private Client getClient(HttpServletRequest request) {
+
+        String userAgentString = request.getHeader("user-agent");
+        Parser uaParser;
+        try {
+            uaParser = new Parser();
+            return uaParser.parse(userAgentString);
+        } catch (IOException e) {
+            log.error("Error occurred while trying to get the user's OS or Web browser.", e);
+            return null;
+        }
+    }
+
+    /**
+     * Redirect the user to the wait page.
+     *
+     * @param response HTTP response
+     * @param sessionDataKey Unique ID for the session
+     * @param user Authenticated user
+     * @throws PushAuthenticatorException if an error occurs while trying to redirect to the wait page
+     */
+    private void redirectWaitPage(HttpServletResponse response, String sessionDataKey, AuthenticatedUser user)
+            throws PushAuthenticatorException {
+
+        try {
+            String waitPage = PushAuthenticatorConstants.WAIT_PAGE
+                    + "?sessionDataKey="
+                    + URLEncoder.encode(sessionDataKey, StandardCharsets.UTF_8.name());
+            response.sendRedirect(waitPage);
+        } catch (IOException e) {
+            String errorMessage = String.format("Error occurred when trying to to redirect user: %s to the wait page.",
+                    user.toFullQualifiedUsername());
+            throw new PushAuthenticatorException(errorMessage, e);
+        }
     }
 }
