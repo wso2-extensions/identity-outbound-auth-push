@@ -205,7 +205,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         }
 
         try {
-            contextManager.clearContext(claimsSet.getStringClaim("sid"));
+            contextManager.clearContext(claimsSet.getStringClaim(PushAuthenticatorConstants.TOKEN_SESSION_DATA_KEY));
         } catch (ParseException e) {
             throw new AuthenticationFailedException("Error occurred when getting token claim to clear cache", e);
         }
@@ -250,7 +250,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
 
         try {
             if (claimsSet != null) {
-                if (!claimsSet.getStringClaim("chg").equals(challenge)) {
+                if (!claimsSet.getStringClaim(PushAuthenticatorConstants.TOKEN_CHALLENGE).equals(challenge)) {
                     String errorMessage = String
                             .format("Authentication failed! Challenge received from %s  was not valid.", deviceId);
                     throw new AuthenticationFailedException(errorMessage);
@@ -276,7 +276,8 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
     private String getDeviceIdFromToken(String token) throws AuthenticationFailedException {
 
         try {
-            return String.valueOf(JWTParser.parse(token).getHeader().getCustomParam("did"));
+            return String.valueOf(JWTParser.parse(token).getHeader()
+                    .getCustomParam(PushAuthenticatorConstants.TOKEN_DEVICE_ID));
         } catch (ParseException e) {
             throw new AuthenticationFailedException("Error occurred when trying to get the device ID", e);
         }

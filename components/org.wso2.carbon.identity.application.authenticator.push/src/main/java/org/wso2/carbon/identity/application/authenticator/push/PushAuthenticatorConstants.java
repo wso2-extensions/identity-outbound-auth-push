@@ -52,8 +52,6 @@ public class PushAuthenticatorConstants {
     public static final String IP_ADDRESS = "ipAddress";
     public static final String REQUEST_DEVICE_OS = "deviceName";
     public static final String REQUEST_DEVICE_BROWSER = "browserName";
-    public static final String CLICK_ACTION = "click_action";
-    public static final String DISPLAY_ANDROID_ACTIVITY = "AuthenticateActivity";
     public static final String TO = "to";
     public static final String NOTIFICATION = "notification";
     public static final String DATA = "data";
@@ -68,7 +66,11 @@ public class PushAuthenticatorConstants {
     public static final String AUTH_REQUEST_STATUS_DENIED = "DENIED";
     public static final String CONTEXT_AUTH_DATA = "authData";
     public static final String DEVICES_LIST = "devices-list";
+    public static final String USER_AGENT = "user-agent";
     public static final String SESSION_DATA_KEY = "sessionDataKey";
+    public static final String TOKEN_DEVICE_ID = "did";
+    public static final String TOKEN_SESSION_DATA_KEY = "sid";
+    public static final String TOKEN_CHALLENGE = "chg";
 
     public static final String AUTH_DENIED_PARAM = "authorization.denied";
     public static final String AUTH_DENIED_MESSAGE = "authorization.denied.message";

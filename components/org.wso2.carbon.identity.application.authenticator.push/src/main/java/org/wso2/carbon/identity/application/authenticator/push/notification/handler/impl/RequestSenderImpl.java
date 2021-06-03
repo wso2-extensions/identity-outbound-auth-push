@@ -209,10 +209,9 @@ public class RequestSenderImpl implements RequestSender {
      */
     private Client getClient(HttpServletRequest request) {
 
-        String userAgentString = request.getHeader("user-agent");
-        Parser uaParser;
+        String userAgentString = request.getHeader(PushAuthenticatorConstants.USER_AGENT);
         try {
-            uaParser = new Parser();
+            Parser uaParser = new Parser();
             return uaParser.parse(userAgentString);
         } catch (IOException e) {
             log.error("Error occurred while trying to get the user's OS or Web browser.", e);
