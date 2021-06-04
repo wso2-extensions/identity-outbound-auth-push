@@ -127,13 +127,8 @@
             <artifactId>nimbus-jose-jwt</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>javax.ws.rs-api</artifactId>
-        </dependency>
-        <dependency>
             <groupId>ua.parser.wso2</groupId>
             <artifactId>ua-parser</artifactId>
-            <version>${ua.parser.wso2.version}</version>
         </dependency>
     </dependencies>
 
@@ -208,7 +203,6 @@
                         </Private-Package>
                         <Import-Package>
                             javax.servlet.http;version="${javax.version.range}",
-                            javax.ws.rs.core;version="${javax.ws.rs.version}",
                             org.apache.commons.lang;version="${org.apache.commons.lang.version.range}",
                             org.apache.commons.logging;version="${org.apache.commons.version.range}",
                             org.json.simple;version="${org.json.simple.version}",
@@ -240,7 +234,7 @@
                         </Import-Package>
                         <Export-Package>
                             !org.wso2.carbon.identity.application.authenticator.push.internal,
-                            !org.wso2.carbon.identity.application.authenticator.push.util,
+                            org.wso2.carbon.identity.application.authenticator.push.util,
                             org.wso2.carbon.identity.application.authenticator.push,
                             org.wso2.carbon.identity.application.authenticator.push.exception,
                             org.wso2.carbon.identity.application.authenticator.push.dto,

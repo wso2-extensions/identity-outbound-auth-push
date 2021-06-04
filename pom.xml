@@ -289,11 +289,6 @@
                 <version>${identity.authenticator.utils.version}</version>
             </dependency>
             <dependency>
-                <groupId>javax.ws.rs</groupId>
-                <artifactId>javax.ws.rs-api</artifactId>
-                <version>${javax.ws.rs.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.wso2.carbon.identity.outbound.auth.push</groupId>
                 <artifactId>org.wso2.carbon.identity.application.authenticator.push.device.handler</artifactId>
                 <version>${project.version}</version>
@@ -394,7 +389,6 @@
         <org.wso2.carbon.commons.version>4.7.24</org.wso2.carbon.commons.version>
         <org.apache.felix.annotations.version>1.2.10</org.apache.felix.annotations.version>
         <identity.authenticator.utils.version>1.2.0</identity.authenticator.utils.version>
-        <javax.ws.rs.version>2.1.1</javax.ws.rs.version>
         <!-- Version Ranges -->
         <org.wso2.carbon.identity.version.range>[5.12,6)</org.wso2.carbon.identity.version.range>
         <org.wso2.carbon.version.range>[4.6,5)</org.wso2.carbon.version.range>
