@@ -126,6 +126,15 @@
             <groupId>org.wso2.orbit.com.nimbusds</groupId>
             <artifactId>nimbus-jose-jwt</artifactId>
         </dependency>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ua.parser.wso2</groupId>
+            <artifactId>ua-parser</artifactId>
+            <version>${ua.parser.wso2.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -200,6 +209,7 @@
                         </Private-Package>
                         <Import-Package>
                             javax.servlet.http;version="${javax.version.range}",
+                            javax.ws.rs.core;version="${javax.ws.rs.version}",
                             org.apache.commons.lang;version="${org.apache.commons.lang.version.range}",
                             org.apache.commons.logging;version="${org.apache.commons.version.range}",
                             org.json.simple;version="${org.json.simple.version}",
@@ -212,6 +222,7 @@
                             org.wso2.carbon.identity.application.authentication.framework.config.model;version="${org.wso2.carbon.identity.version.range}",
                             org.wso2.carbon.identity.application.authentication.framework.context;version="${org.wso2.carbon.identity.version.range}",
                             org.wso2.carbon.identity.application.authentication.framework.exception;version="${org.wso2.carbon.identity.version.range}",
+                            org.wso2.carbon.identity.application.authentication.framework.inbound;version="${org.wso2.carbon.identity.version.range}",
                             org.wso2.carbon.identity.application.authentication.framework.model;version="${org.wso2.carbon.identity.version.range}",
                             org.wso2.carbon.identity.application.common.model;version="${org.wso2.carbon.identity.version.range}",
                             org.wso2.carbon.identity.application.authenticator.push.device.handler;version="[0.1,1)",
@@ -221,11 +232,13 @@
                             org.wso2.carbon.identity.application.authenticator.push.common;version="[0.1,1)",
                             org.wso2.carbon.identity.application.authenticator.push.common.impl;version="[0.1,1)",
                             org.wso2.carbon.identity.application.authenticator.push.common.exception;version="[0.1,1)",
-                            org.wso2.carbon.user.api;version="[1.0,2)",
-                            com.nimbusds.jose.*; version="${nimbusds.osgi.version.range}",
-                            com.nimbusds.jwt; version="${nimbusds.osgi.version.range}",
+                            org.wso2.carbon.user.api;version="${carbon.user.api.version.range}",
+                            org.wso2.carbon.user.core;version="${org.wso2.carbon.version.range}",
+                            org.wso2.carbon.user.core.service;version="${org.wso2.carbon.version.range}",
+                            com.nimbusds.jose;version="${nimbusds.osgi.version.range}",
+                            com.nimbusds.jwt;version="${nimbusds.osgi.version.range}",
+                            ua_parser;version="${ua.parser.wso2.version}",
                         </Import-Package>
-                        <DynamicImport-Package>*</DynamicImport-Package>
                         <Export-Package>
                             !org.wso2.carbon.identity.application.authenticator.push.internal,
                             org.wso2.carbon.identity.application.authenticator.push,
@@ -234,7 +247,6 @@
                             org.wso2.carbon.identity.application.authenticator.push.model,
                             org.wso2.carbon.identity.application.authenticator.push.notification.handler,
                             org.wso2.carbon.identity.application.authenticator.push.notification.handler.impl,
-
                         </Export-Package>
                     </instructions>
                 </configuration>
