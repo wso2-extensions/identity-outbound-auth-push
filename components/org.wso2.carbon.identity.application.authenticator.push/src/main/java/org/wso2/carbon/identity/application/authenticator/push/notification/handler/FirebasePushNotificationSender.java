@@ -34,7 +34,6 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.MediaType;
 
 /**
  * This class implements the sending of push notifications via Firebase to mobile device IDs.
@@ -97,7 +96,8 @@ public class FirebasePushNotificationSender {
 
             conn.setRequestMethod(PushAuthenticatorConstants.POST);
             conn.setRequestProperty(PushAuthenticatorConstants.AUTHORIZATION, "key=" + serverKey);
-            conn.setRequestProperty(PushAuthenticatorConstants.CONTENT_TYPE, MediaType.APPLICATION_JSON);
+            conn.setRequestProperty(PushAuthenticatorConstants.CONTENT_TYPE,
+                    PushAuthenticatorConstants.APPLICATION_JSON);
 
             JSONObject pushNotificationInfo = new JSONObject();
             pushNotificationInfo.put(PushAuthenticatorConstants.BODY, message);
