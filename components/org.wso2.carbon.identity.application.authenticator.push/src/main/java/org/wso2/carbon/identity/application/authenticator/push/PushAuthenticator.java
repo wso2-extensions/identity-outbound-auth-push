@@ -122,14 +122,8 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                 RequestSender requestSender = new RequestSenderImpl();
                 requestSender.sendRequest(request, response, deviceList.get(0).getDeviceId(), sessionDataKey);
             } else {
-
-                String string = JSONArray.toJSONString(array);
-                Config config = new Config();
-                String devicesPage;
-                devicesPage = config.getDevicesPage(context)
-                        + "?sessionDataKey=" + URLEncoder.encode(sessionDataKey, StandardCharsets.UTF_8.name())
-                        + "&devices=" + URLEncoder.encode(string, StandardCharsets.UTF_8.name());
-                response.sendRedirect(devicesPage);
+                String deviceArrayString = JSONArray.toJSONString(array);
+                redirectDevicesPage(response, context, sessionDataKey, deviceArrayString);
             }
 
         } catch (PushDeviceHandlerServerException e) {
@@ -283,6 +277,13 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         }
     }
 
+    /**
+     * Get the public key for the device by the device ID.
+     *
+     * @param deviceId Unique ID for the device
+     * @return Public key string
+     * @throws AuthenticationFailedException if an error occurs while getting the public key
+     */
     private String getPublicKey(String deviceId) throws AuthenticationFailedException {
         DeviceHandler deviceHandler = new DeviceHandlerImpl();
         try {
@@ -294,6 +295,31 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         }
     }
 
+    /**
+     * Redirect user to device selection page.
+     *
+     * @param response HTTP response
+     * @param context Authentication context
+     * @param sessionDataKey Unique key for the session
+     * @param deviceArrayString JSON array as a string
+     * @throws IOException if an error occurs when redirecting to the device selection page
+     */
+    private void redirectDevicesPage(HttpServletResponse response, AuthenticationContext context,
+                                     String sessionDataKey, String deviceArrayString) throws IOException {
+        Config config = new Config();
+        String devicesPage;
+        devicesPage = config.getDevicesPage(context)
+                + "?sessionDataKey=" + URLEncoder.encode(sessionDataKey, StandardCharsets.UTF_8.name())
+                + "&devices=" + URLEncoder.encode(deviceArrayString, StandardCharsets.UTF_8.name());
+        response.sendRedirect(devicesPage);
+    }
+
+    /**
+     * Redirect the user to the authentication denied page.
+     *
+     * @param httpServletResponse HTTP response
+     * @throws IOException if an error occurs while redirecting to the denied page
+     */
     private void redirectDeniedPage(HttpServletResponse httpServletResponse) throws IOException {
         String deniedPage = "/authenticationendpoint/retry.do"
                 + "?status=" + PushAuthenticatorConstants.AUTH_DENIED_PARAM
