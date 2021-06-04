@@ -204,8 +204,7 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Private-Package>
-                            org.wso2.carbon.identity.application.authenticator.push.internal,
-                            org.wso2.carbon.identity.application.authenticator.push.util
+                            org.wso2.carbon.identity.application.authenticator.push.internal
                         </Private-Package>
                         <Import-Package>
                             javax.servlet.http;version="${javax.version.range}",
@@ -225,24 +224,25 @@
                             org.wso2.carbon.identity.application.authentication.framework.inbound;version="${org.wso2.carbon.identity.version.range}",
                             org.wso2.carbon.identity.application.authentication.framework.model;version="${org.wso2.carbon.identity.version.range}",
                             org.wso2.carbon.identity.application.common.model;version="${org.wso2.carbon.identity.version.range}",
-                            org.wso2.carbon.identity.application.authenticator.push.device.handler;version="[0.1,1)",
-                            org.wso2.carbon.identity.application.authenticator.push.device.handler.model;version="[0.1,1)",
-                            org.wso2.carbon.identity.application.authenticator.push.device.handler.exception;version="[0.1,1)",
-                            org.wso2.carbon.identity.application.authenticator.push.device.handler.impl;version="[0.1,1)",
-                            org.wso2.carbon.identity.application.authenticator.push.common;version="[0.1,1)",
-                            org.wso2.carbon.identity.application.authenticator.push.common.impl;version="[0.1,1)",
-                            org.wso2.carbon.identity.application.authenticator.push.common.exception;version="[0.1,1)",
+                            org.wso2.carbon.identity.application.authenticator.push.device.handler,
+                            org.wso2.carbon.identity.application.authenticator.push.device.handler.model,
+                            org.wso2.carbon.identity.application.authenticator.push.device.handler.exception,
+                            org.wso2.carbon.identity.application.authenticator.push.device.handler.impl,
+                            org.wso2.carbon.identity.application.authenticator.push.common,
+                            org.wso2.carbon.identity.application.authenticator.push.common.impl,
+                            org.wso2.carbon.identity.application.authenticator.push.common.exception,
                             org.wso2.carbon.user.api;version="${carbon.user.api.version.range}",
                             org.wso2.carbon.user.core;version="${org.wso2.carbon.version.range}",
                             org.wso2.carbon.user.core.service;version="${org.wso2.carbon.version.range}",
                             com.nimbusds.jose;version="${nimbusds.osgi.version.range}",
                             com.nimbusds.jwt;version="${nimbusds.osgi.version.range}",
-                            ua_parser;version="${ua.parser.wso2.version}",
+                            ua_parser;version="${ua.parser.version.range}",
                         </Import-Package>
                         <Export-Package>
                             !org.wso2.carbon.identity.application.authenticator.push.internal,
+                            !org.wso2.carbon.identity.application.authenticator.push.util,
                             org.wso2.carbon.identity.application.authenticator.push,
-                            org.wso2.carbon.identity.application.authenticator.push.exception
+                            org.wso2.carbon.identity.application.authenticator.push.exception,
                             org.wso2.carbon.identity.application.authenticator.push.dto,
                             org.wso2.carbon.identity.application.authenticator.push.model,
                             org.wso2.carbon.identity.application.authenticator.push.notification.handler,
