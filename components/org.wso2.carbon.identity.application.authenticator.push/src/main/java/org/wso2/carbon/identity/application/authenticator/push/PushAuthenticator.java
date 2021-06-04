@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -285,6 +285,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
      * @throws AuthenticationFailedException if an error occurs while getting the public key
      */
     private String getPublicKey(String deviceId) throws AuthenticationFailedException {
+
         DeviceHandler deviceHandler = new DeviceHandlerImpl();
         try {
             return deviceHandler.getPublicKey(deviceId);
@@ -298,14 +299,15 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
     /**
      * Redirect user to device selection page.
      *
-     * @param response HTTP response
-     * @param context Authentication context
-     * @param sessionDataKey Unique key for the session
+     * @param response          HTTP response
+     * @param context           Authentication context
+     * @param sessionDataKey    Unique key for the session
      * @param deviceArrayString JSON array as a string
      * @throws IOException if an error occurs when redirecting to the device selection page
      */
     private void redirectDevicesPage(HttpServletResponse response, AuthenticationContext context,
                                      String sessionDataKey, String deviceArrayString) throws IOException {
+
         Config config = new Config();
         String devicesPage;
         devicesPage = config.getDevicesPage(context)
@@ -321,6 +323,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
      * @throws IOException if an error occurs while redirecting to the denied page
      */
     private void redirectDeniedPage(HttpServletResponse httpServletResponse) throws IOException {
+
         String deniedPage = "/authenticationendpoint/retry.do"
                 + "?status=" + PushAuthenticatorConstants.AUTH_DENIED_PARAM
                 + "&statusMsg=" + PushAuthenticatorConstants.AUTH_DENIED_MESSAGE;
