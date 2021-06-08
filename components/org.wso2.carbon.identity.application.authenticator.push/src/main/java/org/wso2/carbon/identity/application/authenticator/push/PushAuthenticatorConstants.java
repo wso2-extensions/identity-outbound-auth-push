@@ -75,6 +75,10 @@ public class PushAuthenticatorConstants {
 
     public static final String AUTH_DENIED_PARAM = "authorization.denied";
     public static final String AUTH_DENIED_MESSAGE = "authorization.denied.message";
+    public static final String NO_REGISTERED_DEVICES_PARAM = "registered.device.unavailable";
+    public static final String NO_REGISTERED_DEVICES_MESSAGE = "registered.device.unavailable.message";
+    public static final String DEVICES_OVER_LIMIT_PARAM = "devices.over.limit";
+    public static final String DEVICES_OVER_LIMIT_MESSAGE = "devices.over.limit.message";
 
     public static final String FIRST_NAME_CLAIM = "http://wso2.org/claims/givenname";
     public static final String LAST_NAME_CLAIM = "http://wso2.org/claims/lastname";

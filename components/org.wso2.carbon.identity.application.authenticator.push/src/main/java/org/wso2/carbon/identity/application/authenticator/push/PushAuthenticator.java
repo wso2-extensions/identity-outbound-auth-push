@@ -127,9 +127,12 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             if (deviceList.size() == 1) {
                 RequestSender requestSender = new RequestSenderImpl();
                 requestSender.sendRequest(request, response, deviceList.get(0).getDeviceId(), sessionDataKey);
+            } else if (deviceList.size() == 0) {
+                redirectRetryPage(response, PushAuthenticatorConstants.NO_REGISTERED_DEVICES_PARAM,
+                        PushAuthenticatorConstants.NO_REGISTERED_DEVICES_MESSAGE);
             } else {
-                String deviceArrayString = JSONArray.toJSONString(array);
-                redirectDevicesPage(response, context, sessionDataKey, deviceArrayString);
+                redirectRetryPage(response, PushAuthenticatorConstants.DEVICES_OVER_LIMIT_PARAM,
+                        PushAuthenticatorConstants.DEVICES_OVER_LIMIT_MESSAGE);
             }
 
         } catch (PushDeviceHandlerServerException e) {
@@ -185,7 +188,8 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                 if (authStatus.equals(PushAuthenticatorConstants.AUTH_REQUEST_STATUS_SUCCESS)) {
                     authenticationContext.setSubject(user);
                 } else if (authStatus.equals(PushAuthenticatorConstants.AUTH_REQUEST_STATUS_DENIED)) {
-                    redirectDeniedPage(httpServletResponse);
+                    redirectRetryPage(httpServletResponse, PushAuthenticatorConstants.AUTH_DENIED_PARAM,
+                            PushAuthenticatorConstants.AUTH_DENIED_MESSAGE);
                 } else {
                     String errorMessage = String.format("Authentication failed! Auth status for user" +
                             " '%s' is not available in JWT.", user.toFullQualifiedUsername());
@@ -369,11 +373,12 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
      * @param httpServletResponse HTTP response
      * @throws IOException if an error occurs while redirecting to the denied page
      */
-    private void redirectDeniedPage(HttpServletResponse httpServletResponse) throws IOException {
+    private void redirectRetryPage(HttpServletResponse httpServletResponse, String status, String message)
+            throws IOException {
 
         String deniedPage = "/authenticationendpoint/retry.do"
-                + "?status=" + PushAuthenticatorConstants.AUTH_DENIED_PARAM
-                + "&statusMsg=" + PushAuthenticatorConstants.AUTH_DENIED_MESSAGE;
+                + "?status=" + URLEncoder.encode(status, StandardCharsets.UTF_8.name())
+                + "&statusMsg=" + URLEncoder.encode(message, StandardCharsets.UTF_8.name());
         httpServletResponse.sendRedirect(deniedPage);
     }
 
