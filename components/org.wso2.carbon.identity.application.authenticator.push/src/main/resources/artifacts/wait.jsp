@@ -17,7 +17,7 @@
   ~
   --%>
 
-<%String commonauthURL = "https://localhost:9443/commonauth";%>
+<%String commonauthURL = "https://192.168.1.112:9443/commonauth";%>
 
 <%@ taglib prefix = "s" uri = "http://java.sun.com/jsp/jstl/core" %>
 <%@ page language = "java" contentType = "text/html; charset=UTF-8" pageEncoding = "UTF-8" %>

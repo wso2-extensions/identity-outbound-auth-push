@@ -42,10 +42,16 @@ import org.wso2.carbon.identity.application.authenticator.push.device.handler.im
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.Device;
 import org.wso2.carbon.identity.application.authenticator.push.dto.AuthDataDTO;
 import org.wso2.carbon.identity.application.authenticator.push.exception.PushAuthenticatorException;
+import org.wso2.carbon.identity.application.authenticator.push.internal.PushAuthenticatorServiceComponent;
 import org.wso2.carbon.identity.application.authenticator.push.notification.handler.RequestSender;
 import org.wso2.carbon.identity.application.authenticator.push.notification.handler.impl.RequestSenderImpl;
 import org.wso2.carbon.identity.application.authenticator.push.util.Config;
 import org.wso2.carbon.identity.application.common.model.Property;
+import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
+import org.wso2.carbon.user.api.UserRealm;
+import org.wso2.carbon.user.api.UserStoreException;
+import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
+import org.wso2.carbon.user.core.service.RealmService;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -100,7 +106,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         String sessionDataKey = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
         try {
             List<Device> deviceList;
-            deviceList = deviceHandler.listDevices(user.getUserName());
+            deviceList = deviceHandler.listDevices(getUserIdFromUsername(user.getUserName(), getUserRealm(user)));
             request.getSession().setAttribute(PushAuthenticatorConstants.DEVICES_LIST, deviceList);
             JSONObject object;
             JSONArray array = new JSONArray();
@@ -134,6 +140,9 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                     + " page for user: " + user.toFullQualifiedUsername() + ".", e);
         } catch (PushAuthenticatorException e) {
             throw new AuthenticationFailedException("Error occurred when trying to get user claims for user: "
+                    + user.toFullQualifiedUsername() + ".", e);
+        } catch (UserStoreException e) {
+            throw new AuthenticationFailedException("Error occurred when trying to get the user ID for user: "
                     + user.toFullQualifiedUsername() + ".", e);
         }
 
@@ -172,7 +181,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             if (claimsSet != null) {
                 validateChallenge(claimsSet, serverChallenge, deviceId);
 
-                String authStatus = claimsSet.getStringClaim(authResponseToken);
+                String authStatus = claimsSet.getStringClaim("res");
                 if (authStatus.equals(PushAuthenticatorConstants.AUTH_REQUEST_STATUS_SUCCESS)) {
                     authenticationContext.setSubject(user);
                 } else if (authStatus.equals(PushAuthenticatorConstants.AUTH_REQUEST_STATUS_DENIED)) {
@@ -258,6 +267,44 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             throw new AuthenticationFailedException("Failed to get challenge from the auth response token received " +
                     "from device: " + deviceId + ".");
         }
+    }
+
+    /**
+     * Get the user realm for the authenticated user.
+     *
+     * @param authenticatedUser Authenticated user
+     * @return User realm
+     * @throws AuthenticationFailedException if an error occurs when getting the user realm
+     */
+    private UserRealm getUserRealm(AuthenticatedUser authenticatedUser) throws AuthenticationFailedException {
+
+        UserRealm userRealm = null;
+        try {
+            if (authenticatedUser != null) {
+                String tenantDomain = authenticatedUser.getTenantDomain();
+                int tenantId = IdentityTenantUtil.getTenantId(tenantDomain);
+                RealmService realmService = PushAuthenticatorServiceComponent.getRealmService();
+                userRealm = realmService.getTenantUserRealm(tenantId);
+            }
+        } catch (UserStoreException e) {
+            throw new AuthenticationFailedException("Error occurred when trying to get the user realm for user: "
+                    + authenticatedUser.toFullQualifiedUsername() + ".", e);
+        }
+        return userRealm;
+    }
+
+    /**
+     * Get the user ID from the username.
+     *
+     * @param username username of the user
+     * @param realm    user realm for the tenant
+     * @return user ID
+     * @throws UserStoreException userstore exception
+     */
+    private String getUserIdFromUsername(String username, UserRealm realm) throws UserStoreException {
+
+        AbstractUserStoreManager userStoreManager = (AbstractUserStoreManager) realm.getUserStoreManager();
+        return userStoreManager.getUserIDFromUserName(username);
     }
 
     /**

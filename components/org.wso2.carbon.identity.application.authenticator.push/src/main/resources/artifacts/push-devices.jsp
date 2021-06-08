@@ -80,7 +80,7 @@
                 <h3 class="card-title">${device.getDeviceName()}</h3>
                 <p class="card-text"><strong>Model :  </strong>${device.getDeviceModel()}</p>
                 <p class="card-text"><strong>Last used on : </strong>${device.getPushId()}</p>
-                <form style="align-items: center" action="/push-auth" method="GET">
+                <form style="align-items: center" action="/push-auth/send" method="POST">
                     <input type="hidden" name="ACTION" value="Authenticate"/>
                     <input type="hidden" name="sessionDataKey" value=<%=request.getParameter("sessionDataKey")%>>
                     <button type="submit" name="deviceId" value="${device.getDeviceId()}" class="btn btn-primary">Proceed</button>
