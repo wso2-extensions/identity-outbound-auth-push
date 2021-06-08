@@ -21,6 +21,7 @@ package org.wso2.carbon.identity.application.authenticator.push.servlet.servlet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.identity.application.authentication.framework.exception.AuthenticationFailedException;
 import org.wso2.carbon.identity.application.authenticator.push.exception.PushAuthenticatorException;
 import org.wso2.carbon.identity.application.authenticator.push.notification.handler.RequestSender;
 import org.wso2.carbon.identity.application.authenticator.push.notification.handler.impl.RequestSenderImpl;
@@ -50,7 +51,7 @@ public class PushAuthSendServlet extends HttpServlet {
         RequestSender requestSender = new RequestSenderImpl();
         try {
             requestSender.sendRequest(request, response, deviceId, key);
-        } catch (PushAuthenticatorException e) {
+        } catch (PushAuthenticatorException | AuthenticationFailedException e) {
             String errorMessage = String.format(PushServletConstants
                     .ErrorMessages.ERROR_CODE_SEND_REQUEST_FAILED.toString(), deviceId);
             throw new ServletException(errorMessage, e);

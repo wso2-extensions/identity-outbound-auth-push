@@ -45,11 +45,6 @@
             <artifactId>org.wso2.carbon.identity.application.authentication.framework</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>javax.ws.rs-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.service.http</artifactId>
             <scope>provided</scope>
@@ -123,7 +118,6 @@
                             org.wso2.carbon.identity.application.authentication.framework.inbound;version="${org.wso2.carbon.identity.version.range}",
                             javax.servlet;version= "${javax.version.range}",
                             javax.servlet.http;version="${javax.version.range}",
-                            javax.ws.rs.core;version="${javax.version.range}",
                             org.apache.commons.lang;version="${org.apache.commons.lang.version.range}",
                             org.apache.commons.logging;version="${org.apache.commons.version.range}",
                             org.eclipse.equinox.http.helper,

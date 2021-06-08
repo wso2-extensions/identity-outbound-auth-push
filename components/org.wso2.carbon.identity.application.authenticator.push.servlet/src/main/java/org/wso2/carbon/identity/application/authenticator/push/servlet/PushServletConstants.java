@@ -33,6 +33,7 @@ public class PushServletConstants {
     public static final String AUTH_RESPONSE = "authResponse";
     public static final String TOKEN_DEVICE_ID = "did";
     public static final String TOKEN_SESSION_DATA_KEY = "sid";
+    public static final String MEDIA_TYPE_JSON = "application/json";
 
     /**
      * Object holding authentication mobile response status.

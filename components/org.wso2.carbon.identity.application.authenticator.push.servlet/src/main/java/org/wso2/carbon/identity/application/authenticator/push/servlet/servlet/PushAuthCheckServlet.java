@@ -14,7 +14,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.MediaType;
 
 /**
  * Servlet for handling the status checks for authentication requests from the push authenticator wait page.
@@ -53,7 +52,7 @@ public class PushAuthCheckServlet extends HttpServlet {
         WaitStatus waitStatus = new WaitStatus();
 
         response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType(MediaType.APPLICATION_JSON);
+        response.setContentType(PushServletConstants.MEDIA_TYPE_JSON);
 
         String sessionDataKeyWeb = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
         String status = pushDataStoreInstance.getAuthStatus(sessionDataKeyWeb);
