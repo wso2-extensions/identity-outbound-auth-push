@@ -62,19 +62,13 @@
 </div>
 <form id="toCommonAuth" action="<%=commonauthURL%>" method="POST" style="display:none;">
     <input type="hidden" name="ACTION" value="WaitResponse"/>
-    <input type="hidden" id="deviceId" name="deviceId"/>
-    <input type="hidden" id="authstatus" name="authstatus"/>
-    <input type="hidden" id="signature" name="signature"/>
-    <input type="hidden" id="token" name="token"/>
-    <label for="sessionDataKey">sessionDataKey</label><input id="sessionDataKey" name="sessionDataKey">
-    <label for="signedChallenge">signedChallenge</label><input id="signedChallenge" name="signedChallenge">
+    <input type="hidden" id="sessionDataKey" name="sessionDataKey">
+    <input type="hidden" id="proceedAuthorization" name="proceedAuthorization">
 </form>
 </body>
 <script type="text/javascript">
     let i = 0;
     let sessionDataKey;
-    let signedChallenge;
-    let authStatus;
     const refreshInterval = 1000;
     const timeout = 300000;
     let pushEndpointWithQueryParams = "<%=PushAuthenticatorConstants.PUSH_ENDPOINT +
@@ -101,14 +95,13 @@
 
             const urlParams = new URLSearchParams(window.location.search);
             sessionDataKey = urlParams.get('sessionDataKey');
-            challenge = urlParams.get('challenge');
             $.ajax(pushEndpointWithQueryParams + sessionDataKey, {
                 async: false,
                 cache : false,
                 method: GET,
                 // todo: check whether there are any problems when same get req is sent over n over again, will there be cache issues? any solutions?-Future Improvement-Include in DOCs
                 success: function (res) {
-                    handleStatusResponse(res, challenge);
+                    handleStatusResponse(res);
                 },
                 error: function () {
 
@@ -121,13 +114,11 @@
             });
         }
 
-        function handleStatusResponse(res, challenge) {
+        function handleStatusResponse(res) {
 
                     if ((res.status) === "<%=PushAuthenticatorConstants.COMPLETED%>") {
-                        authStatus = (res.authStatus);
-                        console.log(res);
+                        document.getElementById("proceedAuthorization").value = "proceed";
                         document.getElementById("sessionDataKey").value = sessionDataKey;
-                        console.log("Token value saved as: " + document.getElementById("token").value);
                         continueAuthentication(res);
                     } else {
                         checkWaitStatus();
