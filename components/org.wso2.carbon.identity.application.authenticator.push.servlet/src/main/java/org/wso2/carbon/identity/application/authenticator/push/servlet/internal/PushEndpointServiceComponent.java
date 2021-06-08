@@ -53,21 +53,16 @@ public class PushEndpointServiceComponent {
                 PushServletConstants.PUSH_AUTH_ENDPOINT);
         Servlet statusServlet = new ContextPathServletAdaptor(new PushAuthCheckServlet(),
                 PushServletConstants.PUSH_AUTH_STATUS_ENDPOINT);
-        Servlet sendServlet = new ContextPathServletAdaptor(new PushAuthCheckServlet(),
-                PushServletConstants.PUSH_AUTH_SEND_ENDPOINT);
 
         try {
             httpService.registerServlet(PushServletConstants.PUSH_AUTH_ENDPOINT, pushServlet,
                     null, null);
             httpService.registerServlet(PushServletConstants.PUSH_AUTH_STATUS_ENDPOINT, statusServlet,
                     null, null);
-            httpService.registerServlet(PushServletConstants.PUSH_AUTH_SEND_ENDPOINT, sendServlet,
-                    null, null);
             if (log.isDebugEnabled()) {
                 log.debug("Push endpoint service component activated."
                         + "\n Authentication endpoint    : " + PushServletConstants.PUSH_AUTH_ENDPOINT
-                        + "\n Check status endpoint      : " + PushServletConstants.PUSH_AUTH_STATUS_ENDPOINT
-                        + "\n Send auth request endpoint : " + PushServletConstants.PUSH_AUTH_SEND_ENDPOINT);
+                        + "\n Check status endpoint      : " + PushServletConstants.PUSH_AUTH_STATUS_ENDPOINT);
             }
         } catch (Exception e) {
             log.error("Error when registering the push endpoint via the HTTP service.", e);
@@ -79,7 +74,6 @@ public class PushEndpointServiceComponent {
 
         httpService.unregister(PushServletConstants.PUSH_AUTH_ENDPOINT);
         httpService.unregister(PushServletConstants.PUSH_AUTH_STATUS_ENDPOINT);
-        httpService.unregister(PushServletConstants.PUSH_AUTH_SEND_ENDPOINT);
         if (log.isDebugEnabled()) {
             log.debug("Push endpoint service component de-activated.");
         }
