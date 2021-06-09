@@ -193,7 +193,9 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             if (claimsSet != null) {
                 validateChallenge(claimsSet, serverChallenge, deviceId);
 
-                String authStatus = claimsSet.getStringClaim(PushAuthenticatorConstants.TOKEN_RESPONSE);
+                String authStatus =
+                        getClaimFromClaimSet(claimsSet, PushAuthenticatorConstants.TOKEN_RESPONSE, deviceId);
+
                 if (authStatus.equals(PushAuthenticatorConstants.AUTH_REQUEST_STATUS_SUCCESS)) {
                     authenticationContext.setSubject(user);
                 } else if (authStatus.equals(PushAuthenticatorConstants.AUTH_REQUEST_STATUS_DENIED)) {
@@ -216,17 +218,10 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                     "Error occurred when redirecting to the request denied page for device: %s of user: %s.",
                     deviceId, user.toFullQualifiedUsername());
             throw new AuthenticationFailedException(errorMessage, e);
-        } catch (ParseException e) {
-            throw new AuthenticationFailedException("Error occurred when parsing the authentication response token "
-                    + "received from device: " + deviceId + ".", e);
         }
 
-        try {
-            contextManager.clearContext(claimsSet.getStringClaim(PushAuthenticatorConstants.TOKEN_SESSION_DATA_KEY));
-        } catch (ParseException e) {
-            throw new AuthenticationFailedException("Error occurred when getting claim to clear cache from "
-                    + "auth response token received from: " + deviceId + ".", e);
-        }
+        contextManager.clearContext(getClaimFromClaimSet(claimsSet,
+                PushAuthenticatorConstants.TOKEN_SESSION_DATA_KEY, deviceId));
     }
 
     @Override
@@ -266,21 +261,17 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
     private void validateChallenge(JWTClaimsSet claimsSet, String challenge, String deviceId)
             throws AuthenticationFailedException {
 
-        try {
-            if (claimsSet != null) {
-                if (!claimsSet.getStringClaim(PushAuthenticatorConstants.TOKEN_CHALLENGE).equals(challenge)) {
-                    String errorMessage = String
-                            .format("Authentication failed! Challenge received from %s  was not valid.", deviceId);
-                    throw new AuthenticationFailedException(errorMessage);
-                }
-            } else {
+        if (claimsSet != null) {
+            if (!getClaimFromClaimSet(claimsSet, PushAuthenticatorConstants.TOKEN_CHALLENGE, deviceId)
+                    .equals(challenge)) {
                 String errorMessage = String
-                        .format("Authentication failed! JWT claim set received from device %s  was null.", deviceId);
+                        .format("Authentication failed! Challenge received from %s  was not valid.", deviceId);
                 throw new AuthenticationFailedException(errorMessage);
             }
-        } catch (ParseException e) {
-            throw new AuthenticationFailedException("Failed to get challenge from the auth response token received " +
-                    "from device: " + deviceId + ".", e);
+        } else {
+            String errorMessage = String
+                    .format("Authentication failed! JWT claim set received from device %s  was null.", deviceId);
+            throw new AuthenticationFailedException(errorMessage);
         }
     }
 
@@ -320,6 +311,27 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
 
         AbstractUserStoreManager userStoreManager = (AbstractUserStoreManager) realm.getUserStoreManager();
         return userStoreManager.getUserIDFromUserName(username);
+    }
+
+    /**
+     * Get JWT claim from the claim set.
+     *
+     * @param claimsSet JWT claim set
+     * @param claim     Required claim
+     * @param deviceId  Device ID
+     * @return Claim string
+     * @throws AuthenticationFailedException if an error occurs while getting a claim
+     */
+    private String getClaimFromClaimSet(JWTClaimsSet claimsSet, String claim, String deviceId)
+            throws AuthenticationFailedException {
+
+        try {
+            return claimsSet.getStringClaim(claim);
+        } catch (ParseException e) {
+            String errorMessage = String.format("Failed to get %s from the auth response token received from device: "
+                    + "%s.", claim, deviceId);
+            throw new AuthenticationFailedException(errorMessage, e);
+        }
     }
 
     /**
