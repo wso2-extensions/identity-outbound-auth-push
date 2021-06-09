@@ -193,7 +193,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             if (claimsSet != null) {
                 validateChallenge(claimsSet, serverChallenge, deviceId);
 
-                String authStatus = claimsSet.getStringClaim("res");
+                String authStatus = claimsSet.getStringClaim(PushAuthenticatorConstants.TOKEN_RESPONSE);
                 if (authStatus.equals(PushAuthenticatorConstants.AUTH_REQUEST_STATUS_SUCCESS)) {
                     authenticationContext.setSubject(user);
                 } else if (authStatus.equals(PushAuthenticatorConstants.AUTH_REQUEST_STATUS_DENIED)) {
