@@ -21,17 +21,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>org.wso2.carbon.identity.outbound.auth.biometric</groupId>
-        <artifactId>identity-outbound-auth-biometric</artifactId>
+        <groupId>org.wso2.carbon.identity.outbound.auth.push</groupId>
+        <artifactId>identity-outbound-auth-push</artifactId>
         <relativePath>../../pom.xml</relativePath>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>0.1.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>org.wso2.carbon.identity.application.authenticator.biometric.servlet</artifactId>
+    <artifactId>org.wso2.carbon.identity.application.authenticator.push.servlet</artifactId>
     <packaging>bundle</packaging>
-    <name>WSO2 Carbon - Endpoint for Biometric Authenticator</name>
-    <description>Identity Application Biometric Authentication Endpoint</description>
+    <name>WSO2 Carbon - Endpoint for Push Authenticator</name>
+    <description>Identity Application Push Authentication Endpoint</description>
     <url>http://www.wso2.com</url>
 
     <dependencies>
@@ -43,11 +43,6 @@
         <dependency>
             <groupId>org.wso2.carbon.identity.framework</groupId>
             <artifactId>org.wso2.carbon.identity.application.authentication.framework</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>javax.ws.rs-api</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
@@ -82,11 +77,18 @@
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
-            <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon.identity.application.authenticator.biometric</groupId>
-            <artifactId>org.wso2.carbon.identity.application.authenticator.biometric</artifactId>
+            <groupId>org.wso2.carbon.identity.outbound.auth.push</groupId>
+            <artifactId>org.wso2.carbon.identity.application.authenticator.push</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.identity.outbound.auth.push</groupId>
+            <artifactId>org.wso2.carbon.identity.application.authenticator.push.common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.identity.outbound.auth.push</groupId>
+            <artifactId>org.wso2.carbon.identity.application.authenticator.push.device.handler</artifactId>
         </dependency>
     </dependencies>
     <build>
@@ -99,29 +101,38 @@
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
-                        <Private-Package>org.wso2.carbon.identity.application.authenticator.biometric.servlet.internal</Private-Package>
+                        <Private-Package>org.wso2.carbon.identity.application.authenticator.push.servlet.internal</Private-Package>
                         <Export-Package>
-                            !org.wso2.carbon.identity.application.authenticator.biometric.servlet.internal,
-                            org.wso2.carbon.identity.application.authenticator.biometric.servlet,
-                            org.wso2.carbon.identity.application.authenticator.biometric.servlet.model,
-                            org.wso2.carbon.identity.application.authenticator.biometric.servlet.servlet,
-                            org.wso2.carbon.identity.application.authenticator.biometric.servlet.store,
-                            org.wso2.carbon.identity.application.authenticator.biometric.servlet.store.impl,
+                            !org.wso2.carbon.identity.application.authenticator.push.servlet.internal,
+                            org.wso2.carbon.identity.application.authenticator.push.servlet,
+                            org.wso2.carbon.identity.application.authenticator.push.servlet.model,
+                            org.wso2.carbon.identity.application.authenticator.push.servlet.servlet,
+                            org.wso2.carbon.identity.application.authenticator.push.servlet.store,
+                            org.wso2.carbon.identity.application.authenticator.push.servlet.store.impl,
                         </Export-Package>
                         <Import-Package>
                             com.google.gson;version="${com.googlecode.json-simple.version}",
-                            javax.servlet;version= "[2.6,3)",
-                            javax.servlet.http;version="[2.6,3)",
-                            org.apache.commons.lang;version="[2.6,3)",
-                            org.apache.commons.logging;version="[1.2,2)",
+                            com.nimbusds.jose;version="${com.nimbusds.version.range}",
+                            com.nimbusds.jwt;version="${com.nimbusds.version.range}",
+                            org.wso2.carbon.identity.application.authentication.framework.context;version="${org.wso2.carbon.identity.version.range}",
+                            org.wso2.carbon.identity.application.authentication.framework.inbound;version="${org.wso2.carbon.identity.version.range}",
+                            javax.servlet;version= "${javax.version.range}",
+                            javax.servlet.http;version="${javax.version.range}",
+                            org.apache.commons.lang;version="${org.apache.commons.lang.version.range}",
+                            org.apache.commons.logging;version="${org.apache.commons.version.range}",
                             org.eclipse.equinox.http.helper,
-                            org.osgi.service.component;version="[1.2.0,2.0.0)",
-                            org.osgi.service.http;version="[1.2,2)",
-                            org.wso2.carbon.identity.application.authenticator.biometric;version="[1.0,2)",
-                            org.wso2.carbon.identity.application.authenticator.biometric.device.handler;version="[1.0,2)",
-                            org.wso2.carbon.identity.application.authenticator.biometric.device.handler.model;version="[1.0,2)",
-                            org.wso2.carbon.identity.application.authenticator.biometric.device.handler.exception;version="[1.0,2)",
-                            org.wso2.carbon.identity.application.authenticator.biometric.device.handler.impl;version="[1.0,2)"
+                            org.osgi.service.component;version="${org.osgi.service.version.range}",
+                            org.osgi.service.http;version="${org.osgi.service.version.range}",
+                            org.wso2.carbon.identity.application.authenticator.push.dto,
+                            org.wso2.carbon.identity.application.authenticator.push.exception,
+                            org.wso2.carbon.identity.application.authenticator.push.notification.handler,
+                            org.wso2.carbon.identity.application.authenticator.push.notification.handler.impl,
+                            org.wso2.carbon.identity.application.authenticator.push.device.handler,
+                            org.wso2.carbon.identity.application.authenticator.push.device.handler.exception,
+                            org.wso2.carbon.identity.application.authenticator.push.device.handler.impl,
+                            org.wso2.carbon.identity.application.authenticator.push.common,
+                            org.wso2.carbon.identity.application.authenticator.push.common.impl,
+                            org.wso2.carbon.identity.application.authenticator.push.common.exception,
                         </Import-Package>
                     </instructions>
                 </configuration>
@@ -168,7 +179,7 @@
                                         <limit implementation="org.jacoco.report.check.Limit">
                                             <counter>COMPLEXITY</counter>
                                             <value>COVEREDRATIO</value>
-                                            <!--<minimum>0.20</minimum>-->
+                                            <minimum>0.00</minimum>
                                         </limit>
                                     </limits>
                                 </rule>

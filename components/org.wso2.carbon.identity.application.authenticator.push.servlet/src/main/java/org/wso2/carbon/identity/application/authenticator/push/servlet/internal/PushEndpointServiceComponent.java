@@ -16,7 +16,7 @@
  * under the License.
  *
  */
-package org.wso2.carbon.identity.application.authenticator.biometric.servlet.internal;
+package org.wso2.carbon.identity.application.authenticator.push.servlet.internal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,44 +29,53 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.http.HttpService;
-import org.wso2.carbon.identity.application.authenticator.biometric.servlet.BiometricServletConstants;
-import org.wso2.carbon.identity.application.authenticator.biometric.servlet.servlet.BiometricServlet;
+import org.wso2.carbon.identity.application.authenticator.push.servlet.PushServletConstants;
+import org.wso2.carbon.identity.application.authenticator.push.servlet.servlet.PushAuthCheckServlet;
+import org.wso2.carbon.identity.application.authenticator.push.servlet.servlet.PushServlet;
+
 import javax.servlet.Servlet;
 
 /**
- * Service component class for the Biometric Servlet initialization.
+ * Service component class for the Push Servlet initialization.
  */
 @Component(
-        name = "identity.application.authenticator.biometric.servlet",
+        name = "org.wso2.carbon.identity.application.authenticator.push.servlet",
         immediate = true)
-public class BiometricEndpointServiceComponent {
+public class PushEndpointServiceComponent {
 
-    private static final Log log = LogFactory.getLog(BiometricEndpointServiceComponent.class);
+    private static final Log log = LogFactory.getLog(PushEndpointServiceComponent.class);
     private HttpService httpService;
 
     @Activate
     protected void activate(ComponentContext ctxt) {
 
-        Servlet biometricServlet = new ContextPathServletAdaptor(new BiometricServlet(),
-                BiometricServletConstants.BIOMETRIC_ENDPOINT);
+        Servlet pushServlet = new ContextPathServletAdaptor(new PushServlet(),
+                PushServletConstants.PUSH_AUTH_ENDPOINT);
+        Servlet statusServlet = new ContextPathServletAdaptor(new PushAuthCheckServlet(),
+                PushServletConstants.PUSH_AUTH_STATUS_ENDPOINT);
+
         try {
-            httpService.registerServlet(BiometricServletConstants.BIOMETRIC_ENDPOINT, biometricServlet,
+            httpService.registerServlet(PushServletConstants.PUSH_AUTH_ENDPOINT, pushServlet,
+                    null, null);
+            httpService.registerServlet(PushServletConstants.PUSH_AUTH_STATUS_ENDPOINT, statusServlet,
                     null, null);
             if (log.isDebugEnabled()) {
-                log.debug("Biometric endpoint service component activated. The endpoint: " +
-                        BiometricServletConstants.BIOMETRIC_ENDPOINT);
+                log.debug("Push endpoint service component activated."
+                        + "\n Authentication endpoint    : " + PushServletConstants.PUSH_AUTH_ENDPOINT
+                        + "\n Check status endpoint      : " + PushServletConstants.PUSH_AUTH_STATUS_ENDPOINT);
             }
         } catch (Exception e) {
-            log.error("Error when registering the biometric endpoint via the HTTP service.", e);
+            log.error("Error when registering the push endpoint via the HTTP service.", e);
         }
     }
 
     @Deactivate
     protected void deactivate(ComponentContext ctxt) {
 
-        httpService.unregister(BiometricServletConstants.BIOMETRIC_ENDPOINT);
+        httpService.unregister(PushServletConstants.PUSH_AUTH_ENDPOINT);
+        httpService.unregister(PushServletConstants.PUSH_AUTH_STATUS_ENDPOINT);
         if (log.isDebugEnabled()) {
-            log.debug("Biometric endpoint service component de-activated.");
+            log.debug("Push endpoint service component de-activated.");
         }
     }
 
