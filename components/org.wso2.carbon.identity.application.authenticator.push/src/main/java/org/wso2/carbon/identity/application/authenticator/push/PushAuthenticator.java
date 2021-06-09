@@ -128,9 +128,17 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                 RequestSender requestSender = new RequestSenderImpl();
                 requestSender.sendRequest(request, response, deviceList.get(0).getDeviceId(), sessionDataKey);
             } else if (deviceList.size() == 0) {
+                if (log.isDebugEnabled()) {
+                    log.debug("User (" + user.toFullQualifiedUsername() + ") does not have any registered devices "
+                            + "for push based authentication.");
+                }
+
                 redirectRetryPage(response, PushAuthenticatorConstants.NO_REGISTERED_DEVICES_PARAM,
                         PushAuthenticatorConstants.NO_REGISTERED_DEVICES_MESSAGE);
             } else {
+                String errorMessage = String.format("Error occurred as user (%s) has more than one device registered "
+                                + "for push based authentication.", user.toFullQualifiedUsername());
+                log.error(errorMessage);
                 redirectRetryPage(response, PushAuthenticatorConstants.DEVICES_OVER_LIMIT_PARAM,
                         PushAuthenticatorConstants.DEVICES_OVER_LIMIT_MESSAGE);
             }
