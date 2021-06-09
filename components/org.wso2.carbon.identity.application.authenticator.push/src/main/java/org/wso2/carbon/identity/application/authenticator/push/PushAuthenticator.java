@@ -127,6 +127,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             if (deviceList.size() == 1) {
                 RequestSender requestSender = new RequestSenderImpl();
                 requestSender.sendRequest(request, response, deviceList.get(0).getDeviceId(), sessionDataKey);
+                redirectWaitPage(response, sessionDataKey, user);
             } else if (deviceList.size() == 0) {
                 if (log.isDebugEnabled()) {
                     log.debug("User (" + user.toFullQualifiedUsername() + ") does not have any registered devices "
@@ -137,7 +138,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                         PushAuthenticatorConstants.NO_REGISTERED_DEVICES_MESSAGE);
             } else {
                 String errorMessage = String.format("Error occurred as user (%s) has more than one device registered "
-                                + "for push based authentication.", user.toFullQualifiedUsername());
+                        + "for push based authentication.", user.toFullQualifiedUsername());
                 log.error(errorMessage);
                 redirectRetryPage(response, PushAuthenticatorConstants.DEVICES_OVER_LIMIT_PARAM,
                         PushAuthenticatorConstants.DEVICES_OVER_LIMIT_MESSAGE);
@@ -373,6 +374,29 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                 + "?sessionDataKey=" + URLEncoder.encode(sessionDataKey, StandardCharsets.UTF_8.name())
                 + "&devices=" + URLEncoder.encode(deviceArrayString, StandardCharsets.UTF_8.name());
         response.sendRedirect(devicesPage);
+    }
+
+    /**
+     * Redirect the user to the wait page.
+     *
+     * @param response       HTTP response
+     * @param sessionDataKey Unique ID for the session
+     * @param user           Authenticated user
+     * @throws PushAuthenticatorException if an error occurs while trying to redirect to the wait page
+     */
+    private void redirectWaitPage(HttpServletResponse response, String sessionDataKey, AuthenticatedUser user)
+            throws PushAuthenticatorException {
+
+        try {
+            String waitPage = PushAuthenticatorConstants.WAIT_PAGE
+                    + "?sessionDataKey="
+                    + URLEncoder.encode(sessionDataKey, StandardCharsets.UTF_8.name());
+            response.sendRedirect(waitPage);
+        } catch (IOException e) {
+            String errorMessage = String.format("Error occurred when trying to to redirect user: %s to the wait page.",
+                    user.toFullQualifiedUsername());
+            throw new PushAuthenticatorException(errorMessage, e);
+        }
     }
 
     /**

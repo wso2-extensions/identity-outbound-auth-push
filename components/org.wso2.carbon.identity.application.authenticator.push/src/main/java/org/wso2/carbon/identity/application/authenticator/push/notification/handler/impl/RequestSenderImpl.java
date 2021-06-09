@@ -49,8 +49,6 @@ import ua_parser.Client;
 import ua_parser.Parser;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
@@ -109,8 +107,6 @@ public class RequestSenderImpl implements RequestSender {
             throw new PushAuthenticatorException("Error occurred when trying to send the push notification to device: "
                     + deviceId + ".", e);
         }
-
-        redirectWaitPage(response, sessionDataKey, user);
     }
 
     /**
@@ -219,26 +215,4 @@ public class RequestSenderImpl implements RequestSender {
         }
     }
 
-    /**
-     * Redirect the user to the wait page.
-     *
-     * @param response       HTTP response
-     * @param sessionDataKey Unique ID for the session
-     * @param user           Authenticated user
-     * @throws PushAuthenticatorException if an error occurs while trying to redirect to the wait page
-     */
-    private void redirectWaitPage(HttpServletResponse response, String sessionDataKey, AuthenticatedUser user)
-            throws PushAuthenticatorException {
-
-        try {
-            String waitPage = PushAuthenticatorConstants.WAIT_PAGE
-                    + "?sessionDataKey="
-                    + URLEncoder.encode(sessionDataKey, StandardCharsets.UTF_8.name());
-            response.sendRedirect(waitPage);
-        } catch (IOException e) {
-            String errorMessage = String.format("Error occurred when trying to to redirect user: %s to the wait page.",
-                    user.toFullQualifiedUsername());
-            throw new PushAuthenticatorException(errorMessage, e);
-        }
-    }
 }
