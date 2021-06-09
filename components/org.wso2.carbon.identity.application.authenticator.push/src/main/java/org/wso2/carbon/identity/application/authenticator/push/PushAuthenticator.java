@@ -217,13 +217,15 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                     deviceId, user.toFullQualifiedUsername());
             throw new AuthenticationFailedException(errorMessage, e);
         } catch (ParseException e) {
-            throw new AuthenticationFailedException("Error occurred when parsing the authentication response token", e);
+            throw new AuthenticationFailedException("Error occurred when parsing the authentication response token "
+                    + "received from device: " + deviceId + ".", e);
         }
 
         try {
             contextManager.clearContext(claimsSet.getStringClaim(PushAuthenticatorConstants.TOKEN_SESSION_DATA_KEY));
         } catch (ParseException e) {
-            throw new AuthenticationFailedException("Error occurred when getting token claim to clear cache", e);
+            throw new AuthenticationFailedException("Error occurred when getting claim to clear cache from "
+                    + "auth response token received from: " + deviceId + ".", e);
         }
     }
 
@@ -273,12 +275,12 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                 }
             } else {
                 String errorMessage = String
-                        .format("Authentication failed! JWT claim set received from %s  was null.", deviceId);
+                        .format("Authentication failed! JWT claim set received from device %s  was null.", deviceId);
                 throw new AuthenticationFailedException(errorMessage);
             }
         } catch (ParseException e) {
             throw new AuthenticationFailedException("Failed to get challenge from the auth response token received " +
-                    "from device: " + deviceId + ".");
+                    "from device: " + deviceId + ".", e);
         }
     }
 
@@ -333,7 +335,8 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             return String.valueOf(JWTParser.parse(token).getHeader()
                     .getCustomParam(PushAuthenticatorConstants.TOKEN_DEVICE_ID));
         } catch (ParseException e) {
-            throw new AuthenticationFailedException("Error occurred when trying to get the device ID", e);
+            throw new AuthenticationFailedException("Error occurred when trying to get the device ID from the "
+                    + "auth response token.", e);
         }
     }
 
@@ -349,10 +352,9 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         DeviceHandler deviceHandler = new DeviceHandlerImpl();
         try {
             return deviceHandler.getPublicKey(deviceId);
-        } catch (PushDeviceHandlerServerException e) {
-            throw new AuthenticationFailedException("Error occurred when trying to get the public key.");
-        } catch (PushDeviceHandlerClientException e) {
-            throw new AuthenticationFailedException("Public key error");
+        } catch (PushDeviceHandlerServerException | PushDeviceHandlerClientException e) {
+            throw new AuthenticationFailedException("Error occurred when trying to get the public key for device: "
+                    + deviceId + ".");
         }
     }
 
@@ -368,6 +370,10 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
     private void redirectDevicesPage(HttpServletResponse response, AuthenticationContext context,
                                      String sessionDataKey, String deviceArrayString) throws IOException {
 
+        /*
+         *  Method will be required once https://github.com/wso2-incubator/identity-outbound-auth-push/issues/84
+         *  is resolved.
+         */
         Config config = new Config();
         String devicesPage;
         devicesPage = config.getDevicesPage(context)
