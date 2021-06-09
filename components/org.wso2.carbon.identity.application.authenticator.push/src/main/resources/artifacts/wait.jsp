@@ -98,7 +98,6 @@
                 async: false,
                 cache : false,
                 method: GET,
-                // todo: check whether there are any problems when same get req is sent over n over again, will there be cache issues? any solutions?-Future Improvement-Include in DOCs
                 success: function (res) {
                     handleStatusResponse(res);
                 },
