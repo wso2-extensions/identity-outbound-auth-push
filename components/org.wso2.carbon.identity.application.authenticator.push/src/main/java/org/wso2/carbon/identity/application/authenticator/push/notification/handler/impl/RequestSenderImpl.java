@@ -80,7 +80,7 @@ public class RequestSenderImpl implements RequestSender {
         String serviceProviderName = context.getServiceProviderName();
         String message = username + " is requesting to log into " + serviceProviderName;
         String sessionDataKey = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
-        String randomChallenge = String.valueOf(UUID.randomUUID());
+        String randomChallenge = UUID.randomUUID().toString();
         String pushId = device.getPushId();
         String fullName = getFullName(user);
         String organization = user.getTenantDomain();
