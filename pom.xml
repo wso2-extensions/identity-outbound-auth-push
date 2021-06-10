@@ -361,7 +361,7 @@
         <maven.bundle.plugin.version>3.2.0</maven.bundle.plugin.version>
         <maven.compiler.plugin.version>2.3.1</maven.compiler.plugin.version>
         <findbugs.maven.plugin.version>3.0.4</findbugs.maven.plugin.version>
-        <identity.framework.version>5.17.5</identity.framework.version>
+        <identity.framework.version>5.20.42</identity.framework.version>
         <jacoco.version>0.8.2</jacoco.version>
         <carbon.identity.version>5.0.7</carbon.identity.version>
         <commons.logging.version>1.1.1</commons.logging.version>
