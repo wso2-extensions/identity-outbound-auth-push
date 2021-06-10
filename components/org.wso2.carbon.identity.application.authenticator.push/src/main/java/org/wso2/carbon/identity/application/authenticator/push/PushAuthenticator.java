@@ -45,8 +45,9 @@ import org.wso2.carbon.identity.application.authenticator.push.exception.PushAut
 import org.wso2.carbon.identity.application.authenticator.push.internal.PushAuthenticatorServiceComponent;
 import org.wso2.carbon.identity.application.authenticator.push.notification.handler.RequestSender;
 import org.wso2.carbon.identity.application.authenticator.push.notification.handler.impl.RequestSenderImpl;
-import org.wso2.carbon.identity.application.authenticator.push.util.Config;
 import org.wso2.carbon.identity.application.common.model.Property;
+import org.wso2.carbon.identity.core.ServiceURLBuilder;
+import org.wso2.carbon.identity.core.URLBuilderException;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.user.api.UserRealm;
 import org.wso2.carbon.user.api.UserStoreException;
@@ -54,8 +55,6 @@ import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
 import org.wso2.carbon.user.core.service.RealmService;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -135,21 +134,18 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                 }
 
                 redirectRetryPage(response, PushAuthenticatorConstants.NO_REGISTERED_DEVICES_PARAM,
-                        PushAuthenticatorConstants.NO_REGISTERED_DEVICES_MESSAGE);
+                        PushAuthenticatorConstants.NO_REGISTERED_DEVICES_MESSAGE, user);
             } else {
                 String errorMessage = String.format("Error occurred as user (%s) has more than one device registered "
                         + "for push based authentication.", user.toFullQualifiedUsername());
                 log.error(errorMessage);
                 redirectRetryPage(response, PushAuthenticatorConstants.DEVICES_OVER_LIMIT_PARAM,
-                        PushAuthenticatorConstants.DEVICES_OVER_LIMIT_MESSAGE);
+                        PushAuthenticatorConstants.DEVICES_OVER_LIMIT_MESSAGE, user);
             }
 
         } catch (PushDeviceHandlerServerException e) {
             throw new AuthenticationFailedException("Error occurred when trying to redirect to the registered devices"
                     + " page. Devices were not found for user: " + user.toFullQualifiedUsername() + ".", e);
-        } catch (IOException e) {
-            throw new AuthenticationFailedException("Error occurred when trying to redirect to the registered devices"
-                    + " page for user: " + user.toFullQualifiedUsername() + ".", e);
         } catch (PushAuthenticatorException e) {
             throw new AuthenticationFailedException("Error occurred when trying to get user claims for user: "
                     + user.toFullQualifiedUsername() + ".", e);
@@ -189,35 +185,27 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                             deviceId, user);
             throw new AuthenticationFailedException(errorMessage, e);
         }
-        try {
-            if (claimsSet != null) {
-                validateChallenge(claimsSet, serverChallenge, deviceId);
+        if (claimsSet != null) {
+            validateChallenge(claimsSet, serverChallenge, deviceId);
 
-                String authStatus =
-                        getClaimFromClaimSet(claimsSet, PushAuthenticatorConstants.TOKEN_RESPONSE, deviceId);
+            String authStatus =
+                    getClaimFromClaimSet(claimsSet, PushAuthenticatorConstants.TOKEN_RESPONSE, deviceId);
 
-                if (authStatus.equals(PushAuthenticatorConstants.AUTH_REQUEST_STATUS_SUCCESS)) {
-                    authenticationContext.setSubject(user);
-                } else if (authStatus.equals(PushAuthenticatorConstants.AUTH_REQUEST_STATUS_DENIED)) {
-                    redirectRetryPage(httpServletResponse, PushAuthenticatorConstants.AUTH_DENIED_PARAM,
-                            PushAuthenticatorConstants.AUTH_DENIED_MESSAGE);
-                } else {
-                    String errorMessage = String.format("Authentication failed! Auth status for user" +
-                            " '%s' is not available in JWT.", user.toFullQualifiedUsername());
-                    throw new AuthenticationFailedException(errorMessage);
-                }
+            if (authStatus.equals(PushAuthenticatorConstants.AUTH_REQUEST_STATUS_SUCCESS)) {
+                authenticationContext.setSubject(user);
+            } else if (authStatus.equals(PushAuthenticatorConstants.AUTH_REQUEST_STATUS_DENIED)) {
+                redirectRetryPage(httpServletResponse, PushAuthenticatorConstants.AUTH_DENIED_PARAM,
+                        PushAuthenticatorConstants.AUTH_DENIED_MESSAGE, user);
             } else {
-                String errorMessage = String
-                        .format("Authentication failed! JWT signature is not valid for device: %s of user: %s.",
-                                deviceId, user.toFullQualifiedUsername());
+                String errorMessage = String.format("Authentication failed! Auth status for user" +
+                        " '%s' is not available in JWT.", user.toFullQualifiedUsername());
                 throw new AuthenticationFailedException(errorMessage);
             }
-
-        } catch (IOException e) {
-            String errorMessage = String.format(
-                    "Error occurred when redirecting to the request denied page for device: %s of user: %s.",
-                    deviceId, user.toFullQualifiedUsername());
-            throw new AuthenticationFailedException(errorMessage, e);
+        } else {
+            String errorMessage = String
+                    .format("Authentication failed! JWT signature is not valid for device: %s of user: %s.",
+                            deviceId, user.toFullQualifiedUsername());
+            throw new AuthenticationFailedException(errorMessage);
         }
 
         contextManager.clearContext(getClaimFromClaimSet(claimsSet,
@@ -374,24 +362,29 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
      * Redirect user to device selection page.
      *
      * @param response          HTTP response
-     * @param context           Authentication context
+     * @param user              Authenticated user
      * @param sessionDataKey    Unique key for the session
      * @param deviceArrayString JSON array as a string
      * @throws IOException if an error occurs when redirecting to the device selection page
      */
-    private void redirectDevicesPage(HttpServletResponse response, AuthenticationContext context,
-                                     String sessionDataKey, String deviceArrayString) throws IOException {
+    private void redirectDevicesPage(HttpServletResponse response, String sessionDataKey, String deviceArrayString,
+                                     AuthenticatedUser user) throws IOException, AuthenticationFailedException {
 
         /*
          *  Method will be required once https://github.com/wso2-incubator/identity-outbound-auth-push/issues/84
          *  is resolved.
          */
-        Config config = new Config();
-        String devicesPage;
-        devicesPage = config.getDevicesPage(context)
-                + "?sessionDataKey=" + URLEncoder.encode(sessionDataKey, StandardCharsets.UTF_8.name())
-                + "&devices=" + URLEncoder.encode(deviceArrayString, StandardCharsets.UTF_8.name());
-        response.sendRedirect(devicesPage);
+        try {
+            String deviceSelectionPage = ServiceURLBuilder.create().addPath(PushAuthenticatorConstants.DEVICES_PAGE)
+                    .addParameter("sessionDataKey", sessionDataKey)
+                    .addParameter("devices", deviceArrayString)
+                    .build().getAbsolutePublicURL();
+            response.sendRedirect(deviceSelectionPage);
+        } catch (URLBuilderException e) {
+            String errorMessage = String.format("Error occurred when building the URL for the device selection page "
+                    + "for user: %s.", user.toFullQualifiedUsername());
+            throw new AuthenticationFailedException(errorMessage, e);
+        }
     }
 
     /**
@@ -403,33 +396,50 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
      * @throws PushAuthenticatorException if an error occurs while trying to redirect to the wait page
      */
     private void redirectWaitPage(HttpServletResponse response, String sessionDataKey, AuthenticatedUser user)
-            throws PushAuthenticatorException {
+            throws PushAuthenticatorException, AuthenticationFailedException {
 
         try {
-            String waitPage = PushAuthenticatorConstants.WAIT_PAGE
-                    + "?sessionDataKey="
-                    + URLEncoder.encode(sessionDataKey, StandardCharsets.UTF_8.name());
+            String waitPage = ServiceURLBuilder.create().addPath(PushAuthenticatorConstants.WAIT_PAGE)
+                    .addParameter("sessionDataKey", sessionDataKey).build().getAbsolutePublicURL();
             response.sendRedirect(waitPage);
         } catch (IOException e) {
             String errorMessage = String.format("Error occurred when trying to to redirect user: %s to the wait page.",
                     user.toFullQualifiedUsername());
-            throw new PushAuthenticatorException(errorMessage, e);
+            throw new AuthenticationFailedException(errorMessage, e);
+        } catch (URLBuilderException e) {
+            String errorMessage = String.format("Error occurred when building the URL for the wait page for user: %s.",
+                    user.toFullQualifiedUsername());
+            throw new AuthenticationFailedException(errorMessage, e);
         }
     }
 
     /**
      * Redirect the user to the authentication denied page.
      *
-     * @param httpServletResponse HTTP response
-     * @throws IOException if an error occurs while redirecting to the denied page
+     * @param response HTTP response
+     * @param status   Status for error
+     * @param message  Message to be displayed in the retry page
+     * @param user     Authenticated user
+     * @throws AuthenticationFailedException if an error occurs while redirecting to the retry page
      */
-    private void redirectRetryPage(HttpServletResponse httpServletResponse, String status, String message)
-            throws IOException {
+    private void redirectRetryPage(HttpServletResponse response, String status, String message, AuthenticatedUser user)
+            throws AuthenticationFailedException {
 
-        String deniedPage = "/authenticationendpoint/retry.do"
-                + "?status=" + URLEncoder.encode(status, StandardCharsets.UTF_8.name())
-                + "&statusMsg=" + URLEncoder.encode(message, StandardCharsets.UTF_8.name());
-        httpServletResponse.sendRedirect(deniedPage);
+        try {
+            String retryPage = ServiceURLBuilder.create().addPath(PushAuthenticatorConstants.RETRY_PAGE)
+                    .addParameter("status", status)
+                    .addParameter("statusMsg", message)
+                    .build().getAbsolutePublicURL();
+            response.sendRedirect(retryPage);
+        } catch (URLBuilderException e) {
+            String errorMessage = String.format("Error occurred when building the URL for the retry page for user: %s.",
+                    user.toFullQualifiedUsername());
+            throw new AuthenticationFailedException(errorMessage, e);
+        } catch (IOException e) {
+            String errorMessage = String.format("Error occurred when trying to to redirect user: %s to the retry page.",
+                    user.toFullQualifiedUsername());
+            throw new AuthenticationFailedException(errorMessage, e);
+        }
     }
 
 }
