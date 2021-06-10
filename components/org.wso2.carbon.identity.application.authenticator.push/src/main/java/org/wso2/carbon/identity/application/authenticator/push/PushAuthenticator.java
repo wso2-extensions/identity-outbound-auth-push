@@ -369,7 +369,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
      * @throws IOException if an error occurs when redirecting to the device selection page
      */
     protected void redirectDevicesPage(HttpServletResponse response, String sessionDataKey, String deviceArrayString,
-                                     AuthenticatedUser user) throws IOException, AuthenticationFailedException {
+                                       AuthenticatedUser user) throws IOException, AuthenticationFailedException {
 
         /*
          *  Method will be required once https://github.com/wso2-incubator/identity-outbound-auth-push/issues/84
@@ -423,8 +423,8 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
      * @param user     Authenticated user
      * @throws AuthenticationFailedException if an error occurs while redirecting to the retry page
      */
-    protected void redirectRetryPage(HttpServletResponse response, String status, String message, AuthenticatedUser user)
-            throws AuthenticationFailedException {
+    protected void redirectRetryPage(HttpServletResponse response, String status, String message,
+                                     AuthenticatedUser user) throws AuthenticationFailedException {
 
         try {
             String retryPage = ServiceURLBuilder.create().addPath(PushAuthenticatorConstants.RETRY_PAGE)

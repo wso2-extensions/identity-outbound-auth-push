@@ -126,10 +126,12 @@ public class FirebasePushNotificationSender {
                 log.debug("Firebase message payload: " + json.toJSONString());
             }
 
-            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream(), StandardCharsets.UTF_8);
-            wr.write(json.toString());
-            wr.flush();
-            wr.close();
+            try (OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream(), StandardCharsets.UTF_8)) {
+                wr.write(json.toString());
+                wr.flush();
+            } catch (IOException e) {
+                throw new AuthenticationFailedException("Error occurred when trying to send a push notification.", e);
+            }
 
             int status = conn.getResponseCode();
             if (status != HttpServletResponse.SC_OK) {
@@ -153,7 +155,7 @@ public class FirebasePushNotificationSender {
         } catch (ProtocolException e) {
             throw new AuthenticationFailedException("Error while setting the HTTP method ", e);
         } catch (IOException e) {
-            throw new AuthenticationFailedException("Authentication failed!. An IOException was caught. ", e);
+            throw new AuthenticationFailedException("Authentication failed! An IOException was caught. ", e);
         }
     }
 }
