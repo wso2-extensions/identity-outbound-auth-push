@@ -250,8 +250,9 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             throws AuthenticationFailedException {
 
         if (claimsSet != null) {
-            if (!getClaimFromClaimSet(claimsSet, PushAuthenticatorConstants.TOKEN_CHALLENGE, deviceId)
-                    .equals(challenge)) {
+            String tokenChallenge =
+                    getClaimFromClaimSet(claimsSet, PushAuthenticatorConstants.TOKEN_CHALLENGE, deviceId);
+            if (!tokenChallenge.equals(challenge)) {
                 String errorMessage = String
                         .format("Authentication failed! Challenge received from %s  was not valid.", deviceId);
                 throw new AuthenticationFailedException(errorMessage);
@@ -310,7 +311,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
      * @return Claim string
      * @throws AuthenticationFailedException if an error occurs while getting a claim
      */
-    private String getClaimFromClaimSet(JWTClaimsSet claimsSet, String claim, String deviceId)
+    protected String getClaimFromClaimSet(JWTClaimsSet claimsSet, String claim, String deviceId)
             throws AuthenticationFailedException {
 
         try {
@@ -329,7 +330,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
      * @return Device ID
      * @throws AuthenticationFailedException if the token string fails to parse to JWT
      */
-    private String getDeviceIdFromToken(String token) throws AuthenticationFailedException {
+    protected String getDeviceIdFromToken(String token) throws AuthenticationFailedException {
 
         try {
             return String.valueOf(JWTParser.parse(token).getHeader()
@@ -347,7 +348,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
      * @return Public key string
      * @throws AuthenticationFailedException if an error occurs while getting the public key
      */
-    private String getPublicKey(String deviceId) throws AuthenticationFailedException {
+    protected String getPublicKey(String deviceId) throws AuthenticationFailedException {
 
         DeviceHandler deviceHandler = new DeviceHandlerImpl();
         try {
@@ -367,7 +368,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
      * @param deviceArrayString JSON array as a string
      * @throws IOException if an error occurs when redirecting to the device selection page
      */
-    private void redirectDevicesPage(HttpServletResponse response, String sessionDataKey, String deviceArrayString,
+    protected void redirectDevicesPage(HttpServletResponse response, String sessionDataKey, String deviceArrayString,
                                      AuthenticatedUser user) throws IOException, AuthenticationFailedException {
 
         /*
@@ -395,7 +396,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
      * @param user           Authenticated user
      * @throws PushAuthenticatorException if an error occurs while trying to redirect to the wait page
      */
-    private void redirectWaitPage(HttpServletResponse response, String sessionDataKey, AuthenticatedUser user)
+    protected void redirectWaitPage(HttpServletResponse response, String sessionDataKey, AuthenticatedUser user)
             throws PushAuthenticatorException, AuthenticationFailedException {
 
         try {
@@ -422,7 +423,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
      * @param user     Authenticated user
      * @throws AuthenticationFailedException if an error occurs while redirecting to the retry page
      */
-    private void redirectRetryPage(HttpServletResponse response, String status, String message, AuthenticatedUser user)
+    protected void redirectRetryPage(HttpServletResponse response, String status, String message, AuthenticatedUser user)
             throws AuthenticationFailedException {
 
         try {
