@@ -87,9 +87,8 @@
         function checkWaitStatus() {
             const now = new Date().getTime();
             if ((startTime + timeout) < now) {
-                alert("timeout triggered");
                 window.clearInterval(intervalListener);
-                window.location.replace("retry.do");
+                window.location.replace("retry.do?statusMsg=push.auth.timed.out.message&status=push.auth.timed.out");
             }
 
             const urlParams = new URLSearchParams(window.location.search);
@@ -125,7 +124,6 @@
 
                 function continueAuthentication(res) {
                         console.log("Continuing Auth request");
-                        console.log(res);
 
                         window.clearInterval(intervalListener);
                         document.getElementById("toCommonAuth").submit();
