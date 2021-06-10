@@ -69,7 +69,7 @@
     let i = 0;
     let sessionDataKey;
     const refreshInterval = 1000;
-    const timeout = 300000;
+    const timeout = 900000;
     let pushEndpointWithQueryParams = "<%=PushAuthenticatorConstants.PUSH_ENDPOINT +
      PushAuthenticatorConstants.POLLING_QUERY_PARAMS%>";
     const GET = 'GET';
