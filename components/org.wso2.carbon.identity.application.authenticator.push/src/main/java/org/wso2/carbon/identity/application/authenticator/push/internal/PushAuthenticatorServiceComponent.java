@@ -80,16 +80,12 @@ public class PushAuthenticatorServiceComponent {
     )
     protected void setRealmService(RealmService realmService) {
 
-        this.realmService = realmService;
+        PushAuthenticatorServiceDataHolder.getInstance().setRealmService(realmService);
     }
 
     protected void unsetRealmService(RealmService realmService) {
 
-        this.realmService = null;
+        PushAuthenticatorServiceDataHolder.getInstance().setRealmService(null);
     }
 
-    public static RealmService getRealmService() {
-
-        return realmService;
-    }
 }

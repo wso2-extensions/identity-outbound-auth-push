@@ -42,7 +42,7 @@ import org.wso2.carbon.identity.application.authenticator.push.device.handler.im
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.Device;
 import org.wso2.carbon.identity.application.authenticator.push.dto.AuthDataDTO;
 import org.wso2.carbon.identity.application.authenticator.push.exception.PushAuthenticatorException;
-import org.wso2.carbon.identity.application.authenticator.push.internal.PushAuthenticatorServiceComponent;
+import org.wso2.carbon.identity.application.authenticator.push.internal.PushAuthenticatorServiceDataHolder;
 import org.wso2.carbon.identity.application.authenticator.push.notification.handler.RequestSender;
 import org.wso2.carbon.identity.application.authenticator.push.notification.handler.impl.RequestSenderImpl;
 import org.wso2.carbon.identity.application.common.model.Property;
@@ -277,7 +277,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             if (authenticatedUser != null) {
                 String tenantDomain = authenticatedUser.getTenantDomain();
                 int tenantId = IdentityTenantUtil.getTenantId(tenantDomain);
-                RealmService realmService = PushAuthenticatorServiceComponent.getRealmService();
+                RealmService realmService = PushAuthenticatorServiceDataHolder.getInstance().getRealmService();
                 userRealm = realmService.getTenantUserRealm(tenantId);
             }
         } catch (UserStoreException e) {
