@@ -17,7 +17,6 @@
 package org.wso2.carbon.identity.api.user.push.device.handler.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.*;
@@ -26,10 +25,9 @@ import javax.validation.constraints.*;
  * Status for the completion of a request
  **/
 
-import io.swagger.annotations.*;
 import java.util.Objects;
 import javax.validation.Valid;
-import javax.xml.bind.annotation.*;
+
 @ApiModel(description = "Status for the completion of a request")
 public class StatusDTO  {
   
