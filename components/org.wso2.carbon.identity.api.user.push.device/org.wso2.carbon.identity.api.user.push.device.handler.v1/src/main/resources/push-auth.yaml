@@ -1,0 +1,761 @@
+openapi: 3.0.0
+info:
+  version: "v1"
+  title: "WSO2 Identity Server Push-Based Authentication Rest API "
+  description: |
+    This document specifies  **RESTfulAPIs** for WSO2 **Identity Server - Push-based Authentication** .
+    It is written with [openapi:3.0.0 ](http://swagger.io/).
+  contact:
+    name: "WSO2"
+    url: "http://wso2.com/products/identity-server/"
+    email: "architecture@wso2.org"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+
+servers:
+  - url: https://{host}/t/{tenant_context}/api/users/v1
+
+security:
+  - OAuth2: [ ]
+  - BasicAuth: [ ]
+paths:
+  #Endpoint used to retrieve data to display in Qr Code
+  /me/push-auth/discovery-data:
+    get:
+      description: |
+        This API is used to retrieve data for the QR Code to trigger the push authentication add account flow.<br/>
+         <b>Permission required:</b>
+         * /permission/admin/login
+      summary: |
+        Retrieve data for the QR code
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoveryDataDTO'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+
+        500:
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+
+      tags:
+        - me
+
+  # Endpoint used to get device information
+  /me/push-auth/devices:
+    post:
+      description: |
+        This API is used to recieve device information from the mobile app and complete the add account flow.<br/>
+        <b>Permission required:</b>
+         * /permission/admin/login
+      summary: |
+        Register a device for push-based authentication
+      # post parameters:
+      requestBody:
+        description: 'Device details sent by mobile application'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrationRequestDTO'
+      responses:
+        201:
+          description: Added new device
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusDTO"
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        409:
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+
+        500:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+      tags:
+        - me
+
+    get:
+      description: |
+        This API is used to get a list of the registered devices<br/>
+        <b>Permission required:</b>
+         * /permission/admin/login
+      summary: |
+        Returns registered devices list of the user
+      responses:
+        200:
+          description: All availabe devices of the user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllDevices'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        500:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+
+      tags:
+        - me
+
+  /me/push-auth/devices/{deviceId}:
+    delete:
+      description: |
+        This API is used to remove a registered device at My Account<br/>
+        <b>Permission required:</b>
+         * /permission/admin/login
+      summary: |
+        Remove a registered device
+      parameters:
+        - name: deviceId
+          in: path
+          description: Unique Id of the device
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusDTO'
+        204:
+          description: No content
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        500:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+      tags:
+        - me
+
+    put:
+      description: |
+        This API is used to update attributes of a registered device<br/>
+        <b>Permission required:</b>
+         * /permission/admin/login
+      summary: |
+        Update display name of a registered device
+      requestBody:
+        description: Optional description in *Markdown*
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchDTO'
+      parameters:
+        - name: deviceId
+          in: path
+          description: deviceId
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Display name of device successfully updated
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        500:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+      tags:
+        - me
+
+    get:
+      description: |
+        This API is used to get a specific device.<br/>
+        <b>Permission required:</b>
+         * /permission/admin/login
+      summary: |
+        Returns Specific device
+      parameters:
+        - name: "deviceId"
+          in: "path"
+          description: "ID of device to return"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: Details of a specific device.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceDTO'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        500:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+
+      tags:
+        - me
+
+  /me/push-auth/devices/{deviceId}/remove:
+    post:
+      description: |
+        This API is used to remove a device from a mobile app<br/>
+        <b>Permission required:</b>
+         * /permission/admin/manage/identity/user/push_divice_mgt/delete
+      summary: |
+        Remove device
+      parameters:
+        - name: deviceId
+          in: path
+          description: Unique Id of the device
+          required: true
+          schema:
+            type: string
+            example: "b03f90c9-6723-48f6-863b-a35f1ac77f57"
+      requestBody:
+        description: 'Account details sent by mobile application'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RemoveRequestDTO"
+      responses:
+        200:
+          description: Device was removed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusDTO"
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        500:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+      tags:
+        - me
+
+
+  #admin apis
+  /{user-id}/push-auth/devices/{deviceId}:
+    delete:
+      description: |
+        This API is used by admins to remove a specific device<br/>
+        <b>Permission required:</b>
+         * /permission/admin/manage/identity/user/push_divice_mgt/delete
+      summary: |
+        Remove devices by deviceId.
+      parameters:
+        - name: "user-id"
+          in: "path"
+          description: "ID of user"
+          required: true
+          schema:
+            type: "string"
+
+        - name: deviceId
+          in: path
+          description: Unique Id of device
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: No content
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        500:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+      tags:
+        - admin
+
+    get:
+      description: |
+        This API is used by admin set to retrive a specifc device<br/>
+        <b>Permission required:</b>
+         * /permission/admin/manage/identity/user/push_divice_mgt/view
+      summary: |
+        Returns Specific Device
+      parameters:
+        - name: "user-id"
+          in: "path"
+          description: "ID of user"
+          required: true
+          schema:
+            type: "string"
+
+        - name: "deviceId"
+          in: "path"
+          description: "ID of device to return"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: Specific device selected by the user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceDTO'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        500:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+
+      tags:
+        - admin
+
+  /{user-id}/push-auth/devices:
+    get:
+      description: |
+        This API is used by admins to retrieve all devices registered under a user<br/>
+        <b>Permission required:</b>
+         * /permission/admin/manage/identity/user/push_divice_mgt/list
+      summary: |
+        Returns Devices of a user
+      parameters:
+        - name: "user-id"
+          in: "path"
+          description: "ID of user"
+          required: true
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: All registered devices of the user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllDevices'
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+
+        403:
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        500:
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+      tags:
+        - admin
+
+
+components:
+  schemas:
+    # The Object containing data in the qr code
+    DiscoveryDataDTO:
+      type: object
+      properties:
+        did:
+          description: "Device ID"
+          type: string
+          example: "b03f90c9-6723-48f6-863b-a35f1ac77f57"
+        un:
+          description: "Username"
+          type: string
+          example: "admin"
+        fn:
+          description: "First name"
+          type: string
+          example: "John"
+        ln:
+          description: "Last name"
+          type: string
+          example: "Doe"
+        td:
+          description: "Tenant domain/Organisation"
+          type: string
+          example: "mainDomain"
+        hst:
+          description: "Base URL"
+          type: string
+          format: hostname
+          example: "https://localhost:9443/"
+        bp:
+          description: "Base path for the me endpoints"
+          type: string
+          example: "t/{tenant_context}/api/users/v1/me"
+        re:
+          description: "Registration endpoint"
+          type: string
+          format: url
+          example: "/push-auth/devices"
+        ae:
+          description: "Authentication endpoint"
+          type: string
+          format: url
+          example: "push-auth/authenticate"
+        rde:
+          description: "Remove device endpoint"
+          type: string
+          format: url
+          example: "push-auth/devices/remove"
+        chg:
+          description: "Challenge"
+          type: string
+          example: "b03f90c9-6723-48f6-863b-a35f1ac77f57"
+
+    # The List of All devices
+    AllDevices:
+      type: array
+      items:
+        type: object
+        example:
+          deviceId: "b03f90c9-6723-48f6-863b-a35f1ac77f57"
+          name: "My Device"
+          model: "Iphone 8 "
+          registrationTime: "2019-11-26T05:16:19.932Z"
+          lastUsedTime: "2019-12-26T05:16:19.932Z"
+
+    # The Device object
+    DeviceDTO:
+      type: object
+      properties:
+        deviceId:
+          type: string
+          example: "b03f90c9-6723-48f6-863b-a35f1ac77f57"
+        name:
+          type: string
+          example: "My Iphone"
+        model:
+          type: string
+          example: "Iphone 8"
+        pushId:
+          type: string
+          example: "fuRr8s_eQrmB88nu5Tz8oa:APA91bFMqYbuzDYyOGK28VoiLHWYXZYzGNVg3tfxfNwKPH-jDIFpNDdUHkmq5wqBUySYZnuHfpycyQvUrPhwV3UZ1YzjUNLvb9gzFZudfJd1N3fWuU0w2nq_hVJc0UPRabvNPuJy8wMB"
+        registrationTime:
+          type: object
+          example: "2019-11-26T05:16:19.932Z"
+        lastUsedTime:
+          type: object
+          example: "2019-11-26T05:16:19.932Z"
+
+
+    # The Response object received from the mobile device
+    RegistrationRequestDTO:
+      type: object
+      properties:
+        deviceId:
+          type: string
+          description: Unique UUID generated by the server
+          example: "b03f90c9-6723-48f6-863b-a35f1ac77f57"
+        model:
+          type: string
+          description: Model of the device
+          example: "iPhone 8"
+        name:
+          type: string
+          description: Name of the device
+          example: "My Device"
+        pushId:
+          type: string
+          description: FCM token unique to the device
+          example: "fuRr8s_eQrmB88nu5Tz8oa:APA91bFMqYbuzDYyOGK28VoiLHWYXZYzGNVg3tfxfNwKPH-jDIFpNDdUHkmq5wqBUySYZnuHfpycyQvUrPhwV3UZ1YzjUNLvb9gzFZudfJd1N3fWuU0w2nq_hVJc0UPRabvNPuJy8wMB"
+        publicKey:
+          type: string
+          description: PK of the keypair generated by the device for the account
+          example: "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDOhCpj5pAEqdCdyxuHii0oLFAgnTePMI1EeomZHCRaZZNGv8fdcHyme9rpknNx/caAz9Gck5HrB/vto86cHpBkAghsBBLLWPUlblWNZCBX4pqFhZu+uZKvOnSqp1SwP13yx72nLKbjHRRJGgwCrg/mbdSGN/QKxRU+UhdKVVpQIDAQAB"
+        signature:
+          type: string
+          description: Signature is a combination of the pushId and the challenge
+          example: "rT/VxgPYMioT6wHajYg0mJpBv46HvFBm/elZ/VL4ClUIFfX7i3Ou5ER5sEiFtehaurLXPNsA8hF4SQAueVBRymEAmchhwYlT160g3wv6kDQvWLkTqnLWGfn++wg5xRManOoN9zG9GhxCgRr9y+lk9rtvydfX0lTcdEZBkynSJnM="
+
+    # The Error Response  object
+    ErrorDTO:
+      description: 'Error Code Definitions'
+      type: object
+      properties:
+        code:
+          type: string
+          example: "PDM-15001"
+        message:
+          type: string
+          example: "There was an error"
+        description:
+          type: string
+          example: "The error occurred due to ..."
+
+    PatchDTO:
+      description: Update device information
+      required:
+        - operation
+        - value
+      properties:
+        operation:
+          type: string
+          description: The operation to be performed
+          example: REPLACE
+        value:
+          type: string
+          description: The value to be used within the operations
+          example: 'My new Device'
+        path:
+          type: string
+          description: Path for the operation
+          example: "/display-name"
+
+    StatusDTO:
+      description: Status for the completion of a request
+      required:
+        - deviceId
+        - status
+      properties:
+        deviceId:
+          type: string
+          description: Unique ID of the device
+          example: "b03f90c9-6723-48f6-863b-a35f1ac77f57"
+        operation:
+          type: string
+          description: Operation handled by the request
+          example: "REMOVE"
+        status:
+          type: string
+          description: Result status of the request
+          example: 'SUCCESSFUL'
+
+    RemoveRequestDTO:
+      description: Removing a device by deviceId
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          description: JWT signed with unique private key containing remove device information
+          example: "eyJhbGciOiJSUzI1NiJ9.eyJqdGkiOiI5ZjA3ZTAwOS1lM2MxLTQzMTQtYjg1Yy04NzY4MDc0YzM1NWEiLCJzdWIiOiJhbGFuQGNhcmJvbi5zdXBlciIsImlzcyI6IndzbzJ2ZXJpZnkiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo5NDQzL3QvY2FyYm9uLnN1cGVyLyIsIm5iZiI6MTYxNDY2OTI0MywiZXhwIjoxNjE0NjcyODQzLCJpYXQiOjE2MTQ2NjkyNDMsImNoZyI6ImUwOTg4MTQ4LWIzMzctNGU0MS05NWQ3LWY5YTFmNDNkMDYyMyJ9.i6mh4SSJTfSP2IEyAQR5uZd1y0hHc4is4P66FRiYis5Yewl6k0DRoVXSZWWvGikX4rpqbZj868uBDmqm1CAENB3xF7sx3jdNSrXrVdUW6HsR2uu5Q5eO6OCQg8iZB2B1ylu4R5drTjtTDaSOoQfsNbVjnzI095bfLpAsszGPEPM"
+
+  securitySchemes:
+    BasicAuth:
+      scheme: basic
+      type: http
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://localhost:9443/oauth2/authorize
+          scopes: { }
+          tokenUrl: https://localhost:9443/oauth2/token
