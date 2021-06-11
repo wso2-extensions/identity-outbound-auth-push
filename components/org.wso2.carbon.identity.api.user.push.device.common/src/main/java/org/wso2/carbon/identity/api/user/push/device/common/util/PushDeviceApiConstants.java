@@ -28,6 +28,7 @@ public class PushDeviceApiConstants {
     public static final String RESULT_FAILED = "FAILED";
     public static final String OPERATION_REGISTER = "REGISTER";
     public static final String OPERATION_REMOVE = "REMOVE";
+    public static final String OPERATION_UPDATE = "UPDATE";
 
     /**
      * Error definitions.

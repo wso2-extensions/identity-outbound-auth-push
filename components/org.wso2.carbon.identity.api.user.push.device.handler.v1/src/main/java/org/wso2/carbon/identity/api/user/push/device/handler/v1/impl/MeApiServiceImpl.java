@@ -22,11 +22,13 @@ package org.wso2.carbon.identity.api.user.push.device.handler.v1.impl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.wso2.carbon.identity.api.user.push.device.common.util.PushDeviceApiConstants;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.MeApiService;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.core.PushDeviceHandlerService;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.PatchDTO;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.RegistrationRequestDTO;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.RemoveRequestDTO;
+import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.StatusDTO;
 
 import java.text.MessageFormat;
 import javax.ws.rs.core.Response;
@@ -68,13 +70,21 @@ public class MeApiServiceImpl implements MeApiService {
         if (log.isDebugEnabled()) {
             log.debug(MessageFormat.format("The device name could not be modified of device : {0} ", deviceId));
         }
-        if (patch.getPath().equals("/display-name")) {
+
+        StatusDTO statusDTO = new StatusDTO();
+        if (patch.getPath().equals("/edit-device")) {
             pushDeviceHandlerService = new PushDeviceHandlerService();
             pushDeviceHandlerService.editDeviceName(deviceId, patch.getValue());
 
-            return Response.ok().build();
+            statusDTO.setStatus(PushDeviceApiConstants.RESULT_SUCCESSFUL);
+            statusDTO.setDeviceId(deviceId);
+            statusDTO.setOperation(PushDeviceApiConstants.OPERATION_UPDATE);
+            return Response.ok().entity(statusDTO).build();
         } else {
-            return Response.status(400).build();
+            statusDTO.setStatus(PushDeviceApiConstants.RESULT_FAILED);
+            statusDTO.setDeviceId(deviceId);
+            statusDTO.setOperation(PushDeviceApiConstants.OPERATION_UPDATE);
+            return Response.status(Response.Status.BAD_REQUEST).entity(statusDTO).build();
         }
     }
 
@@ -107,7 +117,10 @@ public class MeApiServiceImpl implements MeApiService {
             pushDeviceHandlerService = new PushDeviceHandlerService();
             return Response.ok().entity(pushDeviceHandlerService.registerDevice(registrationRequest)).build();
         } else {
-            return Response.status(Response.Status.BAD_REQUEST).build();
+            StatusDTO statusDTO = new StatusDTO();
+            statusDTO.setOperation(PushDeviceApiConstants.OPERATION_REGISTER);
+            statusDTO.setStatus(PushDeviceApiConstants.RESULT_FAILED);
+            return Response.status(Response.Status.BAD_REQUEST).entity(statusDTO).build();
         }
     }
 
