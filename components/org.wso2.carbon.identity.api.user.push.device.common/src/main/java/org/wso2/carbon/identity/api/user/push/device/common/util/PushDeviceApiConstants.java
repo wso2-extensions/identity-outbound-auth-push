@@ -109,30 +109,36 @@ public class PushDeviceApiConstants {
         }
 
         ErrorMessages(String code, String description) {
+
             this.code = code;
             this.description = description;
         }
 
         public void setMessage(String message) {
+
             if (this.message == null) {
                 this.message = message;
             }
         }
 
         public String getCode() {
+
             return code;
         }
 
         public String getMessage() {
+
             return message;
         }
 
         public String getDescription() {
+
             return description;
         }
 
         @Override
         public String toString() {
+
             return getCode() + " | " + getMessage() + " | " + getDescription();
         }
 

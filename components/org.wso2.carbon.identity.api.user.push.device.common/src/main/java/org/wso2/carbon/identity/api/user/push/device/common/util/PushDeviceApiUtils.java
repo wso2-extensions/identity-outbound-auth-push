@@ -38,16 +38,16 @@ import java.sql.SQLException;
 import javax.mail.AuthenticationFailedException;
 import javax.ws.rs.core.Response;
 
-
-
 /**
  * The class which handles API errors.
  */
 public class PushDeviceApiUtils {
+
     private static final Log log = LogFactory.getLog(PushDeviceApiUtils.class);
 
     public static APIError handleException(Exception e, PushDeviceApiConstants.ErrorMessages errorEnum,
                                            String... data) {
+
         ErrorResponse errorResponse;
         if (data != null) {
             errorResponse = getErrorBuilder(errorEnum).build(log, e, String.format(errorEnum.getDescription(),
@@ -96,6 +96,7 @@ public class PushDeviceApiUtils {
     }
 
     private static APIError handleError(Response.Status status, PushDeviceApiConstants.ErrorMessages error) {
+
         return new APIError(status, getErrorBuilder(error).build());
     }
 }
