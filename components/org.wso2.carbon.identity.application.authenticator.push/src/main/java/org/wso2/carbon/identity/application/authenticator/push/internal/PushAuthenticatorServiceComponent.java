@@ -17,7 +17,7 @@
  *
  */
 
-package org.wso2.carbon.identity.application.authenticator.biometric.internal;
+package org.wso2.carbon.identity.application.authenticator.push.internal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,34 +25,41 @@ import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 import org.wso2.carbon.identity.application.authentication.framework.ApplicationAuthenticator;
-import org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticator;
+import org.wso2.carbon.identity.application.authenticator.push.PushAuthenticator;
+import org.wso2.carbon.user.core.service.RealmService;
+
 import java.util.Hashtable;
 
 /**
- * Service component class for the Biometric Authenticator initialization.
+ * Service component class for the Push Authenticator initialization.
  */
 @Component(
-        name = "identity.application.authenticator.biometric.component",
+        name = "identity.application.authenticator.push.component",
         immediate = true)
-public class BiometricAuthenticatorServiceComponent {
+public class PushAuthenticatorServiceComponent {
 
-    private static Log log = LogFactory.getLog(BiometricAuthenticatorServiceComponent.class);
+    private static RealmService realmService;
+
+    private static Log log = LogFactory.getLog(PushAuthenticatorServiceComponent.class);
 
     @Activate
     protected void activate(ComponentContext ctxt) {
 
         try {
-            BiometricAuthenticator authenticator = new BiometricAuthenticator();
+            PushAuthenticator authenticator = new PushAuthenticator();
             Hashtable<String, String> props = new Hashtable<>();
             ctxt.getBundleContext().registerService(ApplicationAuthenticator.class.getName(),
                     authenticator, props);
             if (log.isDebugEnabled()) {
-                log.debug("biometric authenticator service component is activated.");
+                log.debug("push authenticator service component is activated.");
             }
 
         } catch (Exception e) {
-            log.fatal("Error while activating the biometric authenticator ", e);
+            log.fatal("Error while activating the push authenticator ", e);
         }
     }
 
@@ -60,7 +67,25 @@ public class BiometricAuthenticatorServiceComponent {
     protected void deactivate(ComponentContext ctxt) {
 
         if (log.isDebugEnabled()) {
-            log.debug("biometric authenticator service component is deactivated.");
+            log.debug("push authenticator service component is deactivated.");
         }
     }
+
+    @Reference(
+            name = "RealmService",
+            service = org.wso2.carbon.user.core.service.RealmService.class,
+            cardinality = ReferenceCardinality.MANDATORY,
+            policy = ReferencePolicy.DYNAMIC,
+            unbind = "unsetRealmService"
+    )
+    protected void setRealmService(RealmService realmService) {
+
+        PushAuthenticatorServiceDataHolder.getInstance().setRealmService(realmService);
+    }
+
+    protected void unsetRealmService(RealmService realmService) {
+
+        PushAuthenticatorServiceDataHolder.getInstance().setRealmService(null);
+    }
+
 }

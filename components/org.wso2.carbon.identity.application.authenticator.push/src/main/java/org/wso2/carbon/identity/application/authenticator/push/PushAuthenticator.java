@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -19,6 +19,8 @@
 
 package org.wso2.carbon.identity.application.authenticator.push;
 
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.JWTParser;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.simple.JSONArray;
@@ -29,28 +31,31 @@ import org.wso2.carbon.identity.application.authentication.framework.context.Aut
 import org.wso2.carbon.identity.application.authentication.framework.exception.AuthenticationFailedException;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundConstants;
 import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticatedUser;
-import org.wso2.carbon.identity.application.authenticator.push.cache.AuthContextCache;
-import org.wso2.carbon.identity.application.authenticator.push.cache.AuthContextCacheEntry;
-import org.wso2.carbon.identity.application.authenticator.push.cache.AuthContextcacheKey;
+import org.wso2.carbon.identity.application.authenticator.push.common.PushAuthContextManager;
+import org.wso2.carbon.identity.application.authenticator.push.common.PushJWTValidator;
+import org.wso2.carbon.identity.application.authenticator.push.common.exception.PushAuthTokenValidationException;
+import org.wso2.carbon.identity.application.authenticator.push.common.impl.PushAuthContextManagerImpl;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.DeviceHandler;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerClientException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerServerException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.impl.DeviceHandlerImpl;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.Device;
 import org.wso2.carbon.identity.application.authenticator.push.dto.AuthDataDTO;
-import org.wso2.carbon.identity.application.authenticator.push.dto.impl.AuthDataDTOImpl;
 import org.wso2.carbon.identity.application.authenticator.push.exception.PushAuthenticatorException;
+import org.wso2.carbon.identity.application.authenticator.push.internal.PushAuthenticatorServiceDataHolder;
 import org.wso2.carbon.identity.application.authenticator.push.notification.handler.RequestSender;
 import org.wso2.carbon.identity.application.authenticator.push.notification.handler.impl.RequestSenderImpl;
-import org.wso2.carbon.identity.application.authenticator.push.util.Config;
-import org.wso2.carbon.identity.application.authenticator.push.validator.PushJWTValidator;
 import org.wso2.carbon.identity.application.common.model.Property;
+import org.wso2.carbon.identity.core.ServiceURLBuilder;
+import org.wso2.carbon.identity.core.URLBuilderException;
+import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
+import org.wso2.carbon.user.api.UserRealm;
 import org.wso2.carbon.user.api.UserStoreException;
+import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
+import org.wso2.carbon.user.core.service.RealmService;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -94,13 +99,13 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                                                  AuthenticationContext context) throws AuthenticationFailedException {
 
         DeviceHandler deviceHandler = new DeviceHandlerImpl();
+        PushAuthContextManager contextManager = new PushAuthContextManagerImpl();
         AuthenticatedUser user = context.getSequenceConfig().getStepMap().
                 get(context.getCurrentStep() - 1).getAuthenticatedUser();
         String sessionDataKey = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
         try {
             List<Device> deviceList;
-            deviceList = deviceHandler.listDevices(user.getUserName(), user.getUserStoreDomain(),
-                    user.getTenantDomain());
+            deviceList = deviceHandler.listDevices(getUserIdFromUsername(user.getUserName(), getUserRealm(user)));
             request.getSession().setAttribute(PushAuthenticatorConstants.DEVICES_LIST, deviceList);
             JSONObject object;
             JSONArray array = new JSONArray();
@@ -114,41 +119,38 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                 array.add(object);
             }
 
-            AuthDataDTO authDataDTO = new AuthDataDTOImpl();
+            AuthDataDTO authDataDTO = new AuthDataDTO();
             context.setProperty(PushAuthenticatorConstants.CONTEXT_AUTH_DATA, authDataDTO);
-            AuthContextCache.getInstance().addToCacheByRequestId(new AuthContextcacheKey(sessionDataKey),
-                    new AuthContextCacheEntry(context));
+            contextManager.storeContext(sessionDataKey, context);
 
             if (deviceList.size() == 1) {
                 RequestSender requestSender = new RequestSenderImpl();
                 requestSender.sendRequest(request, response, deviceList.get(0).getDeviceId(), sessionDataKey);
-            } else {
+                redirectWaitPage(response, sessionDataKey, user);
+            } else if (deviceList.size() == 0) {
+                if (log.isDebugEnabled()) {
+                    log.debug("User (" + user.toFullQualifiedUsername() + ") does not have any registered devices "
+                            + "for push based authentication.");
+                }
 
-                String string = JSONArray.toJSONString(array);
-                Config config = new Config();
-                String devicesPage;
-                devicesPage = config.getDevicesPage(context)
-                        + "?sessionDataKey=" + URLEncoder.encode(sessionDataKey, StandardCharsets.UTF_8.name())
-                        + "&devices=" + URLEncoder.encode(string, StandardCharsets.UTF_8.name());
-                response.sendRedirect(devicesPage);
+                redirectRetryPage(response, PushAuthenticatorConstants.NO_REGISTERED_DEVICES_PARAM,
+                        PushAuthenticatorConstants.NO_REGISTERED_DEVICES_MESSAGE, user);
+            } else {
+                String errorMessage = String.format("Error occurred as user (%s) has more than one device registered "
+                        + "for push based authentication.", user.toFullQualifiedUsername());
+                log.error(errorMessage);
+                redirectRetryPage(response, PushAuthenticatorConstants.DEVICES_OVER_LIMIT_PARAM,
+                        PushAuthenticatorConstants.DEVICES_OVER_LIMIT_MESSAGE, user);
             }
 
         } catch (PushDeviceHandlerServerException e) {
             throw new AuthenticationFailedException("Error occurred when trying to redirect to the registered devices"
                     + " page. Devices were not found for user: " + user.toFullQualifiedUsername() + ".", e);
-        } catch (PushDeviceHandlerClientException e) {
-            throw new AuthenticationFailedException("Error occurred when trying to redirect to registered devices page."
-                    + " Authenticated user was not found.", e);
-        } catch (SQLException e) {
-            throw new AuthenticationFailedException("Error occurred when trying to get the device list for user: "
-                    + user.toFullQualifiedUsername() + ".", e);
-        } catch (UserStoreException e) {
-            throw new AuthenticationFailedException("Error occurred when trying to get the authenticated user.", e);
-        } catch (IOException e) {
-            throw new AuthenticationFailedException("Error occurred when trying to redirect to the registered devices"
-                    + " page for user: " + user.toFullQualifiedUsername() + ".", e);
         } catch (PushAuthenticatorException e) {
             throw new AuthenticationFailedException("Error occurred when trying to get user claims for user: "
+                    + user.toFullQualifiedUsername() + ".", e);
+        } catch (UserStoreException e) {
+            throw new AuthenticationFailedException("Error occurred when trying to get the user ID for user: "
                     + user.toFullQualifiedUsername() + ".", e);
         }
 
@@ -161,58 +163,53 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         AuthenticatedUser user = authenticationContext.getSequenceConfig().
                 getStepMap().get(authenticationContext.getCurrentStep() - 1).getAuthenticatedUser();
 
-        AuthContextcacheKey authContextCacheKey = new AuthContextcacheKey(httpServletRequest
+        PushAuthContextManager contextManager = new PushAuthContextManagerImpl();
+        AuthenticationContext sessionContext = contextManager.getContext(httpServletRequest
                 .getParameter(PushAuthenticatorConstants.SESSION_DATA_KEY));
-        AuthenticationContext sessionContext = AuthContextCache
-                .getInstance()
-                .getValueFromCacheByRequestId(authContextCacheKey)
-                .getAuthenticationContext();
-
         AuthDataDTO authDataDTO = (AuthDataDTO) sessionContext
                 .getProperty(PushAuthenticatorConstants.CONTEXT_AUTH_DATA);
 
-        String jwt = authDataDTO.getAuthToken();
+        String authResponseToken = authDataDTO.getAuthToken();
         String serverChallenge = authDataDTO.getChallenge();
 
-        PushJWTValidator validator = new PushJWTValidator();
-        try {
-            if (validateSignature(jwt, serverChallenge)) {
-                String authStatus = validator.getAuthStatus(jwt);
-                // TODO: Change Successful to Allowed
-                if (authStatus.equals(PushAuthenticatorConstants.AUTH_REQUEST_STATUS_SUCCESS)) {
-                    authenticationContext.setSubject(user);
-                } else if (authStatus.equals(PushAuthenticatorConstants.AUTH_REQUEST_STATUS_DENIED)) {
-                    String deniedPage = "/authenticationendpoint/retry.do"
-                            + "?status=" + PushAuthenticatorConstants.AUTH_DENIED_PARAM
-                            + "&statusMsg=" + PushAuthenticatorConstants.AUTH_DENIED_MESSAGE;
-                    httpServletResponse.sendRedirect(deniedPage);
-                } else {
-                    String errorMessage = String.format("Authentication failed! Auth status for user" +
-                            " '%s' is not available in JWT.", user);
-                    throw new AuthenticationFailedException(errorMessage);
-                }
-            } else {
-                authenticationContext.setProperty(PushAuthenticatorConstants.AUTHENTICATION_STATUS, true);
-                String errorMessage = String
-                        .format("Authentication failed! JWT signature is not valid for device: %s of user: %s.",
-                                validator.getDeviceId(jwt), user);
-                throw new AuthenticationFailedException(errorMessage);
-            }
+        String deviceId = getDeviceIdFromToken(authResponseToken);
+        String publicKey = getPublicKey(deviceId);
 
-        } catch (IOException e) {
-            String errorMessage = String
-                    .format("Error occurred when redirecting to the request denied page for device: %s of user: %s.",
-                            validator.getDeviceId(jwt), user);
-            throw new AuthenticationFailedException(errorMessage, e);
-        } catch (PushAuthenticatorException e) {
+        PushJWTValidator validator = new PushJWTValidator();
+        JWTClaimsSet claimsSet;
+        try {
+            claimsSet = validator.getValidatedClaimSet(authResponseToken, publicKey);
+        } catch (PushAuthTokenValidationException e) {
             String errorMessage = String
                     .format("Error occurred when trying to validate the JWT signature from device: %s of user: %s.",
-                            validator.getDeviceId(jwt), user);
+                            deviceId, user);
             throw new AuthenticationFailedException(errorMessage, e);
         }
+        if (claimsSet != null) {
+            validateChallenge(claimsSet, serverChallenge, deviceId);
 
-        AuthContextCache.getInstance().clearCacheEntryByRequestId(new AuthContextcacheKey(
-                validator.getSessionDataKey(jwt)));
+            String authStatus =
+                    getClaimFromClaimSet(claimsSet, PushAuthenticatorConstants.TOKEN_RESPONSE, deviceId);
+
+            if (authStatus.equals(PushAuthenticatorConstants.AUTH_REQUEST_STATUS_SUCCESS)) {
+                authenticationContext.setSubject(user);
+            } else if (authStatus.equals(PushAuthenticatorConstants.AUTH_REQUEST_STATUS_DENIED)) {
+                redirectRetryPage(httpServletResponse, PushAuthenticatorConstants.AUTH_DENIED_PARAM,
+                        PushAuthenticatorConstants.AUTH_DENIED_MESSAGE, user);
+            } else {
+                String errorMessage = String.format("Authentication failed! Auth status for user" +
+                        " '%s' is not available in JWT.", user.toFullQualifiedUsername());
+                throw new AuthenticationFailedException(errorMessage);
+            }
+        } else {
+            String errorMessage = String
+                    .format("Authentication failed! JWT signature is not valid for device: %s of user: %s.",
+                            deviceId, user.toFullQualifiedUsername());
+            throw new AuthenticationFailedException(errorMessage);
+        }
+
+        contextManager.clearContext(getClaimFromClaimSet(claimsSet,
+                PushAuthenticatorConstants.TOKEN_SESSION_DATA_KEY, deviceId));
     }
 
     @Override
@@ -242,40 +239,208 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
     }
 
     /**
-     * Validate the signature using the JWT received from mobile app
+     * Validate the correlation between the challenged saved in the server and received from the auth response.
      *
-     * @param jwt       JWT generated from mobile app
+     * @param claimsSet JWT claim set for the validated auth response token
      * @param challenge Challenge stored in cache to correlate with JWT
-     * @return Boolean for validity of the signature
-     * @throws PushAuthenticatorException Exception in push authenticator
+     * @param deviceId  Unique ID for the device trying to authenticate the user
+     * @throws AuthenticationFailedException if the jwt fails to parse when getting the challenge claim
      */
-    private boolean validateSignature(String jwt, String challenge)
-            throws PushAuthenticatorException {
+    private void validateChallenge(JWTClaimsSet claimsSet, String challenge, String deviceId)
+            throws AuthenticationFailedException {
 
-        boolean isValid;
-        DeviceHandler handler = new DeviceHandlerImpl();
-
-        PushJWTValidator validator = new PushJWTValidator();
-        String deviceId = validator.getDeviceId(jwt);
-        String publicKeyStr;
-        try {
-            publicKeyStr = handler.getPublicKey(deviceId);
-        } catch (SQLException e) {
+        if (claimsSet != null) {
+            String tokenChallenge =
+                    getClaimFromClaimSet(claimsSet, PushAuthenticatorConstants.TOKEN_CHALLENGE, deviceId);
+            if (!tokenChallenge.equals(challenge)) {
+                String errorMessage = String
+                        .format("Authentication failed! Challenge received from %s  was not valid.", deviceId);
+                throw new AuthenticationFailedException(errorMessage);
+            }
+        } else {
             String errorMessage = String
-                    .format("Error occurred when trying to get public key for device: %s from the database.", deviceId);
-            throw new PushAuthenticatorException(errorMessage, e);
-        } catch (IOException e) {
-            throw new PushAuthenticatorException("Error occurred when trying to get public key for device: "
-                    + deviceId + ".", e);
+                    .format("Authentication failed! JWT claim set received from device %s  was null.", deviceId);
+            throw new AuthenticationFailedException(errorMessage);
         }
+    }
+
+    /**
+     * Get the user realm for the authenticated user.
+     *
+     * @param authenticatedUser Authenticated user
+     * @return User realm
+     * @throws AuthenticationFailedException if an error occurs when getting the user realm
+     */
+    private UserRealm getUserRealm(AuthenticatedUser authenticatedUser) throws AuthenticationFailedException {
+
+        UserRealm userRealm = null;
+        try {
+            if (authenticatedUser != null) {
+                String tenantDomain = authenticatedUser.getTenantDomain();
+                int tenantId = IdentityTenantUtil.getTenantId(tenantDomain);
+                RealmService realmService = PushAuthenticatorServiceDataHolder.getInstance().getRealmService();
+                userRealm = realmService.getTenantUserRealm(tenantId);
+            }
+        } catch (UserStoreException e) {
+            throw new AuthenticationFailedException("Error occurred when trying to get the user realm for user: "
+                    + authenticatedUser.toFullQualifiedUsername() + ".", e);
+        }
+        return userRealm;
+    }
+
+    /**
+     * Get the user ID from the username.
+     *
+     * @param username username of the user
+     * @param realm    user realm for the tenant
+     * @return user ID
+     * @throws UserStoreException userstore exception
+     */
+    private String getUserIdFromUsername(String username, UserRealm realm) throws UserStoreException {
+
+        AbstractUserStoreManager userStoreManager = (AbstractUserStoreManager) realm.getUserStoreManager();
+        return userStoreManager.getUserIDFromUserName(username);
+    }
+
+    /**
+     * Get JWT claim from the claim set.
+     *
+     * @param claimsSet JWT claim set
+     * @param claim     Required claim
+     * @param deviceId  Device ID
+     * @return Claim string
+     * @throws AuthenticationFailedException if an error occurs while getting a claim
+     */
+    protected String getClaimFromClaimSet(JWTClaimsSet claimsSet, String claim, String deviceId)
+            throws AuthenticationFailedException {
 
         try {
-            isValid = validator.validate(jwt, publicKeyStr, challenge);
-        } catch (Exception e) {
-            throw new PushAuthenticatorException("Error occurred when validating the signature."
-                    + " Failed to parse string to JWT.", e);
+            return claimsSet.getStringClaim(claim);
+        } catch (ParseException e) {
+            String errorMessage = String.format("Failed to get %s from the auth response token received from device: "
+                    + "%s.", claim, deviceId);
+            throw new AuthenticationFailedException(errorMessage, e);
         }
-        return isValid;
+    }
+
+    /**
+     * Derive the Device ID from the auth response token header.
+     *
+     * @param token Auth response token
+     * @return Device ID
+     * @throws AuthenticationFailedException if the token string fails to parse to JWT
+     */
+    protected String getDeviceIdFromToken(String token) throws AuthenticationFailedException {
+
+        try {
+            return String.valueOf(JWTParser.parse(token).getHeader()
+                    .getCustomParam(PushAuthenticatorConstants.TOKEN_DEVICE_ID));
+        } catch (ParseException e) {
+            throw new AuthenticationFailedException("Error occurred when trying to get the device ID from the "
+                    + "auth response token.", e);
+        }
+    }
+
+    /**
+     * Get the public key for the device by the device ID.
+     *
+     * @param deviceId Unique ID for the device
+     * @return Public key string
+     * @throws AuthenticationFailedException if an error occurs while getting the public key
+     */
+    protected String getPublicKey(String deviceId) throws AuthenticationFailedException {
+
+        DeviceHandler deviceHandler = new DeviceHandlerImpl();
+        try {
+            return deviceHandler.getPublicKey(deviceId);
+        } catch (PushDeviceHandlerServerException | PushDeviceHandlerClientException e) {
+            throw new AuthenticationFailedException("Error occurred when trying to get the public key for device: "
+                    + deviceId + ".");
+        }
+    }
+
+    /**
+     * Redirect user to device selection page.
+     *
+     * @param response          HTTP response
+     * @param user              Authenticated user
+     * @param sessionDataKey    Unique key for the session
+     * @param deviceArrayString JSON array as a string
+     * @throws IOException if an error occurs when redirecting to the device selection page
+     */
+    protected void redirectDevicesPage(HttpServletResponse response, String sessionDataKey, String deviceArrayString,
+                                       AuthenticatedUser user) throws IOException, AuthenticationFailedException {
+
+        /*
+         *  Method will be required once https://github.com/wso2-incubator/identity-outbound-auth-push/issues/84
+         *  is resolved.
+         */
+        try {
+            String deviceSelectionPage = ServiceURLBuilder.create().addPath(PushAuthenticatorConstants.DEVICES_PAGE)
+                    .addParameter("sessionDataKey", sessionDataKey)
+                    .addParameter("devices", deviceArrayString)
+                    .build().getAbsolutePublicURL();
+            response.sendRedirect(deviceSelectionPage);
+        } catch (URLBuilderException e) {
+            String errorMessage = String.format("Error occurred when building the URL for the device selection page "
+                    + "for user: %s.", user.toFullQualifiedUsername());
+            throw new AuthenticationFailedException(errorMessage, e);
+        }
+    }
+
+    /**
+     * Redirect the user to the wait page.
+     *
+     * @param response       HTTP response
+     * @param sessionDataKey Unique ID for the session
+     * @param user           Authenticated user
+     * @throws PushAuthenticatorException if an error occurs while trying to redirect to the wait page
+     */
+    protected void redirectWaitPage(HttpServletResponse response, String sessionDataKey, AuthenticatedUser user)
+            throws PushAuthenticatorException, AuthenticationFailedException {
+
+        try {
+            String waitPage = ServiceURLBuilder.create().addPath(PushAuthenticatorConstants.WAIT_PAGE)
+                    .addParameter("sessionDataKey", sessionDataKey).build().getAbsolutePublicURL();
+            response.sendRedirect(waitPage);
+        } catch (IOException e) {
+            String errorMessage = String.format("Error occurred when trying to to redirect user: %s to the wait page.",
+                    user.toFullQualifiedUsername());
+            throw new AuthenticationFailedException(errorMessage, e);
+        } catch (URLBuilderException e) {
+            String errorMessage = String.format("Error occurred when building the URL for the wait page for user: %s.",
+                    user.toFullQualifiedUsername());
+            throw new AuthenticationFailedException(errorMessage, e);
+        }
+    }
+
+    /**
+     * Redirect the user to the authentication denied page.
+     *
+     * @param response HTTP response
+     * @param status   Status for error
+     * @param message  Message to be displayed in the retry page
+     * @param user     Authenticated user
+     * @throws AuthenticationFailedException if an error occurs while redirecting to the retry page
+     */
+    protected void redirectRetryPage(HttpServletResponse response, String status, String message,
+                                     AuthenticatedUser user) throws AuthenticationFailedException {
+
+        try {
+            String retryPage = ServiceURLBuilder.create().addPath(PushAuthenticatorConstants.RETRY_PAGE)
+                    .addParameter("status", status)
+                    .addParameter("statusMsg", message)
+                    .build().getAbsolutePublicURL();
+            response.sendRedirect(retryPage);
+        } catch (URLBuilderException e) {
+            String errorMessage = String.format("Error occurred when building the URL for the retry page for user: %s.",
+                    user.toFullQualifiedUsername());
+            throw new AuthenticationFailedException(errorMessage, e);
+        } catch (IOException e) {
+            String errorMessage = String.format("Error occurred when trying to to redirect user: %s to the retry page.",
+                    user.toFullQualifiedUsername());
+            throw new AuthenticationFailedException(errorMessage, e);
+        }
     }
 
 }

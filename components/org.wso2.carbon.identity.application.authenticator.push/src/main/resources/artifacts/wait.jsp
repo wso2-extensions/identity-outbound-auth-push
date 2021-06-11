@@ -17,12 +17,11 @@
   ~
   --%>
 
-<%String commonauthURL = "https://localhost:9443/commonauth";%>
-
 <%@ taglib prefix = "s" uri = "http://java.sun.com/jsp/jstl/core" %>
 <%@ page language = "java" contentType = "text/html; charset=UTF-8" pageEncoding = "UTF-8" %>
-<%@ page import="org.wso2.carbon.identity.application.authenticator.biometric.BiometricAuthenticatorConstants" %>
+<%@ page import="org.wso2.carbon.identity.application.authenticator.push.PushAuthenticatorConstants" %>
 <%@ page import="java.nio.charset.StandardCharsets" %>
+<jsp:directive.include file="includes/init-url.jsp"/>
 
 <html>
 <head>
@@ -62,22 +61,17 @@
 </div>
 <form id="toCommonAuth" action="<%=commonauthURL%>" method="POST" style="display:none;">
     <input type="hidden" name="ACTION" value="WaitResponse"/>
-    <input type="hidden" id="deviceId" name="deviceId"/>
-    <input type="hidden" id="authstatus" name="authstatus"/>
-    <input type="hidden" id="signature" name="signature"/>
-    <label for="sessionDataKey">sessionDataKey</label><input id="sessionDataKey" name="sessionDataKey">
-    <label for="signedChallenge">signedChallenge</label><input id="signedChallenge" name="signedChallenge">
+    <input type="hidden" id="sessionDataKey" name="sessionDataKey">
+    <input type="hidden" id="proceedAuthorization" name="proceedAuthorization">
 </form>
 </body>
 <script type="text/javascript">
     let i = 0;
     let sessionDataKey;
-    let signedChallenge;
-    let authStatus;
     const refreshInterval = 1000;
-    const timeout = 300000;
-    let biometricEndpointWithQueryParams = "<%=BiometricAuthenticatorConstants.BIOMETRIC_ENDPOINT +
-     BiometricAuthenticatorConstants.POLLING_QUERY_PARAMS%>";
+    const timeout = 900000;
+    let pushEndpointWithQueryParams = "<%=PushAuthenticatorConstants.PUSH_ENDPOINT +
+     PushAuthenticatorConstants.POLLING_QUERY_PARAMS%>";
     const GET = 'GET';
 
     $(document).ready(function () {
@@ -93,18 +87,16 @@
         function checkWaitStatus() {
             const now = new Date().getTime();
             if ((startTime + timeout) < now) {
-                alert("timeout triggered");
                 window.clearInterval(intervalListener);
-                window.location.replace("retry.do");
+                window.location.replace("retry.do?statusMsg=push.auth.timed.out.message&status=push.auth.timed.out");
             }
 
             const urlParams = new URLSearchParams(window.location.search);
             sessionDataKey = urlParams.get('sessionDataKey');
-            $.ajax(biometricEndpointWithQueryParams + sessionDataKey, {
+            $.ajax(pushEndpointWithQueryParams + sessionDataKey, {
                 async: false,
                 cache : false,
                 method: GET,
-                // todo: check whether there are any problems when same get req is sent over n over again, will there be cache issues? any solutions?-Future Improvement-Include in DOCs
                 success: function (res) {
                     handleStatusResponse(res);
                 },
@@ -121,34 +113,21 @@
 
         function handleStatusResponse(res) {
 
-            if ((res.status) === "<%=BiometricAuthenticatorConstants.COMPLETED%>") {
-                signedChallenge = (res.signedChallenge);
-                authStatus = (res.authStatus);
-                console.log(res);
-                document.getElementById("sessionDataKey").value = sessionDataKey;
-                document.getElementById("signedChallenge").value = signedChallenge;
-                document.getElementById("authstatus").value = (res.authStatus);
-                document.getElementById("signature").value = (res.signature);
-                document.getElementById("deviceId").value = (res.deviceId);
-                continueAuthentication(res);
-            } else {
-                checkWaitStatus();
-            }
-        }
-
-        function continueAuthentication(res) {
-                console.log("Continuing Auth request");
-                console.log(res);
-                if((res.authStatus) === "DENIED"){
-                    window.clearInterval(intervalListener);
-                    window.location.replace("/authenticationendpoint/retry.do?status=Authentication Denied!&statusMsg=Authentication was denied from the mobile app");
-                    //authenticationendpoint
-                } else {
-                    window.clearInterval(intervalListener);
-                    document.getElementById("toCommonAuth").submit();
+                    if ((res.status) === "<%=PushAuthenticatorConstants.COMPLETED%>") {
+                        document.getElementById("proceedAuthorization").value = "proceed";
+                        document.getElementById("sessionDataKey").value = sessionDataKey;
+                        continueAuthentication(res);
+                    } else {
+                        checkWaitStatus();
+                    }
                 }
 
-            }
+                function continueAuthentication(res) {
+                        console.log("Continuing Auth request");
+
+                        window.clearInterval(intervalListener);
+                        document.getElementById("toCommonAuth").submit();
+                    }
 
     });
 </script>

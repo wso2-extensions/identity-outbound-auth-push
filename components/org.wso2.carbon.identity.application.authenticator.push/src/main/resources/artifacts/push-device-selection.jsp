@@ -18,7 +18,7 @@
 <%@ page import="org.json.simple.JSONArray" %>
 <%@ page import="org.json.simple.JSONObject" %>
 <%@ page import="org.json.simple.parser.JSONParser" %>
-<%@ page import="org.wso2.carbon.identity.application.authenticator.biometric.device.handler.model.Device" %>
+<%@ page import="org.wso2.carbon.identity.application.authenticator.push.device.handler.model.Device" %>
 <%@ page import="java.nio.charset.StandardCharsets" %>
 <%@ page import="java.util.ArrayList" %>
 
@@ -80,7 +80,7 @@
                 <h3 class="card-title">${device.getDeviceName()}</h3>
                 <p class="card-text"><strong>Model :  </strong>${device.getDeviceModel()}</p>
                 <p class="card-text"><strong>Last used on : </strong>${device.getPushId()}</p>
-                <form style="align-items: center" action="/biometric-auth" method="GET">
+                <form style="align-items: center" action="/push-auth/send" method="POST">
                     <input type="hidden" name="ACTION" value="Authenticate"/>
                     <input type="hidden" name="sessionDataKey" value=<%=request.getParameter("sessionDataKey")%>>
                     <button type="submit" name="deviceId" value="${device.getDeviceId()}" class="btn btn-primary">Proceed</button>
