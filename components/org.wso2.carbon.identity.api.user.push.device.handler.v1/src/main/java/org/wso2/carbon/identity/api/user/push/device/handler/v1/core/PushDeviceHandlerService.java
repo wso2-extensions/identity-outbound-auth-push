@@ -194,7 +194,7 @@ public class PushDeviceHandlerService {
      *
      * @return List of registered devices of the user
      */
-    public ArrayList<DeviceDTO> listDevices() {
+    public List<DeviceDTO> listDevices() {
 
         List<Device> devices;
         User user = getAuthenticatedUser();
@@ -209,7 +209,7 @@ public class PushDeviceHandlerService {
             throw PushDeviceApiUtils.handleException(e,
                     PushDeviceApiConstants.ErrorMessages.ERROR_CODE_USER_STORE_ERROR);
         }
-        ArrayList<DeviceDTO> deviceDTOArrayList = new ArrayList<>();
+        List<DeviceDTO> deviceDTOArrayList = new ArrayList<>();
         DeviceDTO deviceDTO;
         if (devices != null) {
             for (Device device : devices) {
