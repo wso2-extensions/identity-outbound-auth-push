@@ -16,6 +16,7 @@ public class OSGIServiceFactory extends AbstractFactoryBean<DeviceHandler> {
 
     @Override
     public Class<?> getObjectType() {
+
         return Object.class;
     }
 

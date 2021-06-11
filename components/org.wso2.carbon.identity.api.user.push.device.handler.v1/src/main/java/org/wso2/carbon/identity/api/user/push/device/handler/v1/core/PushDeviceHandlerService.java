@@ -48,8 +48,6 @@ import java.util.List;
  */
 public class PushDeviceHandlerService {
 
-//    DeviceHandler deviceHandler;
-
     /**
      * Register a new device.
      *
@@ -61,15 +59,12 @@ public class PushDeviceHandlerService {
         RegistrationRequest registrationRequest = new RegistrationRequest();
         Device device;
         try {
-//            deviceHandler = new DeviceHandlerImpl();
-
             registrationRequest.setDeviceId(registrationRequestDTO.getDeviceId());
             registrationRequest.setDeviceModel(registrationRequestDTO.getModel());
             registrationRequest.setDeviceName(registrationRequestDTO.getName());
             registrationRequest.setPublicKey(registrationRequestDTO.getPublicKey());
             registrationRequest.setPushId(registrationRequestDTO.getPushId());
             registrationRequest.setSignature(registrationRequestDTO.getSignature());
-//            device = deviceHandler.registerDevice(registrationRequest);
             device = PushDeviceHandlerServiceHolder.getPushDeviceHandlerService().registerDevice(registrationRequest);
 
         } catch (PushDeviceHandlerClientException e) {
@@ -95,8 +90,6 @@ public class PushDeviceHandlerService {
     public void unregisterDevice(String deviceId) {
 
         try {
-//            deviceHandler = new DeviceHandlerImpl();
-//            deviceHandler.unregisterDevice(deviceId);
             PushDeviceHandlerServiceHolder.getPushDeviceHandlerService().unregisterDevice(deviceId);
         } catch (PushDeviceHandlerClientException e) {
             throw PushDeviceApiUtils.handleException(e,
@@ -118,16 +111,13 @@ public class PushDeviceHandlerService {
     public StatusDTO unregisterDeviceMobile(String deviceId, String token) {
 
         PushJWTValidator validator = new PushJWTValidator();
-//        deviceHandler = new DeviceHandlerImpl();
         StatusDTO status = new StatusDTO();
         status.setDeviceId(deviceId);
         status.setOperation(PushDeviceApiConstants.OPERATION_REMOVE);
         try {
-//            String publicKey = deviceHandler.getPublicKey(deviceId);
             String publicKey = PushDeviceHandlerServiceHolder.getPushDeviceHandlerService().getPublicKey(deviceId);
 
             if (validator.getValidatedClaimSet(token, publicKey) != null) {
-//                deviceHandler.unregisterDevice(deviceId);
                 PushDeviceHandlerServiceHolder.getPushDeviceHandlerService().unregisterDevice(deviceId);
                 status.setStatus(PushDeviceApiConstants.RESULT_SUCCESSFUL);
                 return status;
@@ -156,13 +146,11 @@ public class PushDeviceHandlerService {
     public void editDeviceName(String deviceId, String updatedDevice) {
 
         try {
-//            deviceHandler = new DeviceHandlerImpl();
             JSONObject deviceObject = new JSONObject(updatedDevice);
             Device device = new Device();
             device.setDeviceId(deviceId);
             device.setDeviceName(deviceObject.getString("name"));
             device.setPushId(deviceObject.getString("pushId"));
-//            deviceHandler.editDevice(deviceId, device);
             PushDeviceHandlerServiceHolder.getPushDeviceHandlerService().editDevice(deviceId, device);
         } catch (PushDeviceHandlerClientException e) {
             throw PushDeviceApiUtils.handleException(e,
@@ -181,10 +169,8 @@ public class PushDeviceHandlerService {
      */
     public DeviceDTO getDevice(String deviceId) {
 
-//        deviceHandler = new DeviceHandlerImpl();
         Device device;
         try {
-//            device = deviceHandler.getDevice(deviceId);
             device = PushDeviceHandlerServiceHolder.getPushDeviceHandlerService().getDevice(deviceId);
         } catch (PushDeviceHandlerClientException e) {
             throw PushDeviceApiUtils.handleException(e,
@@ -210,13 +196,11 @@ public class PushDeviceHandlerService {
      */
     public ArrayList<DeviceDTO> listDevices() {
 
-//        deviceHandler = new DeviceHandlerImpl();
         List<Device> devices;
         User user = getAuthenticatedUser();
 
         try {
             String userId = getUserIdFromUsername(user.getUserName());
-//            devices = deviceHandler.listDevices(userId);
             devices = PushDeviceHandlerServiceHolder.getPushDeviceHandlerService().listDevices(userId);
         } catch (PushDeviceHandlerServerException e) {
             throw PushDeviceApiUtils.handleException(e,
@@ -248,11 +232,9 @@ public class PushDeviceHandlerService {
      */
     public DiscoveryDataDTO getDiscoveryData() {
 
-//        deviceHandler = new DeviceHandlerImpl();
         RegistrationDiscoveryData discoveryData;
         try {
-//            discoveryData = deviceHandler.getRegistrationDiscoveryData();
-          discoveryData = PushDeviceHandlerServiceHolder.getPushDeviceHandlerService().getRegistrationDiscoveryData();
+            discoveryData = PushDeviceHandlerServiceHolder.getPushDeviceHandlerService().getRegistrationDiscoveryData();
         } catch (PushDeviceHandlerServerException e) {
             throw PushDeviceApiUtils.handleException(e,
                     PushDeviceApiConstants.ErrorMessages.ERROR_CODE_REGISTER_DEVICE_SERVER_ERROR);
