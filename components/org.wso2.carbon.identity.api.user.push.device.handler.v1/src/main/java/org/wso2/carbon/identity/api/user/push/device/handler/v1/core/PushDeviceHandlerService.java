@@ -270,7 +270,7 @@ public class PushDeviceHandlerService {
      *
      * @param username Username of the user
      * @return UserID for the user
-     * @throws UserStoreException
+     * @throws UserStoreException if an error occurs when getting the userstore manager
      */
     private String getUserIdFromUsername(String username) throws UserStoreException {
 

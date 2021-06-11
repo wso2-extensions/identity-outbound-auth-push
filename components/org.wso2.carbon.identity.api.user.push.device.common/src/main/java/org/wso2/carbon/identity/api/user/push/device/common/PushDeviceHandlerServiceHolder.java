@@ -31,9 +31,9 @@ public class PushDeviceHandlerServiceHolder {
     }
 
     /**
-     * Get TaskOperationService osgi service.
+     * Get PushDeviceHandler osgi service.
      *
-     * @return TaskOperationService
+     * @return PushDeviceHandler
      */
     public static DeviceHandler getPushDeviceHandlerService() {
 

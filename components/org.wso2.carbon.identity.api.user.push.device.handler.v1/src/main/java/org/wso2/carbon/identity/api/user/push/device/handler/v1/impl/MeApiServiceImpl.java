@@ -34,7 +34,7 @@ import java.text.MessageFormat;
 import javax.ws.rs.core.Response;
 
 /**
- * Implementation class of Biometric device Handler User APIs.
+ * Implementation class of Push device Handler User APIs.
  */
 public class MeApiServiceImpl implements MeApiService {
 

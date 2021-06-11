@@ -30,7 +30,7 @@ import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.StatusDTO;
 import javax.ws.rs.core.Response;
 
 /**
- * Implementation class of Biometric device Handler Admin APIs .
+ * Implementation class of Push device Handler Admin APIs .
  */
 public class DefaultApiServiceImpl implements DefaultApiService {
 

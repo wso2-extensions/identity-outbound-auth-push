@@ -21,7 +21,7 @@ import org.wso2.carbon.identity.application.authenticator.push.device.handler.De
 
 /**
  * Factory Beans serves as a factory for creating other beans within the IOC container. This factory bean is used to
- * instantiate the TaskOperationService type of object inside the container.
+ * instantiate the PushDeviceHandler type of object inside the container.
  */
 public class OSGIServiceFactory extends AbstractFactoryBean<DeviceHandler> {
 
