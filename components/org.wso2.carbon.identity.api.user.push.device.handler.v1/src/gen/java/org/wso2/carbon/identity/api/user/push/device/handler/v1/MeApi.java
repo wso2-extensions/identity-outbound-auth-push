@@ -17,7 +17,8 @@
 package org.wso2.carbon.identity.api.user.push.device.handler.v1;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import java.io.InputStream;
 import java.util.List;
 
@@ -28,11 +29,14 @@ import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.PatchDTO;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.RegistrationRequestDTO;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.RemoveRequestDTO;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.StatusDTO;
+import org.wso2.carbon.identity.api.user.push.device.handler.v1.MeApiService;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import io.swagger.annotations.*;
+
+import javax.validation.constraints.*;
 
 @Path("/me")
 @Api(description = "The me API")

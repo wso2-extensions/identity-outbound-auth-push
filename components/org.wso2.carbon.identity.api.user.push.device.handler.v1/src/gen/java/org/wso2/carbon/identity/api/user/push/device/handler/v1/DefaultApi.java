@@ -17,17 +17,21 @@
 package org.wso2.carbon.identity.api.user.push.device.handler.v1;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import java.io.InputStream;
 import java.util.List;
 
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.DeviceDTO;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.ErrorDTO;
+import org.wso2.carbon.identity.api.user.push.device.handler.v1.DefaultApiService;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import io.swagger.annotations.*;
+
+import javax.validation.constraints.*;
 
 @Path("/")
 @Api(description = "The  API")
