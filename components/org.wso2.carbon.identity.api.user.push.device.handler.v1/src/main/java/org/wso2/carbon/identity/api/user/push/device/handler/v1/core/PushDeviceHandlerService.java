@@ -29,10 +29,8 @@ import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.Registrati
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.StatusDTO;
 import org.wso2.carbon.identity.application.authenticator.push.common.PushJWTValidator;
 import org.wso2.carbon.identity.application.authenticator.push.common.exception.IdentityPushAuthException;
-//import org.wso2.carbon.identity.application.authenticator.push.device.handler.DeviceHandler;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerClientException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerServerException;
-//import org.wso2.carbon.identity.application.authenticator.push.device.handler.impl.DeviceHandlerImpl;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.Device;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.RegistrationDiscoveryData;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.RegistrationRequest;
