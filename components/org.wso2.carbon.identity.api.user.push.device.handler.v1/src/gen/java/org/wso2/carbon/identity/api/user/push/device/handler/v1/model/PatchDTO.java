@@ -67,7 +67,7 @@ public class PatchDTO  {
         return this;
     }
     
-    @ApiModelProperty(example = "My new Device", required = true, value = "The value to be used within the operations")
+    @ApiModelProperty(example = "{\"deviceId\": \"2354a435-60fd-4235-94f6-744323192e80\",\"name\": \"New Device\",\"model\": \"SM-A705GM\", \"pushId\": \"dnWcH2CDQlep3x_xwx0RoJ:APA91bHR86pfeoljGEIWwMnyEUHh8evIkE3CqjnIl8JcU0TVgKrIpG7YQI11FnE698LTvgpTUi jhPXQij-qhNQoxjClAn5qZdwITVK5DZnlyLDxfZWfF8GaJmc_MBpc7-Ae_uQMpv-Qj\",\"registrationTime\": 1619586752830, \"lastUsedTime\":1619586752831}", required = true, value = "The value to be used within the operations")
     @JsonProperty("value")
     @Valid
     @NotNull(message = "Property value cannot be null.")
