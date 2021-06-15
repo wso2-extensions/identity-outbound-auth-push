@@ -8,7 +8,7 @@ info:
   contact:
     name: "WSO2"
     url: "http://wso2.com/products/identity-server/"
-    email: "architecture@wso2.org"
+    email: "iam-dev@wso2.org"
   license:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
@@ -20,7 +20,6 @@ security:
   - OAuth2: [ ]
   - BasicAuth: [ ]
 paths:
-  #Endpoint used to retrieve data to display in Qr Code
   /me/push-auth/discovery-data:
     get:
       description: |
@@ -28,7 +27,7 @@ paths:
          <b>Permission required:</b>
          * /permission/admin/login
       summary: |
-        Retrieve data for the QR code
+        Retrieve data for the QR code.
       responses:
         200:
           description: Successful response
@@ -59,7 +58,6 @@ paths:
       tags:
         - me
 
-  # Endpoint used to get device information
   /me/push-auth/devices:
     post:
       description: |
@@ -67,10 +65,9 @@ paths:
         <b>Permission required:</b>
          * /permission/admin/login
       summary: |
-        Register a device for push-based authentication
-      # post parameters:
+        Register a device for push-based authentication.
       requestBody:
-        description: 'Device details sent by mobile application'
+        description: 'Device details sent by mobile application.'
         required: true
         content:
           application/json:
@@ -119,11 +116,11 @@ paths:
 
     get:
       description: |
-        This API is used to get a list of the registered devices<br/>
+        This API is used to get a list of the registered devices.<br/>
         <b>Permission required:</b>
          * /permission/admin/login
       summary: |
-        Returns registered devices list of the user
+        Returns registered devices list of the user.
       responses:
         200:
           description: All availabe devices of the user.
@@ -168,11 +165,11 @@ paths:
   /me/push-auth/devices/{deviceId}:
     delete:
       description: |
-        This API is used to remove a registered device at My Account<br/>
+        This API is used to remove a registered device via My Account.<br/>
         <b>Permission required:</b>
          * /permission/admin/login
       summary: |
-        Remove a registered device
+        Remove a registered device.
       parameters:
         - name: deviceId
           in: path
@@ -224,11 +221,11 @@ paths:
 
     put:
       description: |
-        This API is used to update attributes of a registered device<br/>
+        This API is used to update attributes of a registered device.<br/>
         <b>Permission required:</b>
          * /permission/admin/login
       summary: |
-        Update display name of a registered device
+        Update attributes of a registered device.
       requestBody:
         description: Optional description in *Markdown*
         required: true
@@ -285,7 +282,7 @@ paths:
         <b>Permission required:</b>
          * /permission/admin/login
       summary: |
-        Returns Specific device
+        Returns specific device.
       parameters:
         - name: "deviceId"
           in: "path"
@@ -331,11 +328,11 @@ paths:
   /me/push-auth/devices/{deviceId}/remove:
     post:
       description: |
-        This API is used to remove a device from a mobile app<br/>
+        This API is used to remove a device via the mobile app.<br/>
         <b>Permission required:</b>
          * /permission/admin/manage/identity/user/push_divice_mgt/delete
       summary: |
-        Remove device
+        Remove device from mobile app.
       parameters:
         - name: deviceId
           in: path
@@ -396,7 +393,7 @@ paths:
   /{user-id}/push-auth/devices/{deviceId}:
     delete:
       description: |
-        This API is used by admins to remove a specific device<br/>
+        This API is used by admins to remove a specific device.<br/>
         <b>Permission required:</b>
          * /permission/admin/manage/identity/user/push_divice_mgt/delete
       summary: |
@@ -453,11 +450,11 @@ paths:
 
     get:
       description: |
-        This API is used by admin set to retrive a specifc device<br/>
+        This API is used by admin set to retrive a specifc device.<br/>
         <b>Permission required:</b>
          * /permission/admin/manage/identity/user/push_divice_mgt/view
       summary: |
-        Returns Specific Device
+        Returns Specific Device.
       parameters:
         - name: "user-id"
           in: "path"
@@ -511,11 +508,11 @@ paths:
   /{user-id}/push-auth/devices:
     get:
       description: |
-        This API is used by admins to retrieve all devices registered under a user<br/>
+        This API is used by admins to retrieve all devices registered under a user.<br/>
         <b>Permission required:</b>
          * /permission/admin/manage/identity/user/push_divice_mgt/list
       summary: |
-        Returns Devices of a user
+        Returns Devices of a user.
       parameters:
         - name: "user-id"
           in: "path"
@@ -567,9 +564,9 @@ paths:
 
 components:
   schemas:
-    # The Object containing data in the qr code
     DiscoveryDataDTO:
       type: object
+      description: "The object containing data for the qr code."
       properties:
         did:
           description: "Device ID"
@@ -620,9 +617,9 @@ components:
           type: string
           example: "b03f90c9-6723-48f6-863b-a35f1ac77f57"
 
-    # The List of All devices
     AllDevices:
       type: array
+      description: "List of all registered devices."
       items:
         type: object
         example:
@@ -632,9 +629,9 @@ components:
           registrationTime: "2019-11-26T05:16:19.932Z"
           lastUsedTime: "2019-12-26T05:16:19.932Z"
 
-    # The Device object
     DeviceDTO:
       type: object
+      description: "The model for a device object."
       properties:
         deviceId:
           type: string
@@ -655,10 +652,9 @@ components:
           type: object
           example: "2019-11-26T05:16:19.932Z"
 
-
-    # The Response object received from the mobile device
     RegistrationRequestDTO:
       type: object
+      description: "The registration response object received from the mobile app."
       properties:
         deviceId:
           type: string
@@ -678,17 +674,16 @@ components:
           example: "fuRr8s_eQrmB88nu5Tz8oa:APA91bFMqYbuzDYyOGK28VoiLHWYXZYzGNVg3tfxfNwKPH-jDIFpNDdUHkmq5wqBUySYZnuHfpycyQvUrPhwV3UZ1YzjUNLvb9gzFZudfJd1N3fWuU0w2nq_hVJc0UPRabvNPuJy8wMB"
         publicKey:
           type: string
-          description: PK of the keypair generated by the device for the account
+          description: Public key of the keypair generated by the device for the account
           example: "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDOhCpj5pAEqdCdyxuHii0oLFAgnTePMI1EeomZHCRaZZNGv8fdcHyme9rpknNx/caAz9Gck5HrB/vto86cHpBkAghsBBLLWPUlblWNZCBX4pqFhZu+uZKvOnSqp1SwP13yx72nLKbjHRRJGgwCrg/mbdSGN/QKxRU+UhdKVVpQIDAQAB"
         signature:
           type: string
           description: Signature is a combination of the pushId and the challenge
           example: "rT/VxgPYMioT6wHajYg0mJpBv46HvFBm/elZ/VL4ClUIFfX7i3Ou5ER5sEiFtehaurLXPNsA8hF4SQAueVBRymEAmchhwYlT160g3wv6kDQvWLkTqnLWGfn++wg5xRManOoN9zG9GhxCgRr9y+lk9rtvydfX0lTcdEZBkynSJnM="
 
-    # The Error Response  object
     ErrorDTO:
-      description: 'Error Code Definitions'
       type: object
+      description: "Model for error codes."
       properties:
         code:
           type: string
@@ -701,7 +696,7 @@ components:
           example: "The error occurred due to ..."
 
     PatchDTO:
-      description: Update device information
+      description: "Model for updating device information"
       required:
         - operation
         - value
@@ -719,11 +714,11 @@ components:
           "lastUsedTime":1619586752831}'
         path:
           type: string
-          description: Path for the operation
-          example: "/display-name"
+          description: Path for validating the operation
+          example: "/edit-device"
 
     StatusDTO:
-      description: Status for the completion of a request
+      description: "Model for the status for the completion of a request"
       required:
         - deviceId
         - status
@@ -742,7 +737,7 @@ components:
           example: 'SUCCESSFUL'
 
     RemoveRequestDTO:
-      description: Removing a device by deviceId
+      description: "Model for the remove device request from the mobile app."
       required:
         - token
       properties:
