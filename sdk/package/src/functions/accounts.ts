@@ -3,7 +3,6 @@ import { AccountsInterface } from "../models/accounts";
 import { DiscoveryDataInterface } from "../models/discoveryData";
 import { DeviceInformation } from "../utils/deviceInformation";
 import { Crypto } from "../utils/crypto";
-// import { fetch } from "react-native-ssl-pinning";
 import uuid from "uuid-random";
 import { RequestSender } from "../utils/requestSender";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -89,7 +88,7 @@ export class Accounts {
 
     // Store data for later use
     this.storeData(keypair.prvKey);
-    this.storeData1(discoveryData.id);
+    this.storeData1(discoveryData.deviceId);
     getData();
     Authorization.updateSavedData();
 
@@ -101,7 +100,7 @@ export class Accounts {
     let request: RegistrationRequestInterface;
     // TODO: Check why this is done and correct it.
     request = {
-      deviceId: discoveryData.id,
+      deviceId: discoveryData.deviceId,
       pushID: fcmToken,
       publicKey: modPubKey,
       signature: signedChallenege,
@@ -115,7 +114,7 @@ export class Accounts {
       deviceId: request.deviceId,
       model: request.model,
       name: request.deviceName,
-      publickey: request.publicKey,
+      publicKey: request.publicKey,
       pushId: request.pushID,
       signature: request.signature,
     };
@@ -152,7 +151,7 @@ export class Accounts {
         let account: AccountsInterface;
         if (result == "OK") {
           account = {
-            deviceID: request.id,
+            deviceID: request.deviceId,
             username: discoveryData.username,
             firstName: discoveryData.firstName,
             lastName: discoveryData.lastName,
@@ -164,7 +163,7 @@ export class Accounts {
             privateKey: keypair.prvKey,
           };
         } else {
-          account = { deviceID: request.id };
+          account = { deviceID: request.deviceId };
         }
 
         return JSON.stringify({ res: result, data: account });
@@ -289,7 +288,7 @@ export class Accounts {
       regRequest.chg
     ) {
       discoveryData = {
-        id: regRequest.did,
+        deviceId: regRequest.did,
         username: regRequest.un,
         host: regRequest.hst,
         basePath: regRequest.bp,

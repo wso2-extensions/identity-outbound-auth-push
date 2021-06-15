@@ -2,7 +2,7 @@
  * Interface for the Discovery Data model
  */
 export interface DiscoveryDataInterface {
-  id: string;
+  deviceId: string;
   username: string;
   firstName?: string;
   lastName?: string;

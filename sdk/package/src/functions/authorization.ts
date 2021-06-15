@@ -148,7 +148,10 @@ export class Authorization {
 
     let jwt = KJUR.jws.JWS.sign(
       null,
-      { alg: "RS256" },
+      {
+        alg: "RS256",
+        did: authRequest.deviceId,
+      },
       {
         jti: uuid(),
         sub: authRequest.username + "@" + authRequest.organization,
@@ -158,7 +161,6 @@ export class Authorization {
         exp: KJUR.jws.IntDate.get("now + 1hour"),
         iat: KJUR.jws.IntDate.get("now"),
         sid: authRequest.sessionDataKey,
-        did: authRequest.deviceId,
         chg: authRequest.challenge,
         res: response,
       },
@@ -166,28 +168,15 @@ export class Authorization {
     );
 
     let headers = {
-      Accept: "application/x-www-form-urlencoded",
-      "Content-Type": "application/x-www-form-urlencoded",
-      Bearer: jwt,
+      Accept: "application/json",
+      "Content-Type": "application/json",
     };
 
     let authRequestBody: any = {
-      // auth_status: response,
-      // signature: signature,
-      // deviceId: authRequest.deviceId,
       jwt: jwt,
     };
 
-    let formBody = Object.keys(authRequestBody)
-      .map(
-        (key) =>
-          encodeURIComponent(key) +
-          "=" +
-          encodeURIComponent(authRequestBody[key])
-      )
-      .join("&");
 
-    console.log("Form Body: " + formBody);
     console.log("Request URL: " + authRequest.authUrl);
     console.log(authRequestBody);
 
@@ -197,7 +186,7 @@ export class Authorization {
       // "https://enx6srhygagwwxs.m.pipedream.net",
       "POST",
       headers,
-      formBody
+      authRequestBody
     );
 
     // if (result == "OK" && response == "SUCCESSFUL") {
