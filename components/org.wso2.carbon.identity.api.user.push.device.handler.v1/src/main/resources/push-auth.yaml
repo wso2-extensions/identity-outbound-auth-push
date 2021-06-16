@@ -63,7 +63,9 @@ paths:
       description: |
         This API is used to receive device information from the mobile app and complete the add account flow.<br/>
         <b>Permission required:</b>
-         * /permission/admin/login
+         * /permission/admin/login <br/>
+          <b>OAuth2 Scopes:</b>
+         * internal_identity_mgt_create
       summary: |
         Register a device for push-based authentication.
       requestBody:
@@ -118,7 +120,9 @@ paths:
       description: |
         This API is used to get a list of the registered devices.<br/>
         <b>Permission required:</b>
-         * /permission/admin/login
+         * /permission/admin/login <br/>
+          <b>OAuth2 Scopes:</b>
+         * internal_identity_mgt_view
       summary: |
         Returns registered devices list of the user.
       responses:
@@ -167,7 +171,9 @@ paths:
       description: |
         This API is used to remove a registered device via My Account.<br/>
         <b>Permission required:</b>
-         * /permission/admin/login
+         * /permission/admin/login <br/>
+          <b>OAuth2 Scopes:</b>
+         * internal_identity_mgt_delete
       summary: |
         Remove a registered device.
       parameters:
@@ -223,7 +229,9 @@ paths:
       description: |
         This API is used to update attributes of a registered device.<br/>
         <b>Permission required:</b>
-         * /permission/admin/login
+         * /permission/admin/login <br/>
+          <b>OAuth2 Scopes:</b>
+         * internal_identity_mgt_update
       summary: |
         Update attributes of a registered device.
       requestBody:
@@ -280,7 +288,9 @@ paths:
       description: |
         This API is used to get a specific device.<br/>
         <b>Permission required:</b>
-         * /permission/admin/login
+         * /permission/admin/login <br/>
+          <b>OAuth2 Scopes:</b>
+         * internal_identity_mgt_view
       summary: |
         Returns specific device.
       parameters:
@@ -330,7 +340,9 @@ paths:
       description: |
         This API is used to remove a device via the mobile app.<br/>
         <b>Permission required:</b>
-         * /permission/admin/manage/identity/user/push_divice_mgt/delete
+         * /permission/admin/manage/identity/user/push_divice_mgt/delete <br/>
+          <b>OAuth2 Scopes:</b>
+         * internal_identity_mgt_delete
       summary: |
         Remove device from mobile app.
       parameters:
@@ -395,7 +407,9 @@ paths:
       description: |
         This API is used by admins to remove a specific device.<br/>
         <b>Permission required:</b>
-         * /permission/admin/manage/identity/user/push_divice_mgt/delete
+         * /permission/admin/manage/identity/user/push_divice_mgt/delete <br/>
+          <b>OAuth2 Scopes:</b>
+         * internal_identity_mgt_delete
       summary: |
         Remove devices by deviceId.
       parameters:
@@ -452,7 +466,9 @@ paths:
       description: |
         This API is used by admin set to retrieve a specific device.<br/>
         <b>Permission required:</b>
-         * /permission/admin/manage/identity/user/push_divice_mgt/view
+         * /permission/admin/manage/identity/user/push_divice_mgt/view <br/>
+          <b>OAuth2 Scopes:</b>
+         * internal_identity_mgt_view
       summary: |
         Returns Specific Device.
       parameters:
@@ -510,7 +526,9 @@ paths:
       description: |
         This API is used by admins to retrieve all devices registered under a user.<br/>
         <b>Permission required:</b>
-         * /permission/admin/manage/identity/user/push_divice_mgt/list
+         * /permission/admin/manage/identity/user/push_divice_mgt/list <br/>
+          <b>OAuth2 Scopes:</b>
+         * internal_identity_mgt_view
       summary: |
         Returns Devices of a user.
       parameters:
