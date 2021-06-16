@@ -42,7 +42,7 @@ export class RequestSender {
       method: requestMethod,
       disableAllSecurity: true,
       sslPinning: {
-        certs: ["wso2carbon"], // TODO: make the certificate name configurable
+        certs: ["wso2carbon"],
       },
       headers: requestHeaders,
       body: body,
