@@ -16,6 +16,9 @@
  * under the License.
  */
 
+/**
+ * Interface for datetime objects.
+ */
 export interface DateTimeInterface {
   day: number;
   month: number;

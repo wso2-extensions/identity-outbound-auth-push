@@ -17,7 +17,7 @@
  */
 
 /**
- * Interface for the Discovery Data model
+ * Interface for the Discovery Data model.
  */
 export interface DiscoveryDataInterface {
   deviceId: string;

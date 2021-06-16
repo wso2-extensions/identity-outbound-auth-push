@@ -19,7 +19,7 @@
 import { DiscoveryDataInterface } from "../models/discoveryData";
 
 /**
- * Interface for Registration request model
+ * Interface for Registration request model.
  */
 export interface RegistrationRequestInterface {
   deviceId: string;

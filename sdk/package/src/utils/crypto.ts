@@ -18,11 +18,15 @@
 
 import { hextob64, KEYUTIL, KJUR } from "jsrsasign";
 
+/**
+ * Util class handling crypto related functions.
+ */
 export class Crypto {
+
   /**
-   * Generate new keypair
+   * Generate new keypair.
    *
-   * @returns the generated keypair object containing PEM strings
+   * @returns keypair - Generated keypair object containing PEM strings
    */
   public static generateKeypair(): any {
     let keyPair = KEYUTIL.generateKeypair("RSA", 1024);
@@ -33,12 +37,12 @@ export class Crypto {
   }
 
   /**
-   * Signs the challenge and returns the signed string
+   * Signs the challenge and returns the signed string.
    *
-   * @param privateKey private key to sign the challenge
-   * @param challenge string containing the challenge
+   * @param privateKey Private key to sign the challenge
+   * @param challenge String containing the challenge
    *
-   * @returns a base64 string of the signed challenge
+   * @returns signedChallenge - A base64 string of the signed challenge
    */
   public static signChallenge(privateKey: string, challenge: string): string {
     try {

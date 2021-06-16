@@ -17,8 +17,8 @@
  */
 
 /**
- * Interface for Authentication Response Model
+ * Interface for Authentication Response Model.
  */
-export interface AutheResponseInterface {
+export interface AuthResponseInterface {
     status: number;
   }

@@ -18,17 +18,14 @@
 
 import DeviceInfo from 'react-native-device-info';
 
-
+/**
+ * Util class for handling device information.
+ */
 export class DeviceInformation {
   private static deviceName: string;
   private static deviceBrand: string;
   private static deviceModel: string;
 
-
-  /**
-   * Constructor for device information class
-   * Assigns the values to the static variables for later use
-   */
   public constructor() { 
     console.log("Device info initialized");
 
@@ -66,27 +63,27 @@ export class DeviceInformation {
   }
 
   /**
-   * Returns the name of the device
+   * Returns the name of the device.
    * 
-   * @returns device name
+   * @returns deviceName - Name of the device
    */
   public static getDeviceName():string {
     return this.deviceName;
   }
 
   /**
-   * Returns the model name of the device
+   * Returns the model name of the device.
    * 
-   * @returns device model
+   * @returns deviceModel - Model of the device
    */
   public static getDeviceModel(): string {
     return DeviceInformation.deviceModel;
   }
 
   /**
-   * Returns the brand name of the device
+   * Returns the brand name of the device.
    * 
-   * @returns device brand
+   * @returns deviceBrand - Brand name of the device
    */
   public static getDeviceBrand(): string { 
     return DeviceInformation.deviceBrand;

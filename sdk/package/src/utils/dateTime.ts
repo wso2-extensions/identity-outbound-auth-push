@@ -18,6 +18,9 @@
 
 import { DateTimeInterface } from "src/models/dateTime";
 
+/**
+ * Util class for handling datetime functions.
+ */
 export class DateTime {
   private dateTime: DateTimeInterface;
 

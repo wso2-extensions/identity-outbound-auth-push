@@ -18,6 +18,9 @@
 
 import { DateTimeInterface } from "./dateTime";
 
+/**
+ * Interface for authentication data
+ */
 export interface AuthDataInterface {
   deviceId: string;
   challenge: string;
@@ -25,6 +28,9 @@ export interface AuthDataInterface {
   privateKey: string;
 }
 
+/**
+ * Interface for authentication requests.
+ */
 export interface AuthRequestInterface extends AuthDataInterface {
   connectionCode?: string;
   displayName?: string;

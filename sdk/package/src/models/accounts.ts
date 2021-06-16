@@ -17,7 +17,7 @@
  */
 
 /**
- * Interface for the registered Account
+ * Interface for the registered Account.
  */
 export interface AccountsInterface {
   deviceID: string;

@@ -51,14 +51,11 @@ const getData = async () => {
 getData();
 
 /**
- * Class for all the functionality related to accounts
+ * Class for all the functionality related to accounts.
  */
 export class Accounts {
     private static accountsList: Array<AccountsInterface> = [];
 
-    /**
-     * Constructor for the Accounts class
-     */
     constructor() {
         if (Accounts.accountsList == null) {
             Accounts.accountsList = [];
@@ -81,15 +78,11 @@ export class Accounts {
         }
     };
 
-    /*
-     * API functions
-     */
-
     /**
-     * Enrol the device with the WSO2 Identity Server
+     * Enrol the device with the WSO2 Identity Server.
      *
-     * @param regRequest body of the scanned QR code
-     * @param fcmToken firebase push authentication token
+     * @param regRequest Body of the scanned QR code
+     * @param fcmToken Firebase push authentication token
      */
     public async addAccount(regRequest: any, fcmToken: string): Promise<any> {
         console.log("Add Account function");
@@ -183,13 +176,12 @@ export class Accounts {
     }
 
     /**
-     * Revoke the enrolement of the device from the Identity Server
+     * Revoke the enrollment of the device from the Identity Server
      *
-     * @param accountID unique ID to identify the account
+     * @param accountID Unique ID to identify the account
      */
     public async removeAccount(
         accountID: string,
-        privateKey: string
     ): Promise<string> {
         console.log("Remove account function");
         // TODO: Complete the body
@@ -245,9 +237,10 @@ export class Accounts {
     }
 
     /**
-     * Get an account from the dedicated database
+     * Get an account from saved accounts.
      *
-     * @param accountID unique ID to identify the account
+     * @param accountsList List of accounts
+     * @param accountID Unique ID to identify the account
      */
     public static getAccount(accountsList: any, accountID: string): any {
         accountsList.filter((account: any) => {
@@ -259,7 +252,7 @@ export class Accounts {
     }
 
     /**
-     * Returns the list of saved accounts
+     * Returns the list of saved accounts.
      */
     getAccounts(): Array<AccountsInterface> {
         return Accounts.accountsList;
@@ -270,7 +263,7 @@ export class Accounts {
      */
 
     /**
-     * Organizes the data into a complex object
+     * Organizes the data into a complex object.
      *
      * @param regRequest JSON string from the QR code
      */

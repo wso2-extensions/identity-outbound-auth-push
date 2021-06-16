@@ -43,14 +43,12 @@ const getData = async () => {
 getData();
 
 export class Authorization {
-    /**
-     * Constructor for the authorization class
-     */
+
     constructor() {
     }
 
     /**
-     * Organizes the JSON object as a complex object
+     * Process the request as an organized object.
      *
      * @param request JSON object of the request
      */
@@ -124,7 +122,7 @@ export class Authorization {
     }
 
     /**
-     * Returns the timestamp which the request will expire at
+     * Returns the timestamp which the request will expire at.
      *
      * @param requestInitTime the time the request was initialized in the IS
      */
@@ -134,10 +132,10 @@ export class Authorization {
     }
 
     /**
-     * Send the request to the IS to allow or deny authorization
+     * Send the request to the IS to allow or deny authorization.
      *
-     * @param authRequest complex object for the request
-     * @param response authorisation response given by the user
+     * @param authRequest Object for the authentication request
+     * @param response Authorisation response given by the user
      */
     public static async sendAuthRequest(
         authRequest: AuthRequestInterface,
@@ -214,9 +212,9 @@ export class Authorization {
     }
 
     /**
-     * Checks if a value is null
+     * Checks if a value is null.
      *
-     * @param value value to be checked for null
+     * @param value Value to be checked for null
      */
     private isNotNull(value: any): boolean {
         if (value != null) {
