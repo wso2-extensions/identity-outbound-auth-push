@@ -50,8 +50,6 @@ export class DateTime {
           ? " a.m."
           : " p.m.",
     };
-
-    // Structured formats
   }
 
   public getDateTime(): DateTimeInterface {

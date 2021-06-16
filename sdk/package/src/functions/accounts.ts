@@ -109,7 +109,6 @@ export class Accounts {
             .replace(/(\r\n|\n|\r)/gm, "");
 
         let request: RegistrationRequestInterface;
-        // TODO: Check why this is done and correct it.
         request = {
             deviceId: discoveryData.deviceId,
             pushID: fcmToken,
@@ -120,7 +119,6 @@ export class Accounts {
         request.deviceName = DeviceInformation.getDeviceName();
         request.model = DeviceInformation.getDeviceModel();
 
-        // TODO: Has code duplication from above scenario
         let regRequestBody: any = {
             deviceId: request.deviceId,
             model: request.model,
@@ -184,19 +182,11 @@ export class Accounts {
         accountID: string,
     ): Promise<string> {
         console.log("Remove account function");
-        // TODO: Complete the body
         let challenge = uuid();
         let signature = Crypto.signChallenge(asyncPriv, challenge);
 
         console.log("Remove Account Challenge: " + challenge);
         console.log("Remove Account Sig: " + signature);
-
-        let delRequestBody: any = {
-            deviceId: asyncId,
-            ACTION: "DELETE",
-            signature: signature,
-            challenge: challenge,
-        };
 
         let jwt = KJUR.jws.JWS.sign(
             null,
@@ -219,7 +209,6 @@ export class Accounts {
             token: jwt,
         };
 
-        // TODO: Add the correct implementation to take the url from the saved data
         let url =
             "https://192.168.1.112:9443/t/carbon.super/api/users/v1/me/push-auth/devices/" +
             asyncId +
@@ -229,7 +218,6 @@ export class Accounts {
         };
         let requestMethod = "POST";
 
-        console.log("Delete body:" + JSON.stringify(delRequestBody));
         console.log("Device ID: " + asyncId);
 
         let request: RequestSender = new RequestSender();
@@ -313,5 +301,3 @@ export class Accounts {
         return discoveryData;
     }
 }
-
-// TODO: identify how to send the data to be saved on the device to the user

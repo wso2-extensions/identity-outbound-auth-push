@@ -57,8 +57,6 @@ export class Authorization {
     ): AuthRequestInterface {
         let authRequest: AuthRequestInterface;
 
-        // TODO: Dynamically set the auth URL
-
         if (
             request.data.deviceId &&
             request.data.challenge &&
@@ -116,8 +114,6 @@ export class Authorization {
             authRequest.location = request.data.location;
         }
 
-        // TODO: Handle expiry time and add here
-
         return authRequest;
     }
 
@@ -127,8 +123,7 @@ export class Authorization {
      * @param requestInitTime the time the request was initialized in the IS
      */
     public getRequestExpiryTime(requestInitTime: any) {
-        // TODO: Add the code here
-        // TODO: Decide the final datatype/library to be used for timestamp
+        // Add code here
     }
 
     /**
@@ -144,11 +139,6 @@ export class Authorization {
         console.log("challenge: " + authRequest.challenge);
 
         let timestamp = new DateTime();
-
-        let signature = Crypto.signChallenge(
-            authRequest.privateKey,
-            authRequest.challenge
-        );
 
         let jwt = KJUR.jws.JWS.sign(
             null,
@@ -227,6 +217,4 @@ export class Authorization {
     public static updateSavedData() {
         getData();
     }
-
-    // TODO: Handle the data update properly
 }

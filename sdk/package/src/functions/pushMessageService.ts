@@ -33,8 +33,6 @@ export class PushMessageService {
             // user has a device token
             await AsyncStorage.setItem("fcmToken", token);
             console.log("Push Token" + token);
-
-            // TODO: change the name of the async storage item name to be more generic
         } else {
             throw new Error("Push token not available");
         }
@@ -48,9 +46,6 @@ export class PushMessageService {
      */
     public static async updatePushToken(token: string, saveToken?: boolean) {
         if (token) {
-            //TODO: Add functionality to send request to update Push token in server
-
-            // Update token in async storage
             if (saveToken) {
                 this.savePushToken(token);
                 console.log("Push token updated");
@@ -75,5 +70,3 @@ export class PushMessageService {
             });
     }
 }
-
-// TODO: Test the functionality of getPushToken()
