@@ -56,8 +56,6 @@ getData();
 export class Accounts {
     private static accountsList: Array<AccountsInterface> = [];
 
-    //   private fcmToken: string = firebaseInstance.instanceId;
-
     /**
      * Constructor for the Accounts class
      */
@@ -140,12 +138,6 @@ export class Accounts {
         };
 
         console.log("Request Body:", JSON.stringify(regRequestBody));
-
-        // try {
-        //   this.sendEnrolementRequest(regRequestBody);
-        // } catch (error) {
-        //   console.log(error);
-        // }
 
         let requestMethod = "POST";
 
@@ -234,15 +226,6 @@ export class Accounts {
         let body = {
             token: jwt,
         };
-
-        // let formBody = Object.keys(delRequestBody)
-        //   .map(
-        //     (key) =>
-        //       encodeURIComponent(key) +
-        //       "=" +
-        //       encodeURIComponent(delRequestBody[key])
-        //   )
-        //   .join("&");
 
         // TODO: Add the correct implementation to take the url from the saved data
         let url =
@@ -336,38 +319,6 @@ export class Accounts {
         console.log("Discovery data test: " + JSON.stringify(discoveryData));
         return discoveryData;
     }
-
-    /**
-     * Send the request to the IS to enroll the device
-     *
-     * @param request contains the parameters sent to the IS
-     */
-    // private sendEnrolementRequest(request: any) {
-    //   // TODO: change to url from discovery data
-    //   console.log("Send enrolement request function");
-
-    //   fetch(
-    //     "https://192.168.1.112:9443/t/carbon.super/api/users/v1/me/biometricdevice",
-    //     {
-    //       method: "POST",
-    //       disableAllSecurity: true,
-    //       sslPinning: {
-    //         certs: ["wso2carbon"],
-    //       },
-    //       headers: {
-    //         Accept: "application/json",
-    //         "Content-Type": "application/json",
-    //       },
-    //       body: JSON.stringify(request),
-    //     }
-    //   )
-    //     .then((response) => {
-    //       console.log(`response received ${response}`);
-    //     })
-    //     .catch((err) => {
-    //       console.log(`error: ${err}`);
-    //     });
-    // }
 }
 
 // TODO: identify how to send the data to be saved on the device to the user

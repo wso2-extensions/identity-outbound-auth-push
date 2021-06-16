@@ -17,7 +17,6 @@
  */
 
 import { fetch } from "react-native-ssl-pinning";
-import { Alert } from "react-native";
 
 export class RequestSender {
   public constructor() {}
@@ -39,12 +38,6 @@ export class RequestSender {
     })
       .then((response: any) => {
         console.log(`response received ${response.bodyString}`);
-        // Alert.alert(
-        //   "Request",
-        //   "Status: " + response.status + "\nMessage: " + response.bodyString,
-        //   [{ text: "OK", onPress: () => console.log("OK Pressed") }],
-        //   { cancelable: false }
-        // );
         return response.status == "200" ? "OK" : "FAILED";
       })
       .catch((err: any) => {

@@ -22,12 +22,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
  * Class for handling push message device tokens
  */
 export class PushMessageService {
-    // public static pushToken: string;
 
     /**
      * Save the push message device token in React Native Aysnc Storage
      *
-     * @param token Push messege device token
+     * @param token Push message device token
      */
     public static async savePushToken(token: string) {
         if (token) {

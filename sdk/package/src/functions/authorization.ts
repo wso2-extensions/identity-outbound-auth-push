@@ -17,14 +17,10 @@
  */
 
 import {AuthRequestInterface} from "../models/authRequest";
-import {Alert} from "react-native";
-
 import {Crypto} from "../utils/crypto";
 import {RequestSender} from "../utils/requestSender";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {AccountsInterface} from "src/models/index";
-import {Accounts} from "./accounts";
 import {DateTime} from "../utils/dateTime";
 import {KJUR} from "jsrsasign";
 import uuid from "uuid-random";
@@ -60,12 +56,8 @@ export class Authorization {
      */
     public static processAuthRequest(
         request: any
-        // accounts: any
     ): AuthRequestInterface {
         let authRequest: AuthRequestInterface;
-
-        // let account: AccountsInterface = Accounts.getAccount(request.data.deviceID);
-        // Above commented lines are for handling multiple accounts
 
         // TODO: Dynamically set the auth URL
 
@@ -78,12 +70,7 @@ export class Authorization {
                 deviceId: request.data.deviceId,
                 challenge: request.data.challenge,
                 sessionDataKey: request.data.sessionDataKey,
-                authUrl:
-                    "https://192.168.1.112:9443/push-auth/authenticate" /* + "?initiator=mobile" +
-          "&sessionDataKey=" +
-          request.data.sessionDataKey +
-          "&challenge=" +
-          request.data.challenge */,
+                authUrl: "https://192.168.1.112:9443/push-auth/authenticate",
                 privateKey: privateKey,
                 connectionCode: (
                     request.data.sessionDataKey.substring(0, 4) +
@@ -208,19 +195,7 @@ export class Authorization {
             authRequestBody
         );
 
-        // if (result == "OK" && response == "SUCCESSFUL") {
-        //   authRequest.authenticationStatus = "Accepted";
-        //   console.log("Auth is OK and Accepted");
-        // } else if (result == "OK" && response == "DENIED") {
-        //   authRequest.authenticationStatus = "Denied";
-        //   console.log("Auth is OK and Denied");
-        // } else {
-        //   console.log("Auth response has a problem. Check! " + String(result));
-        // }
-
         authRequest.requestTime = timestamp.getDateTime();
-
-        // return JSON.stringify({ res: result, data: authRequest });
 
         return result.then((result) => {
             console.log("Response test: " + result);
