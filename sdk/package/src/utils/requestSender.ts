@@ -37,7 +37,7 @@ export class RequestSender {
       headers: requestHeaders,
       body: body,
     })
-      .then((response: { bodyString: string; status: string }) => {
+      .then((response: any) => {
         console.log(`response received ${response.bodyString}`);
         // Alert.alert(
         //   "Request",

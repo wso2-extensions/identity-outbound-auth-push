@@ -28,7 +28,7 @@ import {Authorization} from "./authorization";
 import {KJUR} from "jsrsasign";
 
 let asyncPriv: string;
-let asyncId: string;
+let asyncId: string | null;
 
 const getData = async () => {
     try {
@@ -91,6 +91,7 @@ export class Accounts {
      * Enrol the device with the WSO2 Identity Server
      *
      * @param regRequest body of the scanned QR code
+     * @param fcmToken firebase push authentication token
      */
     public async addAccount(regRequest: any, fcmToken: string): Promise<any> {
         console.log("Add Account function");
@@ -100,7 +101,7 @@ export class Accounts {
         let keypair: any = Crypto.generateKeypair();
         let signatureString = regRequest.chg + "." + fcmToken;
         console.log("Keypair:", keypair);
-        let signedChallenege: string = Crypto.signChallenge(
+        let signedChallenge: string = Crypto.signChallenge(
             keypair.prvKey,
             signatureString
         );
@@ -122,7 +123,7 @@ export class Accounts {
             deviceId: discoveryData.deviceId,
             pushID: fcmToken,
             publicKey: modPubKey,
-            signature: signedChallenege,
+            signature: signedChallenge,
         };
 
         request.deviceName = DeviceInformation.getDeviceName();

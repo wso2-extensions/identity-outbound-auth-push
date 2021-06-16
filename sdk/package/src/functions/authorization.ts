@@ -22,7 +22,7 @@ import {Alert} from "react-native";
 import {Crypto} from "../utils/crypto";
 import {RequestSender} from "../utils/requestSender";
 
-import AsyncStorage from "@react-native-community/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {AccountsInterface} from "src/models/index";
 import {Accounts} from "./accounts";
 import {DateTime} from "../utils/dateTime";
@@ -170,7 +170,7 @@ export class Authorization {
             {
                 alg: "RS256",
                 did: authRequest.deviceId,
-            },
+            } as any,
             {
                 jti: uuid(),
                 sub: authRequest.username + "@" + authRequest.organization,
