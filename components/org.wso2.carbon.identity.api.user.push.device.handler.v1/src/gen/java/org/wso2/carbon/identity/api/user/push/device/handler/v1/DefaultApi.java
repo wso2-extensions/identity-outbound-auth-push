@@ -46,7 +46,7 @@ public class DefaultApi  {
     @Path("/{user-id}/push-auth/devices/{deviceId}")
     
     @Produces({ "application/json" })
-    @ApiOperation(value = "Remove devices by deviceId. ", notes = "This API is used by admins to remove a specific device<br/> <b>Permission required:</b>  * /permission/admin/manage/identity/user/push_divice_mgt/delete ", response = Void.class, authorizations = {
+    @ApiOperation(value = "Remove devices by deviceId. ", notes = "This API is used by admins to remove a specific device.<br/> <b>Permission required:</b>  * /permission/admin/manage/identity/user/push_divice_mgt/delete <br/>   <b>OAuth2 Scopes:</b>  * internal_identity_mgt_delete ", response = Void.class, authorizations = {
         @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
@@ -70,14 +70,14 @@ public class DefaultApi  {
     @Path("/{user-id}/push-auth/devices/{deviceId}")
     
     @Produces({ "application/json" })
-    @ApiOperation(value = "Returns Specific Device ", notes = "This API is used by admin set to retrive a specifc device<br/> <b>Permission required:</b>  * /permission/admin/manage/identity/user/push_divice_mgt/view ", response = DeviceDTO.class, authorizations = {
+    @ApiOperation(value = "Returns Specific Device. ", notes = "This API is used by admin set to retrieve a specific device.<br/> <b>Permission required:</b>  * /permission/admin/manage/identity/user/push_divice_mgt/view <br/>   <b>OAuth2 Scopes:</b>  * internal_identity_mgt_view ", response = DeviceDTO.class, authorizations = {
         @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
         })
     }, tags={ "admin", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Specific device selected by the user.", response = DeviceDTO.class),
+        @ApiResponse(code = 200, message = "Specific device selected by the user", response = DeviceDTO.class),
         @ApiResponse(code = 400, message = "Bad Request", response = ErrorDTO.class),
         @ApiResponse(code = 401, message = "Unauthorized", response = ErrorDTO.class),
         @ApiResponse(code = 403, message = "Forbidden", response = ErrorDTO.class),
@@ -93,14 +93,14 @@ public class DefaultApi  {
     @Path("/{user-id}/push-auth/devices")
     
     @Produces({ "application/json" })
-    @ApiOperation(value = "Returns Devices of a user ", notes = "This API is used by admins to retrieve all devices registered under a user<br/> <b>Permission required:</b>  * /permission/admin/manage/identity/user/push_divice_mgt/list ", response = Object.class, responseContainer = "List", authorizations = {
+    @ApiOperation(value = "Returns Devices of a user. ", notes = "This API is used by admins to retrieve all devices registered under a user.<br/> <b>Permission required:</b>  * /permission/admin/manage/identity/user/push_divice_mgt/list <br/>   <b>OAuth2 Scopes:</b>  * internal_identity_mgt_view ", response = Object.class, responseContainer = "List", authorizations = {
         @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
         })
     }, tags={ "admin" })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "All registered devices of the user.", response = Object.class, responseContainer = "List"),
+        @ApiResponse(code = 200, message = "All registered devices of the user", response = Object.class, responseContainer = "List"),
         @ApiResponse(code = 400, message = "Bad Request", response = ErrorDTO.class),
         @ApiResponse(code = 401, message = "Unauthorized", response = ErrorDTO.class),
         @ApiResponse(code = 403, message = "Forbidden", response = ErrorDTO.class),

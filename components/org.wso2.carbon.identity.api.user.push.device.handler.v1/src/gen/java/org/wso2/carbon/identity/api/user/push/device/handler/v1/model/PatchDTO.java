@@ -23,14 +23,14 @@ import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.*;
 
 /**
- * Update device information
+ * Model for updating device information
  **/
 
 import io.swagger.annotations.*;
 import java.util.Objects;
 import javax.validation.Valid;
 import javax.xml.bind.annotation.*;
-@ApiModel(description = "Update device information")
+@ApiModel(description = "Model for updating device information")
 public class PatchDTO  {
   
     private String operation;
@@ -80,7 +80,7 @@ public class PatchDTO  {
     }
 
     /**
-    * Path for the operation
+    * Path for validating the operation
     **/
     public PatchDTO path(String path) {
 
@@ -88,7 +88,7 @@ public class PatchDTO  {
         return this;
     }
     
-    @ApiModelProperty(example = "/display-name", value = "Path for the operation")
+    @ApiModelProperty(example = "/edit-device", value = "Path for validating the operation")
     @JsonProperty("path")
     @Valid
     public String getPath() {

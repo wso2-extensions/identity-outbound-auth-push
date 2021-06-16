@@ -23,14 +23,14 @@ import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.*;
 
 /**
- * Error Code Definitions
+ * Model for error codes
  **/
 
 import io.swagger.annotations.*;
 import java.util.Objects;
 import javax.validation.Valid;
 import javax.xml.bind.annotation.*;
-@ApiModel(description = "Error Code Definitions")
+@ApiModel(description = "Model for error codes")
 public class ErrorDTO  {
   
     private String code;

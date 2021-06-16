@@ -23,14 +23,14 @@ import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.*;
 
 /**
- * Status for the completion of a request
+ * Model for the status for the completion of a request
  **/
 
 import io.swagger.annotations.*;
 import java.util.Objects;
 import javax.validation.Valid;
 import javax.xml.bind.annotation.*;
-@ApiModel(description = "Status for the completion of a request")
+@ApiModel(description = "Model for the status for the completion of a request")
 public class StatusDTO  {
   
     private String deviceId;

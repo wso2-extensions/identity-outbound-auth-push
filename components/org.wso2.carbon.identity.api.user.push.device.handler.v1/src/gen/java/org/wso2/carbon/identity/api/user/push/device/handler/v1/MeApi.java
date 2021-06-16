@@ -51,7 +51,7 @@ public class MeApi  {
     @Path("/push-auth/devices/{deviceId}")
     
     @Produces({ "application/json" })
-    @ApiOperation(value = "Remove a registered device ", notes = "This API is used to remove a registered device at My Account<br/> <b>Permission required:</b>  * /permission/admin/login ", response = StatusDTO.class, authorizations = {
+    @ApiOperation(value = "Remove a registered device. ", notes = "This API is used to remove a registered device via My Account.<br/> <b>Permission required:</b>  * /permission/admin/login <br/>   <b>OAuth2 Scopes:</b>  * internal_identity_mgt_delete ", response = StatusDTO.class, authorizations = {
         @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
@@ -76,14 +76,14 @@ public class MeApi  {
     @Path("/push-auth/devices/{deviceId}")
     
     @Produces({ "application/json" })
-    @ApiOperation(value = "Returns Specific device ", notes = "This API is used to get a specific device.<br/> <b>Permission required:</b>  * /permission/admin/login ", response = DeviceDTO.class, authorizations = {
+    @ApiOperation(value = "Returns specific device. ", notes = "This API is used to get a specific device.<br/> <b>Permission required:</b>  * /permission/admin/login <br/>   <b>OAuth2 Scopes:</b>  * internal_identity_mgt_view ", response = DeviceDTO.class, authorizations = {
         @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
         })
     }, tags={ "me", })
     @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Details of a specific device.", response = DeviceDTO.class),
+        @ApiResponse(code = 200, message = "Details of a specific device", response = DeviceDTO.class),
         @ApiResponse(code = 400, message = "Bad Request", response = ErrorDTO.class),
         @ApiResponse(code = 401, message = "Unauthorized", response = ErrorDTO.class),
         @ApiResponse(code = 403, message = "Forbidden", response = ErrorDTO.class),
@@ -99,7 +99,7 @@ public class MeApi  {
     @Path("/push-auth/devices/{deviceId}")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    @ApiOperation(value = "Update display name of a registered device ", notes = "This API is used to update attributes of a registered device<br/> <b>Permission required:</b>  * /permission/admin/login ", response = Void.class, authorizations = {
+    @ApiOperation(value = "Update attributes of a registered device. ", notes = "This API is used to update attributes of a registered device.<br/> <b>Permission required:</b>  * /permission/admin/login <br/>   <b>OAuth2 Scopes:</b>  * internal_identity_mgt_update ", response = Void.class, authorizations = {
         @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
@@ -123,7 +123,7 @@ public class MeApi  {
     @Path("/push-auth/devices/{deviceId}/remove")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    @ApiOperation(value = "Remove device ", notes = "This API is used to remove a device from a mobile app<br/> <b>Permission required:</b>  * /permission/admin/manage/identity/user/push_divice_mgt/delete ", response = StatusDTO.class, authorizations = {
+    @ApiOperation(value = "Remove device from mobile app. ", notes = "This API is used to remove a device via the mobile app.<br/> <b>Permission required:</b>  * /permission/admin/manage/identity/user/push_divice_mgt/delete <br/>   <b>OAuth2 Scopes:</b>  * internal_identity_mgt_delete ", response = StatusDTO.class, authorizations = {
         @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
@@ -147,7 +147,7 @@ public class MeApi  {
     @Path("/push-auth/devices")
     
     @Produces({ "application/json" })
-    @ApiOperation(value = "Returns registered devices list of the user ", notes = "This API is used to get a list of the registered devices<br/> <b>Permission required:</b>  * /permission/admin/login ", response = Object.class, responseContainer = "List", authorizations = {
+    @ApiOperation(value = "Returns registered devices list of the user. ", notes = "This API is used to get a list of the registered devices.<br/> <b>Permission required:</b>  * /permission/admin/login <br/>   <b>OAuth2 Scopes:</b>  * internal_identity_mgt_view ", response = Object.class, responseContainer = "List", authorizations = {
         @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
@@ -171,7 +171,7 @@ public class MeApi  {
     @Path("/push-auth/devices")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    @ApiOperation(value = "Register a device for push-based authentication ", notes = "This API is used to recieve device information from the mobile app and complete the add account flow.<br/> <b>Permission required:</b>  * /permission/admin/login ", response = StatusDTO.class, authorizations = {
+    @ApiOperation(value = "Register a device for push-based authentication. ", notes = "This API is used to receive device information from the mobile app and complete the add account flow.<br/> <b>Permission required:</b>  * /permission/admin/login <br/>   <b>OAuth2 Scopes:</b>  * internal_identity_mgt_create ", response = StatusDTO.class, authorizations = {
         @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
@@ -195,7 +195,7 @@ public class MeApi  {
     @Path("/push-auth/discovery-data")
     
     @Produces({ "application/json" })
-    @ApiOperation(value = "Retrieve data for the QR code ", notes = "This API is used to retrieve data for the QR Code to trigger the push authentication add account flow.<br/>  <b>Permission required:</b>  * /permission/admin/login ", response = DiscoveryDataDTO.class, authorizations = {
+    @ApiOperation(value = "Retrieve data for the QR code. ", notes = "This API is used to retrieve data for the QR Code to trigger the push authentication add account flow.<br/>  <b>Permission required:</b>  * /permission/admin/login ", response = DiscoveryDataDTO.class, authorizations = {
         @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
             
