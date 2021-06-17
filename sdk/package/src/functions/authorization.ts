@@ -167,7 +167,7 @@ export class Authorization {
         };
 
         let authRequestBody: any = {
-            jwt: jwt,
+            authResponse: jwt,
         };
 
 
@@ -176,12 +176,7 @@ export class Authorization {
 
         let request = new RequestSender();
         let result: Promise<string> = request.sendRequest(
-            authRequest.authUrl,
-            // "https://enx6srhygagwwxs.m.pipedream.net",
-            "POST",
-            headers,
-            authRequestBody
-        );
+            authRequest.authUrl, "POST", headers, JSON.stringify(authRequestBody));
 
         authRequest.requestTime = timestamp.getDateTime();
 

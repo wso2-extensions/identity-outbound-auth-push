@@ -221,7 +221,7 @@ export class Accounts {
         console.log("Device ID: " + asyncId);
 
         let request: RequestSender = new RequestSender();
-        return request.sendRequest(url, requestMethod, headers, body);
+        return request.sendRequest(url, requestMethod, headers, JSON.stringify(body));
     }
 
     /**
