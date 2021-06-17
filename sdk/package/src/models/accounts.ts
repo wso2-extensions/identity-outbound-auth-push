@@ -25,9 +25,9 @@ export interface AccountsInterface {
   firstName?: string;
   lastName?: string;
   tenantDomain?: string;
-  host?: string;
-  basePath?: string;
-  authenticationEndpoint?: string;
-  removeDeviceEndpoint?: string;
-  privateKey?: string;
+  host: string;
+  basePath: string;
+  authenticationEndpoint: string;
+  removeDeviceEndpoint: string;
+  privateKey: string;
 }

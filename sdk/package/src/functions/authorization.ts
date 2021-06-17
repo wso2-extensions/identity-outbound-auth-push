@@ -24,6 +24,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {DateTime} from "../utils/dateTime";
 import {KJUR} from "jsrsasign";
 import uuid from "uuid-random";
+import {AccountsInterface} from "../models";
 
 let privateKey: string;
 
@@ -66,8 +67,6 @@ export class Authorization {
                 deviceId: request.data.deviceId,
                 challenge: request.data.challenge,
                 sessionDataKey: request.data.sessionDataKey,
-                authUrl: "https://192.168.1.112:9443/push-auth/authenticate",
-                privateKey: privateKey,
                 connectionCode: (
                     request.data.sessionDataKey.substring(0, 4) +
                     " - " +
@@ -131,10 +130,12 @@ export class Authorization {
      *
      * @param authRequest Object for the authentication request
      * @param response Authorisation response given by the user
+     * @param account Registered account requesting to authenticate
      */
     public static async sendAuthRequest(
         authRequest: AuthRequestInterface,
-        response: string
+        response: string,
+        account: AccountsInterface
     ): Promise<any> {
         console.log("challenge: " + authRequest.challenge);
 
@@ -150,7 +151,7 @@ export class Authorization {
                 jti: uuid(),
                 sub: authRequest.username + "@" + authRequest.organization,
                 iss: "wso2verify",
-                aud: "https://localhost:9443/t/" + authRequest.organization + "/",
+                aud: account.host + "/t/" + account.tenantDomain + "/",
                 nbf: KJUR.jws.IntDate.get("now"),
                 exp: KJUR.jws.IntDate.get("now + 1hour"),
                 iat: KJUR.jws.IntDate.get("now"),
@@ -158,7 +159,7 @@ export class Authorization {
                 chg: authRequest.challenge,
                 res: response,
             },
-            authRequest.privateKey
+            account.privateKey
         );
 
         let headers = {
@@ -171,12 +172,13 @@ export class Authorization {
         };
 
 
-        console.log("Request URL: " + authRequest.authUrl);
+        let authUrl = account.host + account.authenticationEndpoint;
+        console.log("Request URL: " + authUrl);
         console.log(authRequestBody);
 
         let request = new RequestSender();
         let result: Promise<string> = request.sendRequest(
-            authRequest.authUrl, "POST", headers, JSON.stringify(authRequestBody));
+            authUrl, "POST", headers, JSON.stringify(authRequestBody));
 
         authRequest.requestTime = timestamp.getDateTime();
 

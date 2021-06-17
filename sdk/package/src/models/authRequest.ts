@@ -19,19 +19,12 @@
 import { DateTimeInterface } from "./dateTime";
 
 /**
- * Interface for authentication data
- */
-export interface AuthDataInterface {
-  deviceId: string;
-  challenge: string;
-  authUrl: string;
-  privateKey: string;
-}
-
-/**
  * Interface for authentication requests.
  */
-export interface AuthRequestInterface extends AuthDataInterface {
+export interface AuthRequestInterface {
+  deviceId: string;
+  challenge: string;
+  sessionDataKey: string;
   connectionCode?: string;
   displayName?: string;
   username?: string;
@@ -43,12 +36,6 @@ export interface AuthRequestInterface extends AuthDataInterface {
   ipAddress?: string;
   location?: string;
   expiryTime?: string;
-  challenge: string;
-  deviceId: string;
-  sessionDataKey?: string;
-  authUrl: string;
-  privateKey: string;
   authenticationStatus?: String;
   requestTime?: DateTimeInterface;
-  // TODO: Consider if only the default string for time is sent or a destructured time for custom changes
 }

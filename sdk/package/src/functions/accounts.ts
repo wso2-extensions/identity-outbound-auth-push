@@ -165,11 +165,12 @@ export class Accounts {
                         removeDeviceEndpoint: discoveryData.removeDeviceEndpoint,
                         privateKey: keypair.prvKey,
                     };
+                    return JSON.stringify({res: result, data: account});
                 } else {
-                    account = {deviceID: request.deviceId};
+                    return JSON.stringify({res: result, data: null});
                 }
 
-                return JSON.stringify({res: result, data: account});
+
             });
     }
 
