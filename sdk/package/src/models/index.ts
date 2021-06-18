@@ -17,7 +17,7 @@
  */
 
 export * from "./accounts";
-export * from "./authRequest";
-export * from "./discoveryData";
-export * from "./registrationRequest";
-export * from "./dateTime";
+export * from "./auth-request";
+export * from "./discovery-data";
+export * from "./registration-request";
+export * from "./date-time";

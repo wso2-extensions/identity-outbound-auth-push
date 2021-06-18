@@ -21,7 +21,7 @@ import DeviceInfo from 'react-native-device-info';
 /**
  * Util class for handling device information.
  */
-export class DeviceInformation {
+export class DeviceInfoUtil {
   private static deviceName: string;
   private static deviceBrand: string;
   private static deviceModel: string;
@@ -33,12 +33,12 @@ export class DeviceInformation {
     // TODO: Is there a requirement to check if the device name has changed?
 
     // Adding device name
-    if (DeviceInformation.deviceName == null) {
+    if (DeviceInfoUtil.deviceName == null) {
       console.log("Constructor called to add details.");
       DeviceInfo.getDeviceName()
         .then((deviceName: string) => {
           console.log('Device Name: ' + deviceName);
-          DeviceInformation.deviceName = deviceName;
+          DeviceInfoUtil.deviceName = deviceName;
         })
         .catch((err: string) => {
           console.log('Get device name: ' + err);
@@ -48,17 +48,17 @@ export class DeviceInformation {
     }
 
     // Adding device brand
-    if (DeviceInformation.deviceBrand == null) {
+    if (DeviceInfoUtil.deviceBrand == null) {
       console.log("Adding device model");
-      DeviceInformation.deviceBrand = DeviceInfo.getBrand();
+      DeviceInfoUtil.deviceBrand = DeviceInfo.getBrand();
     } else {
       console.log("Model already added.")
     }
 
     // Adding device model
-    if (DeviceInformation.deviceModel == null) {
+    if (DeviceInfoUtil.deviceModel == null) {
       console.log("Adding device model");
-      DeviceInformation.deviceModel = DeviceInfo.getModel();
+      DeviceInfoUtil.deviceModel = DeviceInfo.getModel();
     }
 
   }
@@ -80,7 +80,7 @@ export class DeviceInformation {
    */
   public static getDeviceModel(): string {
 
-    return DeviceInformation.deviceModel;
+    return DeviceInfoUtil.deviceModel;
   }
 
   /**
@@ -90,7 +90,7 @@ export class DeviceInformation {
    */
   public static getDeviceBrand(): string {
 
-    return DeviceInformation.deviceBrand;
+    return DeviceInfoUtil.deviceBrand;
   }
 
 }

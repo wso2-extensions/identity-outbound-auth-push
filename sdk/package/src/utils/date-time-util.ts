@@ -16,12 +16,12 @@
  * under the License.
  */
 
-import { DateTimeInterface } from "src/models/dateTime";
+import { DateTimeInterface } from "src/models/date-time";
 
 /**
  * Util class for handling datetime functions.
  */
-export class DateTime {
+export class DateTimeUtil {
   private dateTime: DateTimeInterface;
 
   public constructor() {

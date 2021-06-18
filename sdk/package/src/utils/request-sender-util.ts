@@ -21,7 +21,7 @@ import { fetch } from "react-native-ssl-pinning";
 /**
  * Util class for handling http requests.
  */
-export class RequestSender {
+export class RequestSenderUtil {
 
   public constructor() {}
 

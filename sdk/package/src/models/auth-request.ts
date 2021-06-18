@@ -16,7 +16,7 @@
  * under the License.
  */
 
-import { DateTimeInterface } from "./dateTime";
+import { DateTimeInterface } from "./date-time";
 
 /**
  * Interface for authentication requests.

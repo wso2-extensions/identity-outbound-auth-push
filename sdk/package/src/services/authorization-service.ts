@@ -16,10 +16,10 @@
  * under the License.
  */
 
-import {AuthRequestInterface} from "../models/authRequest";
-import {RequestSender} from "../utils/requestSender";
+import {AuthRequestInterface} from "../models/auth-request";
+import {RequestSenderUtil} from "../utils/request-sender-util";
 
-import {DateTime} from "../utils/dateTime";
+import {DateTimeUtil} from "../utils/date-time-util";
 import {KJUR} from "jsrsasign";
 import uuid from "uuid-random";
 import {AccountsInterface} from "../models";
@@ -117,7 +117,7 @@ export class AuthorizationService {
 
         console.log("challenge: " + authRequest.challenge);
 
-        let timestamp = new DateTime();
+        let timestamp = new DateTimeUtil();
 
         let jwt = KJUR.jws.JWS.sign(
             null,
@@ -154,7 +154,7 @@ export class AuthorizationService {
         console.log("Request URL: " + authUrl);
         console.log(authRequestBody);
 
-        let request = new RequestSender();
+        let request = new RequestSenderUtil();
         let result: Promise<any> = request.sendRequest(
             authUrl, "POST", headers, JSON.stringify(authRequestBody));
 

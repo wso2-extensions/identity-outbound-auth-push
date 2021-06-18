@@ -16,13 +16,13 @@
  * under the License.
  */
 
-import {RegistrationRequestInterface} from "../models/registrationRequest";
+import {RegistrationRequestInterface} from "../models/registration-request";
 import {AccountsInterface} from "../models/accounts";
-import {DiscoveryDataInterface} from "../models/discoveryData";
-import {DeviceInformation} from "../utils/deviceInformation";
-import {Crypto} from "../utils/crypto";
+import {DiscoveryDataInterface} from "../models/discovery-data";
+import {DeviceInfoUtil} from "../utils/device-info-util";
+import {CryptoUtil} from "../utils/crypto-util";
 import uuid from "uuid-random";
-import {RequestSender} from "../utils/requestSender";
+import {RequestSenderUtil} from "../utils/request-sender-util";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {KJUR} from "jsrsasign";
 
@@ -43,10 +43,10 @@ export class AccountsService {
         let discoveryData = this.processDiscoveryData(regRequest);
         console.log("Discovery Data Processed");
 
-        let keypair: any = Crypto.generateKeypair();
+        let keypair: any = CryptoUtil.generateKeypair();
         let signatureString = regRequest.chg + "." + fcmToken;
         console.log("Keypair:", keypair);
-        let signedChallenge: string = Crypto.signChallenge(
+        let signedChallenge: string = CryptoUtil.signChallenge(
             keypair.prvKey,
             signatureString
         );
@@ -64,8 +64,8 @@ export class AccountsService {
             signature: signedChallenge,
         };
 
-        request.deviceName = DeviceInformation.getDeviceName();
-        request.model = DeviceInformation.getDeviceModel();
+        request.deviceName = DeviceInfoUtil.getDeviceName();
+        request.model = DeviceInfoUtil.getDeviceModel();
 
         let regRequestBody: any = {
             deviceId: request.deviceId,
@@ -85,7 +85,7 @@ export class AccountsService {
             "Content-Type": "application/json",
         };
 
-        let newRequest: RequestSender = new RequestSender();
+        let newRequest: RequestSenderUtil = new RequestSenderUtil();
         let registrationUrl =
             discoveryData.host +
             discoveryData.basePath +
@@ -163,7 +163,7 @@ export class AccountsService {
 
         console.log("Device ID: " + account.deviceID);
 
-        let request: RequestSender = new RequestSender();
+        let request: RequestSenderUtil = new RequestSenderUtil();
 
         return request.sendRequest(url, requestMethod, headers, JSON.stringify(body))
             .then((res) => {

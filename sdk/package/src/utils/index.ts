@@ -16,7 +16,7 @@
  * under the License.
  */
 
-export * from "./crypto";
-export * from "./deviceInformation";
-export * from "./requestSender";
-export * from "./dateTime";
+export * from "./crypto-util";
+export * from "./device-info-util";
+export * from "./request-sender-util";
+export * from "./date-time-util";

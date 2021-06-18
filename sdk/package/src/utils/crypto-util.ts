@@ -21,7 +21,7 @@ import { hextob64, KEYUTIL, KJUR } from "jsrsasign";
 /**
  * Util class handling crypto related functions.
  */
-export class Crypto {
+export class CryptoUtil {
 
   /**
    * Generate new keypair.
