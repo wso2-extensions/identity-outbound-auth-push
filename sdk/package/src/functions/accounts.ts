@@ -152,7 +152,7 @@ export class Accounts {
             )
             .then((result) => {
                 let account: AccountsInterface;
-                if (result == "OK") {
+                if (result.status === 200) {
                     account = {
                         deviceID: request.deviceId,
                         username: discoveryData.username,
@@ -165,9 +165,9 @@ export class Accounts {
                         removeDeviceEndpoint: discoveryData.removeDeviceEndpoint,
                         privateKey: keypair.prvKey,
                     };
-                    return JSON.stringify({res: result, data: account});
+                    return JSON.stringify({res: "OK", data: account});
                 } else {
-                    return JSON.stringify({res: result, data: null});
+                    return JSON.stringify({res: "FAILED", data: null});
                 }
 
 
@@ -213,7 +213,14 @@ export class Accounts {
         console.log("Device ID: " + account.deviceID);
 
         let request: RequestSender = new RequestSender();
-        return request.sendRequest(url, requestMethod, headers, JSON.stringify(body));
+        return request.sendRequest(url, requestMethod, headers, JSON.stringify(body))
+            .then((res) => {
+                if (res.status === 204 || res.status === 200) {
+                    return JSON.stringify({res: "SUCCESS", data: account});
+                } else {
+                    return JSON.stringify({res: "FAILED", data: account});
+                }
+            });
     }
 
     /**

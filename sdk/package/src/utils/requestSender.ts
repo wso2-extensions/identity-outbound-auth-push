@@ -37,7 +37,7 @@ export class RequestSender {
     requestMethod: any,
     requestHeaders: any,
     body: any
-  ): Promise<string> {
+  ): Promise<any> {
     return fetch(url, {
       method: requestMethod,
       disableAllSecurity: true,
@@ -49,7 +49,7 @@ export class RequestSender {
     })
       .then((response: any) => {
         console.log(`response received ${response.bodyString}`);
-        return response.status == "200" ? "OK" : "FAILED";
+        return response;
       })
       .catch((err: any) => {
         console.log(`error: ${err.status}`);

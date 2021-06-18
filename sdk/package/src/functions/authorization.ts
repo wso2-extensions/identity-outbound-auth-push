@@ -177,21 +177,24 @@ export class Authorization {
         console.log(authRequestBody);
 
         let request = new RequestSender();
-        let result: Promise<string> = request.sendRequest(
+        let result: Promise<any> = request.sendRequest(
             authUrl, "POST", headers, JSON.stringify(authRequestBody));
 
         authRequest.requestTime = timestamp.getDateTime();
 
-        return result.then((result) => {
-            console.log("Response test: " + result);
-            if (result == "OK" && response == "SUCCESSFUL") {
+        return result.then((res) => {
+            console.log("Response test: " + res);
+            let result;
+            if (res.status === 202 || res.status === 200 && response == "SUCCESSFUL") {
                 authRequest.authenticationStatus = "Accepted";
+                result = "OK";
                 console.log("Auth is OK and Accepted");
-            } else if (result == "OK" && response == "DENIED") {
+            } else if (res.status === 202 || res.status === 200 && response == "DENIED") {
                 authRequest.authenticationStatus = "Denied";
+                result = "FAILED";
                 console.log("Auth is OK and Denied");
             } else {
-                console.log("Auth response has a problem. Check! " + String(result));
+                console.log("Auth response has a problem. Check! " + String(res));
             }
             console.log(authRequest.authenticationStatus);
             return JSON.stringify({res: result, data: authRequest});
