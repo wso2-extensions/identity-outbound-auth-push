@@ -29,7 +29,7 @@ import {KJUR} from "jsrsasign";
 /**
  * Class for all the functionality related to accounts.
  */
-export class Accounts {
+export class AccountsService {
 
     /**
      * Enrol the device with the WSO2 Identity Server.
@@ -198,6 +198,7 @@ export class Accounts {
             regRequest.chg
         ) {
             discoveryData = {
+                tenantDomain: regRequest.td,
                 deviceId: regRequest.did,
                 username: regRequest.un,
                 host: regRequest.hst,
@@ -205,15 +206,11 @@ export class Accounts {
                 registrationEndpoint: regRequest.re,
                 authenticationEndpoint: regRequest.ae,
                 removeDeviceEndpoint: regRequest.rde,
-                challenge: regRequest.chg,
+                challenge: regRequest.chg
             };
         } else {
 
             throw new Error("One or more required parameters missing");
-        }
-
-        if (regRequest.td) {
-            discoveryData.tenantDomain = regRequest.td;
         }
 
         if (regRequest.fn) {

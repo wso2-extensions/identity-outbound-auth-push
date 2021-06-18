@@ -24,7 +24,7 @@ import {KJUR} from "jsrsasign";
 import uuid from "uuid-random";
 import {AccountsInterface} from "../models";
 
-export class Authorization {
+export class AuthorizationService {
 
     constructor() {
     }
@@ -46,6 +46,8 @@ export class Authorization {
             request.data.sessionDataKey
         ) {
             authRequest = {
+                organization: request.data.organization,
+                username: request.data.username,
                 deviceId: request.data.deviceId,
                 challenge: request.data.challenge,
                 sessionDataKey: request.data.sessionDataKey,
@@ -53,7 +55,7 @@ export class Authorization {
                     request.data.sessionDataKey.substring(0, 4) +
                     " - " +
                     request.data.sessionDataKey.substring(4, 8)
-                ).toUpperCase(),
+                ).toUpperCase()
             };
         } else {
 
@@ -62,14 +64,6 @@ export class Authorization {
 
         if (request.data.displayName) {
             authRequest.displayName = request.data.displayName;
-        }
-
-        if (request.data.username) {
-            authRequest.username = request.data.username;
-        }
-
-        if (request.data.organization) {
-            authRequest.organization = request.data.organization;
         }
 
         if (request.data.applicationName) {

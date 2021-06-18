@@ -16,5 +16,5 @@
  * under the License.
  */
 
-export * from "./accounts";
-export * from "./authorization";
+export * from "./accounts-service";
+export * from "./authorization-service";
