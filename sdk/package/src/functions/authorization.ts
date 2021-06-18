@@ -37,6 +37,7 @@ export class Authorization {
     public static processAuthRequest(
         request: any
     ): AuthRequestInterface {
+
         let authRequest: AuthRequestInterface;
 
         if (
@@ -119,6 +120,7 @@ export class Authorization {
         response: string,
         account: AccountsInterface
     ): Promise<any> {
+
         console.log("challenge: " + authRequest.challenge);
 
         let timestamp = new DateTime();

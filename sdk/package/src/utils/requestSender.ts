@@ -22,6 +22,7 @@ import { fetch } from "react-native-ssl-pinning";
  * Util class for handling http requests.
  */
 export class RequestSender {
+
   public constructor() {}
 
   /**
@@ -38,6 +39,7 @@ export class RequestSender {
     requestHeaders: any,
     body: any
   ): Promise<any> {
+
     return fetch(url, {
       method: requestMethod,
       disableAllSecurity: true,
@@ -49,10 +51,12 @@ export class RequestSender {
     })
       .then((response: any) => {
         console.log(`response received ${response.bodyString}`);
+
         return response;
       })
       .catch((err: any) => {
         console.log(`error: ${err.status}`);
+
         return "FAILED";
       });
   }

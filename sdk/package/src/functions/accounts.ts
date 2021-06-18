@@ -38,6 +38,7 @@ export class Accounts {
      * @param fcmToken Firebase push authentication token
      */
     public async addAccount(regRequest: any, fcmToken: string): Promise<any> {
+
         console.log("Add Account function");
         let discoveryData = this.processDiscoveryData(regRequest);
         console.log("Discovery Data Processed");
@@ -112,8 +113,10 @@ export class Accounts {
                         removeDeviceEndpoint: discoveryData.removeDeviceEndpoint,
                         privateKey: keypair.prvKey,
                     };
+
                     return JSON.stringify({res: "OK", data: account});
                 } else {
+
                     return JSON.stringify({res: "FAILED", data: null});
                 }
 
@@ -129,6 +132,7 @@ export class Accounts {
     public async removeAccount(
         account: AccountsInterface,
     ): Promise<string> {
+
         console.log("Remove account function");
         let jwt = KJUR.jws.JWS.sign(
             null,
@@ -160,11 +164,14 @@ export class Accounts {
         console.log("Device ID: " + account.deviceID);
 
         let request: RequestSender = new RequestSender();
+
         return request.sendRequest(url, requestMethod, headers, JSON.stringify(body))
             .then((res) => {
                 if (res.status === 204 || res.status === 200) {
+
                     return JSON.stringify({res: "SUCCESS", data: account});
                 } else {
+
                     return JSON.stringify({res: "FAILED", data: account});
                 }
             });
@@ -201,6 +208,7 @@ export class Accounts {
                 challenge: regRequest.chg,
             };
         } else {
+
             throw new Error("One or more required parameters missing");
         }
 
@@ -217,6 +225,7 @@ export class Accounts {
         }
 
         console.log("Discovery data test: " + JSON.stringify(discoveryData));
+
         return discoveryData;
     }
 }

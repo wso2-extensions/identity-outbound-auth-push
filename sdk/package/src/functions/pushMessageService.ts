@@ -29,11 +29,13 @@ export class PushMessageService {
      * @param token Push message device token
      */
     public static async savePushToken(token: string) {
+
         if (token) {
             // user has a device token
             await AsyncStorage.setItem("fcmToken", token);
             console.log("Push Token" + token);
         } else {
+
             throw new Error("Push token not available");
         }
     }
@@ -45,12 +47,14 @@ export class PushMessageService {
      * @param saveToken Boolean true if saving token internally
      */
     public static async updatePushToken(token: string, saveToken?: boolean) {
+
         if (token) {
             if (saveToken) {
                 this.savePushToken(token);
                 console.log("Push token updated");
             }
         } else {
+
             throw new Error("Push token not available");
         }
     }
@@ -61,11 +65,14 @@ export class PushMessageService {
      * @returns promise of push token
      */
     public static async getPushToken(): Promise<any> {
+
         await AsyncStorage.getItem("privateKey")
             .then((token: any) => {
+
                 return token;
             })
             .catch((err: any) => {
+
                 throw new Error("NullPushTokenError: " + err);
             });
     }

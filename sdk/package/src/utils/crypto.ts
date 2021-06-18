@@ -29,6 +29,7 @@ export class Crypto {
    * @returns keypair - Generated keypair object containing PEM strings
    */
   public static generateKeypair(): any {
+
     let keyPair = KEYUTIL.generateKeypair("RSA", 1024);
     return {
       pubKey: KEYUTIL.getPEM(keyPair.pubKeyObj),
@@ -46,15 +47,18 @@ export class Crypto {
    */
   public static signChallenge(privateKey: string, challenge: string): string {
     try {
+
       let prvKey = KEYUTIL.getKey(privateKey);
       console.log("Prvkey:" + privateKey);
       let sig: any = new KJUR.crypto.Signature({ alg: "SHA256withRSA" });
       sig.init(prvKey);
       let signature = sig.signString(challenge);
+
       return hextob64(signature);
     } catch (err) {
       console.log("Sign Failed: " + err);
     }
+
     return "";
   }
 }

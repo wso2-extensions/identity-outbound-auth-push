@@ -26,7 +26,8 @@ export class DeviceInformation {
   private static deviceBrand: string;
   private static deviceModel: string;
 
-  public constructor() { 
+  public constructor() {
+
     console.log("Device info initialized");
 
     // TODO: Is there a requirement to check if the device name has changed?
@@ -42,7 +43,7 @@ export class DeviceInformation {
         .catch((err: string) => {
           console.log('Get device name: ' + err);
         })
-    } else { 
+    } else {
       console.log("Device info already added.");
     }
 
@@ -50,12 +51,12 @@ export class DeviceInformation {
     if (DeviceInformation.deviceBrand == null) {
       console.log("Adding device model");
       DeviceInformation.deviceBrand = DeviceInfo.getBrand();
-    } else { 
+    } else {
       console.log("Model already added.")
     }
 
     // Adding device model
-    if (DeviceInformation.deviceModel == null) { 
+    if (DeviceInformation.deviceModel == null) {
       console.log("Adding device model");
       DeviceInformation.deviceModel = DeviceInfo.getModel();
     }
@@ -64,28 +65,31 @@ export class DeviceInformation {
 
   /**
    * Returns the name of the device.
-   * 
+   *
    * @returns deviceName - Name of the device
    */
   public static getDeviceName():string {
+
     return this.deviceName;
   }
 
   /**
    * Returns the model name of the device.
-   * 
+   *
    * @returns deviceModel - Model of the device
    */
   public static getDeviceModel(): string {
+
     return DeviceInformation.deviceModel;
   }
 
   /**
    * Returns the brand name of the device.
-   * 
+   *
    * @returns deviceBrand - Brand name of the device
    */
-  public static getDeviceBrand(): string { 
+  public static getDeviceBrand(): string {
+
     return DeviceInformation.deviceBrand;
   }
 
