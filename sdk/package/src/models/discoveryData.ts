@@ -24,7 +24,7 @@ export interface DiscoveryDataInterface {
   username: string;
   firstName?: string;
   lastName?: string;
-  tenantDomain?: string;
+  tenantDomain: string;
   host: string;
   basePath: string;
   registrationEndpoint: string;

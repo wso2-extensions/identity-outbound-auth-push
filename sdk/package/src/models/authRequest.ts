@@ -27,8 +27,8 @@ export interface AuthRequestInterface {
   sessionDataKey: string;
   connectionCode?: string;
   displayName?: string;
-  username?: string;
-  organization?: string;
+  username: string;
+  organization: string;
   applicationName?: string;
   applicationUrl?: string;
   deviceName?: string;

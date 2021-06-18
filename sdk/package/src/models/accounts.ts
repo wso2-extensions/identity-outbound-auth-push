@@ -21,10 +21,10 @@
  */
 export interface AccountsInterface {
   deviceID: string;
-  username?: string;
+  username: string;
   firstName?: string;
   lastName?: string;
-  tenantDomain?: string;
+  tenantDomain: string;
   host: string;
   basePath: string;
   authenticationEndpoint: string;
