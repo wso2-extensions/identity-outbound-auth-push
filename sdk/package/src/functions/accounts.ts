@@ -175,51 +175,42 @@ export class Accounts {
     }
 
     /**
-     * Revoke the enrollment of the device from the Identity Server
+     * Revoke the enrollment of the device from the Identity Server.
      *
-     * @param accountID Unique ID to identify the account
+     * @param account User account to be removed
      */
     public async removeAccount(
-        accountID: string,
+        account: AccountsInterface,
     ): Promise<string> {
         console.log("Remove account function");
-        let challenge = uuid();
-        let signature = Crypto.signChallenge(asyncPriv, challenge);
-
-        console.log("Remove Account Challenge: " + challenge);
-        console.log("Remove Account Sig: " + signature);
-
         let jwt = KJUR.jws.JWS.sign(
             null,
             {alg: "RS256"},
             {
                 jti: uuid(),
-                sub: "username@tenant.domain",
+                sub: account.username + "@" + account.tenantDomain,
                 iss: "wso2verify",
-                aud: "https://localhost:9443/t/" + "organization" + "/",
+                aud: account.host + "/t/" + account.tenantDomain + "/",
                 nbf: KJUR.jws.IntDate.get("now"),
                 exp: KJUR.jws.IntDate.get("now + 1hour"),
                 iat: KJUR.jws.IntDate.get("now"),
-                did: asyncId,
+                did: account.deviceID,
                 act: "REMOVE",
             },
-            asyncPriv
+            account.privateKey
         );
 
         let body = {
             token: jwt,
         };
 
-        let url =
-            "https://192.168.1.112:9443/t/carbon.super/api/users/v1/me/push-auth/devices/" +
-            asyncId +
-            "/remove";
+        let url = account.host + account.basePath + '/push-auth/devices' + account.deviceID + '/remove';
         let headers = {
             "Content-Type": "application/json",
         };
         let requestMethod = "POST";
 
-        console.log("Device ID: " + asyncId);
+        console.log("Device ID: " + account.deviceID);
 
         let request: RequestSender = new RequestSender();
         return request.sendRequest(url, requestMethod, headers, JSON.stringify(body));
