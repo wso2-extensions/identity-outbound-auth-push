@@ -27,28 +27,28 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {Authorization} from "./authorization";
 import {KJUR} from "jsrsasign";
 
-let asyncPriv: string;
-let asyncId: string | null;
+// let asyncPriv: string;
+// let asyncId: string | null;
 
-const getData = async () => {
-    try {
-        const value = await AsyncStorage.getItem("privateKey");
-        if (value !== null) {
-            // value previously stored
-            asyncPriv = value;
-        }
-        const value2 = await AsyncStorage.getItem("deviceId");
-        if (value !== null) {
-            // value previously stored
-            asyncId = value2;
-        }
-    } catch (e) {
-        // error reading value
-        console.log("No private key available");
-    }
-};
-
-getData();
+// const getData = async () => {
+//     try {
+//         const value = await AsyncStorage.getItem("privateKey");
+//         if (value !== null) {
+//             // value previously stored
+//             asyncPriv = value;
+//         }
+//         const value2 = await AsyncStorage.getItem("deviceId");
+//         if (value !== null) {
+//             // value previously stored
+//             asyncId = value2;
+//         }
+//     } catch (e) {
+//         // error reading value
+//         console.log("No private key available");
+//     }
+// };
+//
+// getData();
 
 /**
  * Class for all the functionality related to accounts.
@@ -98,10 +98,10 @@ export class Accounts {
         );
 
         // Store data for later use
-        this.storeData(keypair.prvKey);
-        this.storeData1(discoveryData.deviceId);
-        getData();
-        Authorization.updateSavedData();
+        // this.storeData(keypair.prvKey);
+        // this.storeData1(discoveryData.deviceId);
+        // getData();
+        // Authorization.updateSavedData();
 
         let modPubKey: string = keypair.pubKey
             .replace("-----BEGIN PUBLIC KEY-----", "")
@@ -223,31 +223,31 @@ export class Accounts {
             });
     }
 
-    /**
-     * Get an account from saved accounts.
-     *
-     * @param accountsList List of accounts
-     * @param accountID Unique ID to identify the account
-     */
-    public static getAccount(accountsList: any, accountID: string): any {
-        accountsList.filter((account: any) => {
-            console.log(
-                "Correct get account: " + JSON.stringify(account.deviceID === accountID)
-            );
-            return account.deviceID === accountID;
-        });
-    }
+    // /**
+    //  * Get an account from saved accounts.
+    //  *
+    //  * @param accountsList List of accounts
+    //  * @param accountID Unique ID to identify the account
+    //  */
+    // public static getAccount(accountsList: any, accountID: string): any {
+    //     accountsList.filter((account: any) => {
+    //         console.log(
+    //             "Correct get account: " + JSON.stringify(account.deviceID === accountID)
+    //         );
+    //         return account.deviceID === accountID;
+    //     });
+    // }
 
-    /**
-     * Returns the list of saved accounts.
-     */
-    getAccounts(): Array<AccountsInterface> {
-        return Accounts.accountsList;
-    }
-
-    /*
-     *  Internal functions
-     */
+    // /**
+    //  * Returns the list of saved accounts.
+    //  */
+    // getAccounts(): Array<AccountsInterface> {
+    //     return Accounts.accountsList;
+    // }
+    //
+    // /*
+    //  *  Internal functions
+    //  */
 
     /**
      * Organizes the data into a complex object.

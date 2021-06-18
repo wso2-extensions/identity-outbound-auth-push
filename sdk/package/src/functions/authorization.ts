@@ -26,22 +26,22 @@ import {KJUR} from "jsrsasign";
 import uuid from "uuid-random";
 import {AccountsInterface} from "../models";
 
-let privateKey: string;
+// let privateKey: string;
 
-const getData = async () => {
-    try {
-        const value = await AsyncStorage.getItem("privateKey");
-        if (value !== null) {
-            // value previously stored
-            privateKey = value;
-        }
-    } catch (e) {
-        // error reading value
-        console.log("No private key available");
-    }
-};
+// const getData = async () => {
+//     try {
+//         const value = await AsyncStorage.getItem("privateKey");
+//         if (value !== null) {
+//             // value previously stored
+//             privateKey = value;
+//         }
+//     } catch (e) {
+//         // error reading value
+//         console.log("No private key available");
+//     }
+// };
 
-getData();
+// getData();
 
 export class Authorization {
 
@@ -214,7 +214,7 @@ export class Authorization {
         }
     }
 
-    public static updateSavedData() {
-        getData();
-    }
+    // public static updateSavedData() {
+    //     getData();
+    // }
 }
