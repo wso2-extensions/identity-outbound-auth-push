@@ -204,7 +204,7 @@ export class Accounts {
             token: jwt,
         };
 
-        let url = account.host + account.basePath + '/push-auth/devices' + account.deviceID + '/remove';
+        let url = account.host + account.basePath + '/push-auth/devices/' + account.deviceID + '/remove';
         let headers = {
             "Content-Type": "application/json",
         };
