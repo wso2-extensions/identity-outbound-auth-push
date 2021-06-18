@@ -9,8 +9,34 @@ import ActivityScreen from './ActivityScreen';
 
 import ProfileIcon from '../assets/img/user-profile.png';
 import HistoryIcon from '../assets/img/material-history.png';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {getAccountsList, setAccountsList} from '../utils/AccountsList';
 
 const Tab = createBottomTabNavigator();
+
+const getAccountData = async () => {
+  console.log('Get accounts at main');
+  return await AsyncStorage.getItem('accounts').then((accounts) => {
+    console.log('Accounts from Async at main:' + JSON.stringify(accounts));
+    return accounts;
+  });
+};
+
+if (getAccountsList().length === 0) {
+  getAccountData()
+    .then((accounts) => {
+      console.log('Add accounts to datastore');
+      if (accounts !== null) {
+        console.log('Old accounts list: ' + JSON.stringify(accounts));
+        setAccountsList(JSON.parse(accounts));
+        console.log('Updated the accounts list');
+      }
+    })
+    .catch((e) => {
+      throw new Error('Error occurred when parsing JSON: ' + e);
+    });
+  console.log('New accounts List: ' + JSON.stringify(getAccountsList()));
+}
 
 const MainScreen = () => {
   return (

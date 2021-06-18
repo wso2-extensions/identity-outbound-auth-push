@@ -3,6 +3,7 @@ import React from 'react';
 import {View, Image, Text, StyleSheet} from 'react-native';
 import {LargeButton} from '../components/Button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {accountsList} from '../utils/AccountsList';
 
 let storeData = async (account) => {
   try {
@@ -20,7 +21,7 @@ let storeData = async (account) => {
       }
       console.log('Type of newAccounts 2: ' + typeof newAccounts);
       let acc = JSON.parse(account);
-      acc.accountId = newAccounts.length == 0 ? 1 : newAccounts.length + 1;
+      acc.accountId = newAccounts.length === 0 ? 1 : newAccounts.length + 1;
       console.log('Account ID: ' + acc.accountId);
       console.log('Account to save: ' + JSON.stringify(acc));
       newAccounts.push(acc);
@@ -38,7 +39,15 @@ let storeData = async (account) => {
 const AddAccountSuccessScreen = ({route, navigation}) => {
   let accountData = route.params;
   console.log('Account data at success: ' + JSON.stringify(accountData));
-  storeData(JSON.stringify(accountData));
+  storeData(JSON.stringify(accountData))
+    .then(() => {
+      // accountsList.push(JSON.stringify(accountData));
+      console.log('Test account saving: ');
+    })
+    .catch(() => {
+      console.log('Running add to async catch.');
+      navigation.navigate('Add Failed');
+    });
 
   return (
     <View>

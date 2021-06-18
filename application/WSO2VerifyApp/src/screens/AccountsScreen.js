@@ -86,7 +86,7 @@ const AccountsScreen = ({route, navigation}) => {
   route.params ? console.log('Green') : console.log('Black');
 
   // data.length == 0 ? getAccounts() : (data = data);
-  console.log('Data is accounts screen: ' + data);
+  console.log('Data in accounts screen: ' + data);
 
   /*
    * Loading the data when the accounts screen is focussed to be populated in the cards
@@ -96,10 +96,10 @@ const AccountsScreen = ({route, navigation}) => {
       const getData = async () => {
         await AsyncStorage.getItem('accounts').then((accounts) => {
           console.log(JSON.stringify(data) + ' and ' + accounts);
-          if (accounts != JSON.stringify(data)) {
+          if (accounts !== JSON.stringify(data)) {
             setData(JSON.parse(accounts));
             console.log('Changed so set');
-          } else if (accounts == []) {
+          } else if (accounts === []) {
             setData([]);
           } else {
             console.log('Always running issue!');

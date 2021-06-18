@@ -63,7 +63,7 @@ const updateAccountsList = async (deviceId) => {
 };
 
 const removeAccount = (account) => {
-  console.log('Account to remove: ' + JSON.stringify(account.username));
+  console.log('Account to remove: ' + JSON.stringify(account));
   Alert.alert(
     'Warning',
     `Are you sure you want to remove account "${account.username}"?`,
@@ -78,7 +78,7 @@ const removeAccount = (account) => {
         onPress: () => {
           console.log('OK Pressed');
           let manageAccounts = new Accounts();
-          manageAccounts.removeAccount(account.deviceId, account.privateKey);
+          manageAccounts.removeAccount(account);
           // console.log(JSON.stringify(account));
           updateAccountsList(account.deviceID);
         },

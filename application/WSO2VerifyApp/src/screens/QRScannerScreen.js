@@ -39,7 +39,7 @@ const QRScannerScreen = ({navigation}) => {
     getPushId();
   }
 
-  onSuccess = (e) => {
+  let onSuccess = (e) => {
     console.log('Scanned: ', e.data);
     // let result = JSON.parse(e.data);
     // console.log('Object: ', result.one);

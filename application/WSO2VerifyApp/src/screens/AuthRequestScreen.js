@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Image, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {Authorization} from '@wso2/auth-push-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -34,13 +34,47 @@ const storeData = async (authData) => {
   }
 };
 
+// const getAccountData = async (id) => {
+//   console.log('Get accounts at main');
+//   return await AsyncStorage.getItem('accounts').then((accounts) => {
+//     console.log(
+//       'Accounts from Async at auth request:' + JSON.stringify(accounts),
+//     );
+//     return accounts;
+//   });
+// };
+
+let requestAccount;
+const getAccountByDeviceId = async (id) => {
+  return await AsyncStorage.getItem('accounts').then((accounts) => {
+    console.log(
+      'Accounts from Async at auth request:' + JSON.stringify(accounts),
+    );
+
+    let accountsObject = JSON.parse(accounts);
+
+    console.log(
+      'Required account for authentication:' +
+        JSON.stringify(accountsObject.find(({deviceID}) => deviceID === id)),
+    );
+
+    requestAccount = accountsObject.find(({deviceID}) => deviceID === id);
+  });
+};
+
 const AuthRequestScreen = ({route, navigation}) => {
+  // const [account, setAccount] = useState();
+
   let authData = Authorization.processAuthRequest(route.params);
+  getAccountByDeviceId(route.params.data.deviceId).then((account) => {
+    console.log('Got the required account: ' + JSON.stringify(account));
+    return account;
+  });
 
   return (
     <View>
       {/* Timer view */}
-      <View></View>
+      <View />
 
       {/* Logo view */}
       <View style={styles.logoView}>
@@ -146,7 +180,7 @@ const AuthRequestScreen = ({route, navigation}) => {
                   {authData.ipAddress}
                   {/* 192.168.1.1 */}
                 </Text>
-                <Text style={styles.infoCardTextSmall}></Text>
+                <Text style={styles.infoCardTextSmall} />
               </View>
             </View>
           </View>
@@ -190,7 +224,12 @@ const AuthRequestScreen = ({route, navigation}) => {
         <TouchableOpacity
           style={styles.responseButton}
           onPress={() => {
-            Authorization.sendAuthRequest(authData, 'SUCCESSFUL')
+            console.log('Yes auth response body: ', requestAccount.privateKey);
+            Authorization.sendAuthRequest(
+              authData,
+              'SUCCESSFUL',
+              requestAccount,
+            )
               .then((res) => {
                 let response = JSON.parse(res);
                 console.log(
