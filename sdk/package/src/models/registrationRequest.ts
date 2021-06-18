@@ -16,8 +16,6 @@
  * under the License.
  */
 
-import { DiscoveryDataInterface } from "../models/discoveryData";
-
 /**
  * Interface for Registration request model.
  */

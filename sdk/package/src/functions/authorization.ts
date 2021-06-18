@@ -17,31 +17,12 @@
  */
 
 import {AuthRequestInterface} from "../models/authRequest";
-import {Crypto} from "../utils/crypto";
 import {RequestSender} from "../utils/requestSender";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import {DateTime} from "../utils/dateTime";
 import {KJUR} from "jsrsasign";
 import uuid from "uuid-random";
 import {AccountsInterface} from "../models";
-
-// let privateKey: string;
-
-// const getData = async () => {
-//     try {
-//         const value = await AsyncStorage.getItem("privateKey");
-//         if (value !== null) {
-//             // value previously stored
-//             privateKey = value;
-//         }
-//     } catch (e) {
-//         // error reading value
-//         console.log("No private key available");
-//     }
-// };
-
-// getData();
 
 export class Authorization {
 
@@ -74,6 +55,7 @@ export class Authorization {
                 ).toUpperCase(),
             };
         } else {
+
             throw new Error("One or more required parameters missing");
         }
 
@@ -197,24 +179,9 @@ export class Authorization {
                 console.log("Auth response has a problem. Check! " + String(res));
             }
             console.log(authRequest.authenticationStatus);
+
             return JSON.stringify({res: result, data: authRequest});
         });
     }
 
-    /**
-     * Checks if a value is null.
-     *
-     * @param value Value to be checked for null
-     */
-    private isNotNull(value: any): boolean {
-        if (value != null) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    // public static updateSavedData() {
-    //     getData();
-    // }
 }

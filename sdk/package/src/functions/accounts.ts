@@ -24,59 +24,12 @@ import {Crypto} from "../utils/crypto";
 import uuid from "uuid-random";
 import {RequestSender} from "../utils/requestSender";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {Authorization} from "./authorization";
 import {KJUR} from "jsrsasign";
-
-// let asyncPriv: string;
-// let asyncId: string | null;
-
-// const getData = async () => {
-//     try {
-//         const value = await AsyncStorage.getItem("privateKey");
-//         if (value !== null) {
-//             // value previously stored
-//             asyncPriv = value;
-//         }
-//         const value2 = await AsyncStorage.getItem("deviceId");
-//         if (value !== null) {
-//             // value previously stored
-//             asyncId = value2;
-//         }
-//     } catch (e) {
-//         // error reading value
-//         console.log("No private key available");
-//     }
-// };
-//
-// getData();
 
 /**
  * Class for all the functionality related to accounts.
  */
 export class Accounts {
-    private static accountsList: Array<AccountsInterface> = [];
-
-    constructor() {
-        if (Accounts.accountsList == null) {
-            Accounts.accountsList = [];
-        }
-    }
-
-    storeData = async (privKey: string) => {
-        try {
-            await AsyncStorage.setItem("privateKey", privKey);
-        } catch (e) {
-            console.log("Async storage error: " + e);
-        }
-    };
-
-    storeData1 = async (deviceId: string) => {
-        try {
-            await AsyncStorage.setItem("deviceId", deviceId);
-        } catch (e) {
-            console.log("Async storage error: " + e);
-        }
-    };
 
     /**
      * Enrol the device with the WSO2 Identity Server.
@@ -96,12 +49,6 @@ export class Accounts {
             keypair.prvKey,
             signatureString
         );
-
-        // Store data for later use
-        // this.storeData(keypair.prvKey);
-        // this.storeData1(discoveryData.deviceId);
-        // getData();
-        // Authorization.updateSavedData();
 
         let modPubKey: string = keypair.pubKey
             .replace("-----BEGIN PUBLIC KEY-----", "")
@@ -223,39 +170,12 @@ export class Accounts {
             });
     }
 
-    // /**
-    //  * Get an account from saved accounts.
-    //  *
-    //  * @param accountsList List of accounts
-    //  * @param accountID Unique ID to identify the account
-    //  */
-    // public static getAccount(accountsList: any, accountID: string): any {
-    //     accountsList.filter((account: any) => {
-    //         console.log(
-    //             "Correct get account: " + JSON.stringify(account.deviceID === accountID)
-    //         );
-    //         return account.deviceID === accountID;
-    //     });
-    // }
-
-    // /**
-    //  * Returns the list of saved accounts.
-    //  */
-    // getAccounts(): Array<AccountsInterface> {
-    //     return Accounts.accountsList;
-    // }
-    //
-    // /*
-    //  *  Internal functions
-    //  */
-
     /**
      * Organizes the data into a complex object.
      *
      * @param regRequest JSON string from the QR code
      */
     private processDiscoveryData(regRequest: any): DiscoveryDataInterface {
-        // TODO: Change structure once the API on the IS is corrected
 
         console.log("Process Discovery data");
         console.log("Reg Request: " + regRequest.did);
