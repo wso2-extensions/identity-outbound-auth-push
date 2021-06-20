@@ -248,6 +248,7 @@ public class PushDeviceHandlerService {
         discoveryDataDTO.setBp(discoveryData.getBasePath());
         discoveryDataDTO.setRe(discoveryData.getRegistrationEndpoint());
         discoveryDataDTO.setRde(discoveryData.getRemoveDeviceEndpoint());
+        discoveryDataDTO.setAe(discoveryData.getAuthenticationEndpoint());
         return discoveryDataDTO;
     }
 
