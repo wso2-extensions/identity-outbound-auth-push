@@ -22,10 +22,8 @@ package org.wso2.carbon.identity.api.user.push.device.handler.v1.impl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.wso2.carbon.identity.api.user.push.device.common.util.PushDeviceApiConstants;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.DefaultApiService;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.core.PushDeviceHandlerService;
-import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.StatusDTO;
 
 import javax.ws.rs.core.Response;
 
@@ -45,13 +43,8 @@ public class DefaultApiServiceImpl implements DefaultApiService {
         if (log.isDebugEnabled()) {
             log.debug("Removing device : " + deviceId + " of User : " + userId + ".");
         }
-        deviceHandlerService = new PushDeviceHandlerService();
         deviceHandlerService.unregisterDevice(deviceId);
-        StatusDTO statusDTO = new StatusDTO();
-        statusDTO.setOperation(PushDeviceApiConstants.OPERATION_REMOVE);
-        statusDTO.setDeviceId(deviceId);
-        statusDTO.setStatus(PushDeviceApiConstants.RESULT_SUCCESSFUL);
-        return Response.ok().entity(statusDTO).build();
+        return Response.ok().build();
     }
 
     @Override
@@ -60,7 +53,6 @@ public class DefaultApiServiceImpl implements DefaultApiService {
         if (log.isDebugEnabled()) {
             log.debug("Fetching data of device : " + deviceId + " of user : " + userId + ".");
         }
-        deviceHandlerService = new PushDeviceHandlerService();
         return Response.ok().entity(deviceHandlerService.getDevice(deviceId)).build();
     }
 
@@ -70,7 +62,6 @@ public class DefaultApiServiceImpl implements DefaultApiService {
         if (log.isDebugEnabled()) {
             log.debug("Retrieving all devices of user : " + userId + ".");
         }
-        deviceHandlerService = new PushDeviceHandlerService();
         return Response.ok().entity(deviceHandlerService.listDevices()).build();
     }
 }

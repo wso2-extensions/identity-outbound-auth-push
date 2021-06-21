@@ -22,13 +22,11 @@ package org.wso2.carbon.identity.api.user.push.device.handler.v1.impl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.wso2.carbon.identity.api.user.push.device.common.util.PushDeviceApiConstants;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.MeApiService;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.core.PushDeviceHandlerService;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.PatchDTO;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.RegistrationRequestDTO;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.RemoveRequestDTO;
-import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.StatusDTO;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -92,12 +90,10 @@ public class MeApiServiceImpl implements MeApiService {
                     + registrationRequest.getDeviceId() + ".");
         }
         if (registrationRequest != null) {
-            return Response.ok().entity(pushDeviceHandlerService.registerDevice(registrationRequest)).build();
+            pushDeviceHandlerService.registerDevice(registrationRequest);
+            return Response.accepted().build();
         } else {
-            StatusDTO statusDTO = new StatusDTO();
-            statusDTO.setOperation(PushDeviceApiConstants.OPERATION_REGISTER);
-            statusDTO.setStatus(PushDeviceApiConstants.RESULT_FAILED);
-            return Response.status(Response.Status.BAD_REQUEST).entity(statusDTO).build();
+            return Response.status(Response.Status.BAD_REQUEST).build();
         }
     }
 

@@ -26,7 +26,6 @@ import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.DeviceDTO;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.DiscoveryDataDTO;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.PatchDTO;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.RegistrationRequestDTO;
-import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.StatusDTO;
 import org.wso2.carbon.identity.application.authenticator.push.common.PushJWTValidator;
 import org.wso2.carbon.identity.application.authenticator.push.common.exception.PushAuthTokenValidationException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerClientException;
@@ -50,12 +49,10 @@ public class PushDeviceHandlerService {
      * Register a new device.
      *
      * @param registrationRequestDTO Registration request
-     * @return Status of registration request
      */
-    public StatusDTO registerDevice(RegistrationRequestDTO registrationRequestDTO) {
+    public void registerDevice(RegistrationRequestDTO registrationRequestDTO) {
 
         RegistrationRequest registrationRequest = new RegistrationRequest();
-        Device device;
         try {
             registrationRequest.setDeviceId(registrationRequestDTO.getDeviceId());
             registrationRequest.setDeviceModel(registrationRequestDTO.getModel());
@@ -63,7 +60,7 @@ public class PushDeviceHandlerService {
             registrationRequest.setPublicKey(registrationRequestDTO.getPublicKey());
             registrationRequest.setPushId(registrationRequestDTO.getPushId());
             registrationRequest.setSignature(registrationRequestDTO.getSignature());
-            device = PushDeviceHandlerServiceHolder.getPushDeviceHandlerService().registerDevice(registrationRequest);
+            PushDeviceHandlerServiceHolder.getPushDeviceHandlerService().registerDevice(registrationRequest);
 
         } catch (PushDeviceHandlerClientException e) {
             throw PushDeviceApiUtils.handleException(e,
@@ -72,12 +69,6 @@ public class PushDeviceHandlerService {
             throw PushDeviceApiUtils.handleException(e,
                     PushDeviceApiConstants.ErrorMessages.ERROR_CODE_REGISTER_DEVICE_SERVER_ERROR);
         }
-
-        StatusDTO statusDTO = new StatusDTO();
-        statusDTO.setDeviceId(device.getDeviceId());
-        statusDTO.setOperation(PushDeviceApiConstants.OPERATION_REGISTER);
-        statusDTO.setStatus(PushDeviceApiConstants.RESULT_SUCCESSFUL);
-        return statusDTO;
     }
 
     /**
@@ -106,19 +97,14 @@ public class PushDeviceHandlerService {
      * @param token    JWT containing device removal information
      * @return Result of the request
      */
-    public StatusDTO unregisterDeviceMobile(String deviceId, String token) {
+    public void unregisterDeviceMobile(String deviceId, String token) {
 
         PushJWTValidator validator = new PushJWTValidator();
-        StatusDTO status = new StatusDTO();
-        status.setDeviceId(deviceId);
-        status.setOperation(PushDeviceApiConstants.OPERATION_REMOVE);
         try {
             String publicKey = PushDeviceHandlerServiceHolder.getPushDeviceHandlerService().getPublicKey(deviceId);
 
             if (validator.getValidatedClaimSet(token, publicKey) != null) {
                 PushDeviceHandlerServiceHolder.getPushDeviceHandlerService().unregisterDevice(deviceId);
-                status.setStatus(PushDeviceApiConstants.RESULT_SUCCESSFUL);
-                return status;
             }
         } catch (PushDeviceHandlerServerException e) {
             throw PushDeviceApiUtils.handleException(e,
@@ -130,9 +116,6 @@ public class PushDeviceHandlerService {
             throw PushDeviceApiUtils.handleException(e,
                     PushDeviceApiConstants.ErrorMessages.ERROR_CODE_INVALID_SIGNATURE, deviceId);
         }
-        status.setStatus(PushDeviceApiConstants.RESULT_FAILED);
-        return status;
-
     }
 
     /**
@@ -161,22 +144,6 @@ public class PushDeviceHandlerService {
             throw PushDeviceApiUtils.handleException(e,
                     PushDeviceApiConstants.ErrorMessages.ERROR_CODE_GET_DEVICE_CLIENT_ERROR, deviceId);
         }
-
-//        try {
-//            JSONObject deviceObject = new JSONObject(updatedDevice);
-//            Device device = new Device();
-//            device.setDeviceId(deviceId);
-//            device.setDeviceName(deviceObject.getString("name"));
-//            device.setPushId(deviceObject.getString("pushId"));
-//            PushDeviceHandlerServiceHolder.getPushDeviceHandlerService().editDevice(deviceId, device);
-//        } catch (PushDeviceHandlerClientException e) {
-//            throw PushDeviceApiUtils.handleException(e,
-//                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_EDIT_DEVICE_CLIENT_ERROR, deviceId);
-//        } catch (PushDeviceHandlerServerException e) {
-//            throw PushDeviceApiUtils.handleException(e,
-//                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_EDIT_DEVICE_SERVER_ERROR, deviceId);
-//        }
-
     }
 
     /**
