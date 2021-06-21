@@ -18,13 +18,13 @@
  */
 package org.wso2.carbon.identity.api.user.push.device.handler.v1.core;
 
-import org.json.JSONObject;
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.identity.api.user.push.device.common.PushDeviceHandlerServiceHolder;
 import org.wso2.carbon.identity.api.user.push.device.common.util.PushDeviceApiConstants;
 import org.wso2.carbon.identity.api.user.push.device.common.util.PushDeviceApiUtils;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.DeviceDTO;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.DiscoveryDataDTO;
+import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.PatchDTO;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.RegistrationRequestDTO;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.StatusDTO;
 import org.wso2.carbon.identity.application.authenticator.push.common.PushJWTValidator;
@@ -139,24 +139,44 @@ public class PushDeviceHandlerService {
      * Update attributes of a registered device.
      *
      * @param deviceId      Unique ID of the device
-     * @param updatedDevice Device object with the updated attributes
+     * @param patchDTOArray Array of PatchDTO objects
      */
-    public void editDeviceName(String deviceId, String updatedDevice) {
+    public void editDevice(String deviceId, List<PatchDTO> patchDTOArray) {
 
         try {
-            JSONObject deviceObject = new JSONObject(updatedDevice);
-            Device device = new Device();
-            device.setDeviceId(deviceId);
-            device.setDeviceName(deviceObject.getString("name"));
-            device.setPushId(deviceObject.getString("pushId"));
-            PushDeviceHandlerServiceHolder.getPushDeviceHandlerService().editDevice(deviceId, device);
-        } catch (PushDeviceHandlerClientException e) {
-            throw PushDeviceApiUtils.handleException(e,
-                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_EDIT_DEVICE_CLIENT_ERROR, deviceId);
+            PushDeviceHandlerServiceHolder.getPushDeviceHandlerService().getDevice(deviceId);
+            for (PatchDTO patch: patchDTOArray) {
+                String operation = patch.getOperation();
+                if (operation.equals("REPLACE")) {
+                    if (patch.getPath().equals("/device-name")) {
+                        PushDeviceHandlerServiceHolder.getPushDeviceHandlerService()
+                                .editDevice(deviceId, patch.getPath(), patch.getValue());
+                    }
+                }
+            }
         } catch (PushDeviceHandlerServerException e) {
             throw PushDeviceApiUtils.handleException(e,
                     PushDeviceApiConstants.ErrorMessages.ERROR_CODE_EDIT_DEVICE_SERVER_ERROR, deviceId);
+        } catch (PushDeviceHandlerClientException e) {
+            throw PushDeviceApiUtils.handleException(e,
+                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_GET_DEVICE_CLIENT_ERROR, deviceId);
         }
+
+//        try {
+//            JSONObject deviceObject = new JSONObject(updatedDevice);
+//            Device device = new Device();
+//            device.setDeviceId(deviceId);
+//            device.setDeviceName(deviceObject.getString("name"));
+//            device.setPushId(deviceObject.getString("pushId"));
+//            PushDeviceHandlerServiceHolder.getPushDeviceHandlerService().editDevice(deviceId, device);
+//        } catch (PushDeviceHandlerClientException e) {
+//            throw PushDeviceApiUtils.handleException(e,
+//                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_EDIT_DEVICE_CLIENT_ERROR, deviceId);
+//        } catch (PushDeviceHandlerServerException e) {
+//            throw PushDeviceApiUtils.handleException(e,
+//                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_EDIT_DEVICE_SERVER_ERROR, deviceId);
+//        }
+
     }
 
     /**

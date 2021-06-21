@@ -46,20 +46,20 @@ public class PushDeviceApiUtils {
         } else {
             errorResponse = getErrorBuilder(errorEnum).build(log, e, errorEnum.getDescription());
         }
+        if (errorEnum.getMessage() == null) {
+            errorEnum.setMessage(e.getMessage());
+        }
         if (e instanceof PushAuthTokenValidationException) {
-            if (errorEnum.getMessage() == null) {
-                errorEnum.setMessage(e.getMessage());
-            }
+
             return new APIError(Response.Status.UNAUTHORIZED, errorResponse);
         } else if (e instanceof PushDeviceHandlerClientException) {
-            if (errorEnum.getMessage() == null) {
-                errorEnum.setMessage(e.getMessage());
+            if (errorEnum.getCode().equals(PushDeviceApiConstants
+                    .ErrorMessages.ERROR_CODE_GET_DEVICE_CLIENT_ERROR.getCode())) {
+                return new APIError(Response.Status.NOT_FOUND, errorResponse);
+            } else {
+                return new APIError(Response.Status.BAD_REQUEST, errorResponse);
             }
-            return new APIError(Response.Status.BAD_REQUEST, errorResponse);
         } else if (e instanceof PushDeviceHandlerServerException) {
-            if (errorEnum.getMessage() == null) {
-                errorEnum.setMessage(e.getMessage());
-            }
             return new APIError(Response.Status.INTERNAL_SERVER_ERROR, errorResponse);
         } else {
             return new APIError(Response.Status.INTERNAL_SERVER_ERROR, errorResponse);

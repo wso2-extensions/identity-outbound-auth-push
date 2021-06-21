@@ -31,6 +31,7 @@ import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.RemoveRequ
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.StatusDTO;
 
 import java.text.MessageFormat;
+import java.util.List;
 import javax.ws.rs.core.Response;
 
 /**
@@ -63,26 +64,10 @@ public class MeApiServiceImpl implements MeApiService {
     }
 
     @Override
-    public Response mePushAuthDevicesDeviceIdPut(String deviceId, PatchDTO patch) {
+    public Response mePushAuthDevicesDeviceIdPatch(String deviceId, List<PatchDTO> patchDTO) {
 
-        if (log.isDebugEnabled()) {
-            log.debug(MessageFormat.format("The device name could not be modified of device : {0} ", deviceId));
-        }
-
-        StatusDTO statusDTO = new StatusDTO();
-        if (patch.getPath().equals("/edit-device")) {
-            pushDeviceHandlerService.editDeviceName(deviceId, patch.getValue());
-
-            statusDTO.setStatus(PushDeviceApiConstants.RESULT_SUCCESSFUL);
-            statusDTO.setDeviceId(deviceId);
-            statusDTO.setOperation(PushDeviceApiConstants.OPERATION_UPDATE);
-            return Response.ok().entity(statusDTO).build();
-        } else {
-            statusDTO.setStatus(PushDeviceApiConstants.RESULT_FAILED);
-            statusDTO.setDeviceId(deviceId);
-            statusDTO.setOperation(PushDeviceApiConstants.OPERATION_UPDATE);
-            return Response.status(Response.Status.BAD_REQUEST).entity(statusDTO).build();
-        }
+        pushDeviceHandlerService.editDevice(deviceId, patchDTO);
+        return Response.ok().build();
     }
 
     @Override
