@@ -49,7 +49,7 @@ public class MeApiServiceImpl implements MeApiService {
             log.debug(MessageFormat.format("Removing device : {0} ", deviceId));
         }
         pushDeviceHandlerService.unregisterDevice(deviceId);
-        return Response.ok().build();
+        return Response.noContent().build();
     }
 
     @Override
@@ -72,8 +72,9 @@ public class MeApiServiceImpl implements MeApiService {
     public Response mePushAuthDevicesDeviceIdRemovePost(String deviceId, RemoveRequestDTO removeRequestDTO) {
 
         String token = removeRequestDTO.getToken();
+        pushDeviceHandlerService.unregisterDeviceMobile(deviceId, token);
 
-        return Response.ok().entity(pushDeviceHandlerService.unregisterDeviceMobile(deviceId, token)).build();
+        return Response.noContent().build();
     }
 
     @Override

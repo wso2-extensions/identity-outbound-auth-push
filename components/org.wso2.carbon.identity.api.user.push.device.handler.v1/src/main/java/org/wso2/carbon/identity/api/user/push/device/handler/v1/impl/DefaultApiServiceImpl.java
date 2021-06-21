@@ -44,7 +44,7 @@ public class DefaultApiServiceImpl implements DefaultApiService {
             log.debug("Removing device : " + deviceId + " of User : " + userId + ".");
         }
         deviceHandlerService.unregisterDevice(deviceId);
-        return Response.ok().build();
+        return Response.noContent().build();
     }
 
     @Override
