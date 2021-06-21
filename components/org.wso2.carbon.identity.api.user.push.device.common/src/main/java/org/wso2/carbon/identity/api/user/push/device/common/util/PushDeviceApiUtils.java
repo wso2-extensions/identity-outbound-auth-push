@@ -19,23 +19,14 @@
 
 package org.wso2.carbon.identity.api.user.push.device.common.util;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.identity.api.user.common.error.APIError;
 import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
+import org.wso2.carbon.identity.application.authenticator.push.common.exception.PushAuthTokenValidationException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerClientException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerServerException;
-import org.wso2.carbon.user.api.UserStoreException;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SignatureException;
-import java.sql.SQLException;
-
-import javax.mail.AuthenticationFailedException;
 import javax.ws.rs.core.Response;
 
 /**
@@ -55,25 +46,11 @@ public class PushDeviceApiUtils {
         } else {
             errorResponse = getErrorBuilder(errorEnum).build(log, e, errorEnum.getDescription());
         }
-        if (e instanceof AuthenticationFailedException) {
-            return handleError(Response.Status.UNAUTHORIZED, PushDeviceApiConstants.ErrorMessages.
-                    ERROR_CODE_GET_DEVICE_SERVER_ERROR);
-        } else if (e instanceof UserStoreException) {
-            return new APIError(Response.Status.INTERNAL_SERVER_ERROR, errorResponse);
-        } else if (e instanceof SignatureException) {
+        if (e instanceof PushAuthTokenValidationException) {
+            if (errorEnum.getMessage() == null) {
+                errorEnum.setMessage(e.getMessage());
+            }
             return new APIError(Response.Status.UNAUTHORIZED, errorResponse);
-        } else if (e instanceof UnsupportedEncodingException) {
-            return new APIError(Response.Status.INTERNAL_SERVER_ERROR, errorResponse);
-        } else if (e instanceof JsonProcessingException) {
-            return new APIError(Response.Status.BAD_REQUEST, errorResponse);
-        } else if (e instanceof InvalidKeyException) {
-            return new APIError(Response.Status.UNAUTHORIZED, errorResponse);
-        } else if (e instanceof NoSuchAlgorithmException) {
-            return new APIError(Response.Status.INTERNAL_SERVER_ERROR, errorResponse);
-        } else if (e instanceof SQLException) {
-            return new APIError(Response.Status.INTERNAL_SERVER_ERROR, errorResponse);
-        } else if (e instanceof IOException) {
-            return new APIError(Response.Status.INTERNAL_SERVER_ERROR, errorResponse);
         } else if (e instanceof PushDeviceHandlerClientException) {
             if (errorEnum.getMessage() == null) {
                 errorEnum.setMessage(e.getMessage());
@@ -85,7 +62,7 @@ public class PushDeviceApiUtils {
             }
             return new APIError(Response.Status.INTERNAL_SERVER_ERROR, errorResponse);
         } else {
-            return new APIError(Response.Status.BAD_REQUEST, errorResponse);
+            return new APIError(Response.Status.INTERNAL_SERVER_ERROR, errorResponse);
         }
     }
 
@@ -93,10 +70,5 @@ public class PushDeviceApiUtils {
 
         return new ErrorResponse.Builder().withCode(errorEnum.getCode()).withMessage(errorEnum.getMessage())
                 .withDescription(errorEnum.getDescription());
-    }
-
-    private static APIError handleError(Response.Status status, PushDeviceApiConstants.ErrorMessages error) {
-
-        return new APIError(status, getErrorBuilder(error).build());
     }
 }

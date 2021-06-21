@@ -29,6 +29,7 @@ import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.Registrati
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.StatusDTO;
 import org.wso2.carbon.identity.application.authenticator.push.common.PushJWTValidator;
 import org.wso2.carbon.identity.application.authenticator.push.common.exception.IdentityPushAuthException;
+import org.wso2.carbon.identity.application.authenticator.push.common.exception.PushAuthTokenValidationException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerClientException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerServerException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.model.Device;
@@ -126,7 +127,7 @@ public class PushDeviceHandlerService {
         } catch (PushDeviceHandlerClientException e) {
             throw PushDeviceApiUtils.handleException(e,
                     PushDeviceApiConstants.ErrorMessages.ERROR_CODE_UNREGISTER_DEVICE_CLIENT_ERROR, deviceId);
-        } catch (IdentityPushAuthException e) {
+        } catch (PushAuthTokenValidationException e) {
             throw PushDeviceApiUtils.handleException(e,
                     PushDeviceApiConstants.ErrorMessages.ERROR_CODE_INVALID_SIGNATURE, deviceId);
         }
