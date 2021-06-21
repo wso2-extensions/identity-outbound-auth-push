@@ -36,67 +36,66 @@ public class PushDeviceApiConstants {
     public enum ErrorMessages {
         ERROR_CODE_INVALID_SIGNATURE(
                 "PDM-15001",
-                "The credibility of the request could not be verified",
-                "An error occurred when the digital signature is not verified"),
-
+                "The credibility of the request could not be verified.",
+                "An error occurred when the digital signature is not verified."),
         ERROR_CODE_DEVICE_HANDLER_SQL_EXCEPTION(
                 "PDM-15002",
-                "The operation was not executed due to a database error",
-                "A SQL exception occurred while trying to perform database operation "),
+                "The operation was not executed due to a database error.",
+                "A SQL exception occurred while trying to perform database operation."),
         ERROR_CODE__JSON_PROCESSING_EXCEPTION(
                 "PDM-15003",
-                "Error occurred while trying to convert an object to json format",
-                "" + "A System error occurred while trying to convert an object to a JSON"),
+                "Error occurred while trying to convert an object to json format.",
+                "A System error occurred while trying to convert an object to a JSON."),
         ERROR_CODE_INTERNAL_SERVER_ERROR(
                 "PDM-15004",
-                "Failed to process request due to an Internal server error",
-                "A System error occurred internally while trying to process a request"),
+                "Failed to process request due to an Internal server error.",
+                "A System error occurred internally while trying to process a request."),
         ERROR_CODE_USER_STORE_ERROR(
                 "PDM-15005",
-                "Failed to get User store manager of the user",
-                "A System error occurred internally while trying to get a UserStoreManager"),
+                "Failed to get User store manager of the user.",
+                "A System error occurred internally while trying to get a UserStoreManager."),
         ERROR_CODE_FAILED_SIGNATURE_VALIDATION(
                 "PDM-15006",
-                "Failed to get User store manager of the user",
-                "A System error occurred internally while trying to get a UserStoreManager"),
+                "Failed to get User store manager of the user.",
+                "A System error occurred internally while trying to get a UserStoreManager."),
         ERROR_CODE_GET_DEVICE_SERVER_ERROR(
                 "PDM-15007",
-                "A system error occurred while trying to retrieve a device"),
+                "A system error occurred while trying to retrieve a device."),
         ERROR_CODE_LIST_DEVICE_SERVER_ERROR(
                 "PDM-15008",
-                "A system error occurred while trying to retrieve registered devices of a user"),
+                "A system error occurred while trying to retrieve registered devices of a user."),
         ERROR_CODE_UNREGISTER_DEVICE_SERVER_ERROR(
                 "PDM-15009",
-                "A system error occurred while trying to remove a specific device"),
+                "A system error occurred while trying to remove a specific device."),
         ERROR_CODE_EDIT_DEVICE_SERVER_ERROR(
                 "PDM-15010",
-                "The device could not be modified",
-                "A System error occurred while trying to modify the device information"),
+                "The device could not be modified.",
+                "A System error occurred while trying to modify the device information."),
         ERROR_CODE_REGISTER_DEVICE_SERVER_ERROR(
                 "PDM-15011",
-                "A system error occurred while trying to register a new device"),
+                "A system error occurred while trying to register a new device."),
         ERROR_CODE_REGISTRATION_DISCOVERY_DATA_ERROR(
                 "PDM-15012",
-                "A system error occurred while trying to get registration discovery data"),
+                "A system error occurred while trying to get registration discovery data."),
         ERROR_CODE_IO_ERROR(
                 "PDM-15013",
-                "A system error thrown while converting a JSON to an object"),
+                "A system error thrown while converting a JSON to an object."),
         ERROR_CODE_REGISTER_DEVICE_CLIENT_ERROR(
                 "PDM-10001",
-                "A system error occurred while trying to register a new device"),
+                "An error occurred while trying to register a new device."),
         ERROR_CODE_GET_DEVICE_CLIENT_ERROR(
                 "PDM-10002",
-                "A system error occurred while trying to retrieve a device"),
+                "An error occurred while trying to retrieve a device."),
         ERROR_CODE_LIST_DEVICE_CLIENT_ERROR(
                 "PDM-10003",
-                "A system error occurred while trying to retrieve registered devices of a user"),
+                "An error occurred while trying to retrieve registered devices of a user."),
         ERROR_CODE_UNREGISTER_DEVICE_CLIENT_ERROR(
                 "PDM-10004",
-                "A System error occurred while trying to remove a specific device"),
+                "An error occurred while trying to remove a specific device."),
         ERROR_CODE_EDIT_DEVICE_CLIENT_ERROR(
                 "PDM-10005",
-                "The device could not be modified",
-                "A System error occurred while trying to modify the device information");
+                "The device could not be modified.",
+                "An error occurred while trying to modify the device information.");
 
         private final String code;
         private String message;
