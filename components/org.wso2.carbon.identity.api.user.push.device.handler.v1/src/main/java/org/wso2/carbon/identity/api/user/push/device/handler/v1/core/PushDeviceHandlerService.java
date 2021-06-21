@@ -168,9 +168,16 @@ public class PushDeviceHandlerService {
      */
     public DeviceDTO getDevice(String deviceId) {
 
-        Device device;
         try {
-            device = PushDeviceHandlerServiceHolder.getPushDeviceHandlerService().getDevice(deviceId);
+            Device device = PushDeviceHandlerServiceHolder.getPushDeviceHandlerService().getDevice(deviceId);
+            DeviceDTO deviceDTO = new DeviceDTO();
+            deviceDTO.setDeviceId(device.getDeviceId());
+            deviceDTO.setName(device.getDeviceName());
+            deviceDTO.setModel(device.getDeviceModel());
+            deviceDTO.setPushId(device.getPushId());
+            deviceDTO.setRegistrationTime(device.getRegistrationTime());
+            deviceDTO.setLastUsedTime(device.getLastUsedTime());
+            return deviceDTO;
         } catch (PushDeviceHandlerClientException e) {
             throw PushDeviceApiUtils.handleException(e,
                     PushDeviceApiConstants.ErrorMessages.ERROR_CODE_GET_DEVICE_CLIENT_ERROR, deviceId);
@@ -178,14 +185,6 @@ public class PushDeviceHandlerService {
             throw PushDeviceApiUtils.handleException(e,
                     PushDeviceApiConstants.ErrorMessages.ERROR_CODE_GET_DEVICE_SERVER_ERROR, deviceId);
         }
-        DeviceDTO deviceDTO = new DeviceDTO();
-        deviceDTO.setDeviceId(device.getDeviceId());
-        deviceDTO.setName(device.getDeviceName());
-        deviceDTO.setModel(device.getDeviceModel());
-        deviceDTO.setPushId(device.getPushId());
-        deviceDTO.setRegistrationTime(device.getRegistrationTime());
-        deviceDTO.setLastUsedTime(device.getLastUsedTime());
-        return deviceDTO;
     }
 
     /**
@@ -201,6 +200,22 @@ public class PushDeviceHandlerService {
         try {
             String userId = getUserIdFromUsername(user.getUserName());
             devices = PushDeviceHandlerServiceHolder.getPushDeviceHandlerService().listDevices(userId);
+
+            List<DeviceDTO> deviceDTOArrayList = new ArrayList<>();
+            DeviceDTO deviceDTO;
+            if (devices != null) {
+                for (Device device : devices) {
+                    deviceDTO = new DeviceDTO();
+                    deviceDTO.setDeviceId(device.getDeviceId());
+                    deviceDTO.setName(device.getDeviceName());
+                    deviceDTO.setModel(device.getDeviceModel());
+                    deviceDTO.setRegistrationTime(device.getRegistrationTime());
+                    deviceDTO.setLastUsedTime(device.getLastUsedTime());
+                    deviceDTOArrayList.add(deviceDTO);
+                }
+            }
+
+            return deviceDTOArrayList;
         } catch (PushDeviceHandlerServerException e) {
             throw PushDeviceApiUtils.handleException(e,
                     PushDeviceApiConstants.ErrorMessages.ERROR_CODE_LIST_DEVICE_SERVER_ERROR);
@@ -208,20 +223,6 @@ public class PushDeviceHandlerService {
             throw PushDeviceApiUtils.handleException(e,
                     PushDeviceApiConstants.ErrorMessages.ERROR_CODE_USER_STORE_ERROR);
         }
-        List<DeviceDTO> deviceDTOArrayList = new ArrayList<>();
-        DeviceDTO deviceDTO;
-        if (devices != null) {
-            for (Device device : devices) {
-                deviceDTO = new DeviceDTO();
-                deviceDTO.setDeviceId(device.getDeviceId());
-                deviceDTO.setName(device.getDeviceName());
-                deviceDTO.setModel(device.getDeviceModel());
-                deviceDTO.setRegistrationTime(device.getRegistrationTime());
-                deviceDTO.setLastUsedTime(device.getLastUsedTime());
-                deviceDTOArrayList.add(deviceDTO);
-            }
-        }
-        return deviceDTOArrayList;
     }
 
     /**
@@ -234,23 +235,25 @@ public class PushDeviceHandlerService {
         RegistrationDiscoveryData discoveryData;
         try {
             discoveryData = PushDeviceHandlerServiceHolder.getPushDeviceHandlerService().getRegistrationDiscoveryData();
+
+            DiscoveryDataDTO discoveryDataDTO = new DiscoveryDataDTO();
+            discoveryDataDTO.setDid(discoveryData.getDeviceId());
+            discoveryDataDTO.setUn(discoveryData.getUsername());
+            discoveryDataDTO.setTd(discoveryData.getTenantDomain());
+            discoveryDataDTO.setFn(discoveryData.getFirstName());
+            discoveryDataDTO.setLn(discoveryData.getLastName());
+            discoveryDataDTO.setChg(discoveryData.getChallenge());
+            discoveryDataDTO.setHst(discoveryData.getHost());
+            discoveryDataDTO.setBp(discoveryData.getBasePath());
+            discoveryDataDTO.setRe(discoveryData.getRegistrationEndpoint());
+            discoveryDataDTO.setRde(discoveryData.getRemoveDeviceEndpoint());
+            discoveryDataDTO.setAe(discoveryData.getAuthenticationEndpoint());
+
+            return discoveryDataDTO;
         } catch (PushDeviceHandlerServerException e) {
             throw PushDeviceApiUtils.handleException(e,
                     PushDeviceApiConstants.ErrorMessages.ERROR_CODE_REGISTER_DEVICE_SERVER_ERROR);
         }
-        DiscoveryDataDTO discoveryDataDTO = new DiscoveryDataDTO();
-        discoveryDataDTO.setDid(discoveryData.getDeviceId());
-        discoveryDataDTO.setUn(discoveryData.getUsername());
-        discoveryDataDTO.setTd(discoveryData.getTenantDomain());
-        discoveryDataDTO.setFn(discoveryData.getFirstName());
-        discoveryDataDTO.setLn(discoveryData.getLastName());
-        discoveryDataDTO.setChg(discoveryData.getChallenge());
-        discoveryDataDTO.setHst(discoveryData.getHost());
-        discoveryDataDTO.setBp(discoveryData.getBasePath());
-        discoveryDataDTO.setRe(discoveryData.getRegistrationEndpoint());
-        discoveryDataDTO.setRde(discoveryData.getRemoveDeviceEndpoint());
-        discoveryDataDTO.setAe(discoveryData.getAuthenticationEndpoint());
-        return discoveryDataDTO;
     }
 
     /**
