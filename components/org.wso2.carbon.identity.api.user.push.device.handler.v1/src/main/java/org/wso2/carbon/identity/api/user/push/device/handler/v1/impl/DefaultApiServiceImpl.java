@@ -43,7 +43,7 @@ public class DefaultApiServiceImpl implements DefaultApiService {
     public Response userIdPushAuthDevicesDeviceIdDelete(String userId, String deviceId) {
 
         if (log.isDebugEnabled()) {
-            log.debug("Removing device : {0} " + deviceId + " of User : {0} ");
+            log.debug("Removing device : " + deviceId + " of User : " + userId + ".");
         }
         deviceHandlerService = new PushDeviceHandlerService();
         deviceHandlerService.unregisterDevice(deviceId);
@@ -58,7 +58,7 @@ public class DefaultApiServiceImpl implements DefaultApiService {
     public Response userIdPushAuthDevicesDeviceIdGet(String userId, String deviceId) {
 
         if (log.isDebugEnabled()) {
-            log.debug("Fetching data of device : {0}" + deviceId + " of user :{0}" + userId);
+            log.debug("Fetching data of device : " + deviceId + " of user : " + userId + ".");
         }
         deviceHandlerService = new PushDeviceHandlerService();
         return Response.ok().entity(deviceHandlerService.getDevice(deviceId)).build();
@@ -68,7 +68,7 @@ public class DefaultApiServiceImpl implements DefaultApiService {
     public Response userIdPushAuthDevicesGet(String userId) {
 
         if (log.isDebugEnabled()) {
-            log.debug("Retrieving all devices of user ");
+            log.debug("Retrieving all devices of user : " + userId + ".");
         }
         deviceHandlerService = new PushDeviceHandlerService();
         return Response.ok().entity(deviceHandlerService.listDevices()).build();

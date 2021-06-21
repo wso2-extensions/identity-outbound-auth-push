@@ -96,9 +96,6 @@ public class MeApiServiceImpl implements MeApiService {
     @Override
     public Response mePushAuthDevicesGet() {
 
-        if (log.isDebugEnabled()) {
-            log.debug("Retrieving all devices of user ");
-        }
         return Response.ok().entity(pushDeviceHandlerService.listDevices()).build();
     }
 
@@ -106,7 +103,8 @@ public class MeApiServiceImpl implements MeApiService {
     public Response mePushAuthDevicesPost(RegistrationRequestDTO registrationRequest) {
 
         if (log.isDebugEnabled() && registrationRequest != null) {
-            log.debug("Received registration request from mobile device");
+            log.debug("Received registration request from mobile device: "
+                    + registrationRequest.getDeviceId() + ".");
         }
         if (registrationRequest != null) {
             return Response.ok().entity(pushDeviceHandlerService.registerDevice(registrationRequest)).build();
@@ -121,9 +119,6 @@ public class MeApiServiceImpl implements MeApiService {
     @Override
     public Response mePushAuthDiscoveryDataGet() {
 
-        if (log.isDebugEnabled()) {
-            log.debug("Fetching data to generate QR code");
-        }
         return Response.ok().entity(pushDeviceHandlerService.getDiscoveryData()).build();
     }
 }
