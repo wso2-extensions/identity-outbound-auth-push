@@ -49,7 +49,6 @@ public class MeApiServiceImpl implements MeApiService {
         if (log.isDebugEnabled()) {
             log.debug(MessageFormat.format("Removing device : {0} ", deviceId));
         }
-        pushDeviceHandlerService = new PushDeviceHandlerService();
         pushDeviceHandlerService.unregisterDevice(deviceId);
         return Response.ok().build();
     }
@@ -60,7 +59,6 @@ public class MeApiServiceImpl implements MeApiService {
         if (log.isDebugEnabled()) {
             log.debug(MessageFormat.format("Fetching data of device : {0}", deviceId));
         }
-        pushDeviceHandlerService = new PushDeviceHandlerService();
         return Response.ok().entity(pushDeviceHandlerService.getDevice(deviceId)).build();
     }
 
@@ -73,7 +71,6 @@ public class MeApiServiceImpl implements MeApiService {
 
         StatusDTO statusDTO = new StatusDTO();
         if (patch.getPath().equals("/edit-device")) {
-            pushDeviceHandlerService = new PushDeviceHandlerService();
             pushDeviceHandlerService.editDeviceName(deviceId, patch.getValue());
 
             statusDTO.setStatus(PushDeviceApiConstants.RESULT_SUCCESSFUL);
@@ -93,7 +90,6 @@ public class MeApiServiceImpl implements MeApiService {
 
         String token = removeRequestDTO.getToken();
 
-        pushDeviceHandlerService = new PushDeviceHandlerService();
         return Response.ok().entity(pushDeviceHandlerService.unregisterDeviceMobile(deviceId, token)).build();
     }
 
@@ -103,7 +99,6 @@ public class MeApiServiceImpl implements MeApiService {
         if (log.isDebugEnabled()) {
             log.debug("Retrieving all devices of user ");
         }
-        pushDeviceHandlerService = new PushDeviceHandlerService();
         return Response.ok().entity(pushDeviceHandlerService.listDevices()).build();
     }
 
@@ -114,7 +109,6 @@ public class MeApiServiceImpl implements MeApiService {
             log.debug("Received registration request from mobile device");
         }
         if (registrationRequest != null) {
-            pushDeviceHandlerService = new PushDeviceHandlerService();
             return Response.ok().entity(pushDeviceHandlerService.registerDevice(registrationRequest)).build();
         } else {
             StatusDTO statusDTO = new StatusDTO();
@@ -130,7 +124,6 @@ public class MeApiServiceImpl implements MeApiService {
         if (log.isDebugEnabled()) {
             log.debug("Fetching data to generate QR code");
         }
-        pushDeviceHandlerService = new PushDeviceHandlerService();
         return Response.ok().entity(pushDeviceHandlerService.getDiscoveryData()).build();
     }
 }
