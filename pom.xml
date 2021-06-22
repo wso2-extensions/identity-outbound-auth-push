@@ -334,7 +334,7 @@
             <dependency>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-rt-frontend-jaxws</artifactId>
-                <version>3.3.5</version>
+                <version>${cxf-bundle.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
@@ -351,11 +351,6 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-beans</artifactId>
                 <version>${spring-web.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.swagger</groupId>
@@ -394,24 +389,14 @@
                 <version>${jackson-jaxrs-json-provider.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon.business-process</groupId>
-                <artifactId>org.wso2.carbon.humantask</artifactId>
-                <version>${carbon.business-process.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.wso2.carbon.identity.user.api</groupId>
                 <artifactId>org.wso2.carbon.identity.api.user.common</artifactId>
-                <version>1.1.28-SNAPSHOT</version>
+                <version>${identity.api.user.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.wso2.carbon.identity.outbound.auth.push</groupId>
                 <artifactId>org.wso2.carbon.identity.api.user.push.device.common</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>javax.mail</groupId>
-                <artifactId>javax.mail-api</artifactId>
-                <version>${javax.mail.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -486,14 +471,12 @@
         <identity.authenticator.utils.version>1.2.0</identity.authenticator.utils.version>
         <javax.ws.rs.version>2.1.1</javax.ws.rs.version>
         <!-- API Versions -->
-        <cxf-bundle.version>3.2.8</cxf-bundle.version>
+        <cxf-bundle.version>3.3.5</cxf-bundle.version>
         <spring-web.version>5.1.1.RELEASE</spring-web.version>
-        <junit.version>4.12</junit.version>
         <swagger-jaxrs.version>1.5.20</swagger-jaxrs.version>
         <jackson-jaxrs-json-provider.version>2.9.9</jackson-jaxrs-json-provider.version>
         <carbon.kernel.version>4.6.0-alpha</carbon.kernel.version>
-        <carbon.business-process.version>4.5.2</carbon.business-process.version>
-        <javax.mail.version>1.6.0</javax.mail.version>
+        <identity.api.user.version>1.1.27</identity.api.user.version>
         <!-- Version Ranges -->
         <org.wso2.carbon.identity.version.range>[5.12,6)</org.wso2.carbon.identity.version.range>
         <org.wso2.carbon.version.range>[4.6,5)</org.wso2.carbon.version.range>
