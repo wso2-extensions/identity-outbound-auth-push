@@ -26,6 +26,7 @@ import org.wso2.carbon.identity.api.user.common.error.ErrorResponse;
 import org.wso2.carbon.identity.application.authenticator.push.common.exception.PushAuthTokenValidationException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerClientException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerServerException;
+import org.wso2.carbon.user.api.UserStoreException;
 
 import javax.ws.rs.core.Response;
 
@@ -60,6 +61,8 @@ public class PushDeviceApiUtils {
                 return new APIError(Response.Status.BAD_REQUEST, errorResponse);
             }
         } else if (e instanceof PushDeviceHandlerServerException) {
+            return new APIError(Response.Status.INTERNAL_SERVER_ERROR, errorResponse);
+        } else if (e instanceof UserStoreException) {
             return new APIError(Response.Status.INTERNAL_SERVER_ERROR, errorResponse);
         } else {
             return new APIError(Response.Status.INTERNAL_SERVER_ERROR, errorResponse);

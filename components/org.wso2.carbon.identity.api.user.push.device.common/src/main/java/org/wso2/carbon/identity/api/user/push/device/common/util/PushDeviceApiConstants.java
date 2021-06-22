@@ -24,12 +24,6 @@ package org.wso2.carbon.identity.api.user.push.device.common.util;
  */
 public class PushDeviceApiConstants {
 
-    public static final String RESULT_SUCCESSFUL = "SUCCESSFUL";
-    public static final String RESULT_FAILED = "FAILED";
-    public static final String OPERATION_REGISTER = "REGISTER";
-    public static final String OPERATION_REMOVE = "REMOVE";
-    public static final String OPERATION_UPDATE = "UPDATE";
-
     /**
      * Error definitions.
      */
@@ -37,7 +31,7 @@ public class PushDeviceApiConstants {
         ERROR_CODE_INVALID_SIGNATURE(
                 "PDM-15001",
                 "The credibility of the request could not be verified.",
-                "An error occurred when the digital signature is not verified."),
+                "An error occurred when verifying the signature of the response token."),
         ERROR_CODE_DEVICE_HANDLER_SQL_EXCEPTION(
                 "PDM-15002",
                 "The operation was not executed due to a database error.",
@@ -56,8 +50,8 @@ public class PushDeviceApiConstants {
                 "A System error occurred internally while trying to get a UserStoreManager."),
         ERROR_CODE_FAILED_SIGNATURE_VALIDATION(
                 "PDM-15006",
-                "Failed to get User store manager of the user.",
-                "A System error occurred internally while trying to get a UserStoreManager."),
+                "Failed to validate the signature of the user.",
+                "A System error occurred internally while trying to validate the signature."),
         ERROR_CODE_GET_DEVICE_SERVER_ERROR(
                 "PDM-15007",
                 "A system error occurred while trying to retrieve a device."),
