@@ -95,7 +95,6 @@ public class PushDeviceHandlerService {
      *
      * @param deviceId Unique ID for the device
      * @param token    JWT containing device removal information
-     * @return Result of the request
      */
     public void unregisterDeviceMobile(String deviceId, String token) {
 
