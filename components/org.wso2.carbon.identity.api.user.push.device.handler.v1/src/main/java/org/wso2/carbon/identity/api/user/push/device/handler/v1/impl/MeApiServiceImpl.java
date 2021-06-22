@@ -22,6 +22,7 @@ package org.wso2.carbon.identity.api.user.push.device.handler.v1.impl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.wso2.carbon.identity.api.user.push.device.common.util.PushDeviceApiConstants;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.MeApiService;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.core.PushDeviceHandlerService;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.PatchDTO;
@@ -31,6 +32,8 @@ import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.RemoveRequ
 import java.text.MessageFormat;
 import java.util.List;
 import javax.ws.rs.core.Response;
+
+import static org.wso2.carbon.identity.api.user.common.ContextLoader.buildURIForHeader;
 
 /**
  * Implementation class of Push device Handler User APIs.
@@ -92,7 +95,11 @@ public class MeApiServiceImpl implements MeApiService {
         }
         if (registrationRequest != null) {
             pushDeviceHandlerService.registerDevice(registrationRequest);
-            return Response.accepted().build();
+
+            String registeredDevicePath = String.format(PushDeviceApiConstants.V1_API_PATH_COMPONENT
+                            + PushDeviceApiConstants.PUSH_AUTH_GET_DEVICE_PATH, registrationRequest.getDeviceId());
+
+            return Response.accepted(buildURIForHeader(registeredDevicePath)).build();
         } else {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }

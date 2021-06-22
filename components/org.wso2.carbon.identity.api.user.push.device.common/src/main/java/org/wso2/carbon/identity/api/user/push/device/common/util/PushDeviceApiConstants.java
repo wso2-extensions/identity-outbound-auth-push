@@ -27,6 +27,9 @@ public class PushDeviceApiConstants {
     public static final String OPERATION_REPLACE = "REPLACE";
     public static final String PATH_DEVICE_NAME = "/device-name";
     public static final String PATH_PUSH_ID = "/push-id";
+    public static final String V1_API_PATH_COMPONENT = "/v1";
+    public static final String PUSH_AUTH_DEVICE_PATH = "/push-auth/devices";
+    public static final String PUSH_AUTH_GET_DEVICE_PATH = PUSH_AUTH_DEVICE_PATH + "/%s";
 
     /**
      * Error definitions.

@@ -401,8 +401,7 @@
             <dependency>
                 <groupId>org.wso2.carbon.identity.user.api</groupId>
                 <artifactId>org.wso2.carbon.identity.api.user.common</artifactId>
-                <scope>provided</scope>
-                <version>1.0.64-SNAPSHOT</version>
+                <version>1.1.28-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.wso2.carbon.identity.outbound.auth.push</groupId>
