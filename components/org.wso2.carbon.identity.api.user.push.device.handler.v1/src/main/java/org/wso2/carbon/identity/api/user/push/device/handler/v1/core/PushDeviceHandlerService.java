@@ -63,11 +63,11 @@ public class PushDeviceHandlerService {
             PushDeviceHandlerServiceHolder.getPushDeviceHandlerService().registerDevice(registrationRequest);
 
         } catch (PushDeviceHandlerClientException e) {
-            throw PushDeviceApiUtils.handleException(e,
-                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_REGISTER_DEVICE_CLIENT_ERROR);
+            throw PushDeviceApiUtils.handleException(
+                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_REGISTER_DEVICE_CLIENT_ERROR, e);
         } catch (PushDeviceHandlerServerException e) {
-            throw PushDeviceApiUtils.handleException(e,
-                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_REGISTER_DEVICE_SERVER_ERROR);
+            throw PushDeviceApiUtils.handleException(
+                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_REGISTER_DEVICE_SERVER_ERROR, e);
         }
     }
 
@@ -81,11 +81,11 @@ public class PushDeviceHandlerService {
         try {
             PushDeviceHandlerServiceHolder.getPushDeviceHandlerService().unregisterDevice(deviceId);
         } catch (PushDeviceHandlerClientException e) {
-            throw PushDeviceApiUtils.handleException(e,
-                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_UNREGISTER_DEVICE_CLIENT_ERROR, deviceId);
+            throw PushDeviceApiUtils.handleException(
+                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_UNREGISTER_DEVICE_CLIENT_ERROR, e, deviceId);
         } catch (PushDeviceHandlerServerException e) {
-            throw PushDeviceApiUtils.handleException(e,
-                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_UNREGISTER_DEVICE_SERVER_ERROR, deviceId);
+            throw PushDeviceApiUtils.handleException(
+                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_UNREGISTER_DEVICE_SERVER_ERROR, e, deviceId);
         }
 
     }
@@ -107,14 +107,14 @@ public class PushDeviceHandlerService {
                 PushDeviceHandlerServiceHolder.getPushDeviceHandlerService().unregisterDevice(deviceId);
             }
         } catch (PushDeviceHandlerServerException e) {
-            throw PushDeviceApiUtils.handleException(e,
-                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_UNREGISTER_DEVICE_SERVER_ERROR, deviceId);
+            throw PushDeviceApiUtils.handleException(
+                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_UNREGISTER_DEVICE_SERVER_ERROR, e, deviceId);
         } catch (PushDeviceHandlerClientException e) {
-            throw PushDeviceApiUtils.handleException(e,
-                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_UNREGISTER_DEVICE_CLIENT_ERROR, deviceId);
+            throw PushDeviceApiUtils.handleException(
+                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_UNREGISTER_DEVICE_CLIENT_ERROR, e, deviceId);
         } catch (PushAuthTokenValidationException e) {
-            throw PushDeviceApiUtils.handleException(e,
-                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_INVALID_SIGNATURE, deviceId);
+            throw PushDeviceApiUtils.handleException(
+                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_INVALID_SIGNATURE, e, deviceId);
         }
     }
 
@@ -138,11 +138,11 @@ public class PushDeviceHandlerService {
                 }
             }
         } catch (PushDeviceHandlerServerException e) {
-            throw PushDeviceApiUtils.handleException(e,
-                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_EDIT_DEVICE_SERVER_ERROR, deviceId);
+            throw PushDeviceApiUtils.handleException(
+                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_EDIT_DEVICE_SERVER_ERROR, e, deviceId);
         } catch (PushDeviceHandlerClientException e) {
-            throw PushDeviceApiUtils.handleException(e,
-                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_GET_DEVICE_CLIENT_ERROR, deviceId);
+            throw PushDeviceApiUtils.handleException(
+                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_GET_DEVICE_CLIENT_ERROR, e, deviceId);
         }
     }
 
@@ -165,11 +165,11 @@ public class PushDeviceHandlerService {
             deviceDTO.setLastUsedTime(device.getLastUsedTime());
             return deviceDTO;
         } catch (PushDeviceHandlerClientException e) {
-            throw PushDeviceApiUtils.handleException(e,
-                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_GET_DEVICE_CLIENT_ERROR, deviceId);
+            throw PushDeviceApiUtils.handleException(
+                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_GET_DEVICE_CLIENT_ERROR, e, deviceId);
         } catch (PushDeviceHandlerServerException e) {
-            throw PushDeviceApiUtils.handleException(e,
-                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_GET_DEVICE_SERVER_ERROR, deviceId);
+            throw PushDeviceApiUtils.handleException(
+                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_GET_DEVICE_SERVER_ERROR, e, deviceId);
         }
     }
 
@@ -203,11 +203,11 @@ public class PushDeviceHandlerService {
 
             return deviceDTOArrayList;
         } catch (PushDeviceHandlerServerException e) {
-            throw PushDeviceApiUtils.handleException(e,
-                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_LIST_DEVICE_SERVER_ERROR);
+            throw PushDeviceApiUtils.handleException(
+                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_LIST_DEVICE_SERVER_ERROR, e);
         } catch (UserStoreException e) {
-            throw PushDeviceApiUtils.handleException(e,
-                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_USER_STORE_ERROR);
+            throw PushDeviceApiUtils.handleException(
+                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_USER_STORE_ERROR, e);
         }
     }
 
@@ -237,8 +237,8 @@ public class PushDeviceHandlerService {
 
             return discoveryDataDTO;
         } catch (PushDeviceHandlerServerException e) {
-            throw PushDeviceApiUtils.handleException(e,
-                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_REGISTER_DEVICE_SERVER_ERROR);
+            throw PushDeviceApiUtils.handleException(
+                    PushDeviceApiConstants.ErrorMessages.ERROR_CODE_REGISTER_DEVICE_SERVER_ERROR, e);
         }
     }
 

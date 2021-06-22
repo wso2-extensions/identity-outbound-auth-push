@@ -37,7 +37,7 @@ public class PushDeviceApiUtils {
 
     private static final Log log = LogFactory.getLog(PushDeviceApiUtils.class);
 
-    public static APIError handleException(Exception e, PushDeviceApiConstants.ErrorMessages errorEnum,
+    public static APIError handleException(PushDeviceApiConstants.ErrorMessages errorEnum, Exception e,
                                            String... data) {
 
         ErrorResponse errorResponse;
