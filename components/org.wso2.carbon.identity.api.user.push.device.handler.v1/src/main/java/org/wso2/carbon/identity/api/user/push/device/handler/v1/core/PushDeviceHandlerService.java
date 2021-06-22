@@ -130,8 +130,9 @@ public class PushDeviceHandlerService {
             PushDeviceHandlerServiceHolder.getPushDeviceHandlerService().getDevice(deviceId);
             for (PatchDTO patch: patchDTOArray) {
                 String operation = patch.getOperation();
-                if (operation.equals("REPLACE")) {
-                    if (patch.getPath().equals("/device-name") || patch.getPath().equals("/push-id")) {
+                if (operation.equals(PushDeviceApiConstants.OPERATION_REPLACE)) {
+                    if (patch.getPath().equals(PushDeviceApiConstants.PATH_DEVICE_NAME) ||
+                            patch.getPath().equals(PushDeviceApiConstants.PATH_PUSH_ID)) {
                         PushDeviceHandlerServiceHolder.getPushDeviceHandlerService()
                                 .editDevice(deviceId, patch.getPath(), patch.getValue());
                     }

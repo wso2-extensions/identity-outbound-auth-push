@@ -24,6 +24,10 @@ package org.wso2.carbon.identity.api.user.push.device.common.util;
  */
 public class PushDeviceApiConstants {
 
+    public static final String OPERATION_REPLACE = "REPLACE";
+    public static final String PATH_DEVICE_NAME = "/device-name";
+    public static final String PATH_PUSH_ID = "/push-id";
+
     /**
      * Error definitions.
      */
