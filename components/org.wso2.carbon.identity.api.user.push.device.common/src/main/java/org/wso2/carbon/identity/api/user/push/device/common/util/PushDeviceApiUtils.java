@@ -69,6 +69,22 @@ public class PushDeviceApiUtils {
         }
     }
 
+    public static APIError handleException(PushDeviceApiConstants.ErrorMessages errorEnum, String... data) {
+        ErrorResponse errorResponse;
+        if (data != null) {
+            errorResponse = getErrorBuilder(errorEnum).build(log, String.format(errorEnum.getDescription(),
+                    (Object[]) data));
+        } else {
+            errorResponse = getErrorBuilder(errorEnum).build(log, errorEnum.getDescription());
+        }
+        if (errorEnum.getCode().equals(PushDeviceApiConstants
+                .ErrorMessages.ERROR_CODE_EDIT_DEVICE_CLIENT_ERROR.getCode())) {
+            return new APIError(Response.Status.BAD_REQUEST, errorResponse);
+        } else {
+            return new APIError(Response.Status.INTERNAL_SERVER_ERROR, errorResponse);
+        }
+    }
+
     private static ErrorResponse.Builder getErrorBuilder(PushDeviceApiConstants.ErrorMessages errorEnum) {
 
         return new ErrorResponse.Builder().withCode(errorEnum.getCode()).withMessage(errorEnum.getMessage())
