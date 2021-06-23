@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import {Accounts} from '@wso2/auth-push-react-native';
+import {AccountsService} from '@wso2/auth-push-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 let data;
@@ -77,7 +77,7 @@ const removeAccount = (account) => {
         text: 'OK',
         onPress: () => {
           console.log('OK Pressed');
-          let manageAccounts = new Accounts();
+          let manageAccounts = new AccountsService();
           manageAccounts.removeAccount(account);
           // console.log(JSON.stringify(account));
           updateAccountsList(account.deviceID);

@@ -17,7 +17,7 @@ import QRCodeScanner from 'react-native-qrcode-scanner';
 import {RNCamera} from 'react-native-camera';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {Accounts} from '@wso2/auth-push-react-native';
+import {AccountsService} from '@wso2/auth-push-react-native';
 
 let pushId;
 
@@ -49,7 +49,7 @@ const QRScannerScreen = ({navigation}) => {
     console.log('Async pushID 2: ' + pushId);
 
     try {
-      let account = new Accounts();
+      let account = new AccountsService();
       // account.getFCMToken();
       account
         .addAccount(

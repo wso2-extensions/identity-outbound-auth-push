@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {View, Image, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import {Authorization} from '@wso2/auth-push-react-native';
+import {AuthorizationService} from '@wso2/auth-push-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const storeData = async (authData) => {
@@ -65,7 +65,7 @@ const getAccountByDeviceId = async (id) => {
 const AuthRequestScreen = ({route, navigation}) => {
   // const [account, setAccount] = useState();
 
-  let authData = Authorization.processAuthRequest(route.params);
+  let authData = AuthorizationService.processAuthRequest(route.params);
   getAccountByDeviceId(route.params.data.deviceId).then((account) => {
     console.log('Got the required account: ' + JSON.stringify(account));
     return account;
@@ -192,7 +192,7 @@ const AuthRequestScreen = ({route, navigation}) => {
           style={styles.responseButton}
           activeOpacity={0.7}
           onPress={() => {
-            Authorization.sendAuthRequest(authData, 'DENIED')
+            AuthorizationService.sendAuthRequest(authData, 'DENIED')
               .then((res) => {
                 let response = JSON.parse(res);
                 console.log(
@@ -225,7 +225,7 @@ const AuthRequestScreen = ({route, navigation}) => {
           style={styles.responseButton}
           onPress={() => {
             console.log('Yes auth response body: ', requestAccount.privateKey);
-            Authorization.sendAuthRequest(
+            AuthorizationService.sendAuthRequest(
               authData,
               'SUCCESSFUL',
               requestAccount,
