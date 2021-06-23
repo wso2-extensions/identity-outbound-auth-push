@@ -163,11 +163,11 @@ export class AuthorizationService {
         return result.then((res) => {
             console.log("Response status test: " + res.status);
             let result;
-            if (res.status === 201 && response == "SUCCESSFUL") {
+            if (res.status === 202 && response == "SUCCESSFUL") {
                 authRequest.authenticationStatus = "Accepted";
                 result = "OK";
                 console.log("Auth is OK and Accepted");
-            } else if (res.status === 201 && response == "DENIED") {
+            } else if (res.status === 202 && response == "DENIED") {
                 authRequest.authenticationStatus = "Denied";
                 result = "FAILED";
                 console.log("Auth is OK and Denied");

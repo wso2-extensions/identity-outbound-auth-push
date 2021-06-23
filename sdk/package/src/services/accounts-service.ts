@@ -106,7 +106,7 @@ export class AccountsService {
             )
             .then((result) => {
                 let account: AccountsInterface;
-                if (result.status === 200) {
+                if (result.status === 201) {
                     account = {
                         deviceID: request.deviceId,
                         username: discoveryData.username,
