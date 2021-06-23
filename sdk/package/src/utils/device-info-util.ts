@@ -16,7 +16,7 @@
  * under the License.
  */
 
-import DeviceInfo from 'react-native-device-info';
+import DeviceInfo from "react-native-device-info";
 
 /**
  * Util class for handling device information.
@@ -28,20 +28,13 @@ export class DeviceInfoUtil {
 
   public constructor() {
 
-    console.log("Device info initialized");
-
-    // TODO: Is there a requirement to check if the device name has changed?
-
-    // Adding device name
     if (DeviceInfoUtil.deviceName == null) {
-      console.log("Constructor called to add details.");
       DeviceInfo.getDeviceName()
         .then((deviceName: string) => {
-          console.log('Device Name: ' + deviceName);
           DeviceInfoUtil.deviceName = deviceName;
         })
         .catch((err: string) => {
-          console.log('Get device name: ' + err);
+          console.log("Error occurred when trying to get device name: " + err);
         })
     } else {
       console.log("Device info already added.");
@@ -49,7 +42,6 @@ export class DeviceInfoUtil {
 
     // Adding device brand
     if (DeviceInfoUtil.deviceBrand == null) {
-      console.log("Adding device model");
       DeviceInfoUtil.deviceBrand = DeviceInfo.getBrand();
     } else {
       console.log("Model already added.")
@@ -57,7 +49,6 @@ export class DeviceInfoUtil {
 
     // Adding device model
     if (DeviceInfoUtil.deviceModel == null) {
-      console.log("Adding device model");
       DeviceInfoUtil.deviceModel = DeviceInfo.getModel();
     }
 

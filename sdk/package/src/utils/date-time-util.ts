@@ -25,7 +25,7 @@ export class DateTimeUtil {
   private dateTime: DateTimeInterface;
 
   public constructor() {
-    let current = new Date();
+    const current = new Date();
 
     this.dateTime = {
       day: current.getDate(),
@@ -48,7 +48,7 @@ export class DateTimeUtil {
         current.getMinutes() +
         (current.getHours() < 12)
           ? " a.m."
-          : " p.m.",
+          : " p.m."
     };
   }
 

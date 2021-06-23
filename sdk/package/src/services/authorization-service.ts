@@ -16,18 +16,13 @@
  * under the License.
  */
 
-import {AuthRequestInterface} from "../models/auth-request";
-import {RequestSenderUtil} from "../utils/request-sender-util";
 
-import {DateTimeUtil} from "../utils/date-time-util";
-import {KJUR} from "jsrsasign";
+import { KJUR } from "jsrsasign";
 import uuid from "uuid-random";
-import {AccountsInterface} from "../models";
+import { AccountsInterface, AuthRequestInterface } from "../models";
+import { DateTimeUtil, RequestSenderUtil } from "../utils";
 
 export class AuthorizationService {
-
-    constructor() {
-    }
 
     /**
      * Process the request as an organized object.
@@ -94,15 +89,6 @@ export class AuthorizationService {
     }
 
     /**
-     * Returns the timestamp which the request will expire at.
-     *
-     * @param requestInitTime the time the request was initialized in the IS
-     */
-    public getRequestExpiryTime(requestInitTime: any) {
-        // Add code here
-    }
-
-    /**
      * Send the request to the IS to allow or deny authorization.
      *
      * @param authRequest Object for the authentication request
@@ -115,15 +101,13 @@ export class AuthorizationService {
         account: AccountsInterface
     ): Promise<any> {
 
-        console.log("challenge: " + authRequest.challenge);
+        const timestamp = new DateTimeUtil();
 
-        let timestamp = new DateTimeUtil();
-
-        let jwt = KJUR.jws.JWS.sign(
+        const jwt = KJUR.jws.JWS.sign(
             null,
             {
                 alg: "RS256",
-                did: authRequest.deviceId,
+                did: authRequest.deviceId
             } as any,
             {
                 jti: uuid(),
@@ -135,48 +119,42 @@ export class AuthorizationService {
                 iat: KJUR.jws.IntDate.get("now"),
                 sid: authRequest.sessionDataKey,
                 chg: authRequest.challenge,
-                res: response,
+                res: response
             },
             account.privateKey
         );
 
-        let headers = {
+        const headers = {
             Accept: "application/json",
-            "Content-Type": "application/json",
+            "Content-Type": "application/json"
         };
 
-        let authRequestBody: any = {
-            authResponse: jwt,
+        const authRequestBody: any = {
+            authResponse: jwt
         };
 
 
-        let authUrl = account.host + account.authenticationEndpoint;
-        console.log("Request URL: " + authUrl);
-        console.log(authRequestBody);
+        const authUrl = account.host + account.authenticationEndpoint;
 
-        let request = new RequestSenderUtil();
-        let result: Promise<any> = request.sendRequest(
+        const request = new RequestSenderUtil();
+        const result: Promise<any> = request.sendRequest(
             authUrl, "POST", headers, JSON.stringify(authRequestBody));
 
         authRequest.requestTime = timestamp.getDateTime();
 
         return result.then((res) => {
-            console.log("Response status test: " + res.status);
             let result;
             if (res.status === 202 && response == "SUCCESSFUL") {
                 authRequest.authenticationStatus = "Accepted";
                 result = "OK";
-                console.log("Auth is OK and Accepted");
             } else if (res.status === 202 && response == "DENIED") {
                 authRequest.authenticationStatus = "Denied";
-                result = "FAILED";
-                console.log("Auth is OK and Denied");
+                result = "OK";
             } else {
-                console.log("Auth response has a problem. Check! " + String(res));
+                console.error("Auth response has a problem. Check! " + String(res));
             }
-            console.log(authRequest.authenticationStatus);
 
-            return JSON.stringify({res: result, data: authRequest});
+            return JSON.stringify({ res: result, data: authRequest });
         });
     }
 

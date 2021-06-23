@@ -23,8 +23,6 @@ import { fetch } from "react-native-ssl-pinning";
  */
 export class RequestSenderUtil {
 
-  public constructor() {}
-
   /**
    * Sends request to required endpoint.
    *
@@ -44,13 +42,12 @@ export class RequestSenderUtil {
       method: requestMethod,
       disableAllSecurity: true,
       sslPinning: {
-        certs: ["wso2carbon"],
+        certs: ["wso2carbon"]
       },
       headers: requestHeaders,
-      body: body,
+      body: body
     })
       .then((response: any) => {
-        console.log(`response received ${response.bodyString}`);
 
         return response;
       })

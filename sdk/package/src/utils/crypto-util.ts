@@ -16,7 +16,7 @@
  * under the License.
  */
 
-import { hextob64, KEYUTIL, KJUR } from "jsrsasign";
+import { KEYUTIL, KJUR, hextob64 } from "jsrsasign";
 
 /**
  * Util class handling crypto related functions.
@@ -30,10 +30,10 @@ export class CryptoUtil {
    */
   public static generateKeypair(): any {
 
-    let keyPair = KEYUTIL.generateKeypair("RSA", 1024);
+    const keyPair = KEYUTIL.generateKeypair("RSA", 1024);
     return {
       pubKey: KEYUTIL.getPEM(keyPair.pubKeyObj),
-      prvKey: KEYUTIL.getPEM(keyPair.prvKeyObj, "PKCS8PRV"),
+      prvKey: KEYUTIL.getPEM(keyPair.prvKeyObj, "PKCS8PRV")
     };
   }
 
@@ -48,11 +48,10 @@ export class CryptoUtil {
   public static signChallenge(privateKey: string, challenge: string): string {
     try {
 
-      let prvKey = KEYUTIL.getKey(privateKey);
-      console.log("Prvkey:" + privateKey);
-      let sig: any = new KJUR.crypto.Signature({ alg: "SHA256withRSA" });
+      const prvKey = KEYUTIL.getKey(privateKey);
+      const sig: any = new KJUR.crypto.Signature({ alg: "SHA256withRSA" });
       sig.init(prvKey);
-      let signature = sig.signString(challenge);
+      const signature = sig.signString(challenge);
 
       return hextob64(signature);
     } catch (err) {

@@ -36,6 +36,6 @@ export interface AuthRequestInterface {
   ipAddress?: string;
   location?: string;
   expiryTime?: string;
-  authenticationStatus?: String;
+  authenticationStatus?: string;
   requestTime?: DateTimeInterface;
 }
