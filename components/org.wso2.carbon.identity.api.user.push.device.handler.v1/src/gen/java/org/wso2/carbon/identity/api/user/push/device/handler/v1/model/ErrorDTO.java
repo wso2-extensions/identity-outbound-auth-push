@@ -32,10 +32,11 @@ import javax.validation.Valid;
 import javax.xml.bind.annotation.*;
 @ApiModel(description = "Model for error codes")
 public class ErrorDTO  {
-  
+
     private String code;
     private String message;
     private String description;
+    private String traceId;
 
     /**
     **/
@@ -44,7 +45,7 @@ public class ErrorDTO  {
         this.code = code;
         return this;
     }
-    
+
     @ApiModelProperty(example = "PDM-15001", value = "")
     @JsonProperty("code")
     @Valid
@@ -62,7 +63,7 @@ public class ErrorDTO  {
         this.message = message;
         return this;
     }
-    
+
     @ApiModelProperty(example = "There was an error", value = "")
     @JsonProperty("message")
     @Valid
@@ -80,7 +81,7 @@ public class ErrorDTO  {
         this.description = description;
         return this;
     }
-    
+
     @ApiModelProperty(example = "The error occurred due to ...", value = "")
     @JsonProperty("description")
     @Valid
@@ -89,6 +90,24 @@ public class ErrorDTO  {
     }
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    /**
+    **/
+    public ErrorDTO traceId(String traceId) {
+
+        this.traceId = traceId;
+        return this;
+    }
+
+    @ApiModelProperty(example = "b03f90c9-6723-48f6-863b-a35f1ac77f57", value = "")
+    @JsonProperty("traceId")
+    @Valid
+    public String getTraceId() {
+        return traceId;
+    }
+    public void setTraceId(String traceId) {
+        this.traceId = traceId;
     }
 
 
@@ -105,12 +124,13 @@ public class ErrorDTO  {
         ErrorDTO errorDTO = (ErrorDTO) o;
         return Objects.equals(this.code, errorDTO.code) &&
             Objects.equals(this.message, errorDTO.message) &&
-            Objects.equals(this.description, errorDTO.description);
+            Objects.equals(this.description, errorDTO.description) &&
+            Objects.equals(this.traceId, errorDTO.traceId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(code, message, description);
+        return Objects.hash(code, message, description, traceId);
     }
 
     @Override
@@ -118,10 +138,11 @@ public class ErrorDTO  {
 
         StringBuilder sb = new StringBuilder();
         sb.append("class ErrorDTO {\n");
-        
+
         sb.append("    code: ").append(toIndentedString(code)).append("\n");
         sb.append("    message: ").append(toIndentedString(message)).append("\n");
         sb.append("    description: ").append(toIndentedString(description)).append("\n");
+        sb.append("    traceId: ").append(toIndentedString(traceId)).append("\n");
         sb.append("}");
         return sb.toString();
     }

@@ -23,16 +23,16 @@ import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.*;
 
 /**
- * The model for a device object
+ * The model for a registered device object
  **/
 
 import io.swagger.annotations.*;
 import java.util.Objects;
 import javax.validation.Valid;
 import javax.xml.bind.annotation.*;
-@ApiModel(description = "The model for a device object")
+@ApiModel(description = "The model for a registered device object")
 public class DeviceDTO  {
-  
+
     private String deviceId;
     private String name;
     private String model;
@@ -47,7 +47,7 @@ public class DeviceDTO  {
         this.deviceId = deviceId;
         return this;
     }
-    
+
     @ApiModelProperty(example = "b03f90c9-6723-48f6-863b-a35f1ac77f57", value = "")
     @JsonProperty("deviceId")
     @Valid
@@ -65,7 +65,7 @@ public class DeviceDTO  {
         this.name = name;
         return this;
     }
-    
+
     @ApiModelProperty(example = "My Iphone", value = "")
     @JsonProperty("name")
     @Valid
@@ -83,7 +83,7 @@ public class DeviceDTO  {
         this.model = model;
         return this;
     }
-    
+
     @ApiModelProperty(example = "Iphone 8", value = "")
     @JsonProperty("model")
     @Valid
@@ -101,7 +101,7 @@ public class DeviceDTO  {
         this.pushId = pushId;
         return this;
     }
-    
+
     @ApiModelProperty(example = "fuRr8s_eQrmB88nu5Tz8oa:APA91bFMqYbuzDYyOGK28VoiLHWYXZYzGNVg3tfxfNwKPH-jDIFpNDdUHkmq5wqBUySYZnuHfpycyQvUrPhwV3UZ1YzjUNLvb9gzFZudfJd1N3fWuU0w2nq_hVJc0UPRabvNPuJy8wMB", value = "")
     @JsonProperty("pushId")
     @Valid
@@ -119,7 +119,7 @@ public class DeviceDTO  {
         this.registrationTime = registrationTime;
         return this;
     }
-    
+
     @ApiModelProperty(example = "2019-11-26T05:16:19.932Z", value = "")
     @JsonProperty("registrationTime")
     @Valid
@@ -137,7 +137,7 @@ public class DeviceDTO  {
         this.lastUsedTime = lastUsedTime;
         return this;
     }
-    
+
     @ApiModelProperty(example = "2019-11-26T05:16:19.932Z", value = "")
     @JsonProperty("lastUsedTime")
     @Valid
@@ -178,7 +178,7 @@ public class DeviceDTO  {
 
         StringBuilder sb = new StringBuilder();
         sb.append("class DeviceDTO {\n");
-        
+
         sb.append("    deviceId: ").append(toIndentedString(deviceId)).append("\n");
         sb.append("    name: ").append(toIndentedString(name)).append("\n");
         sb.append("    model: ").append(toIndentedString(model)).append("\n");

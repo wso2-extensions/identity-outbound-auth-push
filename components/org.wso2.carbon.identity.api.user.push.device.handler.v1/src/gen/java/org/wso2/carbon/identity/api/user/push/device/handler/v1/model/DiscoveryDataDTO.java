@@ -23,16 +23,16 @@ import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.*;
 
 /**
- * The object containing data for the qr code
+ * Device registration information
  **/
 
 import io.swagger.annotations.*;
 import java.util.Objects;
 import javax.validation.Valid;
 import javax.xml.bind.annotation.*;
-@ApiModel(description = "The object containing data for the qr code")
+@ApiModel(description = "Device registration information")
 public class DiscoveryDataDTO  {
-  
+
     private String did;
     private String un;
     private String fn;
@@ -53,7 +53,7 @@ public class DiscoveryDataDTO  {
         this.did = did;
         return this;
     }
-    
+
     @ApiModelProperty(example = "b03f90c9-6723-48f6-863b-a35f1ac77f57", value = "Device ID")
     @JsonProperty("did")
     @Valid
@@ -72,7 +72,7 @@ public class DiscoveryDataDTO  {
         this.un = un;
         return this;
     }
-    
+
     @ApiModelProperty(example = "admin", value = "Username")
     @JsonProperty("un")
     @Valid
@@ -91,7 +91,7 @@ public class DiscoveryDataDTO  {
         this.fn = fn;
         return this;
     }
-    
+
     @ApiModelProperty(example = "John", value = "First name")
     @JsonProperty("fn")
     @Valid
@@ -110,7 +110,7 @@ public class DiscoveryDataDTO  {
         this.ln = ln;
         return this;
     }
-    
+
     @ApiModelProperty(example = "Doe", value = "Last name")
     @JsonProperty("ln")
     @Valid
@@ -129,7 +129,7 @@ public class DiscoveryDataDTO  {
         this.td = td;
         return this;
     }
-    
+
     @ApiModelProperty(example = "mainDomain", value = "Tenant domain/Organisation")
     @JsonProperty("td")
     @Valid
@@ -148,7 +148,7 @@ public class DiscoveryDataDTO  {
         this.hst = hst;
         return this;
     }
-    
+
     @ApiModelProperty(example = "https://localhost:9443/", value = "Base URL")
     @JsonProperty("hst")
     @Valid
@@ -167,7 +167,7 @@ public class DiscoveryDataDTO  {
         this.bp = bp;
         return this;
     }
-    
+
     @ApiModelProperty(example = "t/{tenant_context}/api/users/v1/me", value = "Base path for the me endpoints")
     @JsonProperty("bp")
     @Valid
@@ -186,7 +186,7 @@ public class DiscoveryDataDTO  {
         this.re = re;
         return this;
     }
-    
+
     @ApiModelProperty(example = "/push-auth/devices", value = "Registration endpoint")
     @JsonProperty("re")
     @Valid
@@ -205,7 +205,7 @@ public class DiscoveryDataDTO  {
         this.ae = ae;
         return this;
     }
-    
+
     @ApiModelProperty(example = "push-auth/authenticate", value = "Authentication endpoint")
     @JsonProperty("ae")
     @Valid
@@ -224,7 +224,7 @@ public class DiscoveryDataDTO  {
         this.rde = rde;
         return this;
     }
-    
+
     @ApiModelProperty(example = "push-auth/devices/remove", value = "Remove device endpoint")
     @JsonProperty("rde")
     @Valid
@@ -243,7 +243,7 @@ public class DiscoveryDataDTO  {
         this.chg = chg;
         return this;
     }
-    
+
     @ApiModelProperty(example = "b03f90c9-6723-48f6-863b-a35f1ac77f57", value = "Challenge")
     @JsonProperty("chg")
     @Valid
@@ -289,7 +289,7 @@ public class DiscoveryDataDTO  {
 
         StringBuilder sb = new StringBuilder();
         sb.append("class DiscoveryDataDTO {\n");
-        
+
         sb.append("    did: ").append(toIndentedString(did)).append("\n");
         sb.append("    un: ").append(toIndentedString(un)).append("\n");
         sb.append("    fn: ").append(toIndentedString(fn)).append("\n");

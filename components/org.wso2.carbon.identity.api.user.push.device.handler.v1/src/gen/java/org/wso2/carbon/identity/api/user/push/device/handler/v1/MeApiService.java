@@ -25,10 +25,10 @@ import java.util.List;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.DeviceDTO;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.DiscoveryDataDTO;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.ErrorDTO;
+import java.util.List;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.PatchDTO;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.RegistrationRequestDTO;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.RemoveRequestDTO;
-import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.StatusDTO;
 import javax.ws.rs.core.Response;
 
 
@@ -38,7 +38,7 @@ public interface MeApiService {
 
       public Response mePushAuthDevicesDeviceIdGet(String deviceId);
 
-      public Response mePushAuthDevicesDeviceIdPut(String deviceId, PatchDTO patchDTO);
+      public Response mePushAuthDevicesDeviceIdPatch(String deviceId, List<PatchDTO> patchDTO);
 
       public Response mePushAuthDevicesDeviceIdRemovePost(String deviceId, RemoveRequestDTO removeRequestDTO);
 

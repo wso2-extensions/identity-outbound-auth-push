@@ -43,71 +43,68 @@ public class DefaultApi  {
 
     @Valid
     @DELETE
-    @Path("/{user-id}/push-auth/devices/{deviceId}")
-    
+    @Path("/{userId}/push-auth/devices/{deviceId}")
+
     @Produces({ "application/json" })
-    @ApiOperation(value = "Remove devices by deviceId. ", notes = "This API is used by admins to remove a specific device.<br/> <b>Permission required:</b>  * /permission/admin/manage/identity/user/push_divice_mgt/delete <br/>   <b>OAuth2 Scopes:</b>  * internal_identity_mgt_delete ", response = Void.class, authorizations = {
+    @ApiOperation(value = "Remove a device by deviceId. ", notes = "This API is used by an admin to remove a registered device by the deviceId.<br/> <b>Permission required:</b> <br>   * /permission/admin/manage/identity/user/push_device_mgt/delete <br/> <b>Scopes required:</b> <br>   * internal_push_device_delete ", response = Void.class, authorizations = {
         @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
-            
+
         })
     }, tags={ "admin", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 204, message = "No content", response = Void.class),
-        @ApiResponse(code = 404, message = "Not Found", response = ErrorDTO.class),
-        @ApiResponse(code = 400, message = "Bad Request", response = ErrorDTO.class),
-        @ApiResponse(code = 401, message = "Unauthorized", response = ErrorDTO.class),
-        @ApiResponse(code = 403, message = "Forbidden", response = ErrorDTO.class),
+    @ApiResponses(value = {
+        @ApiResponse(code = 204, message = "Device was removed", response = Void.class),
+        @ApiResponse(code = 401, message = "Unauthorized", response = Void.class),
+        @ApiResponse(code = 403, message = "Forbidden", response = Void.class),
         @ApiResponse(code = 500, message = "Server Error", response = ErrorDTO.class)
     })
-    public Response userIdPushAuthDevicesDeviceIdDelete(@ApiParam(value = "ID of user",required=true) @PathParam("user-id") String userId, @ApiParam(value = "Unique Id of device",required=true) @PathParam("deviceId") String deviceId) {
+    public Response userIdPushAuthDevicesDeviceIdDelete(@ApiParam(value = "ID of user",required=true) @PathParam("userId") String userId, @ApiParam(value = "Unique Id of device",required=true) @PathParam("deviceId") String deviceId) {
 
         return delegate.userIdPushAuthDevicesDeviceIdDelete(userId,  deviceId );
     }
 
     @Valid
     @GET
-    @Path("/{user-id}/push-auth/devices/{deviceId}")
-    
+    @Path("/{userId}/push-auth/devices/{deviceId}")
+
     @Produces({ "application/json" })
-    @ApiOperation(value = "Returns Specific Device. ", notes = "This API is used by admin set to retrieve a specific device.<br/> <b>Permission required:</b>  * /permission/admin/manage/identity/user/push_divice_mgt/view <br/>   <b>OAuth2 Scopes:</b>  * internal_identity_mgt_view ", response = DeviceDTO.class, authorizations = {
+    @ApiOperation(value = "Get a device by deviceId. ", notes = "This API is used by an admin to retrieve a registered device by the deviceId.<br/> <b>Permission required:</b>  * /permission/admin/manage/identity/user/push_device_mgt/view <br/>   <b>Scopes required:</b> * internal_push_device_view ", response = DeviceDTO.class, authorizations = {
         @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
-            
+
         })
     }, tags={ "admin", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Specific device selected by the user", response = DeviceDTO.class),
-        @ApiResponse(code = 400, message = "Bad Request", response = ErrorDTO.class),
-        @ApiResponse(code = 401, message = "Unauthorized", response = ErrorDTO.class),
-        @ApiResponse(code = 403, message = "Forbidden", response = ErrorDTO.class),
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Requested device of the user", response = DeviceDTO.class),
+        @ApiResponse(code = 401, message = "Unauthorized", response = Void.class),
+        @ApiResponse(code = 403, message = "Forbidden", response = Void.class),
+        @ApiResponse(code = 404, message = "Not Found", response = ErrorDTO.class),
         @ApiResponse(code = 500, message = "Server Error", response = ErrorDTO.class)
     })
-    public Response userIdPushAuthDevicesDeviceIdGet(@ApiParam(value = "ID of user",required=true) @PathParam("user-id") String userId, @ApiParam(value = "ID of device to return",required=true) @PathParam("deviceId") String deviceId) {
+    public Response userIdPushAuthDevicesDeviceIdGet(@ApiParam(value = "ID of user",required=true) @PathParam("userId") String userId, @ApiParam(value = "ID of device to return",required=true) @PathParam("deviceId") String deviceId) {
 
         return delegate.userIdPushAuthDevicesDeviceIdGet(userId,  deviceId );
     }
 
     @Valid
     @GET
-    @Path("/{user-id}/push-auth/devices")
-    
+    @Path("/{userId}/push-auth/devices")
+
     @Produces({ "application/json" })
-    @ApiOperation(value = "Returns Devices of a user. ", notes = "This API is used by admins to retrieve all devices registered under a user.<br/> <b>Permission required:</b>  * /permission/admin/manage/identity/user/push_divice_mgt/list <br/>   <b>OAuth2 Scopes:</b>  * internal_identity_mgt_view ", response = Object.class, responseContainer = "List", authorizations = {
+    @ApiOperation(value = "Get user's registered device list. ", notes = "This API is used by admins to get a list of devices registered under a user.<br/> <b>Permission required:</b>  * /permission/admin/manage/identity/user/push_device_mgt/list <br/>   <b>Scopes required:</b> * internal_push_device_list ", response = Object.class, responseContainer = "List", authorizations = {
         @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
-            
+
         })
     }, tags={ "admin" })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "All registered devices of the user", response = Object.class, responseContainer = "List"),
-        @ApiResponse(code = 400, message = "Bad Request", response = ErrorDTO.class),
-        @ApiResponse(code = 401, message = "Unauthorized", response = ErrorDTO.class),
-        @ApiResponse(code = 403, message = "Forbidden", response = ErrorDTO.class),
-        @ApiResponse(code = 404, message = "Not found", response = ErrorDTO.class),
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "List of registered devices of the user", response = Object.class, responseContainer = "List"),
+        @ApiResponse(code = 401, message = "Unauthorized", response = Void.class),
+        @ApiResponse(code = 403, message = "Forbidden", response = Void.class),
+        @ApiResponse(code = 404, message = "Not Found", response = ErrorDTO.class),
         @ApiResponse(code = 500, message = "Server Error", response = ErrorDTO.class)
     })
-    public Response userIdPushAuthDevicesGet(@ApiParam(value = "ID of user",required=true) @PathParam("user-id") String userId) {
+    public Response userIdPushAuthDevicesGet(@ApiParam(value = "ID of user",required=true) @PathParam("userId") String userId) {
 
         return delegate.userIdPushAuthDevicesGet(userId );
     }

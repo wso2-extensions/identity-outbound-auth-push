@@ -23,19 +23,19 @@ import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.*;
 
 /**
- * Model for updating device information
+ * A JSONPatch document as defined by RFC 6902
  **/
 
 import io.swagger.annotations.*;
 import java.util.Objects;
 import javax.validation.Valid;
 import javax.xml.bind.annotation.*;
-@ApiModel(description = "Model for updating device information")
+@ApiModel(description = "A JSONPatch document as defined by RFC 6902")
 public class PatchDTO  {
-  
+
     private String operation;
-    private String value;
     private String path;
+    private String value;
 
     /**
     * The operation to be performed
@@ -45,7 +45,7 @@ public class PatchDTO  {
         this.operation = operation;
         return this;
     }
-    
+
     @ApiModelProperty(example = "REPLACE", required = true, value = "The operation to be performed")
     @JsonProperty("operation")
     @Valid
@@ -59,6 +59,25 @@ public class PatchDTO  {
     }
 
     /**
+    * Path for validating the operation
+    **/
+    public PatchDTO path(String path) {
+
+        this.path = path;
+        return this;
+    }
+
+    @ApiModelProperty(example = "/device-name", value = "Path for validating the operation")
+    @JsonProperty("path")
+    @Valid
+    public String getPath() {
+        return path;
+    }
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    /**
     * The value to be used within the operations
     **/
     public PatchDTO value(String value) {
@@ -66,8 +85,8 @@ public class PatchDTO  {
         this.value = value;
         return this;
     }
-    
-    @ApiModelProperty(example = "{\"deviceId\": \"2354a435-60fd-4235-94f6-744323192e80\",\"name\": \"New Device\",\"model\": \"SM-A705GM\", \"pushId\": \"dnWcH2CDQlep3x_xwx0RoJ:APA91bHR86pfeoljGEIWwMnyEUHh8evIkE3CqjnIl8JcU0TVgKrIpG7YQI11FnE698LTvgpTUi jhPXQij-qhNQoxjClAn5qZdwITVK5DZnlyLDxfZWfF8GaJmc_MBpc7-Ae_uQMpv-Qj\",\"registrationTime\": 1619586752830, \"lastUsedTime\":1619586752831}", required = true, value = "The value to be used within the operations")
+
+    @ApiModelProperty(example = "New device name", required = true, value = "The value to be used within the operations")
     @JsonProperty("value")
     @Valid
     @NotNull(message = "Property value cannot be null.")
@@ -77,25 +96,6 @@ public class PatchDTO  {
     }
     public void setValue(String value) {
         this.value = value;
-    }
-
-    /**
-    * Path for validating the operation
-    **/
-    public PatchDTO path(String path) {
-
-        this.path = path;
-        return this;
-    }
-    
-    @ApiModelProperty(example = "/edit-device", value = "Path for validating the operation")
-    @JsonProperty("path")
-    @Valid
-    public String getPath() {
-        return path;
-    }
-    public void setPath(String path) {
-        this.path = path;
     }
 
 
@@ -111,13 +111,13 @@ public class PatchDTO  {
         }
         PatchDTO patchDTO = (PatchDTO) o;
         return Objects.equals(this.operation, patchDTO.operation) &&
-            Objects.equals(this.value, patchDTO.value) &&
-            Objects.equals(this.path, patchDTO.path);
+            Objects.equals(this.path, patchDTO.path) &&
+            Objects.equals(this.value, patchDTO.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(operation, value, path);
+        return Objects.hash(operation, path, value);
     }
 
     @Override
@@ -125,10 +125,10 @@ public class PatchDTO  {
 
         StringBuilder sb = new StringBuilder();
         sb.append("class PatchDTO {\n");
-        
+
         sb.append("    operation: ").append(toIndentedString(operation)).append("\n");
-        sb.append("    value: ").append(toIndentedString(value)).append("\n");
         sb.append("    path: ").append(toIndentedString(path)).append("\n");
+        sb.append("    value: ").append(toIndentedString(value)).append("\n");
         sb.append("}");
         return sb.toString();
     }

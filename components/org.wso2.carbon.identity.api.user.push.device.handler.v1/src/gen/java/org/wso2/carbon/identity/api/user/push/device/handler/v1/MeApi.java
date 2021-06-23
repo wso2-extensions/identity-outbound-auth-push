@@ -25,10 +25,10 @@ import java.util.List;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.DeviceDTO;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.DiscoveryDataDTO;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.ErrorDTO;
+import java.util.List;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.PatchDTO;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.RegistrationRequestDTO;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.RemoveRequestDTO;
-import org.wso2.carbon.identity.api.user.push.device.handler.v1.model.StatusDTO;
 import org.wso2.carbon.identity.api.user.push.device.handler.v1.MeApiService;
 
 import javax.validation.Valid;
@@ -49,21 +49,18 @@ public class MeApi  {
     @Valid
     @DELETE
     @Path("/push-auth/devices/{deviceId}")
-    
+
     @Produces({ "application/json" })
-    @ApiOperation(value = "Remove a registered device. ", notes = "This API is used to remove a registered device via My Account.<br/> <b>Permission required:</b>  * /permission/admin/login <br/>   <b>OAuth2 Scopes:</b>  * internal_identity_mgt_delete ", response = StatusDTO.class, authorizations = {
+    @ApiOperation(value = "Remove a registered device. ", notes = "This API is used to remove a registered device. ", response = Void.class, authorizations = {
         @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
-            
+
         })
     }, tags={ "me", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "OK", response = StatusDTO.class),
-        @ApiResponse(code = 204, message = "No content", response = Void.class),
-        @ApiResponse(code = 404, message = "Not found", response = ErrorDTO.class),
-        @ApiResponse(code = 400, message = "Bad Request", response = ErrorDTO.class),
-        @ApiResponse(code = 401, message = "Unauthorized", response = ErrorDTO.class),
-        @ApiResponse(code = 403, message = "Forbidden", response = ErrorDTO.class),
+    @ApiResponses(value = {
+        @ApiResponse(code = 204, message = "The device was removed", response = Void.class),
+        @ApiResponse(code = 401, message = "Unauthorized", response = Void.class),
+        @ApiResponse(code = 403, message = "Forbidden", response = Void.class),
         @ApiResponse(code = 500, message = "Server Error", response = ErrorDTO.class)
     })
     public Response mePushAuthDevicesDeviceIdDelete(@ApiParam(value = "Unique Id of the device",required=true) @PathParam("deviceId") String deviceId) {
@@ -74,19 +71,19 @@ public class MeApi  {
     @Valid
     @GET
     @Path("/push-auth/devices/{deviceId}")
-    
+
     @Produces({ "application/json" })
-    @ApiOperation(value = "Returns specific device. ", notes = "This API is used to get a specific device.<br/> <b>Permission required:</b>  * /permission/admin/login <br/>   <b>OAuth2 Scopes:</b>  * internal_identity_mgt_view ", response = DeviceDTO.class, authorizations = {
+    @ApiOperation(value = "Get a registered device. ", notes = "This API is used to get a specific registered device. ", response = DeviceDTO.class, authorizations = {
         @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
-            
+
         })
     }, tags={ "me", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Details of a specific device", response = DeviceDTO.class),
-        @ApiResponse(code = 400, message = "Bad Request", response = ErrorDTO.class),
-        @ApiResponse(code = 401, message = "Unauthorized", response = ErrorDTO.class),
-        @ApiResponse(code = 403, message = "Forbidden", response = ErrorDTO.class),
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Requested registered device of the authenticated user", response = DeviceDTO.class),
+        @ApiResponse(code = 401, message = "Unauthorized", response = Void.class),
+        @ApiResponse(code = 403, message = "Forbidden", response = Void.class),
+        @ApiResponse(code = 404, message = "Not Found", response = ErrorDTO.class),
         @ApiResponse(code = 500, message = "Server Error", response = ErrorDTO.class)
     })
     public Response mePushAuthDevicesDeviceIdGet(@ApiParam(value = "ID of device to return",required=true) @PathParam("deviceId") String deviceId) {
@@ -95,27 +92,27 @@ public class MeApi  {
     }
 
     @Valid
-    @PUT
+    @PATCH
     @Path("/push-auth/devices/{deviceId}")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    @ApiOperation(value = "Update attributes of a registered device. ", notes = "This API is used to update attributes of a registered device.<br/> <b>Permission required:</b>  * /permission/admin/login <br/>   <b>OAuth2 Scopes:</b>  * internal_identity_mgt_update ", response = Void.class, authorizations = {
+    @ApiOperation(value = "Update registered device. ", notes = "This API is used to update attributes of a registered device. ", response = Void.class, authorizations = {
         @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
-            
+
         })
     }, tags={ "me", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Display name of device successfully updated", response = Void.class),
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Device was successfully updated", response = Void.class),
         @ApiResponse(code = 400, message = "Bad Request", response = ErrorDTO.class),
-        @ApiResponse(code = 401, message = "Unauthorized", response = ErrorDTO.class),
-        @ApiResponse(code = 403, message = "Forbidden", response = ErrorDTO.class),
+        @ApiResponse(code = 401, message = "Unauthorized", response = Void.class),
+        @ApiResponse(code = 403, message = "Forbidden", response = Void.class),
         @ApiResponse(code = 404, message = "Not found", response = ErrorDTO.class),
         @ApiResponse(code = 500, message = "Server Error", response = ErrorDTO.class)
     })
-    public Response mePushAuthDevicesDeviceIdPut(@ApiParam(value = "deviceId",required=true) @PathParam("deviceId") String deviceId, @ApiParam(value = "Optional description in *Markdown*" ,required=true) @Valid PatchDTO patchDTO) {
+    public Response mePushAuthDevicesDeviceIdPatch(@ApiParam(value = "deviceId",required=true) @PathParam("deviceId") String deviceId, @ApiParam(value = "Request to update attributes of the device" ,required=true) @Valid List<PatchDTO> patchDTO) {
 
-        return delegate.mePushAuthDevicesDeviceIdPut(deviceId,  patchDTO );
+        return delegate.mePushAuthDevicesDeviceIdPatch(deviceId,  patchDTO );
     }
 
     @Valid
@@ -123,21 +120,20 @@ public class MeApi  {
     @Path("/push-auth/devices/{deviceId}/remove")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    @ApiOperation(value = "Remove device from mobile app. ", notes = "This API is used to remove a device via the mobile app.<br/> <b>Permission required:</b>  * /permission/admin/manage/identity/user/push_divice_mgt/delete <br/>   <b>OAuth2 Scopes:</b>  * internal_identity_mgt_delete ", response = StatusDTO.class, authorizations = {
+    @ApiOperation(value = "Remove registered device from within the device. ", notes = "This API is used to remove a registered device from within the device. ", response = Void.class, authorizations = {
         @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
-            
+
         })
     }, tags={ "me", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Device was removed", response = StatusDTO.class),
+    @ApiResponses(value = {
+        @ApiResponse(code = 204, message = "Device was removed", response = Void.class),
         @ApiResponse(code = 400, message = "Bad Request", response = ErrorDTO.class),
-        @ApiResponse(code = 401, message = "Unauthorized", response = ErrorDTO.class),
-        @ApiResponse(code = 403, message = "Forbidden", response = ErrorDTO.class),
-        @ApiResponse(code = 404, message = "Not found", response = ErrorDTO.class),
+        @ApiResponse(code = 401, message = "Unauthorized", response = Void.class),
+        @ApiResponse(code = 403, message = "Forbidden", response = Void.class),
         @ApiResponse(code = 500, message = "Server Error", response = ErrorDTO.class)
     })
-    public Response mePushAuthDevicesDeviceIdRemovePost(@ApiParam(value = "Unique Id of the device",required=true) @PathParam("deviceId") String deviceId, @ApiParam(value = "Account details sent by mobile application" ,required=true) @Valid RemoveRequestDTO removeRequestDTO) {
+    public Response mePushAuthDevicesDeviceIdRemovePost(@ApiParam(value = "Unique Id of the device",required=true) @PathParam("deviceId") String deviceId, @ApiParam(value = "Remove request sent from the device." ,required=true) @Valid RemoveRequestDTO removeRequestDTO) {
 
         return delegate.mePushAuthDevicesDeviceIdRemovePost(deviceId,  removeRequestDTO );
     }
@@ -145,20 +141,18 @@ public class MeApi  {
     @Valid
     @GET
     @Path("/push-auth/devices")
-    
+
     @Produces({ "application/json" })
-    @ApiOperation(value = "Returns registered devices list of the user. ", notes = "This API is used to get a list of the registered devices.<br/> <b>Permission required:</b>  * /permission/admin/login <br/>   <b>OAuth2 Scopes:</b>  * internal_identity_mgt_view ", response = Object.class, responseContainer = "List", authorizations = {
+    @ApiOperation(value = "Get list of registered devices. ", notes = "This API is used to get a list of registered devices of the authenticated user. ", response = Object.class, responseContainer = "List", authorizations = {
         @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
-            
+
         })
     }, tags={ "me", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "All availabe devices of the user.", response = Object.class, responseContainer = "List"),
-        @ApiResponse(code = 400, message = "Bad Request", response = ErrorDTO.class),
-        @ApiResponse(code = 401, message = "Unauthorized", response = ErrorDTO.class),
-        @ApiResponse(code = 403, message = "Forbidden", response = ErrorDTO.class),
-        @ApiResponse(code = 404, message = "Not found", response = ErrorDTO.class),
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "List of registered devices of the user.", response = Object.class, responseContainer = "List"),
+        @ApiResponse(code = 401, message = "Unauthorized", response = Void.class),
+        @ApiResponse(code = 403, message = "Forbidden", response = Void.class),
         @ApiResponse(code = 500, message = "Server Error", response = ErrorDTO.class)
     })
     public Response mePushAuthDevicesGet() {
@@ -171,21 +165,21 @@ public class MeApi  {
     @Path("/push-auth/devices")
     @Consumes({ "application/json" })
     @Produces({ "application/json" })
-    @ApiOperation(value = "Register a device for push-based authentication. ", notes = "This API is used to receive device information from the mobile app and complete the add account flow.<br/> <b>Permission required:</b>  * /permission/admin/login <br/>   <b>OAuth2 Scopes:</b>  * internal_identity_mgt_create ", response = StatusDTO.class, authorizations = {
+    @ApiOperation(value = "Register a device. ", notes = "This API is used to register a device.<br/> ", response = Void.class, authorizations = {
         @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
-            
+
         })
     }, tags={ "me", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 201, message = "Added new device", response = StatusDTO.class),
+    @ApiResponses(value = {
+        @ApiResponse(code = 201, message = "Registered a new device", response = Void.class),
         @ApiResponse(code = 400, message = "Bad Request", response = ErrorDTO.class),
-        @ApiResponse(code = 401, message = "Unauthorized", response = ErrorDTO.class),
-        @ApiResponse(code = 403, message = "Forbidden", response = ErrorDTO.class),
+        @ApiResponse(code = 401, message = "Unauthorized", response = Void.class),
+        @ApiResponse(code = 403, message = "Forbidden", response = Void.class),
         @ApiResponse(code = 409, message = "Conflict", response = ErrorDTO.class),
         @ApiResponse(code = 500, message = "Server Error", response = ErrorDTO.class)
     })
-    public Response mePushAuthDevicesPost(@ApiParam(value = "Device details sent by mobile application" ,required=true) @Valid RegistrationRequestDTO registrationRequestDTO) {
+    public Response mePushAuthDevicesPost(@ApiParam(value = "Request sent by a device for registration." ,required=true) @Valid RegistrationRequestDTO registrationRequestDTO) {
 
         return delegate.mePushAuthDevicesPost(registrationRequestDTO );
     }
@@ -193,18 +187,18 @@ public class MeApi  {
     @Valid
     @GET
     @Path("/push-auth/discovery-data")
-    
+
     @Produces({ "application/json" })
-    @ApiOperation(value = "Retrieve data for the QR code. ", notes = "This API is used to retrieve data for the QR Code to trigger the push authentication add account flow.<br/>  <b>Permission required:</b>  * /permission/admin/login ", response = DiscoveryDataDTO.class, authorizations = {
+    @ApiOperation(value = "Generate data for device registration. ", notes = "This API is used to generate discovery data for the device registration QR code. ", response = DiscoveryDataDTO.class, authorizations = {
         @Authorization(value = "BasicAuth"),
         @Authorization(value = "OAuth2", scopes = {
-            
+
         })
     }, tags={ "me" })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Successful response", response = DiscoveryDataDTO.class),
-        @ApiResponse(code = 401, message = "Unauthorized", response = ErrorDTO.class),
-        @ApiResponse(code = 403, message = "Forbidden", response = ErrorDTO.class),
+    @ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Successfully generated registration discovery data", response = DiscoveryDataDTO.class),
+        @ApiResponse(code = 401, message = "Unauthorized", response = Void.class),
+        @ApiResponse(code = 403, message = "Forbidden", response = Void.class),
         @ApiResponse(code = 500, message = "Internal Server Error", response = ErrorDTO.class)
     })
     public Response mePushAuthDiscoveryDataGet() {
