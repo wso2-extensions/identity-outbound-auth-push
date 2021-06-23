@@ -46,10 +46,16 @@ export class AccountsService {
         let keypair: any = CryptoUtil.generateKeypair();
         let signatureString = regRequest.chg + "." + fcmToken;
         console.log("Keypair:", keypair);
-        let signedChallenge: string = CryptoUtil.signChallenge(
-            keypair.prvKey,
-            signatureString
-        );
+        let signedChallenge: string;
+
+        try {
+            signedChallenge = CryptoUtil.signChallenge(
+                keypair.prvKey,
+                signatureString
+            );
+        } catch (err) {
+            return JSON.stringify({res: "FAILED", data: null});
+        }
 
         let modPubKey: string = keypair.pubKey
             .replace("-----BEGIN PUBLIC KEY-----", "")

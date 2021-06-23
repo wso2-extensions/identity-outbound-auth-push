@@ -56,9 +56,7 @@ export class CryptoUtil {
 
       return hextob64(signature);
     } catch (err) {
-      console.log("Sign Failed: " + err);
+      throw new Error("Error occurred when trying to sign the challenge string.")
     }
-
-    return "";
   }
 }
