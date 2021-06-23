@@ -136,7 +136,10 @@ export class AccountsService {
         console.log("Remove account function");
         let jwt = KJUR.jws.JWS.sign(
             null,
-            {alg: "RS256"},
+            {
+                alg: "RS256",
+                did: account.deviceID,
+            } as any,
             {
                 jti: uuid(),
                 sub: account.username + "@" + account.tenantDomain,
@@ -145,7 +148,6 @@ export class AccountsService {
                 nbf: KJUR.jws.IntDate.get("now"),
                 exp: KJUR.jws.IntDate.get("now + 1hour"),
                 iat: KJUR.jws.IntDate.get("now"),
-                did: account.deviceID,
                 act: "REMOVE",
             },
             account.privateKey
