@@ -34,10 +34,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.yubico</groupId>
-            <artifactId>webauthn-server-core</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.core.common</artifactId>
         </dependency>
@@ -63,10 +59,6 @@
                     <artifactId>xercesImpl</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.identity.framework</groupId>
-            <artifactId>org.wso2.carbon.identity.base</artifactId>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon.identity.framework</groupId>
@@ -116,16 +108,8 @@
             <artifactId>gson</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon</groupId>
-            <artifactId>org.wso2.carbon.utils</artifactId>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon</groupId>
@@ -147,6 +131,10 @@
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.user.api</artifactId>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.identity.framework</groupId>
+            <artifactId>org.wso2.carbon.identity.base</artifactId>
         </dependency>
     </dependencies>
     <build>
@@ -219,24 +207,24 @@
                             org.wso2.carbon.identity.application.authenticator.push.device.handler.internal
                         </Private-Package>
                         <Import-Package>
-                            org.apache.commons.logging;version="[ 1.2,2)",
-                            org.osgi.framework;version="[1.8,2)",
-                            org.osgi.service.component;version="${osgi.service.component.imp.pkg.version.range}",
-                            org.wso2.carbon.context;version="[4.6,5)",
-                            org.wso2.carbon.identity.application.authentication.framework.store;version="[5.12,6)",
-                            org.wso2.carbon.identity.application.authentication.framework.exception;version="[5.12,6)",
-                            org.wso2.carbon.identity.application.common.cache;version="[5.12,6)",
-                            org.wso2.carbon.identity.application.common.model;version="[5.12,6)",
-                            org.wso2.carbon.identity.base;version="[5.12,6)",
-                            org.wso2.carbon.identity.core.util;version="[5.12,6)",
-                            org.wso2.carbon.user.api;version="[1.0,2)",
-                            org.wso2.carbon.user.core.common;version="[4.6,5)",
-                            org.wso2.carbon.utils;version="[4.6,5)"
+                            org.apache.commons.logging;version="${org.apache.commons.version.range}",
+                            org.osgi.framework;version="${org.osgi.framework.version.range}",
+                            org.osgi.service.component;version="${org.osgi.service.version.range}",
+                            org.wso2.carbon.context;version="${org.wso2.carbon.version.range}",
+                            org.wso2.carbon.identity.application.authentication.framework.store;version="${org.wso2.carbon.identity.version.range}",
+                            org.wso2.carbon.identity.application.authentication.framework.exception;version="${org.wso2.carbon.identity.version.range}",
+                            org.wso2.carbon.identity.application.common.cache;version="${org.wso2.carbon.identity.version.range}",
+                            org.wso2.carbon.identity.application.common.model;version="${org.wso2.carbon.identity.version.range}",
+                            org.wso2.carbon.identity.base;version="${org.wso2.carbon.identity.version.range}",
+                            org.wso2.carbon.identity.core.util;version="${org.wso2.carbon.identity.version.range}",
+                            org.wso2.carbon.user.api;version="${carbon.user.api.version.range}",
+                            org.wso2.carbon.user.core.common;version="${org.wso2.carbon.version.range}",
+                            org.wso2.carbon.utils;version="${org.wso2.carbon.version.range}"
                         </Import-Package>
                         <Export-Package>
                             !org.wso2.carbon.identity.application.authenticator.push.device.handler.internal;
-                            !org.wso2.carbon.identity.application.authenticator.push.device.handler.cache;
-                            !org.wso2.carbon.identity.application.authenticator.push.device.handler.dao;
+                            org.wso2.carbon.identity.application.authenticator.push.device.handler.cache;
+                            org.wso2.carbon.identity.application.authenticator.push.device.handler.dao;
                             org.wso2.carbon.identity.application.authenticator.push.device.handler;
                             org.wso2.carbon.identity.application.authenticator.push.device.handler.exception;
                             org.wso2.carbon.identity.application.authenticator.push.device.handler.model;
