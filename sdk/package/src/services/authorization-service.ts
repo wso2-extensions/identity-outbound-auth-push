@@ -59,7 +59,7 @@ export class AuthorizationService {
             };
         } else {
 
-            throw new Error("One or more required parameters missing");
+            throw new Error("One or more required parameters (deviceId, challenge, sessionDataKey) was not found.");
         }
 
         if (request.data.displayName) {

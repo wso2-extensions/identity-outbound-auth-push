@@ -218,7 +218,8 @@ export class AccountsService {
             };
         } else {
 
-            throw new Error("One or more required parameters missing");
+            throw new Error("One or more required parameters (deviceId, username, host, basePath, challenge) "
+                + "was not found.");
         }
 
         if (regRequest.fn) {
