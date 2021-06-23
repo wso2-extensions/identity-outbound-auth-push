@@ -161,13 +161,13 @@ export class AuthorizationService {
         authRequest.requestTime = timestamp.getDateTime();
 
         return result.then((res) => {
-            console.log("Response test: " + res);
+            console.log("Response status test: " + res.status);
             let result;
-            if (res.status === 202 || res.status === 200 && response == "SUCCESSFUL") {
+            if (res.status === 201 && response == "SUCCESSFUL") {
                 authRequest.authenticationStatus = "Accepted";
                 result = "OK";
                 console.log("Auth is OK and Accepted");
-            } else if (res.status === 202 || res.status === 200 && response == "DENIED") {
+            } else if (res.status === 201 && response == "DENIED") {
                 authRequest.authenticationStatus = "Denied";
                 result = "FAILED";
                 console.log("Auth is OK and Denied");

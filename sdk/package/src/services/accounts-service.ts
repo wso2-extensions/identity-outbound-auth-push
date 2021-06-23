@@ -167,7 +167,7 @@ export class AccountsService {
 
         return request.sendRequest(url, requestMethod, headers, JSON.stringify(body))
             .then((res) => {
-                if (res.status === 204 || res.status === 200) {
+                if (res.status === 204) {
 
                     return JSON.stringify({res: "SUCCESS", data: account});
                 } else {
