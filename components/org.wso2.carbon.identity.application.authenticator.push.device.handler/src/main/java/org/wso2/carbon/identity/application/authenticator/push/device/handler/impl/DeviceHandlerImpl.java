@@ -87,7 +87,7 @@ public class DeviceHandlerImpl implements DeviceHandler {
         } else {
             clearCache(registrationRequest.getDeviceId());
             String errorMessage = String.format(DeviceHandlerConstants.ErrorMessages
-                            .ERROR_CODE_DEVICE_ALREADY_REGISTERED.toString(), registrationRequest.getDeviceId());
+                    .ERROR_CODE_DEVICE_ALREADY_REGISTERED.toString(), registrationRequest.getDeviceId());
             throw new PushDeviceHandlerClientException(errorMessage);
         }
 
@@ -130,20 +130,17 @@ public class DeviceHandlerImpl implements DeviceHandler {
     }
 
     @Override
-    public void editDevice(String deviceId, Device updatedDevice)
+    public void editDevice(String deviceId, String path, String value)
             throws PushDeviceHandlerServerException, PushDeviceHandlerClientException {
 
-        Device currentDevice;
+        Device device;
         try {
-            currentDevice = getDevice(deviceId);
+            device = getDevice(deviceId);
+            handleEditDevice(device, path, value);
         } catch (PushDeviceHandlerClientException e) {
             String errorMessage = String.format(
                     DeviceHandlerConstants.ErrorMessages.ERROR_CODE_EDIT_DEVICE_NOT_FOUND.toString(), deviceId);
             throw new PushDeviceHandlerClientException(errorMessage, e);
-        }
-
-        if (updatedDevice.getDeviceId().equals(currentDevice.getDeviceId())) {
-            handleEditDevice(currentDevice, updatedDevice);
         }
     }
 
@@ -323,29 +320,32 @@ public class DeviceHandlerImpl implements DeviceHandler {
     /**
      * Handle validations and complete the edit device process.
      *
-     * @param currentDevice Device information stored in system
-     * @param updatedDevice Updated device information
+     * @param device Device information stored in system
+     * @param path   Path for thr attribute to be updated
+     * @param value  New value that should be added
      * @throws PushDeviceHandlerServerException - if an error occurs while storing data in the database
      */
-    private void handleEditDevice(Device currentDevice, Device updatedDevice) throws PushDeviceHandlerServerException {
+    private void handleEditDevice(Device device, String path, String value)
+            throws PushDeviceHandlerServerException, PushDeviceHandlerClientException {
 
         deviceDAO = new DeviceDAOImpl();
         try {
-            int changes = 0;
-            if (!updatedDevice.getDeviceName().isEmpty()) {
-                currentDevice.setDeviceName(updatedDevice.getDeviceName());
-                changes++;
+            switch (path) {
+                case "/device-name":
+                    device.setDeviceName(value);
+                    break;
+                case "/push-id":
+                    device.setPushId(value);
+                    break;
+                default:
+                    throw new PushDeviceHandlerClientException("Invalid path for updating device: "
+                            + device.getDeviceId() + ".");
             }
-            if (!updatedDevice.getPushId().isEmpty()) {
-                currentDevice.setPushId(updatedDevice.getPushId());
-                changes++;
-            }
-            if (changes > 0) {
-                deviceDAO.editDevice(currentDevice.getDeviceId(), updatedDevice);
-            }
+
+            deviceDAO.editDevice(device.getDeviceId(), device);
         } catch (SQLException e) {
             String errorMessage = String.format(DeviceHandlerConstants
-                    .ErrorMessages.ERROR_CODE_EDIT_DEVICE_FAILED.toString(), currentDevice.getDeviceId());
+                    .ErrorMessages.ERROR_CODE_EDIT_DEVICE_FAILED.toString(), device.getDeviceId());
             throw new PushDeviceHandlerServerException(errorMessage, e);
         }
     }
