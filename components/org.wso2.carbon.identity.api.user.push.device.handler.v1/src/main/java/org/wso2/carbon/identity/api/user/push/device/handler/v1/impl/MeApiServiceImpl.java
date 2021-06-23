@@ -99,7 +99,7 @@ public class MeApiServiceImpl implements MeApiService {
             String registeredDevicePath = String.format(PushDeviceApiConstants.V1_API_PATH_COMPONENT
                             + PushDeviceApiConstants.PUSH_AUTH_GET_DEVICE_PATH, registrationRequest.getDeviceId());
 
-            return Response.accepted(buildURIForHeader(registeredDevicePath)).build();
+            return Response.created(buildURIForHeader(registeredDevicePath)).build();
         } else {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
