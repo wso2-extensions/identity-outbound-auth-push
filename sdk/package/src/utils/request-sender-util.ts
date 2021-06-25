@@ -16,45 +16,45 @@
  * under the License.
  */
 
-import { fetch } from "react-native-ssl-pinning";
+import {fetch} from "react-native-ssl-pinning";
 
 /**
  * Util class for handling http requests.
  */
 export class RequestSenderUtil {
 
-  /**
-   * Sends request to required endpoint.
-   *
-   * @param url Endpoint the request is sent to
-   * @param requestMethod Request method
-   * @param requestHeaders Request headers
-   * @param body Request body
-   */
-  public async sendRequest(
-    url: string,
-    requestMethod: any,
-    requestHeaders: any,
-    body: any
-  ): Promise<any> {
+    /**
+     * Sends request to required endpoint.
+     *
+     * @param url Endpoint the request is sent to
+     * @param requestMethod Request method
+     * @param requestHeaders Request headers
+     * @param body Request body
+     */
+    public async sendRequest(
+        url: string,
+        requestMethod: any,
+        requestHeaders: any,
+        body: any
+    ): Promise<any> {
 
-    return fetch(url, {
-      method: requestMethod,
-      disableAllSecurity: true,
-      sslPinning: {
-        certs: ["wso2carbon"]
-      },
-      headers: requestHeaders,
-      body: body
-    })
-      .then((response: any) => {
+        return fetch(url, {
+            method: requestMethod,
+            disableAllSecurity: true,
+            sslPinning: {
+                certs: ["wso2carbon"]
+            },
+            headers: requestHeaders,
+            body: body
+        })
+            .then((response: any) => {
 
-        return response;
-      })
-      .catch((err: any) => {
-        console.log(`error: ${err.status}`);
+                return response;
+            })
+            .catch((err: any) => {
+                console.log(`error: ${err.status}`);
 
-        return "FAILED";
-      });
-  }
+                return "FAILED";
+            });
+    }
 }

@@ -17,10 +17,10 @@
  */
 
 
-import { KJUR } from "jsrsasign";
+import {KJUR} from "jsrsasign";
 import uuid from "uuid-random";
-import { AccountsInterface, AuthRequestInterface } from "../models";
-import { DateTimeUtil, RequestSenderUtil } from "../utils";
+import {AccountsInterface, AuthRequestInterface} from "../models";
+import {DateTimeUtil, RequestSenderUtil} from "../utils";
 
 export class AuthorizationService {
 
@@ -154,7 +154,7 @@ export class AuthorizationService {
                 console.error("Auth response has a problem. Check! " + String(res));
             }
 
-            return JSON.stringify({ res: result, data: authRequest });
+            return JSON.stringify({res: result, data: authRequest});
         });
     }
 

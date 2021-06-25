@@ -22,67 +22,67 @@ import DeviceInfo from "react-native-device-info";
  * Util class for handling device information.
  */
 export class DeviceInfoUtil {
-  private static deviceName: string;
-  private static deviceBrand: string;
-  private static deviceModel: string;
+    private static deviceName: string;
+    private static deviceBrand: string;
+    private static deviceModel: string;
 
-  public constructor() {
+    public constructor() {
 
-    if (DeviceInfoUtil.deviceName == null) {
-      DeviceInfo.getDeviceName()
-        .then((deviceName: string) => {
-          DeviceInfoUtil.deviceName = deviceName;
-        })
-        .catch((err: string) => {
-          console.log("Error occurred when trying to get device name: " + err);
-        })
-    } else {
-      console.log("Device info already added.");
+        if (DeviceInfoUtil.deviceName == null) {
+            DeviceInfo.getDeviceName()
+                .then((deviceName: string) => {
+                    DeviceInfoUtil.deviceName = deviceName;
+                })
+                .catch((err: string) => {
+                    console.log("Error occurred when trying to get device name: " + err);
+                })
+        } else {
+            console.log("Device info already added.");
+        }
+
+        // Adding device brand
+        if (DeviceInfoUtil.deviceBrand == null) {
+            DeviceInfoUtil.deviceBrand = DeviceInfo.getBrand();
+        } else {
+            console.log("Model already added.")
+        }
+
+        // Adding device model
+        if (DeviceInfoUtil.deviceModel == null) {
+            DeviceInfoUtil.deviceModel = DeviceInfo.getModel();
+        }
+
     }
 
-    // Adding device brand
-    if (DeviceInfoUtil.deviceBrand == null) {
-      DeviceInfoUtil.deviceBrand = DeviceInfo.getBrand();
-    } else {
-      console.log("Model already added.")
+    /**
+     * Returns the name of the device.
+     *
+     * @returns deviceName - Name of the device
+     */
+    public static getDeviceName(): string {
+
+        return this.deviceName;
     }
 
-    // Adding device model
-    if (DeviceInfoUtil.deviceModel == null) {
-      DeviceInfoUtil.deviceModel = DeviceInfo.getModel();
+    /**
+     * Returns the model name of the device.
+     *
+     * @returns deviceModel - Model of the device
+     */
+    public static getDeviceModel(): string {
+
+        return DeviceInfoUtil.deviceModel;
     }
 
-  }
+    /**
+     * Returns the brand name of the device.
+     *
+     * @returns deviceBrand - Brand name of the device
+     */
+    public static getDeviceBrand(): string {
 
-  /**
-   * Returns the name of the device.
-   *
-   * @returns deviceName - Name of the device
-   */
-  public static getDeviceName():string {
-
-    return this.deviceName;
-  }
-
-  /**
-   * Returns the model name of the device.
-   *
-   * @returns deviceModel - Model of the device
-   */
-  public static getDeviceModel(): string {
-
-    return DeviceInfoUtil.deviceModel;
-  }
-
-  /**
-   * Returns the brand name of the device.
-   *
-   * @returns deviceBrand - Brand name of the device
-   */
-  public static getDeviceBrand(): string {
-
-    return DeviceInfoUtil.deviceBrand;
-  }
+        return DeviceInfoUtil.deviceBrand;
+    }
 
 }
 

@@ -16,10 +16,10 @@
  * under the License.
  */
 
-import { KJUR } from "jsrsasign";
+import {KJUR} from "jsrsasign";
 import uuid from "uuid-random";
-import { AccountsInterface, DiscoveryDataInterface, RegistrationRequestInterface } from "../models";
-import { CryptoUtil,DeviceInfoUtil, RequestSenderUtil } from "../utils";
+import {AccountsInterface, DiscoveryDataInterface, RegistrationRequestInterface} from "../models";
+import {CryptoUtil, DeviceInfoUtil, RequestSenderUtil} from "../utils";
 
 /**
  * Class for all the functionality related to accounts.
@@ -46,7 +46,8 @@ export class AccountsService {
                 signatureString
             );
         } catch (err) {
-            return JSON.stringify({ data: null, res: "FAILED" });
+
+            return JSON.stringify({data: null, res: "FAILED"});
         }
 
         const modPubKey: string = keypair.pubKey
@@ -108,10 +109,10 @@ export class AccountsService {
                         privateKey: keypair.prvKey
                     };
 
-                    return JSON.stringify({ res: "OK", data: account });
+                    return JSON.stringify({res: "OK", data: account});
                 } else {
 
-                    return JSON.stringify({ res: "FAILED", data: null });
+                    return JSON.stringify({res: "FAILED", data: null});
                 }
 
 
@@ -162,10 +163,10 @@ export class AccountsService {
             .then((res) => {
                 if (res.status === 204) {
 
-                    return JSON.stringify({ res: "SUCCESS", data: account });
+                    return JSON.stringify({res: "SUCCESS", data: account});
                 } else {
 
-                    return JSON.stringify({ res: "FAILED", data: account });
+                    return JSON.stringify({res: "FAILED", data: account});
                 }
             });
     }

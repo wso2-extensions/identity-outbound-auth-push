@@ -16,43 +16,43 @@
  * under the License.
  */
 
-import { DateTimeInterface } from "src/models/date-time";
+import {DateTimeInterface} from "src/models/date-time";
 
 /**
  * Util class for handling datetime functions.
  */
 export class DateTimeUtil {
-  private dateTime: DateTimeInterface;
+    private dateTime: DateTimeInterface;
 
-  public constructor() {
-    const current = new Date();
+    public constructor() {
+        const current = new Date();
 
-    this.dateTime = {
-      day: current.getDate(),
-      month: current.getMonth(),
-      year: current.getFullYear(),
-      hour: current.getHours(),
-      minute: current.getMinutes(),
-      seconds: current.getSeconds(),
-      date:
-        current.getDate() +
-        "-" +
-        current.getMonth() +
-        "-" +
-        current.getFullYear(),
-      time:
-        (current.getHours() < 12
-          ? current.getHours()
-          : current.getHours() - 12) +
-        ":" +
-        current.getMinutes() +
-        (current.getHours() < 12)
-          ? " a.m."
-          : " p.m."
-    };
-  }
+        this.dateTime = {
+            day: current.getDate(),
+            month: current.getMonth(),
+            year: current.getFullYear(),
+            hour: current.getHours(),
+            minute: current.getMinutes(),
+            seconds: current.getSeconds(),
+            date:
+                current.getDate() +
+                "-" +
+                current.getMonth() +
+                "-" +
+                current.getFullYear(),
+            time:
+                (current.getHours() < 12
+                    ? current.getHours()
+                    : current.getHours() - 12) +
+                ":" +
+                current.getMinutes() +
+                (current.getHours() < 12)
+                    ? " a.m."
+                    : " p.m."
+        };
+    }
 
-  public getDateTime(): DateTimeInterface {
-    return this.dateTime;
-  }
+    public getDateTime(): DateTimeInterface {
+        return this.dateTime;
+    }
 }

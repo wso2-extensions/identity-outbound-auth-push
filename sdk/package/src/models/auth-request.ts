@@ -16,26 +16,26 @@
  * under the License.
  */
 
-import { DateTimeInterface } from "./date-time";
+import {DateTimeInterface} from "./date-time";
 
 /**
  * Interface for authentication requests.
  */
 export interface AuthRequestInterface {
-  deviceId: string;
-  challenge: string;
-  sessionDataKey: string;
-  connectionCode?: string;
-  displayName?: string;
-  username: string;
-  organization: string;
-  applicationName?: string;
-  applicationUrl?: string;
-  deviceName?: string;
-  browserName?: string;
-  ipAddress?: string;
-  location?: string;
-  expiryTime?: string;
-  authenticationStatus?: string;
-  requestTime?: DateTimeInterface;
+    deviceId: string;
+    challenge: string;
+    sessionDataKey: string;
+    connectionCode?: string;
+    displayName?: string;
+    username: string;
+    organization: string;
+    applicationName?: string;
+    applicationUrl?: string;
+    deviceName?: string;
+    browserName?: string;
+    ipAddress?: string;
+    location?: string;
+    expiryTime?: string;
+    authenticationStatus?: string;
+    requestTime?: DateTimeInterface;
 }
