@@ -40,6 +40,8 @@
         <module>components/org.wso2.carbon.identity.application.authenticator.push</module>
         <module>components/org.wso2.carbon.identity.application.authenticator.push.servlet</module>
         <module>components/org.wso2.carbon.identity.application.authenticator.push.device.handler</module>
+        <module>components/org.wso2.carbon.identity.api.user.push.device.common</module>
+        <module>components/org.wso2.carbon.identity.api.user.push.device.handler.v1</module>
     </modules>
 
     <build>
@@ -289,6 +291,11 @@
                 <version>${identity.authenticator.utils.version}</version>
             </dependency>
             <dependency>
+                <groupId>javax.ws.rs</groupId>
+                <artifactId>javax.ws.rs-api</artifactId>
+                <version>${javax.ws.rs.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.wso2.carbon.identity.outbound.auth.push</groupId>
                 <artifactId>org.wso2.carbon.identity.application.authenticator.push.device.handler</artifactId>
                 <version>${project.version}</version>
@@ -317,6 +324,79 @@
                 <groupId>org.wso2.orbit.com.nimbusds</groupId>
                 <artifactId>nimbus-jose-jwt</artifactId>
                 <version>${nimbusds.version}</version>
+            </dependency>
+            <!-- API dependencies-->
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+                <version>${cxf.bundle.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-frontend-jaxws</artifactId>
+                <version>${cxf.bundle.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-rs-service-description</artifactId>
+                <version>${cxf.bundle.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>${spring.web.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-beans</artifactId>
+                <version>${spring.web.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-jaxrs</artifactId>
+                <version>${swagger.jaxrs.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-databind</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-annotations</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.fasterxml.jackson.dataformat</groupId>
+                        <artifactId>jackson-dataformat-yaml</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>javax.ws.rs</groupId>
+                        <artifactId>jsr311-api</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.google.guava</groupId>
+                        <artifactId>guava</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.jaxrs</groupId>
+                <artifactId>jackson-jaxrs-json-provider</artifactId>
+                <version>${jackson.jaxrs.json.provider.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity.user.api</groupId>
+                <artifactId>org.wso2.carbon.identity.api.user.common</artifactId>
+                <version>${identity.api.user.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity.outbound.auth.push</groupId>
+                <artifactId>org.wso2.carbon.identity.api.user.push.device.common</artifactId>
+                <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -389,6 +469,15 @@
         <org.wso2.carbon.commons.version>4.7.24</org.wso2.carbon.commons.version>
         <org.apache.felix.annotations.version>1.2.10</org.apache.felix.annotations.version>
         <identity.authenticator.utils.version>1.2.0</identity.authenticator.utils.version>
+        <javax.ws.rs.version>2.1.1</javax.ws.rs.version>
+        <!-- API Versions -->
+        <cxf.bundle.version>3.3.5</cxf.bundle.version>
+        <spring.web.version>5.1.1.RELEASE</spring.web.version>
+        <swagger.jaxrs.version>1.5.20</swagger.jaxrs.version>
+        <jackson.jaxrs.json.provider.version>2.9.9</jackson.jaxrs.json.provider.version>
+        <carbon.kernel.version>4.6.0-alpha</carbon.kernel.version>
+        <identity.api.user.version>1.1.27</identity.api.user.version>
+        <build.helper.maven.plugin.version>1.8</build.helper.maven.plugin.version>
         <!-- Version Ranges -->
         <org.wso2.carbon.identity.version.range>[5.12,6)</org.wso2.carbon.identity.version.range>
         <org.wso2.carbon.version.range>[4.6,5)</org.wso2.carbon.version.range>
