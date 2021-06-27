@@ -99,7 +99,7 @@ public class PushServlet extends HttpServlet {
                 String status = PushServletConstants.Status.COMPLETED.name();
                 pushDataStoreInstance.updateAuthStatus(sessionDataKey, status);
 
-                response.setStatus(HttpServletResponse.SC_OK);
+                response.setStatus(HttpServletResponse.SC_ACCEPTED);
 
                 if (log.isDebugEnabled()) {
                     log.debug("Completed processing auth response from mobile app.");

@@ -63,11 +63,12 @@ public interface DeviceHandler {
     /**
      * Edit the name of a registered device.
      *
-     * @param deviceId      ID of the device to update the name of
-     * @param updatedDevice New name for the device
+     * @param deviceId ID of the device to update the name of
+     * @param path     Indication of the attribute to be modified
+     * @param value    New value for the attribute to be modified
      * @throws PushDeviceHandlerServerException
      */
-    void editDevice(String deviceId, Device updatedDevice)
+    void editDevice(String deviceId, String path, String value)
             throws PushDeviceHandlerServerException, PushDeviceHandlerClientException;
 
     /**
