@@ -1,0 +1,73 @@
+{
+    "env": {
+        "browser": true,
+        "es6": true,
+        "react-native/react-native": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended",
+        "plugin:@typescript-eslint/recommended"
+    ],
+    "overrides": [{
+        "files": ["**/*.ts"],
+        "parser": "@typescript-eslint/parser",
+        "parserOptions": {
+            "ecmaFeatures": {
+                "jsx": true
+            },
+            "ecmaVersion": 9,
+            "sourceType": "module"
+        },
+        "plugins": [
+            "react",
+            "react-native",
+            "@typescript-eslint"
+        ],
+        "rules": {
+            "@typescript-eslint/explicit-function-return-type": 0,
+            "@typescript-eslint/no-explicit-any": 0,
+            "@typescript-eslint/no-inferrable-types": "off",
+            "@typescript-eslint/no-unused-vars": "off",
+            "@typescript-eslint/no-unused-vars-experimental": "warn",
+            "@typescript-eslint/no-use-before-define": ["warn", {
+                "classes": false,
+                "functions": false,
+                "typedefs": false,
+                "variables": false
+            }],
+            "eol-last": "error",
+            "no-debugger": "warn",
+            "no-use-before-define": "off"
+        }
+    }],
+    "parserOptions": {
+        "ecmaVersion": 9,
+        "sourceType": "module"
+    },
+    "plugins": ["import"],
+    "rules": {
+        "comma-dangle": ["warn", "never"],
+        "eol-last": "error",
+        "import/order": ["warn", {
+            "alphabetize": {
+                "caseInsensitive": true,
+                "order": "asc"
+            },
+            "groups": ["builtin", "external", "index", "sibling", "parent", "internal"]
+        }],
+        "max-len": ["warn", {
+            "code": 120
+        }],
+        "no-console": "warn",
+        "no-duplicate-imports": "warn",
+        "object-curly-spacing": ["warn", "always"],
+        "quotes": ["warn", "double"],
+        "sort-imports": ["warn", {
+            "ignoreCase": false,
+            "ignoreDeclarationSort": true,
+            "ignoreMemberSort": false
+        }]
+    },
+    "ignorePatterns": ["lib/", "node_modules/"]
+}
