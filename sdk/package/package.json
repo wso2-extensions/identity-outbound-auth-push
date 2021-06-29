@@ -1,0 +1,49 @@
+{
+    "name": "@wso2/auth-push-react-native",
+    "version": "0.1.0",
+    "description": "WSO2 Push-Based Authentication SDK",
+    "main": "lib/index.js",
+    "types": "lib/index.d.ts",
+    "files": [
+        "lib/**/*"
+    ],
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "tsc --project ./tsconfig.json",
+        "fix-lint": "eslint --ext .ts . --fix",
+        "lint": "eslint --ext .ts ."
+    },
+    "author": "WSO2",
+    "license": "Apache-2.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/wso2-incubator/identity-outbound-auth-push.git"
+    },
+    "devDependencies": {
+        "@tsconfig/react-native": "^1.0.2",
+        "@types/jsrsasign": "^8.0.8",
+        "@types/react-native": "^0.63.42",
+        "@typescript-eslint/eslint-plugin": "^4.28.0",
+        "@typescript-eslint/parser": "^4.28.0",
+        "eslint": "^7.29.0",
+        "eslint-plugin-import": "^2.23.4",
+        "eslint-plugin-react": "^7.24.0",
+        "eslint-plugin-react-native": "^3.11.0",
+        "log4js": "^6.3.0",
+        "metro-react-native-babel-preset": "^0.66.0",
+        "typescript": "^4.1.2"
+    },
+    "peerDependancies": {
+        "react": "~17.0.1",
+        "react-dom": "~17.0.1",
+        "react-native": "~0.63.3"
+    },
+    "dependencies": {
+        "@react-native-async-storage/async-storage": "^1.13.2",
+        "react-native-device-info": "^7.3.1",
+        "react-native-ssl-pinning": "^1.5.2",
+        "jsrsasign": "^10.1.4",
+        "jsrsasign-util": "^1.0.2",
+        "uuid-random": "^1.3.2"
+    }
+}
