@@ -8,9 +8,6 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import AccountCard from '../components/AccountCard';
-import BottomNavigation from '../components/BottomNavigation';
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
@@ -19,64 +16,7 @@ import {
 } from 'react-native-responsive-screen';
 import {useState} from 'react';
 
-// state = {data: []};
 let trigger = true;
-//   = [
-//   {
-//     accountId: 1,
-//     username: 'kushanb@wso2.com',
-//     displayName: 'Kushan Bhareti',
-//     organization: 'WSO2',
-//   },
-//   {
-//     accountId: 2,
-//     username: 'blue@wso2.com',
-//     displayName: 'Blue Hudsen',
-//     organization: 'WSO2',
-//   },
-//   {
-//     accountId: 3,
-//     username: 'jonathan@wso2.com',
-//     displayName: 'Jonathan Swiss',
-//     organization: 'WSO2',
-//   },
-//   {
-//     accountId: 4,
-//     username: 'nike@google.com',
-//     displayName: 'Nike Crane',
-//     organization: 'Google',
-//     device: 'Phone',
-//   },
-// ];
-
-// const getAccounts = async () => {
-//   try {
-//     await AsyncStorage.getItem('accounts').then((accounts) => {
-//       // console.log('Accounts loaded in Accounts screen: ' + accounts);
-//       this.setState(JSON.parse(accounts));
-//       // console.log('New data: ' + JSON.stringify(data));
-//       // return JSON.parse(accounts);
-//     });
-//     // console.log('Test async value:' + value);
-//     // console.log('data before: ' + data);
-//     // value = JSON.parse(value);
-//     // value.accountId = data.length + 1;
-//     // data.push(value);
-//     // console.log('data after: ' + data);
-//     // console.log('Async accounts: ' + JSON.stringify(data[data.length]));
-//   } catch (e) {
-//     console.log('No accounts available');
-//     await AsyncStorage.setItem('accounts', JSON.stringify(data)).then(() => {
-//       console.log('Async storage data initialized');
-//     });
-//   }
-// };
-// data = getAccounts();
-
-// componentDidMount = () => {
-//   getAccounts();
-// };
-// componentDidMount();
 
 const AccountsScreen = ({route, navigation}) => {
   const [data, setData] = useState([]);
@@ -85,7 +25,6 @@ const AccountsScreen = ({route, navigation}) => {
 
   route.params ? console.log('Green') : console.log('Black');
 
-  // data.length == 0 ? getAccounts() : (data = data);
   console.log('Data in accounts screen: ' + data);
 
   /*
@@ -109,7 +48,7 @@ const AccountsScreen = ({route, navigation}) => {
       getData();
     });
     return unsubscribe;
-  }, [navigation]);
+  }, [data, navigation]);
 
   const renderItem = ({item}) => <AccountCard account={item} />;
 

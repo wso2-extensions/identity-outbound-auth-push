@@ -1,9 +1,5 @@
 import React from 'react';
 import {View, Image, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import {
-  TouchableHighlight,
-  TouchableWithoutFeedback,
-} from 'react-native-gesture-handler';
 import {LargeButton} from '../components/Button';
 import {
   widthPercentageToDP as wp,
