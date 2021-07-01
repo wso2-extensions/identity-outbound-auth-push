@@ -192,7 +192,11 @@ const AuthRequestScreen = ({route, navigation}) => {
           style={styles.responseButton}
           activeOpacity={0.7}
           onPress={() => {
-            AuthorizationService.sendAuthRequest(authData, 'DENIED')
+            AuthorizationService.sendAuthRequest(
+                authData,
+                'DENIED',
+                requestAccount
+            )
               .then((res) => {
                 let response = JSON.parse(res);
                 console.log(

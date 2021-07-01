@@ -28,7 +28,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import messaging from '@react-native-firebase/messaging';
 import firebase from '@react-native-firebase/app';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {DeviceInformation} from '@wso2/auth-push-react-native';
+import {DeviceInfoUtil} from '@wso2/auth-push-react-native';
 
 import StartScreen from './src/screens/StartScreen';
 import AddAccountScreen from './src/screens/AddAccountScreen';
@@ -81,7 +81,7 @@ const getToken = async () => {
 };
 
 // Initialize device information
-new DeviceInformation();
+new DeviceInfoUtil();
 // TODO: Do a proper implementation in the SDK
 
 const App: () => React$Node = () => {
