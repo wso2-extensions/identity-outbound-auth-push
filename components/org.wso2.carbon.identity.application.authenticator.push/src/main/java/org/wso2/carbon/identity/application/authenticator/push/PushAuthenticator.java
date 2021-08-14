@@ -31,6 +31,7 @@ import org.wso2.carbon.identity.application.authentication.framework.context.Aut
 import org.wso2.carbon.identity.application.authentication.framework.exception.AuthenticationFailedException;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundConstants;
 import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticatedUser;
+import org.wso2.carbon.identity.application.authentication.framework.util.FrameworkUtils;
 import org.wso2.carbon.identity.application.authenticator.push.common.PushAuthContextManager;
 import org.wso2.carbon.identity.application.authenticator.push.common.PushJWTValidator;
 import org.wso2.carbon.identity.application.authenticator.push.common.exception.PushAuthTokenValidationException;
@@ -46,6 +47,7 @@ import org.wso2.carbon.identity.application.authenticator.push.internal.PushAuth
 import org.wso2.carbon.identity.application.authenticator.push.notification.handler.RequestSender;
 import org.wso2.carbon.identity.application.authenticator.push.notification.handler.impl.RequestSenderImpl;
 import org.wso2.carbon.identity.application.common.model.Property;
+import org.wso2.carbon.identity.application.common.model.ServiceProvider;
 import org.wso2.carbon.identity.core.ServiceURLBuilder;
 import org.wso2.carbon.identity.core.URLBuilderException;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
@@ -55,9 +57,13 @@ import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
 import org.wso2.carbon.user.core.service.RealmService;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -98,10 +104,24 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
     protected void initiateAuthenticationRequest(HttpServletRequest request, HttpServletResponse response,
                                                  AuthenticationContext context) throws AuthenticationFailedException {
 
+        // update the authentication context with required values for OB specific requirements
+        try {
+        String queryParams = FrameworkUtils
+                .getQueryStringWithFrameworkContextId(context.getQueryParams(), context.getCallerSessionKey(),
+                        context.getContextIdentifier());
+        Map<String, String> params = splitQuery(queryParams);
+        handlePreConsent(context, params);
+        } catch (UnsupportedEncodingException e) {
+            throw new AuthenticationFailedException("Error occurred when processing the request object", e);
+        }
+
         DeviceHandler deviceHandler = new DeviceHandlerImpl();
         PushAuthContextManager contextManager = new PushAuthContextManagerImpl();
-        AuthenticatedUser user = context.getSequenceConfig().getStepMap().
-                get(context.getCurrentStep() - 1).getAuthenticatedUser();
+
+        // In OB CIBA, only this Push Authenticator IDP is expected to be executed during the CIBA auth flow
+        // Hence, the login_hint attribute in the CIBA request object is used to identify the user
+        AuthenticatedUser user = AuthenticatedUser.createLocalAuthenticatedUserFromSubjectIdentifier(request.
+                getParameter(PushAuthenticatorConstants.LOGIN_HINT));
         String sessionDataKey = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
         try {
             List<Device> deviceList;
@@ -154,6 +174,47 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                     + user.toFullQualifiedUsername() + ".", e);
         }
 
+    }
+
+    /**
+     * set attributes to context which will be required to prompt the consent page.
+     *
+     * @param context authentication context
+    * @param  params query params
+     */
+    @SuppressWarnings(value = "unchecked")
+    private void handlePreConsent(AuthenticationContext context, Map<String, String> params) {
+
+        ServiceProvider serviceProvider = context.getSequenceConfig().getApplicationConfig().getServiceProvider();
+
+        context.addEndpointParam(PushAuthenticatorConstants.LOGGED_IN_USER,
+               params.get(PushAuthenticatorConstants.LOGIN_HINT));
+        context.addEndpointParam(PushAuthenticatorConstants.USER_TENANT_DOMAIN,
+                "@carbon.super");
+        context.addEndpointParam(PushAuthenticatorConstants.REQUEST,
+                params.get(PushAuthenticatorConstants.REQUEST_OBJECT));
+        context.addEndpointParam(PushAuthenticatorConstants.SCOPE,
+                params.get(PushAuthenticatorConstants.SCOPE));
+        context.addEndpointParam(PushAuthenticatorConstants.APPLICATION, serviceProvider.getApplicationName());
+        context.addEndpointParam(PushAuthenticatorConstants.CONSENT_PROMPTED, true);
+        context.addEndpointParam(PushAuthenticatorConstants.AUTH_REQ_ID,
+                context.getAuthenticationRequest().getRequestQueryParams().get(PushAuthenticatorConstants.NONCE));
+    }
+
+    /**
+     * Returns a map of query parameters from the given query param string.
+     */
+    private Map<String, String> splitQuery(String queryParamsString) throws UnsupportedEncodingException {
+        final Map<String, String> queryParams = new HashMap<>();
+        final String[] pairs = queryParamsString.split("&");
+        for (String pair : pairs) {
+            final int idx = pair.indexOf("=");
+            final String key = idx > 0 ? URLDecoder.decode(pair.substring(0, idx), "UTF-8") : pair;
+            final String value =
+                    idx > 0 && pair.length() > idx + 1 ? URLDecoder.decode(pair.substring(idx + 1), "UTF-8") : null;
+            queryParams.put(key, value);
+        }
+        return queryParams;
     }
 
     @Override

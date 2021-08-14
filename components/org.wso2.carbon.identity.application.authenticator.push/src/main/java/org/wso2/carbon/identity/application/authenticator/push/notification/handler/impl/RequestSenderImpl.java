@@ -68,8 +68,9 @@ public class RequestSenderImpl implements RequestSender {
         Device device = getDevice(deviceId);
         PushAuthContextManager contextManager = new PushAuthContextManagerImpl();
         AuthenticationContext context = contextManager.getContext(key);
-        AuthenticatedUser user = context.getSequenceConfig().getStepMap().
-                get(context.getCurrentStep() - 1).getAuthenticatedUser();
+
+        AuthenticatedUser user = AuthenticatedUser.createLocalAuthenticatedUserFromSubjectIdentifier(request.
+                getParameter(PushAuthenticatorConstants.LOGIN_HINT));
 
         Map<String, String> authenticatorProperties = context.getAuthenticatorProperties();
         String serverKey = authenticatorProperties.get(PushAuthenticatorConstants.SERVER_KEY);

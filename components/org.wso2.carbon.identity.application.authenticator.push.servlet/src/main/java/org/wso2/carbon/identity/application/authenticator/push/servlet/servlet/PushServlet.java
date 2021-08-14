@@ -26,7 +26,9 @@ import com.nimbusds.jwt.JWTParser;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.application.authentication.framework.context.AuthenticationContext;
+import org.wso2.carbon.identity.application.authenticator.push.PushAuthenticatorConstants;
 import org.wso2.carbon.identity.application.authenticator.push.common.PushAuthContextManager;
 import org.wso2.carbon.identity.application.authenticator.push.common.PushJWTValidator;
 import org.wso2.carbon.identity.application.authenticator.push.common.exception.PushAuthTokenValidationException;
@@ -39,8 +41,13 @@ import org.wso2.carbon.identity.application.authenticator.push.dto.AuthDataDTO;
 import org.wso2.carbon.identity.application.authenticator.push.servlet.PushServletConstants;
 import org.wso2.carbon.identity.application.authenticator.push.servlet.store.PushDataStore;
 
+import org.wso2.carbon.identity.event.event.Event;
+import org.wso2.carbon.identity.event.IdentityEventException;
+import org.wso2.carbon.identity.event.services.IdentityEventService;
+
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.HashMap;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -54,6 +61,9 @@ public class PushServlet extends HttpServlet {
     private static final long serialVersionUID = -2050679246736808648L;
     private static final Log log = LogFactory.getLog(PushServlet.class);
     private final PushDataStore pushDataStoreInstance = PushDataStore.getInstance();
+    private static final String SESSION_DATA_KEY = "sessionDataKey";
+    private static final String LOGIN_STATE = "loginState";
+    private static final String CUSTOM_EVENT = "CUSTOM_EVENT";
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -99,6 +109,25 @@ public class PushServlet extends HttpServlet {
                 String status = PushServletConstants.Status.COMPLETED.name();
                 pushDataStoreInstance.updateAuthStatus(sessionDataKey, status);
 
+                HashMap<String, Object> properties = new HashMap<>();
+
+                properties.put(LOGIN_STATE, "success");
+                properties.put(SESSION_DATA_KEY, sessionDataKey);
+
+                // Invoke a custom
+               Event sampleEvent = new Event(CUSTOM_EVENT, properties);
+                if (log.isDebugEnabled()) {
+                    log.debug("Invoking the custom event to complete the authorization flow");
+                }
+                IdentityEventService identityEventService =
+                        (IdentityEventService) PrivilegedCarbonContext.getThreadLocalCarbonContext()
+                                .getOSGiService(IdentityEventService.class, null);
+
+                try {
+                    identityEventService.handleEvent(sampleEvent);
+                } catch (IdentityEventException e) {
+                    log.error("Auth error - failed to invoke the event");
+                }
                 response.setStatus(HttpServletResponse.SC_ACCEPTED);
 
                 if (log.isDebugEnabled()) {

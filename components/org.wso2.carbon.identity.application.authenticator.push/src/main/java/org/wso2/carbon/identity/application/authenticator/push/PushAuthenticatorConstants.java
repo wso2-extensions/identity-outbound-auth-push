@@ -87,4 +87,20 @@ public class PushAuthenticatorConstants {
 
     public static final String PUSH_AUTHENTICATION_ENDPOINT_WAIT_URL = "pushAuthenticationEndpointWaitURL";
     public static final String PUSH_AUTHENTICATION_ENDPOINT_DEVICES_URL = "pushAuthenticationEndpointDevicesURL";
+
+    public static final String REQUEST = "request";
+    public static final String REQUEST_OBJECT = "request_object";
+
+    //Consent Related constants
+    public static final String LOGGED_IN_USER = "loggedInUser";
+    public static final String USER_TENANT_DOMAIN = "userTenantDomain";
+    public static final String SP_QUERY_PARAMS = "spQueryParams";
+    public static final String SCOPE = "scope";
+    public static final String APPLICATION = "application";
+    public static final String CONSENT_PROMPTED = "consentPrompted";
+    public static final String AUTH_REQ_ID = "auth_req_id";
+    public static final String NONCE = "nonce";
+    public static final String LOGIN_HINT = "login_hint";
+
+
 }
