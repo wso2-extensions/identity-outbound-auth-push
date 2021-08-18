@@ -28,7 +28,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.application.authentication.framework.context.AuthenticationContext;
-import org.wso2.carbon.identity.application.authenticator.push.PushAuthenticatorConstants;
 import org.wso2.carbon.identity.application.authenticator.push.common.PushAuthContextManager;
 import org.wso2.carbon.identity.application.authenticator.push.common.PushJWTValidator;
 import org.wso2.carbon.identity.application.authenticator.push.common.exception.PushAuthTokenValidationException;
@@ -114,8 +113,8 @@ public class PushServlet extends HttpServlet {
                 properties.put(LOGIN_STATE, "success");
                 properties.put(SESSION_DATA_KEY, sessionDataKey);
 
-                // Invoke a custom
-               Event sampleEvent = new Event(CUSTOM_EVENT, properties);
+                // Invoke a custom event to complete the authorization
+                Event sampleEvent = new Event(CUSTOM_EVENT, properties);
                 if (log.isDebugEnabled()) {
                     log.debug("Invoking the custom event to complete the authorization flow");
                 }

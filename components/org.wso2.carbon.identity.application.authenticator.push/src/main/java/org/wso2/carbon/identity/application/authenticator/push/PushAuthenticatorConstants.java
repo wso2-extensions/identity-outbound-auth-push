@@ -91,7 +91,7 @@ public class PushAuthenticatorConstants {
     public static final String REQUEST = "request";
     public static final String REQUEST_OBJECT = "request_object";
 
-    //Consent Related constants
+    //Consent Related constants added specific to OB
     public static final String LOGGED_IN_USER = "loggedInUser";
     public static final String USER_TENANT_DOMAIN = "userTenantDomain";
     public static final String SP_QUERY_PARAMS = "spQueryParams";
@@ -102,5 +102,5 @@ public class PushAuthenticatorConstants {
     public static final String NONCE = "nonce";
     public static final String LOGIN_HINT = "login_hint";
 
-
+    public static final String CONSENT_RETRIEVAL_PATH = "/api/openbanking/consent/authorize/retrieve/";
 }

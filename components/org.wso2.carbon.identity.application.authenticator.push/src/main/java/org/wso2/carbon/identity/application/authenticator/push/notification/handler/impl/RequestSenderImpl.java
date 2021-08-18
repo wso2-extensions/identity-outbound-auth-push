@@ -69,6 +69,10 @@ public class RequestSenderImpl implements RequestSender {
         PushAuthContextManager contextManager = new PushAuthContextManagerImpl();
         AuthenticationContext context = contextManager.getContext(key);
 
+        // OB specific change to use login_hint attribute in the CIBA request object
+        // as the authenticated user
+        /*AuthenticatedUser user = context.getSequenceConfig().getStepMap().
+                get(context.getCurrentStep() - 1).getAuthenticatedUser();*/
         AuthenticatedUser user = AuthenticatedUser.createLocalAuthenticatedUserFromSubjectIdentifier(request.
                 getParameter(PushAuthenticatorConstants.LOGIN_HINT));
 

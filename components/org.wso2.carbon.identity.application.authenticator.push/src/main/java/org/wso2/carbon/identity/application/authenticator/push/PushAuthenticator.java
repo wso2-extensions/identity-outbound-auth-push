@@ -27,6 +27,9 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.wso2.carbon.identity.application.authentication.framework.AbstractApplicationAuthenticator;
 import org.wso2.carbon.identity.application.authentication.framework.FederatedApplicationAuthenticator;
+import org.wso2.carbon.identity.application.authentication.framework.cache.AuthenticationContextCache;
+import org.wso2.carbon.identity.application.authentication.framework.cache.AuthenticationContextCacheEntry;
+import org.wso2.carbon.identity.application.authentication.framework.cache.AuthenticationContextCacheKey;
 import org.wso2.carbon.identity.application.authentication.framework.context.AuthenticationContext;
 import org.wso2.carbon.identity.application.authentication.framework.exception.AuthenticationFailedException;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundConstants;
@@ -120,8 +123,12 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
 
         // In OB CIBA, only this Push Authenticator IDP is expected to be executed during the CIBA auth flow
         // Hence, the login_hint attribute in the CIBA request object is used to identify the user
+        /*AuthenticatedUser user = context.getSequenceConfig().getStepMap().
+                get(context.getCurrentStep() - 1).getAuthenticatedUser();*/
         AuthenticatedUser user = AuthenticatedUser.createLocalAuthenticatedUserFromSubjectIdentifier(request.
                 getParameter(PushAuthenticatorConstants.LOGIN_HINT));
+        context.setSubject(user);
+
         String sessionDataKey = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
         try {
             List<Device> deviceList;
@@ -142,6 +149,13 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             AuthDataDTO authDataDTO = new AuthDataDTO();
             context.setProperty(PushAuthenticatorConstants.CONTEXT_AUTH_DATA, authDataDTO);
             contextManager.storeContext(sessionDataKey, context);
+
+            // OB specific change to add context to authenticationContextCache
+            // In the default push auth impl, a PushAuthContextCache is implemented and context is stored there
+            // But the Identity Framework is not updated to retrieve context from PushAuthContextCache
+            // Hence, this is added to store the context in AuthenticationContextCache under sessionDataKey used here
+            AuthenticationContextCache.getInstance().addToCache(
+                    new AuthenticationContextCacheKey(sessionDataKey), new AuthenticationContextCacheEntry(context));
 
             if (deviceList.size() == 1) {
                 RequestSender requestSender = new RequestSenderImpl();

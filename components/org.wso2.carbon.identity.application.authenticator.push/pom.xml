@@ -222,6 +222,7 @@
                             org.wso2.carbon.identity.application.authentication.framework.inbound;version="${org.wso2.carbon.identity.version.range}",
                             org.wso2.carbon.identity.application.authentication.framework.model;version="${org.wso2.carbon.identity.version.range}",
                             org.wso2.carbon.identity.application.authentication.framework.util;version="${org.wso2.carbon.identity.version.range}",
+                            org.wso2.carbon.identity.application.authentication.framework.cache;version="${org.wso2.carbon.identity.version.range}",
                             org.wso2.carbon.identity.application.common.model;version="${org.wso2.carbon.identity.version.range}",
                             org.wso2.carbon.identity.application.authenticator.push.device.handler,
                             org.wso2.carbon.identity.application.authenticator.push.device.handler.model,
