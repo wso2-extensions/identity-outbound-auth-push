@@ -212,7 +212,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         context.addEndpointParam(PushAuthenticatorConstants.APPLICATION, serviceProvider.getApplicationName());
         context.addEndpointParam(PushAuthenticatorConstants.CONSENT_PROMPTED, true);
         context.addEndpointParam(PushAuthenticatorConstants.AUTH_REQ_ID,
-                context.getAuthenticationRequest().getRequestQueryParams().get(PushAuthenticatorConstants.NONCE));
+                context.getAuthenticationRequest().getRequestQueryParams().get(PushAuthenticatorConstants.NONCE)[0]);
     }
 
     /**
