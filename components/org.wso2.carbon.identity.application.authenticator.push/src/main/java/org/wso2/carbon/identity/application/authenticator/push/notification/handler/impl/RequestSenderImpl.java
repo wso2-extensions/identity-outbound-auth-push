@@ -19,8 +19,15 @@
 
 package org.wso2.carbon.identity.application.authenticator.push.notification.handler.impl;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.wso2.carbon.base.ServerConfiguration;
+import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.identity.application.authentication.framework.context.AuthenticationContext;
 import org.wso2.carbon.identity.application.authentication.framework.exception.AuthenticationFailedException;
 import org.wso2.carbon.identity.application.authentication.framework.inbound.InboundConstants;
@@ -40,6 +47,7 @@ import org.wso2.carbon.identity.application.authenticator.push.notification.hand
 import org.wso2.carbon.identity.application.authenticator.push.notification.handler.RequestSender;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
 import org.wso2.carbon.identity.core.util.IdentityUtil;
+import org.wso2.carbon.user.api.RealmConfiguration;
 import org.wso2.carbon.user.api.UserRealm;
 import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.api.UserStoreManager;
@@ -49,6 +57,9 @@ import ua_parser.Client;
 import ua_parser.Parser;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Map;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
@@ -90,6 +101,9 @@ public class RequestSenderImpl implements RequestSender {
         String fullName = getFullName(user);
         String organization = user.getTenantDomain();
 
+        // OB specific change to retrieve consent data
+        String consentInfo = retrieveConsent(key);
+
         String userOS = null;
         String userBrowser = null;
         Client client = getClient(request);
@@ -107,7 +121,7 @@ public class RequestSenderImpl implements RequestSender {
         pushNotificationSender.init(serverKey, fcmUrl);
         try {
             pushNotificationSender.sendPushNotification(deviceId, pushId, message, randomChallenge, sessionDataKey,
-                    username, fullName, organization, serviceProviderName, hostname, userOS, userBrowser);
+                    username, fullName, organization, serviceProviderName, hostname, userOS, userBrowser, consentInfo);
         } catch (AuthenticationFailedException e) {
             throw new PushAuthenticatorException("Error occurred when trying to send the push notification to device: "
                     + deviceId + ".", e);
@@ -220,4 +234,65 @@ public class RequestSenderImpl implements RequestSender {
         }
     }
 
+    /**
+     * OB specific implementation to retrieve consent data
+     * @param sessionDataKey
+     * @return consent data
+     * @throws PushAuthenticatorException
+     */
+    public String retrieveConsent(String sessionDataKey) throws PushAuthenticatorException {
+
+        String hostName = ServerConfiguration.getInstance().getFirstProperty("HostName");
+        int defaultPort = 9443;
+        int port =  defaultPort + Integer.parseInt(ServerConfiguration.getInstance()
+                .getFirstProperty("Ports.Offset"));
+
+        String retrieveUrl = "https://" + hostName + ":" +port +
+                PushAuthenticatorConstants.CONSENT_RETRIEVAL_PATH + sessionDataKey;
+
+        ServerConfiguration.getInstance().getFirstProperty("Ports.Offset");
+
+        String adminUsername;
+        char[] adminPassword;
+        try {
+            RealmConfiguration realmConfiguration = CarbonContext.getThreadLocalCarbonContext().getUserRealm()
+                    .getRealmConfiguration();
+            adminUsername = realmConfiguration.getAdminUserName();
+            adminPassword = realmConfiguration.getAdminPassword().toCharArray();
+        } catch (UserStoreException e) {
+            log.debug("Failed to retrieve admin credentials");
+            throw new PushAuthenticatorException("Failed to retrieve admin credentials");
+        }
+
+        String credentials = adminUsername + ":" + String.valueOf(adminPassword);
+        credentials = Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
+
+        CloseableHttpClient client = HttpClientBuilder.create().build();
+        HttpGet dataRequest = new HttpGet(retrieveUrl);
+        dataRequest.addHeader("Authorization", "Basic " + credentials);
+        HttpResponse consentDataResponse = null;
+        try {
+            consentDataResponse = client.execute(dataRequest);
+        } catch (IOException e) {
+            log.debug("Failed to retrieve consent data");
+            throw new PushAuthenticatorException("Failed to retrieve consent data", e);
+        }
+        log.debug("HTTP response for consent retrieval" + consentDataResponse.toString());
+
+        if (consentDataResponse.getStatusLine().getStatusCode() == HttpURLConnection.HTTP_MOVED_TEMP &&
+                consentDataResponse.getLastHeader("Location") != null) {
+            log.debug("Error in consent data retrieval response");
+            throw new PushAuthenticatorException("Failed to retrieve consent data");
+        } else {
+            String consentData= null;
+            try {
+                consentData = IOUtils.toString(consentDataResponse.getEntity().getContent(),
+                        String.valueOf(StandardCharsets.UTF_8));
+                return consentData;
+            } catch (IOException e) {
+                log.debug("Error in reading consent data retrieval response");
+                throw new PushAuthenticatorException("Failed to read the consent data");
+            }
+        }
+    }
 }

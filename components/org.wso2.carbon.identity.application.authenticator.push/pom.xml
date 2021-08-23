@@ -249,6 +249,7 @@
                             org.wso2.carbon.identity.application.authenticator.push.notification.handler,
                             org.wso2.carbon.identity.application.authenticator.push.notification.handler.impl,
                         </Export-Package>
+                        <DynamicImport-Package>*</DynamicImport-Package>
                     </instructions>
                 </configuration>
             </plugin>
