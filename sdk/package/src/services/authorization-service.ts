@@ -85,6 +85,10 @@ export class AuthorizationService {
             authRequest.location = request.data.location;
         }
 
+        if (request.data.metadata) {
+            authRequest.metadata = request.data.metadata;
+        }
+
         return authRequest;
     }
 
@@ -119,6 +123,7 @@ export class AuthorizationService {
                 iat: KJUR.jws.IntDate.get("now"),
                 sid: authRequest.sessionDataKey,
                 chg: authRequest.challenge,
+                mta: authRequest.metadata,
                 res: response
             },
             account.privateKey
