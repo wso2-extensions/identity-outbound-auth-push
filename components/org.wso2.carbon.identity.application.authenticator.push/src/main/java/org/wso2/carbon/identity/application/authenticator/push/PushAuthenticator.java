@@ -54,10 +54,14 @@ import org.wso2.carbon.identity.application.common.model.ServiceProvider;
 import org.wso2.carbon.identity.core.ServiceURLBuilder;
 import org.wso2.carbon.identity.core.URLBuilderException;
 import org.wso2.carbon.identity.core.util.IdentityTenantUtil;
+import org.wso2.carbon.identity.oauth.cache.SessionDataCacheEntry;
+import org.wso2.carbon.identity.oauth.cache.SessionDataCacheKey;
 import org.wso2.carbon.user.api.UserRealm;
 import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.core.common.AbstractUserStoreManager;
 import org.wso2.carbon.user.core.service.RealmService;
+
+import org.wso2.carbon.identity.oauth.cache.SessionDataCache;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -130,6 +134,11 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         context.setSubject(user);
 
         String sessionDataKey = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
+
+        SessionDataCacheKey cacheKey = new SessionDataCacheKey(sessionDataKey);
+        SessionDataCacheEntry cacheEntry = SessionDataCache.getInstance().getValueFromCache(cacheKey);
+        cacheEntry.setLoggedInUser(user);
+        SessionDataCache.getInstance().addToCache(cacheKey, cacheEntry);
         try {
             List<Device> deviceList;
             deviceList = deviceHandler.listDevices(getUserIdFromUsername(user.getUserName(), getUserRealm(user)));

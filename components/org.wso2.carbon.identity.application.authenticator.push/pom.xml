@@ -133,6 +133,10 @@
             <groupId>ua.parser.wso2</groupId>
             <artifactId>ua-parser</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.identity.inbound.auth.oauth2</groupId>
+            <artifactId>org.wso2.carbon.identity.oauth</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -239,6 +243,7 @@
                             com.nimbusds.jwt;version="${nimbusds.osgi.version.range}",
                             ua_parser;version="${ua.parser.version.range}",
                         </Import-Package>
+                        <DynamicImport-Package>*</DynamicImport-Package>
                         <Export-Package>
                             !org.wso2.carbon.identity.application.authenticator.push.internal,
                             org.wso2.carbon.identity.application.authenticator.push.util,
