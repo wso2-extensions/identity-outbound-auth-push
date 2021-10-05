@@ -23,22 +23,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.JWTParser;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPatch;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.wso2.carbon.base.ServerConfiguration;
-import org.wso2.carbon.context.CarbonContext;
-import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.identity.application.authentication.framework.context.AuthenticationContext;
-import org.wso2.carbon.identity.application.authenticator.push.PushAuthenticatorConstants;
 import org.wso2.carbon.identity.application.authenticator.push.common.PushAuthContextManager;
 import org.wso2.carbon.identity.application.authenticator.push.common.PushJWTValidator;
 import org.wso2.carbon.identity.application.authenticator.push.common.exception.PushAuthTokenValidationException;
@@ -48,22 +36,11 @@ import org.wso2.carbon.identity.application.authenticator.push.device.handler.ex
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.exception.PushDeviceHandlerServerException;
 import org.wso2.carbon.identity.application.authenticator.push.device.handler.impl.DeviceHandlerImpl;
 import org.wso2.carbon.identity.application.authenticator.push.dto.AuthDataDTO;
-import org.wso2.carbon.identity.application.authenticator.push.exception.PushAuthenticatorException;
 import org.wso2.carbon.identity.application.authenticator.push.servlet.PushServletConstants;
 import org.wso2.carbon.identity.application.authenticator.push.servlet.store.PushDataStore;
 
-import org.wso2.carbon.identity.event.event.Event;
-import org.wso2.carbon.identity.event.IdentityEventException;
-import org.wso2.carbon.identity.event.services.IdentityEventService;
-import org.wso2.carbon.user.api.RealmConfiguration;
-import org.wso2.carbon.user.api.UserStoreException;
-
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
-import java.util.Base64;
-import java.util.HashMap;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -77,9 +54,6 @@ public class PushServlet extends HttpServlet {
     private static final long serialVersionUID = -2050679246736808648L;
     private static final Log log = LogFactory.getLog(PushServlet.class);
     private final PushDataStore pushDataStoreInstance = PushDataStore.getInstance();
-    private static final String SESSION_DATA_KEY = "sessionDataKey";
-    private static final String LOGIN_STATE = "loginState";
-    private static final String CUSTOM_EVENT = "CUSTOM_EVENT";
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -125,90 +99,12 @@ public class PushServlet extends HttpServlet {
                 String status = PushServletConstants.Status.COMPLETED.name();
                 pushDataStoreInstance.updateAuthStatus(sessionDataKey, status);
 
-                HashMap<String, Object> properties = new HashMap<>();
-
-                properties.put(LOGIN_STATE, "success");
-                properties.put(SESSION_DATA_KEY, sessionDataKey);
-
-                // Invoke a custom event to complete the authorization
-                Event sampleEvent = new Event(CUSTOM_EVENT, properties);
-
-                persistConsent(sessionDataKey);
-                if (log.isDebugEnabled()) {
-                    log.debug("Invoking the custom event to complete the authorization flow");
-                }
-                IdentityEventService identityEventService =
-                        (IdentityEventService) PrivilegedCarbonContext.getThreadLocalCarbonContext()
-                                .getOSGiService(IdentityEventService.class, null);
-
-                try {
-                    identityEventService.handleEvent(sampleEvent);
-                } catch (IdentityEventException e) {
-                    log.error("Auth error - failed to invoke the event");
-                }
                 response.setStatus(HttpServletResponse.SC_ACCEPTED);
 
                 if (log.isDebugEnabled()) {
                     log.debug("Completed processing auth response from mobile app.");
                 }
             }
-        }
-    }
-
-    public void persistConsent (String sessionDataKey) throws ServletException {
-
-        log.info("persistConsent called with sessionDataKey: " + sessionDataKey);
-        String CONSENT_PERSISTANCE_PATH = "/api/openbanking/consent/authorize/persist/";
-        String hostName = ServerConfiguration.getInstance().getFirstProperty("HostName");
-        int defaultPort = 9443;
-        int port =  defaultPort + Integer.parseInt(ServerConfiguration.getInstance()
-                .getFirstProperty("Ports.Offset"));
-
-        String persistUrl = "https://" + hostName + ":" + port +
-                CONSENT_PERSISTANCE_PATH + sessionDataKey;
-
-        log.info("persist URL is : " + persistUrl);
-
-        String adminUsername;
-        char[] adminPassword;
-        try {
-            RealmConfiguration realmConfiguration = CarbonContext.getThreadLocalCarbonContext().getUserRealm()
-                    .getRealmConfiguration();
-            adminUsername = realmConfiguration.getAdminUserName();
-            adminPassword = realmConfiguration.getAdminPassword().toCharArray();
-            log.info("Retrieved admin credentials" + adminUsername);
-        } catch (UserStoreException e) {
-            log.info("Failed to retrieve admin credentials");
-            throw new ServletException("Failed to retrieve admin credentials");
-        }
-
-        String credentials = adminUsername + ":" + String.valueOf(adminPassword);
-        credentials = Base64.getEncoder().encodeToString(credentials.getBytes(StandardCharsets.UTF_8));
-
-        try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
-            HttpPatch dataRequest = new HttpPatch(persistUrl);
-            dataRequest.addHeader("accept", "application/json; charset=utf-8");
-            dataRequest.addHeader("Content-Type", "application/json; charset=utf-8");
-            dataRequest.addHeader("Authorization", "Basic " + credentials);
-            StringEntity body = new StringEntity("{\"approval\":\"true\",\"authorize\":true, \"accountIds\": [\"67890\"]}", ContentType.APPLICATION_JSON);
-            dataRequest.setEntity(body);
-
-            HttpResponse consentDataResponse = null;
-            try {
-                consentDataResponse = client.execute(dataRequest);
-            } catch (IOException e) {
-                log.debug("Failed to persist consent data");
-                throw new ServletException("Failed to persist consent data", e);
-            }
-            log.debug("HTTP response for consent persistance" + consentDataResponse.toString());
-            if (consentDataResponse.getStatusLine().getStatusCode() == HttpURLConnection.HTTP_MOVED_TEMP &&
-                    consentDataResponse.getLastHeader("Location") != null) {
-                log.debug("Error in consent data persist response");
-                throw new ServletException("Failed to persist consent data");
-            }
-        } catch (IOException e) {
-            log.error("Exception while calling persistence endpoint", e);
-//                return null;
         }
     }
 

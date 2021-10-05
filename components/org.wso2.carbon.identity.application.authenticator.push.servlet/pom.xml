@@ -93,12 +93,6 @@
             <groupId>org.wso2.carbon.identity.outbound.auth.push</groupId>
             <artifactId>org.wso2.carbon.identity.application.authenticator.push.device.handler</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.identity.framework</groupId>
-            <artifactId>org.wso2.carbon.identity.event</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
     </dependencies>
     <build>
         <plugins>
@@ -123,10 +117,8 @@
                             com.google.gson;version="${com.googlecode.json-simple.version}",
                             com.nimbusds.jose;version="${com.nimbusds.version.range}",
                             com.nimbusds.jwt;version="${com.nimbusds.version.range}",
-                            org.wso2.carbon.context;version="${org.wso2.carbon.version.range}",
                             org.wso2.carbon.identity.application.authentication.framework.context;version="${org.wso2.carbon.identity.version.range}",
                             org.wso2.carbon.identity.application.authentication.framework.inbound;version="${org.wso2.carbon.identity.version.range}",
-                            org.wso2.carbon.identity.event.*;version="${org.wso2.carbon.identity.version.range}",
                             javax.servlet;version= "${javax.version.range}",
                             javax.servlet.http;version="${javax.version.range}",
                             org.apache.commons.lang;version="${org.apache.commons.lang.version.range}",
