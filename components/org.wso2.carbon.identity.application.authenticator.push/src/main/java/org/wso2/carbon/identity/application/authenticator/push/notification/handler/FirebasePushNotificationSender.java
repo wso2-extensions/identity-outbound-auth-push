@@ -82,7 +82,8 @@ public class FirebasePushNotificationSender {
      */
     public void sendPushNotification(String deviceId, String pushId, String message, String randomChallenge,
                                      String sessionDataKey, String username, String fullName, String organization,
-                                     String serviceProviderName, String hostname, String userOS, String userBrowser)
+                                     String serviceProviderName, String hostname, String userOS, String userBrowser,
+                                     String metadata)
             throws AuthenticationFailedException {
 
         try {
@@ -114,6 +115,7 @@ public class FirebasePushNotificationSender {
             pushNotificationData.put(PushAuthenticatorConstants.IP_ADDRESS, hostname);
             pushNotificationData.put(PushAuthenticatorConstants.REQUEST_DEVICE_BROWSER, userBrowser);
             pushNotificationData.put(PushAuthenticatorConstants.REQUEST_DEVICE_OS, userOS);
+            pushNotificationData.put(PushAuthenticatorConstants.METADATA, metadata);
 
             JSONObject json = new JSONObject();
             json.put(PushAuthenticatorConstants.TO, pushId.trim());

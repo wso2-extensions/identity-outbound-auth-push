@@ -62,14 +62,13 @@ public class RequestSenderImpl implements RequestSender {
     private static final Log log = LogFactory.getLog(RequestSenderImpl.class);
 
     @Override
-    public void sendRequest(HttpServletRequest request, HttpServletResponse response, String deviceId, String key)
+    public void sendRequest(HttpServletRequest request, HttpServletResponse response, String deviceId, String key, String metadata)
             throws PushAuthenticatorException, AuthenticationFailedException {
 
         Device device = getDevice(deviceId);
         PushAuthContextManager contextManager = new PushAuthContextManagerImpl();
         AuthenticationContext context = contextManager.getContext(key);
-        AuthenticatedUser user = context.getSequenceConfig().getStepMap().
-                get(context.getCurrentStep() - 1).getAuthenticatedUser();
+        AuthenticatedUser user = context.getSubject();
 
         Map<String, String> authenticatorProperties = context.getAuthenticatorProperties();
         String serverKey = authenticatorProperties.get(PushAuthenticatorConstants.SERVER_KEY);
@@ -102,7 +101,7 @@ public class RequestSenderImpl implements RequestSender {
         pushNotificationSender.init(serverKey, fcmUrl);
         try {
             pushNotificationSender.sendPushNotification(deviceId, pushId, message, randomChallenge, sessionDataKey,
-                    username, fullName, organization, serviceProviderName, hostname, userOS, userBrowser);
+                    username, fullName, organization, serviceProviderName, hostname, userOS, userBrowser, metadata);
         } catch (AuthenticationFailedException e) {
             throw new PushAuthenticatorException("Error occurred when trying to send the push notification to device: "
                     + deviceId + ".", e);

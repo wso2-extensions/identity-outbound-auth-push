@@ -39,6 +39,6 @@ public interface RequestSender {
      * @param key      Session Data Key
      * @throws PushAuthenticatorException if an error occurs while preparing the push notification
      */
-    void sendRequest(HttpServletRequest request, HttpServletResponse response, String deviceId, String key)
+    void sendRequest(HttpServletRequest request, HttpServletResponse response, String deviceId, String key, String metadata)
             throws PushAuthenticatorException, AuthenticationFailedException;
 }
