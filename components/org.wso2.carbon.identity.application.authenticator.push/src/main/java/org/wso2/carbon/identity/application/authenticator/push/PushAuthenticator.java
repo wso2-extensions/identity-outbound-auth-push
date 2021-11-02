@@ -58,6 +58,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -110,6 +111,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             List<Device> deviceList;
             deviceList = deviceHandler.listDevices(getUserIdFromUsername(user.getUserName(), getUserRealm(user)));
             request.getSession().setAttribute(PushAuthenticatorConstants.DEVICES_LIST, deviceList);
+            String additionalInfo = null;
             JSONObject object;
             JSONArray array = new JSONArray();
 
@@ -128,8 +130,13 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
 
             if (deviceList.size() == 1) {
                 RequestSender requestSender = new RequestSenderImpl();
-                String metadata = setMetadata(request, response, sessionDataKey);
-                requestSender.sendRequest(request, response, deviceList.get(0).getDeviceId(), sessionDataKey, metadata);
+                Optional<String> optionalAdditionalInfo = getAdditionalInfo(request, response, sessionDataKey);
+                if (optionalAdditionalInfo.isPresent()){
+                    additionalInfo = optionalAdditionalInfo.get();
+                    log.debug(String.format("Adding additional info %s to the notification", additionalInfo));
+                }
+                requestSender.sendRequest(request, response, deviceList.get(0).getDeviceId(), sessionDataKey,
+                        additionalInfo);
                 redirectWaitPage(response, sessionDataKey, user);
             } else if (deviceList.size() == 0) {
                 if (log.isDebugEnabled()) {
@@ -194,11 +201,11 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                 String authStatus;
                 try {
                     authStatus =
-                            validator.getClaimFromClaimSet(claimsSet, PushAuthenticatorConstants.TOKEN_RESPONSE, deviceId);
-                }
-                catch (PushAuthTokenValidationException e){
-                    String errorMessage = String.format("Error in getting claim %s from the auth response token received " +
-                            "from device: %s", PushAuthenticatorConstants.TOKEN_SESSION_DATA_KEY, deviceId);
+                            validator.getClaimFromClaimSet(claimsSet, PushAuthenticatorConstants.TOKEN_RESPONSE,
+                                    deviceId);
+                } catch (PushAuthTokenValidationException e) {
+                    String errorMessage = String.format("Error in getting claim %s from the auth response token" +
+                            " received from device: %s", PushAuthenticatorConstants.TOKEN_SESSION_DATA_KEY, deviceId);
                     throw new AuthenticationFailedException(errorMessage, e);
                 }
 
@@ -225,11 +232,10 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             throw new AuthenticationFailedException(errorMessage);
         }
 
-        try{
+        try {
             contextManager.clearContext(validator.getClaimFromClaimSet(claimsSet,
                     PushAuthenticatorConstants.TOKEN_SESSION_DATA_KEY, deviceId));
-        }
-        catch (PushAuthTokenValidationException e){
+        } catch (PushAuthTokenValidationException e) {
             String errorMessage = String.format("Error in getting claim %s from the auth response token received " +
                     "from device: %s", PushAuthenticatorConstants.TOKEN_SESSION_DATA_KEY, deviceId);
             throw new AuthenticationFailedException(errorMessage, e);
@@ -268,7 +274,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
      * @param request Push authenticator HTTP request
      * @return Authenticated User
      */
-    protected AuthenticatedUser getAuthenticatedUser(HttpServletRequest request){
+    protected AuthenticatedUser getAuthenticatedUser(HttpServletRequest request) {
 
         String sessionDataKey = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
 
@@ -315,7 +321,6 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
         AbstractUserStoreManager userStoreManager = (AbstractUserStoreManager) realm.getUserStoreManager();
         return userStoreManager.getUserIDFromUserName(username);
     }
-
 
     /**
      * Derive the Device ID from the auth response token header.
@@ -398,8 +403,8 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                     .addParameter("sessionDataKey", sessionDataKey).build().getAbsolutePublicURL();
             response.sendRedirect(waitPage);
         } catch (IOException e) {
-            String errorMessage = String.format("Error occurred when trying to to redirect user: %s to the wait page.",
-                    user.toFullQualifiedUsername());
+            String errorMessage = String.format("Error occurred when trying to to redirect user: %s to the wait " +
+                            "page.", user.toFullQualifiedUsername());
             throw new AuthenticationFailedException(errorMessage, e);
         } catch (URLBuilderException e) {
             String errorMessage = String.format("Error occurred when building the URL for the wait page for user: %s.",
@@ -439,12 +444,14 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
 
     /**
      * Set metadata to the request
+     *
      * @param sessionDataKey Session data key
      * @return metadata
      */
-    protected String setMetadata(HttpServletRequest request, HttpServletResponse response, String sessionDataKey)
-            throws AuthenticationFailedException{
-        return null;
+    protected Optional<String> getAdditionalInfo(HttpServletRequest request, HttpServletResponse response,
+                                                 String sessionDataKey) throws AuthenticationFailedException {
+
+        return Optional.empty();
     }
 
 }

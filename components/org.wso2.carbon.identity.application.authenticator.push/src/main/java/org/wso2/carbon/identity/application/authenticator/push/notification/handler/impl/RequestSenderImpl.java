@@ -62,7 +62,8 @@ public class RequestSenderImpl implements RequestSender {
     private static final Log log = LogFactory.getLog(RequestSenderImpl.class);
 
     @Override
-    public void sendRequest(HttpServletRequest request, HttpServletResponse response, String deviceId, String key, String metadata)
+    public void sendRequest(HttpServletRequest request, HttpServletResponse response, String deviceId, String key,
+                            String additionalInfo)
             throws PushAuthenticatorException, AuthenticationFailedException {
 
         Device device = getDevice(deviceId);
@@ -101,7 +102,8 @@ public class RequestSenderImpl implements RequestSender {
         pushNotificationSender.init(serverKey, fcmUrl);
         try {
             pushNotificationSender.sendPushNotification(deviceId, pushId, message, randomChallenge, sessionDataKey,
-                    username, fullName, organization, serviceProviderName, hostname, userOS, userBrowser, metadata);
+                    username, fullName, organization, serviceProviderName, hostname, userOS, userBrowser,
+                    additionalInfo);
         } catch (AuthenticationFailedException e) {
             throw new PushAuthenticatorException("Error occurred when trying to send the push notification to device: "
                     + deviceId + ".", e);
@@ -123,7 +125,7 @@ public class RequestSenderImpl implements RequestSender {
             UserRealm userRealm = getUserRealm(authenticatedUser);
             UserStoreManager userStoreManager = userRealm.getUserStoreManager();
             claimValues = userStoreManager.getUserClaimValues(IdentityUtil.addDomainToName(
-                    authenticatedUser.getUserName(), authenticatedUser.getUserStoreDomain()), new String[]{
+                            authenticatedUser.getUserName(), authenticatedUser.getUserStoreDomain()), new String[]{
                             PushAuthenticatorConstants.FIRST_NAME_CLAIM,
                             PushAuthenticatorConstants.LAST_NAME_CLAIM},
                     UserCoreConstants.DEFAULT_PROFILE);
