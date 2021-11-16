@@ -183,7 +183,7 @@ public class PushJWTValidator {
         try {
             return claimsSet.getStringClaim(claim);
         } catch (ParseException e) {
-            String errorMessage = String.format("Failed to get %s from the auth response token received from device: "
+            String errorMessage = String.format("Failed to get %s from the claim set received from device: "
                     + "%s.", claim, deviceId);
             throw new PushAuthTokenValidationException(errorMessage, e);
         }
@@ -195,8 +195,9 @@ public class PushJWTValidator {
      * @param claimsSet JWT claim set for the validated auth response token
      * @param challenge Challenge stored in cache to correlate with JWT
      * @param deviceId  Unique ID for the device trying to authenticate the user
+     * @return is challenge validation passed
      */
-    public Boolean validateChallenge(JWTClaimsSet claimsSet, String challenge, String deviceId) {
+    public boolean validateChallenge(JWTClaimsSet claimsSet, String challenge, String deviceId) {
 
         if (claimsSet != null) {
             try {
@@ -204,9 +205,10 @@ public class PushJWTValidator {
                         getClaimFromClaimSet(claimsSet, PushAuthCommonConstants.TOKEN_CHALLENGE, deviceId);
                 if (!tokenChallenge.equals(challenge)) {
                     if (log.isDebugEnabled()) {
-                        String errorMessage = String
-                                .format("Authentication failed! Challenge received from %s  was not valid.", deviceId);
-                        log.debug(errorMessage);
+                        String message = String
+                                .format("The challenge: %s received from deviceId: %s does not match the provided " +
+                                        "challenge: %s. Returning false.", tokenChallenge, deviceId, challenge);
+                        log.debug(message);
                     }
                     return false;
                 } else {
@@ -214,15 +216,15 @@ public class PushJWTValidator {
                 }
             }
             catch (PushAuthTokenValidationException e){
+                log.error("Error when getting the claims from the claim set", e);
                 return false;
             }
-
-
         } else {
             if (log.isDebugEnabled()) {
-                String errorMessage = String
-                        .format("Authentication failed! JWT claim set received from device %s  was null.", deviceId);
-                log.debug(errorMessage);
+                String message = String
+                        .format("Failed to validate the challenge. JWT claim set received from device %s  was null.",
+                                deviceId);
+                log.debug(message);
             }
             return false;
         }

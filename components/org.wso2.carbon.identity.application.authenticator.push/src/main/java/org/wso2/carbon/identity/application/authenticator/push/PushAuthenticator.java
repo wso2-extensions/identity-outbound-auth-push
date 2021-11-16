@@ -133,7 +133,9 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                 Optional<String> optionalAdditionalInfo = getAdditionalInfo(request, response, sessionDataKey);
                 if (optionalAdditionalInfo.isPresent()){
                     additionalInfo = optionalAdditionalInfo.get();
-                    log.debug(String.format("Adding additional info %s to the notification", additionalInfo));
+                    if (log.isDebugEnabled()){
+                        log.debug(String.format("Adding additional info %s to the notification", additionalInfo));
+                    }
                 }
                 requestSender.sendRequest(request, response, deviceList.get(0).getDeviceId(), sessionDataKey,
                         additionalInfo);
@@ -205,7 +207,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                                     deviceId);
                 } catch (PushAuthTokenValidationException e) {
                     String errorMessage = String.format("Error in getting claim %s from the auth response token" +
-                            " received from device: %s", PushAuthenticatorConstants.TOKEN_SESSION_DATA_KEY, deviceId);
+                            " received from device: %s", PushAuthenticatorConstants.TOKEN_RESPONSE, deviceId);
                     throw new AuthenticationFailedException(errorMessage, e);
                 }
 
@@ -222,7 +224,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             } else {
                 String errorMessage = String
                         .format("Authentication failed! JWT challenge validation for device: %s of user: %s.",
-                                deviceId, user);
+                                deviceId, user.toFullQualifiedUsername());
                 throw new AuthenticationFailedException(errorMessage);
             }
         } else {
