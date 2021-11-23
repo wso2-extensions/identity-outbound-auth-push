@@ -131,9 +131,9 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             if (deviceList.size() == 1) {
                 RequestSender requestSender = new RequestSenderImpl();
                 Optional<String> optionalAdditionalInfo = getAdditionalInfo(request, response, sessionDataKey);
-                if (optionalAdditionalInfo.isPresent()){
+                if (optionalAdditionalInfo.isPresent()) {
                     additionalInfo = optionalAdditionalInfo.get();
-                    if (log.isDebugEnabled()){
+                    if (log.isDebugEnabled()) {
                         log.debug(String.format("Adding additional info %s to the notification", additionalInfo));
                     }
                 }
@@ -406,7 +406,7 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             response.sendRedirect(waitPage);
         } catch (IOException e) {
             String errorMessage = String.format("Error occurred when trying to to redirect user: %s to the wait " +
-                            "page.", user.toFullQualifiedUsername());
+                    "page.", user.toFullQualifiedUsername());
             throw new AuthenticationFailedException(errorMessage, e);
         } catch (URLBuilderException e) {
             String errorMessage = String.format("Error occurred when building the URL for the wait page for user: %s.",

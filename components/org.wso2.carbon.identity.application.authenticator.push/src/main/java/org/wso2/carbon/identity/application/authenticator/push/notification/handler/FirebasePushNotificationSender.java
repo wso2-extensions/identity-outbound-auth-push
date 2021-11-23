@@ -183,7 +183,7 @@ public class FirebasePushNotificationSender {
                                      String sessionDataKey, String username, String fullName, String organization,
                                      String serviceProviderName, String hostname, String userOS, String userBrowser)
             throws AuthenticationFailedException {
-        
+
         sendPushNotification(deviceId, pushId, message, randomChallenge, sessionDataKey, username, fullName,
                 organization, serviceProviderName, hostname, userOS, userBrowser, null);
     }

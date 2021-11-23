@@ -32,14 +32,17 @@ public class PushAuthenticatorServiceDataHolder {
     private RealmService realmService;
 
     public static PushAuthenticatorServiceDataHolder getInstance() {
+
         return pushAuthServiceDataHolder;
     }
 
     public RealmService getRealmService() {
+
         return realmService;
     }
 
     public void setRealmService(RealmService realmService) {
+
         this.realmService = realmService;
     }
 

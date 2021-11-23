@@ -214,8 +214,7 @@ public class PushJWTValidator {
                 } else {
                     return true;
                 }
-            }
-            catch (PushAuthTokenValidationException e){
+            } catch (PushAuthTokenValidationException e) {
                 log.error("Error when getting the claims from the claim set", e);
                 return false;
             }

@@ -48,7 +48,7 @@ public class PushAuthContextCache extends
     /**
      * Store authentication context to the session data store
      *
-     * @param id SessionDataKey for the session
+     * @param id    SessionDataKey for the session
      * @param entry PushAuthContextCacheEntry containing push authentication context
      */
     private void storeToSessionStore(String id, PushAuthContextCacheEntry entry) {
@@ -91,7 +91,7 @@ public class PushAuthContextCache extends
     /**
      * Add the authentication context to cache by the SessionDataKey
      *
-     * @param key PushAuthenticationContextKey with SessionDataKey
+     * @param key   PushAuthenticationContextKey with SessionDataKey
      * @param entry PushAuthenticationCacheEntry containing authentication context
      */
     public void addToCacheByRequestId(PushAuthContextCacheKey key,
