@@ -78,7 +78,7 @@ public class FirebasePushNotificationSender {
      * @param hostname            IP address of the user's device
      * @param userOS              Operating system of the user's device
      * @param userBrowser         Browser used by the user to authenticate
-     * @param additionalInfo      Additional Information
+     * @param additionalInfo      Additional Information to be passed as metadata
      * @throws AuthenticationFailedException if an error occurs while sending the push notification request
      */
     public void sendPushNotification(String deviceId, String pushId, String message, String randomChallenge,
