@@ -72,8 +72,8 @@ public class PushAuthenticatorConstants {
     public static final String SESSION_DATA_KEY = "sessionDataKey";
     public static final String TOKEN_DEVICE_ID = "did";
     public static final String TOKEN_SESSION_DATA_KEY = "sid";
-    public static final String TOKEN_CHALLENGE = "chg";
     public static final String TOKEN_RESPONSE = "res";
+    public static final String METADATA = "metadata";
 
     public static final String AUTH_DENIED_PARAM = "authorization.denied";
     public static final String AUTH_DENIED_MESSAGE = "authorization.denied.message";

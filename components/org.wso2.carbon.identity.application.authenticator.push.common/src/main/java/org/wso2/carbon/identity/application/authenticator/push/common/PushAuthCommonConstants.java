@@ -25,5 +25,6 @@ package org.wso2.carbon.identity.application.authenticator.push.common;
 public class PushAuthCommonConstants {
 
     public static final String SIGNING_ALGORITHM = "RSA";
+    public static final String TOKEN_CHALLENGE = "chg";
 
 }

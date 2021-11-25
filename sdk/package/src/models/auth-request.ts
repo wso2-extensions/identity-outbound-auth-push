@@ -38,4 +38,5 @@ export interface AuthRequestInterface {
     expiryTime?: string;
     authenticationStatus?: string;
     requestTime?: DateTimeInterface;
+    metadata?: string;
 }

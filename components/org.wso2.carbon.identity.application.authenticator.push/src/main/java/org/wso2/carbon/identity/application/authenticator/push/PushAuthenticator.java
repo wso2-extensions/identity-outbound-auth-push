@@ -58,6 +58,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -100,13 +101,17 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
 
         DeviceHandler deviceHandler = new DeviceHandlerImpl();
         PushAuthContextManager contextManager = new PushAuthContextManagerImpl();
-        AuthenticatedUser user = context.getSequenceConfig().getStepMap().
-                get(context.getCurrentStep() - 1).getAuthenticatedUser();
+
+        AuthenticatedUser user = getAuthenticatedUser(request);
+        context.setSubject(user);
+
         String sessionDataKey = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
+
         try {
             List<Device> deviceList;
             deviceList = deviceHandler.listDevices(getUserIdFromUsername(user.getUserName(), getUserRealm(user)));
             request.getSession().setAttribute(PushAuthenticatorConstants.DEVICES_LIST, deviceList);
+            String additionalInfo = null;
             JSONObject object;
             JSONArray array = new JSONArray();
 
@@ -125,7 +130,15 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
 
             if (deviceList.size() == 1) {
                 RequestSender requestSender = new RequestSenderImpl();
-                requestSender.sendRequest(request, response, deviceList.get(0).getDeviceId(), sessionDataKey);
+                Optional<String> optionalAdditionalInfo = getAdditionalInfo(request, response, sessionDataKey);
+                if (optionalAdditionalInfo.isPresent()) {
+                    additionalInfo = optionalAdditionalInfo.get();
+                    if (log.isDebugEnabled()) {
+                        log.debug(String.format("Adding additional info %s to the notification", additionalInfo));
+                    }
+                }
+                requestSender.sendRequest(request, response, deviceList.get(0).getDeviceId(), sessionDataKey,
+                        additionalInfo);
                 redirectWaitPage(response, sessionDataKey, user);
             } else if (deviceList.size() == 0) {
                 if (log.isDebugEnabled()) {
@@ -186,19 +199,32 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             throw new AuthenticationFailedException(errorMessage, e);
         }
         if (claimsSet != null) {
-            validateChallenge(claimsSet, serverChallenge, deviceId);
+            if (validator.validateChallenge(claimsSet, serverChallenge, deviceId)) {
+                String authStatus;
+                try {
+                    authStatus =
+                            validator.getClaimFromClaimSet(claimsSet, PushAuthenticatorConstants.TOKEN_RESPONSE,
+                                    deviceId);
+                } catch (PushAuthTokenValidationException e) {
+                    String errorMessage = String.format("Error in getting claim %s from the auth response token" +
+                            " received from device: %s", PushAuthenticatorConstants.TOKEN_RESPONSE, deviceId);
+                    throw new AuthenticationFailedException(errorMessage, e);
+                }
 
-            String authStatus =
-                    getClaimFromClaimSet(claimsSet, PushAuthenticatorConstants.TOKEN_RESPONSE, deviceId);
-
-            if (authStatus.equals(PushAuthenticatorConstants.AUTH_REQUEST_STATUS_SUCCESS)) {
-                authenticationContext.setSubject(user);
-            } else if (authStatus.equals(PushAuthenticatorConstants.AUTH_REQUEST_STATUS_DENIED)) {
-                redirectRetryPage(httpServletResponse, PushAuthenticatorConstants.AUTH_DENIED_PARAM,
-                        PushAuthenticatorConstants.AUTH_DENIED_MESSAGE, user);
+                if (authStatus.equals(PushAuthenticatorConstants.AUTH_REQUEST_STATUS_SUCCESS)) {
+                    authenticationContext.setSubject(user);
+                } else if (authStatus.equals(PushAuthenticatorConstants.AUTH_REQUEST_STATUS_DENIED)) {
+                    redirectRetryPage(httpServletResponse, PushAuthenticatorConstants.AUTH_DENIED_PARAM,
+                            PushAuthenticatorConstants.AUTH_DENIED_MESSAGE, user);
+                } else {
+                    String errorMessage = String.format("Authentication failed! Auth status for user" +
+                            " '%s' is not available in JWT.", user.toFullQualifiedUsername());
+                    throw new AuthenticationFailedException(errorMessage);
+                }
             } else {
-                String errorMessage = String.format("Authentication failed! Auth status for user" +
-                        " '%s' is not available in JWT.", user.toFullQualifiedUsername());
+                String errorMessage = String
+                        .format("Authentication failed! JWT challenge validation for device: %s of user: %s.",
+                                deviceId, user.toFullQualifiedUsername());
                 throw new AuthenticationFailedException(errorMessage);
             }
         } else {
@@ -208,8 +234,14 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
             throw new AuthenticationFailedException(errorMessage);
         }
 
-        contextManager.clearContext(getClaimFromClaimSet(claimsSet,
-                PushAuthenticatorConstants.TOKEN_SESSION_DATA_KEY, deviceId));
+        try {
+            contextManager.clearContext(validator.getClaimFromClaimSet(claimsSet,
+                    PushAuthenticatorConstants.TOKEN_SESSION_DATA_KEY, deviceId));
+        } catch (PushAuthTokenValidationException e) {
+            String errorMessage = String.format("Error in getting claim %s from the auth response token received " +
+                    "from device: %s", PushAuthenticatorConstants.TOKEN_SESSION_DATA_KEY, deviceId);
+            throw new AuthenticationFailedException(errorMessage, e);
+        }
     }
 
     @Override
@@ -239,29 +271,19 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
     }
 
     /**
-     * Validate the correlation between the challenged saved in the server and received from the auth response.
+     * Get the authenticated user
      *
-     * @param claimsSet JWT claim set for the validated auth response token
-     * @param challenge Challenge stored in cache to correlate with JWT
-     * @param deviceId  Unique ID for the device trying to authenticate the user
-     * @throws AuthenticationFailedException if the jwt fails to parse when getting the challenge claim
+     * @param request Push authenticator HTTP request
+     * @return Authenticated User
      */
-    private void validateChallenge(JWTClaimsSet claimsSet, String challenge, String deviceId)
-            throws AuthenticationFailedException {
+    protected AuthenticatedUser getAuthenticatedUser(HttpServletRequest request) {
 
-        if (claimsSet != null) {
-            String tokenChallenge =
-                    getClaimFromClaimSet(claimsSet, PushAuthenticatorConstants.TOKEN_CHALLENGE, deviceId);
-            if (!tokenChallenge.equals(challenge)) {
-                String errorMessage = String
-                        .format("Authentication failed! Challenge received from %s  was not valid.", deviceId);
-                throw new AuthenticationFailedException(errorMessage);
-            }
-        } else {
-            String errorMessage = String
-                    .format("Authentication failed! JWT claim set received from device %s  was null.", deviceId);
-            throw new AuthenticationFailedException(errorMessage);
-        }
+        String sessionDataKey = request.getParameter(InboundConstants.RequestProcessor.CONTEXT_KEY);
+
+        PushAuthContextManager contextManager = new PushAuthContextManagerImpl();
+        AuthenticationContext context = contextManager.getContext(sessionDataKey);
+
+        return context.getSequenceConfig().getStepMap().get(context.getCurrentStep() - 1).getAuthenticatedUser();
     }
 
     /**
@@ -300,27 +322,6 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
 
         AbstractUserStoreManager userStoreManager = (AbstractUserStoreManager) realm.getUserStoreManager();
         return userStoreManager.getUserIDFromUserName(username);
-    }
-
-    /**
-     * Get JWT claim from the claim set.
-     *
-     * @param claimsSet JWT claim set
-     * @param claim     Required claim
-     * @param deviceId  Device ID
-     * @return Claim string
-     * @throws AuthenticationFailedException if an error occurs while getting a claim
-     */
-    protected String getClaimFromClaimSet(JWTClaimsSet claimsSet, String claim, String deviceId)
-            throws AuthenticationFailedException {
-
-        try {
-            return claimsSet.getStringClaim(claim);
-        } catch (ParseException e) {
-            String errorMessage = String.format("Failed to get %s from the auth response token received from device: "
-                    + "%s.", claim, deviceId);
-            throw new AuthenticationFailedException(errorMessage, e);
-        }
     }
 
     /**
@@ -404,8 +405,8 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                     .addParameter("sessionDataKey", sessionDataKey).build().getAbsolutePublicURL();
             response.sendRedirect(waitPage);
         } catch (IOException e) {
-            String errorMessage = String.format("Error occurred when trying to to redirect user: %s to the wait page.",
-                    user.toFullQualifiedUsername());
+            String errorMessage = String.format("Error occurred when trying to to redirect user: %s to the wait " +
+                    "page.", user.toFullQualifiedUsername());
             throw new AuthenticationFailedException(errorMessage, e);
         } catch (URLBuilderException e) {
             String errorMessage = String.format("Error occurred when building the URL for the wait page for user: %s.",
@@ -441,6 +442,18 @@ public class PushAuthenticator extends AbstractApplicationAuthenticator
                     user.toFullQualifiedUsername());
             throw new AuthenticationFailedException(errorMessage, e);
         }
+    }
+
+    /**
+     * Set metadata to the request
+     *
+     * @param sessionDataKey Session data key
+     * @return metadata
+     */
+    protected Optional<String> getAdditionalInfo(HttpServletRequest request, HttpServletResponse response,
+                                                 String sessionDataKey) throws AuthenticationFailedException {
+
+        return Optional.empty();
     }
 
 }
