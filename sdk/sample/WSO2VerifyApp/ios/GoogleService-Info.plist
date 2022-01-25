@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1088404967999-rc7q1v7vp8obh2rvdsvcahrnsnntd9hn.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1088404967999-rc7q1v7vp8obh2rvdsvcahrnsnntd9hn</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAvjYcG3M23M4FiX977okSPPly8VAcIJ40</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1088404967999</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>org.reactjs.native.example.WSO2VerifyApp</string>
+	<key>PROJECT_ID</key>
+	<string>wso2-verify-b1a35</string>
+	<key>STORAGE_BUCKET</key>
+	<string>wso2-verify-b1a35.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1088404967999:ios:363db16eb3d84e4db39e8a</string>
+	<key>DATABASE_URL</key>
+	<string>https://wso2-verify-b1a35.firebaseio.com</string>
+</dict>
+</plist>
