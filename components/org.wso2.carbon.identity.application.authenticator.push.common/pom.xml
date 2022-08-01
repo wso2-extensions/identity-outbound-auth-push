@@ -3,7 +3,7 @@
     <parent>
         <artifactId>identity-outbound-auth-push</artifactId>
         <groupId>org.wso2.carbon.identity.outbound.auth.push</groupId>
-        <version>0.1.4-SNAPSHOT</version>
+        <version>0.1.4</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
