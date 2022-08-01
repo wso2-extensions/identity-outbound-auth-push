@@ -11,6 +11,6 @@
     "dependencies": {
         "react": "~17.0.1",
         "react-dom": "~17.0.1",
-        "react-native": "~0.63.3"
+        "react-native": "~0.64.1"
     }
 }
